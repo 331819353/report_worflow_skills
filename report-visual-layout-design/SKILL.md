@@ -9,6 +9,8 @@ description: "Design, critique, or refine the visual layout, page shell, UI comp
 
 Treat this as a visual and interaction shell skill for reports. It defines how a report page should be structured, styled, and operated after the business report type has been chosen.
 
+It owns the page shell and visual composition. It does not own report-type logic, mock data logic, filter option behavior, or detailed drilldown state. Use the relevant report-type skill, `report-info-component-mapping`, `report-mock-data-design`, `report-filter-data-design`, and `report-data-interaction-design` before finalizing the visual shell when those concerns are present.
+
 This skill answers:
 
 - 报表页面应该长什么样。
@@ -199,6 +201,36 @@ Recommended spans:
 - Secondary cards: 2 or 4 columns.
 
 Use the grid to make the report feel ordered, not rigid. If a component is important, give it more blocks; if it is secondary, reduce its span or move it lower.
+
+## Viewport And Overflow Rules
+
+Design the page so the report never appears visually cut off by the browser viewport, sidebar, or grid container.
+
+Layout rules:
+
+- The outer shell should separate sidebar and main content with a stable grid or flex layout.
+- The main content area must use `min-width: 0` behavior in implementation so wide children do not push it outside the viewport.
+- The report canvas should scroll vertically as a whole unless a component explicitly owns its internal scroll.
+- Avoid page-level horizontal overflow. Only true wide tables, timelines, and complex diagrams may scroll or pan inside their own component viewport.
+- When a right-side column is narrow, use wrapping, smaller spans, or move content to a wider row; do not let text continue beyond the visible area.
+- Do not use fixed page heights for sections that contain dynamic text, KPI cards, legends, or multiline labels.
+- Each grid row should have a minimum height that fits the component's title, controls, content, and safe padding.
+- If a component needs more content than its block can show, choose one strategy explicitly: increase its grid span, add internal scroll, add expand/fullscreen, or move details to drawer.
+
+Common fixes for clipping and overlap:
+
+- Hero or summary blocks with multiple cards should use a nested grid that can wrap into additional rows.
+- Text-heavy insight cards should receive wider spans or line clamp plus "view more" drawer.
+- Bar/list components should reserve separate columns for label, bar, and value so values do not overlap bars or get clipped.
+- Right-side diagnostic cards should not use tiny fixed heights; they should either grow to fit or clamp secondary text.
+- Evidence tables and detail lists should use sticky headers and internal scroll when the assigned block is intentionally limited.
+
+Visual QA:
+
+- Test at the target dashboard width, a narrower laptop width, and fullscreen.
+- Check the right edge of every component for clipping.
+- Check the bottom edge of every component for hidden rows, hidden labels, or cut-off cards.
+- Check that no component visually crosses into another component's rectangle.
 
 ### 1. 总分总: Executive Narrative
 

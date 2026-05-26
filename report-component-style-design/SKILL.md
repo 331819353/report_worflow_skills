@@ -9,6 +9,8 @@ description: "Design, critique, or refine the visual style and responsive behavi
 
 Treat this as the component-level visual style skill for report systems. It complements `report-visual-layout-design`: layout defines where components sit; this skill defines how each component behaves and looks inside its assigned display area.
 
+It owns visual fit, readability, and consistency inside components. It does not decide the report type, data grain, filter behavior, or cross-report state. Use `report-info-component-mapping`, `report-mock-data-design`, `report-filter-data-design`, and `report-data-interaction-design` when those choices are still undefined.
+
 This skill answers:
 
 - 组件内部如何水平居中、垂直居中。
@@ -107,6 +109,64 @@ Avoid:
 - Core values smaller than surrounding labels.
 - Components that look empty because content is too small.
 - Components that overflow because content keeps its own fixed size.
+
+## Overflow And Clipping Rules
+
+Every component must declare what happens when content exceeds its assigned block. Never leave overflow behavior accidental.
+
+Default rule:
+
+- Primary content should fit within the component.
+- Secondary content may wrap, collapse, scroll, move to tooltip, or move to drawer.
+- Critical content must not be clipped or hidden.
+
+Use these strategies:
+
+- Increase grid span when the component is structurally too important or too dense.
+- Use internal vertical scroll for long lists, evidence tables, logs, and repeated records.
+- Use horizontal scroll only for true wide tables and complex diagrams, not ordinary text.
+- Use line clamp only for secondary descriptions, with tooltip or drawer access.
+- Use fullscreen/expand for dense charts, maps, trees, and diagrams.
+- Use progressive disclosure: show summary first, details in drawer.
+
+Hard rules:
+
+- Do not set fixed component height when content length is variable unless internal scroll is defined.
+- Do not hide overflow for charts, titles, KPI values, status labels, or action buttons.
+- Do not let a component's child element define a width larger than the component viewport.
+- Do not let legends, labels, controls, or values extend beyond component bounds.
+- Do not allow right-column cards to crop text at the viewport edge.
+- Do not let bottom rows or nested cards be partially visible unless the component clearly indicates scroll.
+
+Implementation-oriented expectations:
+
+- Component containers should behave like viewports with `min-width: 0` and `min-height: 0` equivalents.
+- Chart/table bodies should be allowed to shrink inside the card after title/action areas reserve space.
+- Text should wrap before it overflows.
+- Operations should collapse into an overflow menu before they overlap titles or content.
+
+## Block Fit Rules
+
+When placing a component into a grid block, first estimate its minimum viable size.
+
+Minimum viable size includes:
+
+- Header: title, subtitle, unit, status, actions.
+- Body: chart plot, table rows, cards, text, or diagram viewport.
+- Labels: axes, legends, values, annotations.
+- Footer: source, pagination, notes, or operation hint.
+- Padding: safe space on all sides.
+
+If the minimum viable size is larger than the assigned block:
+
+- Give the component more columns or rows.
+- Reduce optional labels or move them to tooltip.
+- Move secondary narrative to drawer.
+- Switch chart to table/list if exact reading matters.
+- Enable zoom/pan for complex diagrams.
+- Split the component into multiple grid-aligned rectangles.
+
+Do not solve fit problems by simply shrinking typography below readability.
 
 ## Complex Diagram Viewport Rules
 
@@ -392,6 +452,13 @@ Design:
 - Keep paragraphs within the component; expand/collapse when needed.
 - Do not let text overlap charts or actions.
 
+Fit rules:
+
+- Short conclusions may use 2-3 lines; longer explanation should move to drawer, expandable area, or lower full-width section.
+- If the component is in a narrow right column, use concise sentence fragments and avoid long unbroken text.
+- Use line clamp only for supporting explanation, never for the main conclusion.
+- Keep action buttons below or beside text with reserved space, not floating over the text.
+
 ## KPI And Metric Card Rules
 
 KPI cards should be immediately scannable.
@@ -415,6 +482,14 @@ Rules:
 - If the card is clickable, show hover and active states.
 - If content is too dense, move detail to tooltip or drawer.
 
+Fit rules:
+
+- KPI cards in a nested grid must wrap to additional rows instead of being clipped.
+- Do not place more KPI cards in one row than the available width can support.
+- Keep the main value, unit, and status visible together.
+- If the card is narrow, move baseline/trend text below the value or into tooltip.
+- If two rows of KPI cards are needed inside a hero panel, the hero panel must grow or the KPI group must scroll internally with clear affordance.
+
 ## Chart Component Rules
 
 Charts must prioritize legibility.
@@ -429,6 +504,14 @@ Rules:
 - Show empty/no-data state clearly.
 - Provide fullscreen when a chart has many series or labels.
 - Provide download image/data when useful.
+
+Layout rules:
+
+- Reserve explicit zones for chart title/actions, legend, plot, axes, labels, and notes.
+- Use `label column + visual column + value column` structure for horizontal bar/list charts so end values never collide with bars.
+- For waterfall, funnel, decomposition, and contribution charts, reserve extra side padding for labels and negative/positive values.
+- If labels cannot fit, use Top N, abbreviation with tooltip, scroll, zoom, or fullscreen.
+- Do not place long explanatory paragraphs inside the plot area.
 
 For dense charts:
 
@@ -498,11 +581,12 @@ When asked to define or apply component style, use this structure:
 6. 边框阴影: define radius, border, divider, selected border, hover elevation, drawer/modal shadow.
 7. 统一风格: define spacing, icon style, control style, states, and component variants.
 8. 居中与自适应: explain how each component centers, fits, wraps, scrolls, zooms, or pans inside its block.
-9. 防重叠规则: define label, legend, axis, tooltip, text, and graphic collision handling.
-10. 复杂图形策略: specify viewport, zoom, drag, reset, fit-to-screen, minimap, and export behavior when needed.
-11. 可读性校验: contrast, font size, truncation, labels, units, precision, and responsive limits.
-12. 组件清单: describe each component's structure and states.
-13. 最终校验: confirm no overlap, no unreadable labels, no overflow, no inconsistent style.
+9. 溢出策略: define when to grow span, wrap, scroll, clamp, use drawer, fullscreen, zoom, or split component.
+10. 防重叠规则: define label, legend, axis, tooltip, text, and graphic collision handling.
+11. 复杂图形策略: specify viewport, zoom, drag, reset, fit-to-screen, minimap, and export behavior when needed.
+12. 可读性校验: contrast, font size, truncation, labels, units, precision, and responsive limits.
+13. 组件清单: describe each component's structure and states.
+14. 最终校验: confirm no overlap, no unreadable labels, no overflow, no inconsistent style.
 
 ## Quality Checklist
 
@@ -515,6 +599,7 @@ Before finalizing, verify:
 - Color roles are explicit and contrast is sufficient.
 - Borders, radius, shadows, and dividers are consistent and restrained.
 - Component content fits inside its assigned block or viewport.
+- Each component has an explicit overflow strategy: grow, wrap, scroll, clamp, drawer, fullscreen, zoom/pan, or split.
 - Labels, legends, axes, values, graphics, and actions do not overlap.
 - Core text and values are not truncated.
 - Low-priority truncation has tooltip or full-text access.
@@ -523,11 +608,13 @@ Before finalizing, verify:
 - Filters, text summaries, charts, cards, tables, and drawers share the same visual language.
 - Complex diagrams use viewport, zoom, pan, reset, and fit-to-screen instead of forcing page overflow.
 - Responsive behavior is defined for narrow and wide blocks.
+- Screenshots at target width, narrower laptop width, and fullscreen show no clipped right edge, hidden bottom content, or component collision.
 
 ## Avoid
 
 - Do not create fixed-size components that ignore their grid block.
 - Do not omit component title, background, typography, color, border, and shadow decisions when defining a component system.
+- Do not leave overflow behavior undefined.
 - Do not let graphics overlap labels or labels overlap each other.
 - Do not shrink text until it becomes unreadable.
 - Do not use pale labels or low-contrast chart elements.

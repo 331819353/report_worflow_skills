@@ -201,6 +201,16 @@ Design for accountability:
 
 Execution reports are management tools; auditability matters.
 
+## Handoff To Horizontal Skills
+
+This skill owns task execution and closed-loop logic. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map tasks, owners, deadlines, progress, blockers, evidence, acceptance, and result verification to components.
+- Use `report-mock-data-design` to create coherent task, source, owner, status-flow, deadline, evidence, and effect-verification data.
+- Use `report-filter-data-design` to define task status, owner, priority, deadline, source, current-user, and organization filters.
+- Use `report-data-interaction-design` to define task drawers, progress updates, transfer/reminder/delay/acceptance actions, source jumps, and closure state.
+- Use `report-visual-layout-design` and `report-component-style-design` for workbench layout, Kanban, task tables, Gantt, step flows, and operation states.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize execution closure. Use this structure:

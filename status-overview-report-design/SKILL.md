@@ -141,6 +141,16 @@ Design interactions to move from "overview judgment" to "problem entrance":
 
 Keep the overview page from becoming an unlimited analysis page. If the user needs evidence, records, root cause, or processing workflow, jump out.
 
+## Handoff To Horizontal Skills
+
+This skill owns the status-overview business logic. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map status, target, variance, trend, structure, and risk information to blocks and components.
+- Use `report-mock-data-design` to create coherent KPI, target, trend, structure, and risk-list data.
+- Use `report-filter-data-design` to define period, organization, business line, baseline, status, and risk filters.
+- Use `report-data-interaction-design` to define KPI clicks, hierarchy drilldown, risk drawers, and diagnostic/detail jumps.
+- Use `report-visual-layout-design` and `report-component-style-design` for 8*N layout, logo, toolbar, cards, charts, and overflow behavior.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize the design thinking. Use this structure:

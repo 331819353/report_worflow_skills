@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表信息组件映射"
+  short_description: "沉淀报表信息到区块、组件、图表、交互、数据需求与适用类型的通用映射规则"
+  default_prompt: "Use $report-info-component-mapping to map report information into blocks, components, charts, interactions, data needs, and report-type routing."

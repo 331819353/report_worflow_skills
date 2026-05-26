@@ -167,6 +167,16 @@ Always make evaluation rules explainable and auditable:
 
 Fairness is part of the report design, not a footnote.
 
+## Handoff To Horizontal Skills
+
+This skill owns evaluation logic and fairness. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map targets, scores, rankings, tiers, benchmarks, gaps, and improvement actions to components.
+- Use `report-mock-data-design` to create coherent target, actual, score, rank, tier, peer-group, and gap data.
+- Use `report-filter-data-design` to define period, object level, peer group, scoring version, ranking metric, and organization filters.
+- Use `report-data-interaction-design` to define ranking clicks, score decomposition, rule popovers, object drawers, and diagnostic/execution jumps.
+- Use `report-visual-layout-design` and `report-component-style-design` for scorecards, ranking lists, benchmark panels, rule notes, and overflow behavior.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize the evaluation logic. Use this structure:

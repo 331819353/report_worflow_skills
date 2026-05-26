@@ -165,6 +165,16 @@ Every important issue or risk should lead to an action plan. Include:
 
 Action plans turn recap into management closure. Without actions, the report is only a retrospective.
 
+## Handoff To Horizontal Skills
+
+This skill owns recap narrative and meeting logic. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map conclusions, chapters, evidence, risks, events, and action plans to components.
+- Use `report-mock-data-design` to create coherent period results, events, diagnosis summaries, risk lists, action items, and version examples.
+- Use `report-filter-data-design` to define period, organization, topic, version, chapter, and saved-report filters.
+- Use `report-data-interaction-design` to define conclusion-to-evidence expansion, support drawers, source jumps, action detail, and return state.
+- Use `report-visual-layout-design` and `report-component-style-design` for meeting-ready layout, chapter navigation, export actions, annotations, and readable summaries.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize the story and meeting use. Use this structure:

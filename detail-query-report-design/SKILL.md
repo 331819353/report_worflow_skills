@@ -154,6 +154,16 @@ Always design permission behavior for detail reports:
 
 Permission is part of the design, not a later technical detail.
 
+## Handoff To Horizontal Skills
+
+This skill owns detail-query logic. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map fields, summaries, tables, status tags, row drawers, and source links to components.
+- Use `report-mock-data-design` to create coherent row-level records, status mixes, source links, totals, and edge cases.
+- Use `report-filter-data-design` to define keyword search, quick filters, advanced filters, saved views, permissions, and export query state.
+- Use `report-data-interaction-design` to define row clicks, source jumps, batch actions, drawer context, and return state.
+- Use `report-visual-layout-design` and `report-component-style-design` for filters-first layout, table density, sticky headers, columns, tags, and overflow behavior.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize the query method. Use this structure:

@@ -184,6 +184,16 @@ Design noise control explicitly:
 
 Monitoring is only useful if users trust the signal.
 
+## Handoff To Horizontal Skills
+
+This skill owns anomaly rules, priority, and handling logic. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map alert counts, severity, distribution, trends, lists, SLA, and handling actions to components.
+- Use `report-mock-data-design` to create coherent alert rules, thresholds, current values, severity, owners, SLA, recurrence, and status data.
+- Use `report-filter-data-design` to define severity, anomaly type, status, owner, SLA, recurrence, period, and organization filters.
+- Use `report-data-interaction-design` to define severity drilldown, alert drawers, assignment/close modals, batch operations, and execution/detail jumps.
+- Use `report-visual-layout-design` and `report-component-style-design` for monitoring layout, red/yellow/green states, alert lists, cards, and noise-controlled emphasis.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize monitoring and handling logic. Use this structure:

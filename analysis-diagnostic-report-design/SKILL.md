@@ -165,6 +165,16 @@ Use jumps when diagnosis has reached the point of confirmation or action: detail
 
 Aim for the current page to complete the main reasoning path. A useful rule is: complete about 70% of the diagnosis in the diagnostic report, use drawers for evidence, and use jumps for records, processing, or source verification.
 
+## Handoff To Horizontal Skills
+
+This skill owns diagnostic reasoning. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map phenomenon, drivers, decomposition, dimensions, evidence, and recommendations to blocks and components.
+- Use `report-mock-data-design` to create coherent change, driver contribution, attribution, process-stage, and evidence data.
+- Use `report-filter-data-design` to define diagnostic metric, period, comparison period, organization, dimension, and object filters.
+- Use `report-data-interaction-design` to define metric drilldown, driver selection, evidence drawers, and detail/execution/reconciliation jumps.
+- Use `report-visual-layout-design` and `report-component-style-design` for 8*N layout, decomposition trees, waterfall charts, drawers, labels, and overflow behavior.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize the diagnostic thinking. Use this structure:

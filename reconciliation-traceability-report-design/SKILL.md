@@ -187,6 +187,16 @@ Design a clear lifecycle:
 
 Keep operation logs for every status change, correction, resync, rematch, reason mark, approval, and close.
 
+## Handoff To Horizontal Skills
+
+This skill owns data-trust and reconciliation logic. For implementation-ready design, hand off to horizontal skills:
+
+- Use `report-info-component-mapping` to map match results, difference types, source comparison, lineage, logs, and correction actions to components.
+- Use `report-mock-data-design` to create coherent source-system values, difference fields, versions, causes, statuses, lineage nodes, and audit logs.
+- Use `report-filter-data-design` to define source system, batch, version, difference type, status, rule, organization, and owner filters.
+- Use `report-data-interaction-design` to define difference drilldown, source drilldown, version switch, lineage navigation, correction flows, and source-system jumps.
+- Use `report-visual-layout-design` and `report-component-style-design` for comparison tables, diff highlights, lineage viewports, logs, and dense evidence layout.
+
 ## Output Format
 
 When asked to design this report type or create a design proposal, prioritize data trust and traceability. Use this structure:

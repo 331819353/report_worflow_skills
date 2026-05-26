@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表设计全流程工作流"
+  short_description: "串联报表需求提取、类型判断、信息映射、数据、筛选、交互、视觉、组件与模板实现的总控流程"
+  default_prompt: "Use $report-design-workflow to run the end-to-end workflow for designing or implementing a business report."
