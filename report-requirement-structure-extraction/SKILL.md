@@ -209,7 +209,7 @@ After extraction, recommend next skills:
 - Use `anomaly-monitoring-report-design` when the report detects and handles alerts.
 - Use `operational-execution-report-design` when the report manages tasks/actions.
 - Use `reconciliation-traceability-report-design` when the report verifies data trust.
-- Use `report-design-workflow` when the user wants an end-to-end report design, redesign, prototype, or implementation flow rather than only requirement extraction.
+- Use `report-design-workflow` when the user wants a report prototype, runnable page, screenshot-to-prototype repair, implementation-ready spec, mock-data-backed demo, template-backed build, automatic deployment, or returned preview URL rather than only conceptual design.
 - Use `report-info-component-mapping` when extracted information needs to be mapped to blocks, components, charts, tables, and interactions.
 - Use `report-mock-data-design` when the report needs demo data, synthetic records, KPI values, trends, targets, alerts, tasks, or reconciliation differences.
 - Use `report-filter-data-design` when filters, filter option data, defaults, cascades, query state, or permission-scoped filter behavior must be designed.

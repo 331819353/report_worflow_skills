@@ -34,6 +34,9 @@ export interface DashboardRuntimeContext {
   // 弹窗内组件会拿到 modalId 和 params，主画布组件没有这两个字段。
   modalId?: string;
   params?: Record<string, unknown>;
+  // 弹窗打开后如果全局筛选变化，框架会标记 stale，业务组件可据此清空旧选择或提示用户同步。
+  isStale?: boolean;
+  sourceFilters?: Record<string, string>;
 }
 
 export interface DashboardWidgetActionEvent {
@@ -61,6 +64,10 @@ export interface DashboardActionConfig {
   filters?: DashboardParams;
   // navigateUrl 使用。
   url?: DashboardExpressionValue;
+  // navigateUrl 使用，可追加业务参数；支持 $event/$filters/$context/$params 表达式。
+  query?: DashboardParams;
+  // navigateUrl 默认会把当前全局 filters 写入 URL 查询参数。设为 false 可关闭。
+  includeFilters?: boolean;
   openInNewTab?: boolean;
   replace?: boolean;
 }

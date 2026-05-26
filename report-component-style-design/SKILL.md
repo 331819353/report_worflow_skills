@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "Design, critique, or refine the visual style and responsive behavior of individual business report components across dashboards and report pages. Use when the task asks how filters, text summaries, KPI cards, charts, tables, legends, labels, titles, drawers, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, tree/funnel/flow diagrams, or other report components should look, align, resize, avoid label overlap, preserve readability, support zoom/pan, and remain visually consistent. Emphasize reusable component rules: component title design, background layers, font-size system, color specification, border and shadow design, horizontal and vertical centering, responsive fit within assigned grid blocks, no overlapping labels or graphics, no truncation, sufficient contrast, adaptive typography, controlled color, internet-style polish, unified page-wide component language, and complex-diagram viewport behavior."
+description: "Design, critique, or refine visual style and responsive behavior of business report components across dashboards, pages, and TypeScript + Vue 3 prototypes. Use when deciding how filters, text summaries, KPI cards, ECharts charts, AntV S2 analytical tables, legends, labels, titles, drawers, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, trees, funnels, or flows should look, align, resize, avoid overlap, preserve readability, support zoom/pan, and stay visually consistent. Covers titles, backgrounds, font sizes, colors, borders, shadows, centering, fit within grid blocks, no truncation, contrast, ECharts resize, S2 container behavior, and complex-diagram viewports."
 ---
 
 # Report Component Style Design
@@ -10,6 +10,8 @@ description: "Design, critique, or refine the visual style and responsive behavi
 Treat this as the component-level visual style skill for report systems. It complements `report-visual-layout-design`: layout defines where components sit; this skill defines how each component behaves and looks inside its assigned display area.
 
 It owns visual fit, readability, and consistency inside components. It does not decide the report type, data grain, filter behavior, or cross-report state. Use `report-info-component-mapping`, `report-mock-data-design`, `report-filter-data-design`, and `report-data-interaction-design` when those choices are still undefined.
+
+For runnable prototypes, assume business components are implemented with TypeScript + Vue 3. Use ECharts for standard charts and AntV S2 for analytical tables, pivot tables, cross tables, and dense metric matrices unless the existing project has an explicit conflicting stack.
 
 This skill answers:
 
@@ -144,6 +146,8 @@ Implementation-oriented expectations:
 - Chart/table bodies should be allowed to shrink inside the card after title/action areas reserve space.
 - Text should wrap before it overflows.
 - Operations should collapse into an overflow menu before they overlap titles or content.
+- ECharts components should call resize when their container, tab, drawer, fullscreen state, or grid span changes.
+- AntV S2 components should receive explicit container dimensions or resize hooks so frozen headers, scrollbars, and cell text remain aligned.
 
 ## Block Fit Rules
 
@@ -492,6 +496,14 @@ Fit rules:
 
 ## Chart Component Rules
 
+Use ECharts as the default chart engine for runnable prototypes. Configure it so the visual stays inside the component viewport:
+
+- Initialize only after the container has measurable width and height.
+- Resize on container changes, tab activation, fullscreen changes, and drawer open/close when relevant.
+- Reserve space for title, axes, labels, legends, and data zoom before calculating plot area.
+- Prefer ECharts dataZoom, tooltip, legend, and visualMap over custom ad hoc controls when they fit the task.
+- Keep ECharts option data-driven; do not hard-code mock values inside component styling.
+
 Charts must prioritize legibility.
 
 Rules:
@@ -523,6 +535,17 @@ For dense charts:
 ## Table Component Rules
 
 Tables are work surfaces.
+
+Use AntV S2 as the default analytical table engine for runnable prototypes when the table is a pivot table, cross table, wide metric matrix, financial comparison grid, frozen-header analytical table, or dense group-by table.
+
+S2 rules:
+
+- Mount S2 only after the container has measurable width and height.
+- Keep S2 width and height synchronized with the assigned grid block.
+- Use frozen rows/columns for identifiers and key dimensions.
+- Preserve readable cell text; do not shrink cells until values become unreadable.
+- Use S2 tooltip, hierarchy, totals, and interaction states before custom table overlays.
+- Keep S2 data, fields, meta, and conditions in typed data/config files where possible.
 
 Rules:
 
@@ -606,6 +629,8 @@ Before finalizing, verify:
 - Colors are readable and not too pale.
 - Typography has minimum readable sizes and consistent hierarchy.
 - Filters, text summaries, charts, cards, tables, and drawers share the same visual language.
+- Components remain readable after filter-driven data changes, including empty results, long labels, changed totals, hidden series, and stale selections.
+- Drawers, fullscreen views, exports, and refreshed components visually reflect the same active filter state as their source component.
 - Complex diagrams use viewport, zoom, pan, reset, and fit-to-screen instead of forcing page overflow.
 - Responsive behavior is defined for narrow and wide blocks.
 - Screenshots at target width, narrower laptop width, and fullscreen show no clipped right edge, hidden bottom content, or component collision.

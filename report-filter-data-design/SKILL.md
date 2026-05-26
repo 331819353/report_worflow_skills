@@ -1,6 +1,6 @@
 ---
 name: report-filter-data-design
-description: "Design report filter components, filter option data, default values, cascades, query behavior, permissions, and cross-component filtering for business dashboards and reports. Use when defining time, organization, business dimension, status, owner, risk, amount, keyword, saved query, or advanced-filter behavior for report pages."
+description: "Design report filter components, filter option data, default values, cascades, query behavior, permissions, and cross-component filtering for business dashboards and reports. Use when defining time, organization, business dimension, status, owner, risk, amount, keyword, saved query, advanced-filter behavior, filter-to-field mapping, affected-component matrices, or filter linkage accuracy for report pages."
 ---
 
 # Report Filter Data Design
@@ -158,6 +158,30 @@ Filters should update:
 
 When a filter invalidates an open drawer or selected chart point, close it or show a clear "selection no longer in scope" state.
 
+## Data And Component Accuracy Gate
+
+Filter design must include a binding contract, not only control definitions. This applies whether the page uses a template, a custom Vue page, or only a specification.
+
+For each filter, define:
+
+- Filter ID and display label.
+- Query value type: single, multiple, range, keyword, date, or tree path.
+- Data binding: exact field name, resolver parameter, permission scope, or explicit mapping when names differ.
+- Affected components: KPI, chart, table, drawer, export, jump, fullscreen, or local block.
+- Cascade dependencies and invalid-child reset behavior.
+- Empty-result behavior and reset target.
+
+For each affected component, verify:
+
+- It recomputes or refetches when the filter changes.
+- Its totals, row counts, labels, legends, and selected state use the same active filters.
+- Open drawers and selected rows remain only when their object is still in scope.
+- Export, download, shared link, refresh, and fullscreen use the same filtered result as the visible page.
+- Filters that must affect the component are marked required in the data contract.
+- Filters intentionally ignored by the component are declared and visibly explained through title, subtitle, or scope label.
+
+No filter is complete until at least one expected component change is defined and testable.
+
 ## Permission Rules
 
 Filter data must respect permissions:
@@ -212,8 +236,10 @@ When using this skill, provide:
 6. Cascading relationships.
 7. Query parameter model.
 8. Component linkage rules.
-9. Permission rules.
-10. Empty, reset, export, and shared-link behavior.
+9. Filter-to-field or filter-to-query mapping table.
+10. Affected component matrix.
+11. Permission rules.
+12. Empty, reset, export, and shared-link behavior.
 
 ## Quality Checklist
 
@@ -227,3 +253,6 @@ Before finalizing filter design, verify:
 - Active filters are visible and removable.
 - Reset, refresh, export, and shared links preserve predictable behavior.
 - Filter changes cannot cause contradictory KPI, chart, and table states.
+- Each primary filter has a real data-field, resolver-parameter, or permission-scope binding.
+- Each affected component updates, clears selection, or shows stale-selection state when the filter changes.
+- KPI totals, chart totals, table rows, drawer records, and export counts reconcile under the same filter state.

@@ -1,4 +1,4 @@
 interface:
   display_name: "报表数据交互设计"
-  short_description: "沉淀报表下钻、联动、跳转、弹窗、抽屉、参数传递与状态保留的通用交互规则"
-  default_prompt: "Use $report-data-interaction-design to design report drilldowns, cross-filtering, drawers, popovers, jumps, and state passing."
+  short_description: "沉淀报表下钻、联动、跳转、弹窗、抽屉、参数传递、状态保留与联动准确性的交互规则"
+  default_prompt: "Use $report-data-interaction-design to design report drilldowns, cross-filtering, drawers, popovers, jumps, state passing, and linkage accuracy."

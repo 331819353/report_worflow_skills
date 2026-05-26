@@ -1,6 +1,6 @@
 ---
 name: report-mock-data-design
-description: "Design realistic, self-consistent mock data for business report prototypes, dashboards, demos, tests, and generated UI examples. Use when a report needs synthetic KPI values, detail records, hierarchies, trends, targets, budgets, anomalies, tasks, reconciliation differences, filter option data, or chart-ready datasets that must match report logic instead of being random filler."
+description: "Design realistic, self-consistent mock data for business report prototypes, dashboards, demos, tests, and generated UI examples. Use when a report needs synthetic KPI values, detail records, hierarchies, trends, targets, budgets, anomalies, tasks, reconciliation differences, filter option data, component-bound datasets, or chart-ready datasets that must match report logic instead of being random filler and must validate filter/component linkage."
 ---
 
 # Report Mock Data Design
@@ -196,6 +196,28 @@ Design data so common filters work:
 
 Default filters should produce a strong first-screen story.
 
+## Data Binding And Accuracy Contract
+
+Mock data must be designed so data, filters, and components can be verified together. This requirement applies even when no template is used.
+
+For each visible component, define:
+
+- Dataset name and row grain.
+- Required fields and stable IDs.
+- Formulas and rollup logic.
+- Which filters affect it and which filters do not.
+- Expected total, count, rank, or status after default filters.
+- Empty-state or permission-limited state when a filter removes all rows.
+
+For each primary filter, include at least one mock-data scenario proving that:
+
+- KPI cards, charts, tables, lists, drawers, and exports change consistently.
+- Filtered detail rows reconcile to filtered KPI totals when the metric is additive.
+- Non-additive metrics such as rates, scores, and completion rates are recalculated from raw numerator/denominator fields.
+- Selected objects used by drawers, drilldowns, or jumps exist in the filtered dataset or produce a clear stale-selection state.
+
+Do not create mock data that only makes the default screen look good while filters, interactions, or exports contradict the displayed summary.
+
 ## Coordination With Other Skills
 
 This skill owns synthetic data structure and consistency. It does not own the UI behavior of filters or interactions.
@@ -224,8 +246,9 @@ When applying this skill, provide:
 5. Derived metric formulas.
 6. Scenario signals and edge cases.
 7. Filter support plan.
-8. Validation checks.
-9. Example rows or JSON/CSV-ready sample data when requested.
+8. Component binding and expected filtered results.
+9. Validation checks.
+10. Example rows or JSON/CSV-ready sample data when requested.
 
 ## Quality Checklist
 
@@ -236,6 +259,9 @@ Before finalizing mock data, verify:
 - Trends support the stated conclusion.
 - Ranking and risk counts match underlying rows.
 - Filters do not produce contradictory totals.
+- Filtered component totals, table row counts, drawer records, and export counts reconcile.
+- Each primary filter has at least one data scenario where affected components visibly change.
 - Drilldown targets exist and use stable IDs.
+- Selected mock objects handle out-of-scope filter changes through reset or stale-selection state.
 - Edge cases are present but not so many that they obscure the main story.
 - Data is synthetic and safe to share.

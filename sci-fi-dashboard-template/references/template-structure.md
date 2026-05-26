@@ -106,15 +106,42 @@ data: {
   id: 'staticData',
   params: {
     key: 'revenueMonthly',
-    cycle: '$filters.cycle',
-    scope: '$filters.scope',
   },
 }
 ```
 
-`staticData` is built in. It reads `dashboardData[params.key]` and filters rows by matching params that exist on the row. For API data, add a resolver in `src/dataSources/registry.ts` and use its key as `data.id`.
+`staticData` is built in. It reads `dashboardData[params.key]`, then applies:
+
+- `params`: extra explicit filters by matching param keys that exist on the row.
+- `context.filters`: current widget-visible filters, automatically matched to row fields with the same name.
+- `data.filterFields`: optional mapping when filter ids and row fields differ.
+- `data.requiredFilters`: filters that must find a mapped row field; otherwise the row is excluded.
+- `data.ignoredFilters`: global filters this component intentionally ignores.
+
+Use option id `all` or `__all` for "no filtering".
+
+Example field mapping:
+
+```ts
+data: {
+  id: 'staticData',
+  params: {
+    key: 'revenueMonthly',
+  },
+  filterFields: {
+    scope: 'regionId',
+    cycle: ['period', 'cycle'],
+  },
+  requiredFilters: ['scope', 'cycle'],
+  ignoredFilters: ['range'],
+}
+```
+
+For API data, add a resolver in `src/dataSources/registry.ts` and use its key as `data.id`.
 
 `WidgetRenderer` passes resolved rows into the component as a `data` prop. Business widgets should declare `data?: RowType[]` and render from it.
+
+Avoid mixing two filter mechanisms for the same field. Prefer `filterFields` for normal filter-to-data binding. Use explicit `params` only for fixed component parameters or source-specific API parameters.
 
 ## Filter Scope
 
@@ -143,7 +170,6 @@ widgets: {
       id: 'staticData',
       params: {
         key: 'revenueMonthly',
-        scope: '$filters.scope',
       },
     },
     props: {},
@@ -188,7 +214,7 @@ Built-in actions:
 - `switchNav`: switch to `target` or `navId`.
 - `setFilters`: merge `filters` into the global filter state.
 - `resetFilters`: reset every filter to its first option.
-- `navigateUrl`: navigate to `url` or `target`.
+- `navigateUrl`: navigate to `url` or `target`; active filters are appended as query parameters by default. Use `query` for extra parameters and `includeFilters: false` to opt out.
 - `print`: call browser print.
 - `fullscreen`: toggle fullscreen.
 - `refresh`: reload the page.
@@ -216,7 +242,11 @@ Static filters use `options`. Dynamic filters use `source`:
 
 Register `regionOptions` in `src/dataSources/registry.ts`. A data source returns an array of strings, numbers, or objects. For objects, `labelField` and `valueField` decide how options are generated.
 
+When loading dynamic options, the shell passes all active filters except the filter currently being loaded, so a selected value does not collapse its own option list. Use `source.params` only when a filter option source intentionally needs the current selected value.
+
 ## Modals
+
+When a modal opens, the shell stores the filter context in `context.sourceFilters` and `context.params.__filters`. If global filters change while the modal is open, modal widgets receive `context.isStale = true` and the modal header shows a sync action. Use that state to clear row selections, hide old evidence, or ask the user to synchronize before acting.
 
 Modals are configured in `dashboard.config.ts` and use the same layout model as pages:
 

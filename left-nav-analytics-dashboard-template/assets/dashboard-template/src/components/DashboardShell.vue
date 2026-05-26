@@ -39,6 +39,7 @@ interface LayoutBlock {
 interface ActiveModalState {
   id: string;
   params: Record<string, unknown>;
+  sourceFilters: Record<string, string>;
   title?: string;
 }
 
@@ -87,6 +88,12 @@ const normalizeScope = (scope?: DashboardFilterScope) => {
   }
 
   return Array.isArray(scope) ? scope : [scope];
+};
+
+const areStringRecordsEqual = (left: Record<string, string>, right: Record<string, string>) => {
+  const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
+
+  return Array.from(keys).every((key) => (left[key] ?? '') === (right[key] ?? ''));
 };
 
 const normalizeLayoutRows = (rows?: string[]) => {
@@ -229,6 +236,9 @@ const layoutColumnCount = computed(() => Math.max(...layoutRows.value.map((row) 
 const layoutRowCount = computed(() => Math.max(layoutRows.value.length, 1));
 const layoutBlocks = computed<LayoutBlock[]>(() => buildLayoutBlocks(layoutRows.value));
 const activeModalConfig = computed(() => (activeModal.value ? props.config.modals?.[activeModal.value.id] : null));
+const isActiveModalStale = computed(
+  () => !!activeModal.value && !areStringRecordsEqual(activeFilters.value, activeModal.value.sourceFilters),
+);
 const modalLayoutRows = computed(() => normalizeLayoutRows(activeModalConfig.value?.layoutRows));
 const modalLayoutColumnCount = computed(() => Math.max(...modalLayoutRows.value.map((row) => Array.from(row).length), 1));
 const modalLayoutRowCount = computed(() => Math.max(modalLayoutRows.value.length, 1));
@@ -266,6 +276,7 @@ let hasInitializedFilters = false;
 const setNav = (id: string) => {
   if (props.config.nav.some((item) => item.id === id)) {
     activeNavId.value = id;
+    closeModal();
   }
 };
 
@@ -319,6 +330,8 @@ const getModalWidgetContext = (blockId: string, widget = getModalWidgetForBlock(
   filterScope: getWidgetFilterScope(widget),
   modalId: activeModal.value?.id,
   params: activeModal.value?.params ?? {},
+  isStale: isActiveModalStale.value,
+  sourceFilters: activeModal.value?.sourceFilters,
 });
 
 const getWidgetDataKey = (area: 'page' | 'modal', ownerId: string, blockId: string) => `${area}:${ownerId}:${blockId}`;
@@ -330,6 +343,9 @@ const getModalWidgetDataForBlock = (blockId: string) =>
   widgetDataMap.value[getWidgetDataKey('modal', activeModal.value?.id ?? '', blockId)] ?? [];
 
 const getFilterOptions = (group: DashboardFilterGroup) => filterOptionMap.value[group.id] ?? getStaticFilterOptions(group);
+
+const getFiltersExcluding = (filterId: string) =>
+  Object.fromEntries(Object.entries(activeFilters.value).filter(([id]) => id !== filterId));
 
 const normalizeFilterOptions = (rows: unknown[], group: DashboardFilterGroup): DashboardFilterOption[] => {
   const labelField = group.source?.labelField ?? 'label';
@@ -397,13 +413,14 @@ const loadFilterOptions = async () => {
       }
 
       try {
+        const optionFilters = getFiltersExcluding(group.id);
         const params = resolveDashboardParams(group.source.params, {
           filters: activeFilters.value,
           context: context as unknown as Record<string, unknown>,
           params: activeModal.value?.params ?? {},
         });
         const rows = await resolveDataSource(group.source, {
-          filters: activeFilters.value,
+          filters: optionFilters,
           allFilters: activeFilters.value,
           params,
           context: context as unknown as Record<string, unknown>,
@@ -568,12 +585,37 @@ const openModal = (id: string, params: Record<string, unknown> = {}, title?: str
     return;
   }
 
-  activeModal.value = { id, params, title };
+  const sourceFilters = { ...activeFilters.value };
+  activeModal.value = {
+    id,
+    params: {
+      ...params,
+      __filters: sourceFilters,
+    },
+    sourceFilters,
+    title,
+  };
   closePanels();
 };
 
 const closeModal = () => {
   activeModal.value = null;
+};
+
+const syncModalFilterContext = () => {
+  if (!activeModal.value) {
+    return;
+  }
+
+  const sourceFilters = { ...activeFilters.value };
+  activeModal.value = {
+    ...activeModal.value,
+    params: {
+      ...activeModal.value.params,
+      __filters: sourceFilters,
+    },
+    sourceFilters,
+  };
 };
 
 const toStringRecord = (value: unknown): Record<string, string> => {
@@ -592,6 +634,24 @@ const toActionText = (value: unknown) => {
   }
 
   return '';
+};
+
+const buildUrlWithQuery = (url: string, query: Record<string, string>) => {
+  const entries = Object.entries(query).filter(([, value]) => value !== '');
+
+  if (entries.length === 0) {
+    return url;
+  }
+
+  try {
+    const nextUrl = new URL(url, window.location.href);
+    entries.forEach(([key, value]) => nextUrl.searchParams.set(key, value));
+    return nextUrl.toString();
+  } catch {
+    const queryText = new URLSearchParams(entries).toString();
+    const connector = url.includes('?') ? '&' : '?';
+    return `${url}${connector}${queryText}`;
+  }
 };
 
 const buildActionScope = (runtime: WidgetActionRuntime) => ({
@@ -636,13 +696,18 @@ const runDashboardAction = async (rawAction: DashboardActionConfig, runtime: Wid
       break;
     case 'navigateUrl': {
       const url = toActionText(action.url ?? action.target);
+      const query = {
+        ...(action.includeFilters === false ? {} : activeFilters.value),
+        ...toStringRecord(action.query),
+      };
+      const nextUrl = url ? buildUrlWithQuery(url, query) : '';
 
-      if (url && action.openInNewTab) {
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } else if (url && action.replace) {
-        window.location.replace(url);
-      } else if (url) {
-        window.location.assign(url);
+      if (nextUrl && action.openInNewTab) {
+        window.open(nextUrl, '_blank', 'noopener,noreferrer');
+      } else if (nextUrl && action.replace) {
+        window.location.replace(nextUrl);
+      } else if (nextUrl) {
+        window.location.assign(nextUrl);
       }
       break;
     }
@@ -937,11 +1002,22 @@ watch(
       <button class="dashboard-modal-dismiss" type="button" aria-label="关闭弹窗" @click="closeModal"></button>
       <section class="dashboard-modal" :style="modalStyle" @click.stop>
         <header class="dashboard-modal-header">
-          <div>
-            <span>明细面板</span>
+          <div class="dashboard-modal-heading">
+            <span>{{ isActiveModalStale ? '筛选已变化' : '明细面板' }}</span>
             <strong>{{ activeModal.title ?? activeModalConfig.title }}</strong>
           </div>
-          <button class="dashboard-modal-close" type="button" aria-label="关闭弹窗" @click="closeModal">×</button>
+          <div class="dashboard-modal-actions">
+            <button
+              v-if="isActiveModalStale"
+              class="dashboard-modal-sync"
+              type="button"
+              title="用当前筛选同步弹窗上下文"
+              @click="syncModalFilterContext"
+            >
+              同步筛选
+            </button>
+            <button class="dashboard-modal-close" type="button" aria-label="关闭弹窗" @click="closeModal">×</button>
+          </div>
         </header>
 
         <section class="dashboard-modal-grid" :aria-label="`${modalLayoutColumnCount}乘${modalLayoutRowCount}弹窗内容区`">

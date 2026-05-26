@@ -56,9 +56,12 @@
  *          id: 'staticData',
  *          params: {
  *            key: 'revenueMonthly',
- *            cycle: '$filters.cycle',
- *            scope: '$filters.scope',
  *          },
+ *          filterFields: {
+ *            cycle: 'period',
+ *            scope: 'regionId',
+ *          },
+ *          requiredFilters: ['cycle', 'scope'],
  *        },
  *        actions: {
  *          itemClick: {
@@ -69,13 +72,23 @@
  *              cycle: '$filters.cycle',
  *            },
  *          },
+ *          moreClick: {
+ *            type: 'navigateUrl',
+ *            target: '/detail',
+ *            query: {
+ *              objectId: '$event.id',
+ *            },
+ *            includeFilters: true,
+ *          },
  *        },
  *      },
  *    }
  *
  * 8. 数据不要直接写在 dashboard.config.ts。
  *    推荐放到 src/data/dashboard.data.ts，或者在 src/dataSources/registry.ts 接口请求。
- *    组件配置只写 data.id 和 data.params；框架会把数据源结果作为 data prop 传入组件。
+ *    组件配置只写 data.id、data.params 和 filterFields；框架会把数据源结果作为 data prop 传入组件。
+ *    如果组件必须受某个筛选影响，写 requiredFilters，避免字段漏配后筛选静默失效。
+ *    如果组件明确不受某个全局筛选影响，写 ignoredFilters，不要让联动关系变成隐性假设。
  *
  * 9. 筛选作用域通过 filterScope 控制：
  *    - filter 配置没有 scope 时是全局筛选，所有组件都能拿到。
@@ -107,7 +120,9 @@
  * - WidgetRenderer/WidgetViewport 是外层能力，业务组件只写自己的展示逻辑和私有样式。
  * - WidgetRenderer 已经提供统一内容层次底纹，业务组件无需再重复外框。
  * - context.filters 已经按 filterScope 裁剪；需要全量筛选时读取 context.allFilters。
+ * - 弹窗打开后如果全局筛选变化，context.isStale 会变为 true，组件应清空旧选择或展示同步提示。
  * - 跳转、下钻、全局弹窗、筛选联动都通过 dashboard-action + config.actions 实现。
+ * - navigateUrl 默认会追加当前全局 filters 到 URL；不需要时显式设置 includeFilters: false。
  * - 如果确实要做组件自己的内部卡片或图表背景，请写在当前组件的 <style scoped>。
  * - 大图、关系图、杜邦图这类组件建议声明 naturalWidth/naturalHeight，
  *   再用 viewport 承接拖拽和缩放。

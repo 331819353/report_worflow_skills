@@ -1,6 +1,6 @@
 ---
 name: report-data-interaction-design
-description: "Design report data interactions including drilldown, cross-filtering, linked highlighting, popovers, drawers, modals, page jumps, parameter passing, breadcrumbs, state preservation, back behavior, permissions, and interaction failure states. Use when defining what happens after users click KPI cards, chart marks, map regions, table rows, alerts, tasks, evidence nodes, or report navigation actions."
+description: "Design report data interactions including drilldown, cross-filtering, linked highlighting, popovers, drawers, modals, page jumps, parameter passing, breadcrumbs, state preservation, back behavior, permissions, linkage accuracy, and interaction failure states. Use when defining what happens after users click KPI cards, chart marks, map regions, table rows, alerts, tasks, evidence nodes, or report navigation actions, especially when active filters must stay consistent across components, drawers, jumps, and exports."
 ---
 
 # Report Data Interaction Design
@@ -157,6 +157,27 @@ Preserve:
 
 When returning from a jump, restore the report to the previous state unless the user explicitly changed context.
 
+## Data, Filter, And Component Linkage Integrity
+
+Interactions must not create a second, inconsistent data context. This applies to custom implementations and template-based prototypes.
+
+For every clickable object, define:
+
+- Source component and source dataset.
+- Required object ID, metric ID, dimension ID, and period.
+- Active filters that must be inherited.
+- Target component, drawer, modal, drill level, or page.
+- What happens if the target data is empty, unauthorized, stale, or no longer in scope.
+
+Interaction rules:
+
+- Drilldowns, drawers, popovers, jumps, fullscreen views, and exports must use the same active filters as the visible component unless the user explicitly changes scope.
+- Cross-filtering must update all subscribed components and show a clear active-selection state.
+- A selected chart mark, row, task, anomaly, or difference record must be cleared or marked stale when a filter removes it from the dataset.
+- Drawer counts, evidence rows, related records, and source links must reconcile with the selected object and current filter context.
+- Page jumps must pass stable IDs, not display labels, and must include enough filter context to avoid re-querying a broader or narrower scope accidentally.
+- Return/back behavior must restore the prior filter and selection state, or explicitly state that the context changed.
+
 ## Breadcrumbs And Navigation
 
 Use breadcrumbs for:
@@ -278,10 +299,11 @@ When applying this skill, provide:
 4. Drilldown paths.
 5. Drawer/popover/modal contents.
 6. Page jump targets and parameters.
-7. State preservation rules.
-8. Permission and failure states.
-9. Return/back behavior.
-10. Interaction priority and avoid list.
+7. Data/filter/component linkage rules.
+8. State preservation rules.
+9. Permission and failure states.
+10. Return/back behavior.
+11. Interaction priority and avoid list.
 
 ## Quality Checklist
 
@@ -293,6 +315,9 @@ Before finalizing interactions, verify:
 - Back navigation restores prior state.
 - Drilldown depth does not trap users.
 - Cross-filter selections are visible and easy to clear.
+- Cross-filter selections update every dependent component or clearly identify components outside the selection scope.
 - Drawers contain evidence or action, not duplicated page content.
+- Drawer data, related records, and action parameters reconcile with the selected object and active filters.
 - Page jumps do not force users to rebuild context manually.
+- Open selections are reset or marked stale when filter changes remove the selected object from scope.
 - Permission and empty states are defined.

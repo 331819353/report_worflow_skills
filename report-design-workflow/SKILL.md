@@ -1,13 +1,15 @@
 ---
 name: report-design-workflow
-description: "Run the end-to-end workflow for designing, critiquing, redesigning, or implementing business reports and dashboards. Use when a task asks to create a report design, build a report prototype, turn a rough business requirement into a dashboard, redesign an existing report screenshot, generate mock data, define filters/interactions, choose report type skills, apply visual layout and component style, or select implementation templates. This workflow orchestrates report requirement extraction, eight report-type skills, information-to-component mapping, mock data design, filter data design, data interaction design, visual layout design, component style design, and optional Vue dashboard templates."
+description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, or return a URL for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data-backed demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 可运行页面, 生成页面, 实现报表, 落地报表, 重构页面, 截图还原, 自动部署, 部署URL, 返回URL, demo, mock 数据, Vue 报表, template implementation, 数据联动, 筛选联动, and 组件联动准确性. For pure methodology questions, prefer the relevant report-type skill. Orchestrates requirement extraction, report-type skills, mapping, mock data, filters, interactions, data/filter/component linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, deployment, and URL return."
 ---
 
 # Report Design Workflow
 
 ## Core Positioning
 
-Use this as the top-level orchestration skill for report work.
+Use this as the top-level orchestration skill for report prototype work.
+
+Trigger this skill primarily when the user wants a concrete prototype, implementation-ready page, runnable dashboard, screenshot repair, or template-backed build. For pure conceptual questions such as "状态总览型报表应该如何设计", use the relevant report-type skill directly.
 
 It does not replace the report-type or horizontal skills. It decides:
 
@@ -19,15 +21,15 @@ It does not replace the report-type or horizontal skills. It decides:
 
 The default flow is:
 
-`需求提取 -> 类型判断 -> 信息映射 -> 报表类型设计 -> 数据设计 -> 筛选设计 -> 数据交互设计 -> 视觉布局 -> 组件样式 -> 模板实现/交付 -> 质量验收`
+`需求提取 -> 类型判断 -> 信息映射 -> 报表类型设计 -> 数据设计 -> 筛选设计 -> 数据交互设计 -> 数据/筛选/组件联动门禁 -> 视觉布局 -> 组件样式 -> 技术实现 -> 自动部署/URL返回 -> 质量验收`
 
 ## Workflow Modes
 
 Choose the mode before starting.
 
-### 1. Design Thinking Mode
+### 1. Prototype-Oriented Design Mode
 
-Use when the user asks how a report category or page should be designed.
+Use when the user asks for a concrete report prototype plan but has not yet requested code.
 
 Deliver:
 
@@ -39,11 +41,11 @@ Deliver:
 - Visual/style guidance.
 - Validation checklist.
 
-Implementation, mock data, and templates are optional unless requested.
+Mock data, filters, and interaction state should be included at planning level. Code and templates are optional unless requested.
 
-### 2. Prototype Design Mode
+### 2. Prototype Specification Mode
 
-Use when the user wants a concrete report page or prototype design.
+Use when the user wants an implementation-ready report prototype specification.
 
 Deliver:
 
@@ -63,13 +65,16 @@ Use when the user wants code, a Vue dashboard, or an actual runnable page.
 Deliver:
 
 - All prototype design outputs.
+- Technical architecture based on `TypeScript + Vue 3 + ECharts + AntV S2`.
 - Template choice.
 - Data files or mock data.
 - Component implementation.
+- Automatic deployment when requested or when a shareable prototype URL is part of the task.
 - Local verification.
+- Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Use `left-nav-analytics-dashboard-template` for standard enterprise analytics dashboards and `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens.
+Use `left-nav-analytics-dashboard-template` for standard enterprise analytics dashboards and `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. Both implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
 
 ### 4. Review And Repair Mode
 
@@ -94,6 +99,7 @@ Clarify or infer:
 - Is there a specific report page or a report category?
 - Is the expected output text, specification, code, or both?
 - Is the page standard enterprise dashboard or sci-fi/big-screen cockpit?
+- Does the user need automatic deployment and a returned URL?
 
 Do not block if missing details can be safely assumed.
 
@@ -217,6 +223,35 @@ Output must include:
 
 Skip only for static export-only reports with no interaction.
 
+### Hard Gate: Data, Filter, And Component Linkage Accuracy
+
+Apply this gate for every prototype or implementation, including pages that do not use the bundled templates.
+
+Before visual polish or final delivery, require an explicit linkage contract:
+
+- Every component declares its data source, row grain, required fields, formulas, filter dependencies, refresh trigger, and empty state.
+- Every filter maps to a real data field, resolver parameter, or permission scope. If names differ, define an explicit filter-to-field mapping.
+- Filter changes update KPI cards, charts, tables, drawers, exports, downloads, fullscreen views, and jump parameters consistently.
+- Summary counts, table row counts, chart totals, and drawer records reconcile under the same active filters.
+- Selected chart marks, rows, drawers, and drill paths reset or show stale-selection state when the selected object leaves the filtered scope.
+- Cross-filtering, drilldown, jumps, shared links, and returns pass the same period, organization, object, metric, permission, and filter context.
+- No component may show stale data after a filter, refresh, drilldown, permission, or mock-data update.
+
+For custom implementations without a template, define the equivalent adapter contract in code or specification:
+
+- `dataSource`: where each component reads data.
+- `filterMap`: how each filter maps to data fields or query parameters.
+- `componentBindings`: which components subscribe to which filters and interaction state.
+- `updateTriggers`: when components recompute, refetch, resize, reset, or clear selection.
+
+Template and custom implementations must both pass the same audit:
+
+- Mock data audit: default state, filtered state, empty state, and permission-limited state all have matching component outputs.
+- Filter audit: every primary filter has at least one visible affected component and at least one validation case.
+- Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
+- Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
+- Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
+
 ### Stage 8: Visual Layout Design
 
 Use `report-visual-layout-design`.
@@ -255,6 +290,17 @@ This stage prevents overlap, truncation, low contrast, and component sizing fail
 
 Use this stage only when the user asks for runnable files, page implementation, or a prototype.
 
+Default technical architecture:
+
+- Language and framework: TypeScript + Vue 3 single-file components with Composition API.
+- Build tool: Vite.
+- Charting: ECharts for KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and most dashboard charts.
+- Analytical tables: AntV S2 through `@antv/s2` and `@antv/s2-vue` for pivot tables, cross tables, wide metric matrices, frozen headers, dense comparison grids, and analysis-style tables.
+- Icons and controls: use the template's existing icon/control system; keep business widgets typed and scoped.
+- Data: keep mock/static data in data files or data-source resolvers, not inside visual components.
+- Interactions: emit typed dashboard actions from widgets and keep navigation, drilldown, modal, filter mutation, fullscreen, and URL navigation in the framework layer.
+- Linkage accuracy: implement explicit data-source, filter-map, component-binding, and update-trigger contracts even when not using a bundled template.
+
 Template choice:
 
 - Use `left-nav-analytics-dashboard-template` for enterprise analytics reports with sidebar navigation, filters, 8*N cards, business widgets, and standard workbench behavior.
@@ -265,8 +311,42 @@ Implementation must:
 
 - Keep business data out of config when the template expects data files or data sources.
 - Use stable IDs for filters, interactions, and mock records.
+- Use ECharts before custom SVG/canvas for standard charts.
+- Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
 - Implement component overflow and responsive behavior from earlier stages.
 - Run and verify the page when a dev server is required.
+
+### Stage 11: Automatic Deployment And URL Return
+
+Use this stage when the user asks for deployment, shareable URL, public preview, demo link, or "return URL".
+
+Deployment workflow:
+
+1. Build locally.
+   Run dependency installation if needed, then run the project build command, usually `npm run build`.
+
+2. Verify production output.
+   Confirm the Vite output directory exists, usually `dist`. Run a local preview when useful, usually `npm run preview -- --host 0.0.0.0`, and inspect the page if browser tools are available.
+
+3. Choose deployment target.
+   - If the project already has deployment configuration, use it.
+   - If a hosting CLI is installed and authenticated, deploy non-interactively to that platform.
+   - If no deployment target exists, prefer static hosting for the Vite `dist` directory and add only minimal config required by the chosen platform.
+   - Prefer installed and authenticated static-site deployment tools such as Vercel, Netlify, Cloudflare Pages, GitHub Pages, or the project's own deployment script.
+   - Do not stop at local build when the user asked for a deployed URL; attempt deployment first, then fall back only when blocked.
+   - If public deployment is blocked by missing auth, missing platform configuration, or network failure, return the local preview URL and state the blocker clearly.
+
+4. Capture URL.
+   Read the deployment command output and capture the final HTTPS URL. If the platform returns both draft and production URLs, return the URL that matches the user's request; otherwise prefer the shareable preview URL.
+
+5. Final response requirement.
+   Always include:
+   - Deployment status.
+   - Public URL when deployment succeeds.
+   - Local preview URL when public deployment is unavailable.
+   - Build/verification status.
+
+Do not claim deployment succeeded without a returned URL from the deployment tool or a verified reachable preview URL.
 
 ## Skip Rules
 
@@ -309,7 +389,9 @@ Use this structure:
 4. Mock data and filter state plan.
 5. Interaction state and parameter plan.
 6. Visual layout and component style plan.
-7. Verification plan.
+7. Technical architecture: TypeScript, Vue 3, ECharts, AntV S2, and template choice.
+8. Automatic deployment plan and expected URL source.
+9. Verification plan.
 
 ### Review/Repair Output
 
@@ -332,7 +414,11 @@ Before final delivery, verify:
 - Metrics include baselines, direction, unit, and formulas where needed.
 - Mock data, if used, reconciles with KPI cards, charts, tables, and filters.
 - Filters have defaults, stable IDs, cascades, permission rules, and visible active state.
+- Every filter has an explicit field/query mapping, and every component declares whether it is affected by that filter.
+- Changing any primary filter updates all dependent KPIs, charts, tables, drawers, exports, downloads, jumps, and fullscreen views without stale values.
+- Filtered KPI totals, chart totals, table rows, summary counts, and drawer records reconcile against the same dataset and permission scope.
 - Interactions preserve period, scope, object, metric, filters, permissions, and return path.
+- Open drawers, selected rows, chart marks, and drill paths reset or show stale-selection state when filters remove the selected object.
 - Layout follows the 8*N rectangular grid.
 - Haier logo usage follows light/dark rules.
 - Components do not overlap, clip, truncate critical text, or use low-contrast labels.
@@ -340,6 +426,8 @@ Before final delivery, verify:
 - Export, refresh, download, share, and fullscreen actions respect filters and permissions.
 - Empty, loading, no-permission, error, and stale-selection states are defined.
 - Implementation uses existing project patterns and is verified locally when built.
+- Runnable prototypes use TypeScript + Vue 3 + ECharts + AntV S2 unless the existing project has an explicit conflicting stack.
+- Deployment, when requested, builds successfully and returns a public URL or explains why only a local preview URL is available.
 
 ## Avoid
 
@@ -350,3 +438,5 @@ Before final delivery, verify:
 - Do not treat mock data as random values.
 - Do not design filters or jumps without permission and state behavior.
 - Do not finish an implementation without checking for overlap, clipping, and broken layout.
+- Do not replace ECharts or AntV S2 with ad hoc chart/table code for standard report components.
+- Do not say deployment is done without returning a URL or a concrete deployment blocker.

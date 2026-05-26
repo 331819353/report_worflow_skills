@@ -1,6 +1,6 @@
 ---
 name: report-visual-layout-design
-description: "Design, critique, or refine the visual layout, page shell, UI composition, and interaction surface for business report pages and dashboards across report types. Use when the task asks how a report should look and be displayed, including menu bar, navigation, sidebar, breadcrumbs, logo, title, report header, footer, filter area, toolbar actions, fullscreen, download/export, refresh, share, settings, tabs, content hierarchy, 8*N rectangular grid layout, summary/detail structure, card/table/chart composition, drawers, empty/loading states, internet-style visual polish, readability, and report page usability. Always use the bundled Haier logo asset: original color on light backgrounds and white on dark backgrounds. This is a horizontal visual-design skill that complements report-type design skills such as status overview, analysis diagnostic, detail query, performance evaluation, review recap, anomaly monitoring, operational execution, and reconciliation traceability."
+description: "Design, critique, or refine visual layout, page shell, UI composition, and interaction surfaces for business report pages, dashboards, and TypeScript + Vue 3 prototypes. Use when deciding menu bar, navigation, sidebar, breadcrumbs, logo, title, header, footer, filter area, toolbar actions, fullscreen, export, refresh, share, tabs, content hierarchy, 8*N rectangular grid, summary/detail structure, card/table/chart composition, ECharts container layout, AntV S2 table layout, drawers, empty/loading states, internet-style polish, readability, and usability. Always use the bundled Haier logo: original color on light backgrounds and white on dark backgrounds. Complements all eight report-type design skills."
 ---
 
 # Report Visual Layout Design
@@ -10,6 +10,8 @@ description: "Design, critique, or refine the visual layout, page shell, UI comp
 Treat this as a visual and interaction shell skill for reports. It defines how a report page should be structured, styled, and operated after the business report type has been chosen.
 
 It owns the page shell and visual composition. It does not own report-type logic, mock data logic, filter option behavior, or detailed drilldown state. Use the relevant report-type skill, `report-info-component-mapping`, `report-mock-data-design`, `report-filter-data-design`, and `report-data-interaction-design` before finalizing the visual shell when those concerns are present.
+
+For runnable prototypes, assume the implementation architecture is TypeScript + Vue 3 + Vite + ECharts + AntV S2 unless the existing project explicitly uses another stack. Visual layout decisions should leave enough stable container space for ECharts canvases and AntV S2 analytical tables to resize correctly inside the 8*N grid.
 
 This skill answers:
 
@@ -439,6 +441,8 @@ Feeling: polished, readable, boardroom-ready.
 
 ## Component Rules
 
+For implementation, use ECharts for standard dashboard charts and AntV S2 for analytical tables, pivot tables, cross tables, and dense metric matrices. Layout must provide clear container dimensions, `min-width: 0` behavior, and resize-safe blocks for both libraries.
+
 ### Logo
 
 Use the bundled Haier logo:
@@ -612,12 +616,14 @@ Before finalizing, verify:
 - Navigation and menus are present only when they help orientation.
 - Header includes title, scope, data status, and primary actions.
 - Filters are easy to find and active conditions are visible.
+- Filter changes have visible, layout-safe effects across dependent cards, charts, tables, drawers, and export/fullscreen states.
 - Toolbar actions are grouped by frequency and importance.
 - Content structure matches the report goal.
 - Tables, charts, cards, and drawers each have a clear job.
 - Visual style is modern, restrained, readable, and not decorative.
 - Semantic colors are consistent and not overused.
 - Export/fullscreen/refresh behavior is defined when relevant.
+- Export/fullscreen/refresh uses the same active filter scope as the visible page.
 - Empty, loading, error, delayed-data, and no-permission states are handled.
 
 ## Avoid

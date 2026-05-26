@@ -76,8 +76,11 @@ export const cockpitConfig: DashboardConfig = {
   // 9. 组件数据不要写死在这里。真实数据放到 src/data/dashboard.data.ts，
   //    或在 src/dataSources/registry.ts 注册接口数据源；这里仅保留引用关系。
   // 10. filterScope 用来声明当前组件受哪些有 scope 的筛选项影响。
+  //     组件的数据源用 filterFields 映射筛选字段；用 requiredFilters 防止漏配后静默失效；
+  //     用 ignoredFilters 显式声明组件不受某些全局筛选影响。
   // 11. 组件交互不要直接写跳转/弹窗逻辑。组件只 emit('dashboard-action', { name, payload })，
   //     然后在 widgets[块字符].actions 中声明 openModal、switchNav、setFilters 等动作。
+  //     navigateUrl 默认追加当前 filters；弹窗打开后筛选变化时，context.isStale 会变为 true。
   nav: [
     {
       id: 'dashboard',

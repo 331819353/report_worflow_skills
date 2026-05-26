@@ -1,11 +1,22 @@
 ---
 name: sci-fi-dashboard-template
-description: Use this skill when creating, copying, or adapting a Vue 3 + TypeScript 1920x1080 multi-page sci-fi dashboard/cockpit template for Codex or hgermes workflows. It covers the reusable project boilerplate, dashboard.config.ts page/layout configuration, WidgetTemplate-based component development, widget type registration, independent data files, widget data-source binding, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup.
+description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 1920x1080 multi-page sci-fi dashboard/cockpit template for Codex or hgermes workflows. It covers the reusable project boilerplate, dashboard.config.ts page/layout configuration, WidgetTemplate-based component development, widget type registration, independent data files, widget data-source binding, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup.
 ---
 
 # Sci-Fi Dashboard Template
 
-Use this skill to produce a clean, reusable sci-fi big-screen dashboard template. The bundled asset is a Vue 3 + TypeScript + Vite project designed around a fixed 1920x1080 canvas, multi-page navigation, independent data files, data-source-backed widgets and filters, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
+Use this skill to produce a clean, reusable sci-fi big-screen dashboard template. The bundled asset is a TypeScript + Vue 3 + Vite project designed around a fixed 1920x1080 canvas, multi-page navigation, independent data files, data-source-backed widgets and filters, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
+
+## Technical Architecture
+
+Use this stack for report prototypes built from this template:
+
+- TypeScript + Vue 3 single-file components with Composition API.
+- Vite for development, build, and preview.
+- ECharts for standard charts: KPI trends, bars, lines, heatmaps, scatter, maps, waterfalls, funnels, gauges, and mixed cockpit visuals.
+- AntV S2 through `@antv/s2` and `@antv/s2-vue` for analytical tables, pivot tables, cross tables, frozen headers, dense comparison grids, and wide metric matrices.
+- Keep business data in `src/data/` or data-source resolvers. Keep visual widgets typed and scoped.
+- Use template-level dashboard actions for drilldown, modal, filter mutation, fullscreen, print, URL navigation, and cross-widget behavior.
 
 ## Quick Workflow
 
@@ -17,18 +28,28 @@ Use this skill to produce a clean, reusable sci-fi big-screen dashboard template
    - `filters` controls the right-side filter drawer.
    - `assets` controls logo, title background, and tiled page background.
 4. Create business widgets by copying `src/widgets/templates/WidgetTemplate.vue` into `src/widgets/components/MyWidget.vue`.
+   - Use ECharts inside chart widgets.
+   - Use AntV S2 inside analytical table or pivot widgets.
 5. Register the widget in three places:
    - Add `MyWidgetProps` and `WidgetPropsRegistry.MyWidget` in `src/widgets/types.ts`.
    - Import and register `MyWidget` in `src/widgets/registry.ts`.
    - Mount it under the matching page block key in `dashboard.config.ts` through `nav[].widgets`.
 6. Keep business data out of `dashboard.config.ts`. Put static/mock rows in `src/data/dashboard.data.ts` or register API resolvers in `src/dataSources/registry.ts`, then reference them through `widget.data`.
 7. Use `filterScope` on widgets and `scope` on filters when a filter should affect only part of the dashboard.
-8. For interactions, make widgets emit `dashboard-action` events and configure `widgets[block].actions` in `dashboard.config.ts`. Keep navigation, drilldown, modal, filter mutation, print, fullscreen, and URL navigation in the framework layer.
-9. Register dynamic filter option data sources in `src/dataSources/registry.ts`, then reference them through `filters[].source`.
-10. Configure modal drilldowns in `modals`. Modals use the same `layoutRows + widgets` model as pages.
-11. For large widgets such as DuPont analysis, relation graphs, or wide canvases, configure `viewport` in `dashboard.config.ts` instead of implementing pan/zoom inside the widget.
-12. Keep widget-specific CSS inside each widget's `<style scoped>` block. Keep `src/styles.css` for the dashboard shell only.
-13. Run `npm run build` before handing off.
+8. Make filters affect data at the data-source layer:
+   - For `staticData`, filter values automatically match row fields with the same name as the filter id.
+   - If field names differ, configure `widget.data.filterFields`, for example `{ org: 'regionId', cycle: ['period', 'cycle'] }`.
+   - If a widget must respond to a filter, configure `widget.data.requiredFilters` so field-mapping mistakes do not fail silently.
+   - If a widget intentionally ignores a global filter, configure `widget.data.ignoredFilters` and make that scope difference visible in the component title or subtitle.
+   - Use filter option id `all` or `__all` when a filter should mean "no filtering".
+9. For interactions, make widgets emit `dashboard-action` events and configure `widgets[block].actions` in `dashboard.config.ts`. Keep navigation, drilldown, modal, filter mutation, print, fullscreen, and URL navigation in the framework layer.
+10. Register dynamic filter option data sources in `src/dataSources/registry.ts`, then reference them through `filters[].source`.
+11. Configure modal drilldowns in `modals`. Modals use the same `layoutRows + widgets` model as pages. If filters change after a modal opens, the shell marks `context.isStale`; widgets must clear old selections or show a stale-state message.
+12. Use `navigateUrl` for jumps. It appends active filters to URL query parameters by default; set `includeFilters: false` only for targets that must not receive filter context.
+13. For large widgets such as DuPont analysis, relation graphs, or wide canvases, configure `viewport` in `dashboard.config.ts` instead of implementing pan/zoom inside the widget.
+14. Keep widget-specific CSS inside each widget's `<style scoped>` block. Keep `src/styles.css` for the dashboard shell only.
+15. Run `npm run build` before handing off.
+16. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
 
 ## Layout Rules
 
@@ -45,6 +66,7 @@ Use this skill to produce a clean, reusable sci-fi big-screen dashboard template
 - Business widgets should receive data through typed props and `context`, fill their parent with `width: 100%; height: 100%`, and own their private styles locally.
 - Widget `data` is resolved by the shell and passed as a `data` prop. `context.filters` contains only filters visible to that widget's `filterScope`; `context.allFilters` contains every filter.
 - Business widgets should emit `dashboard-action` with `{ name, payload }` for cross-widget behavior. The shell executes configured actions.
+- In modal widgets, read `context.isStale` to detect that active filters changed after the modal opened.
 
 ## References
 

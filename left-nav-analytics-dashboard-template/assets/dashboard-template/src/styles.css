@@ -520,7 +520,7 @@ button {
   border-bottom: 1px solid var(--line);
 }
 
-.dashboard-modal-header div {
+.dashboard-modal-heading {
   display: grid;
   min-width: 0;
   gap: 4px;
@@ -542,6 +542,25 @@ button {
   line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.dashboard-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.dashboard-modal-sync {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(198, 107, 0, 0.24);
+  border-radius: 8px;
+  color: #a44900;
+  background: rgba(255, 142, 43, 0.12);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .dashboard-modal-close {

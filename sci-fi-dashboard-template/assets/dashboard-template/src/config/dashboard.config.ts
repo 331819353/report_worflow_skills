@@ -118,9 +118,12 @@ export const cockpitConfig: DashboardConfig = {
   //          id: 'staticData',
   //          params: {
   //            key: 'revenueMonthly',
-  //            cycle: '$filters.cycle',
-  //            scope: '$filters.scope',
   //          },
+  //          filterFields: {
+  //            cycle: 'period',
+  //            scope: 'regionId',
+  //          },
+  //          requiredFilters: ['cycle', 'scope'],
   //        },
   //        props: { unit: '亿' },
   //        actions: {
@@ -135,6 +138,7 @@ export const cockpitConfig: DashboardConfig = {
   //        },
   //      },
   //    }
+  //    navigateUrl 默认追加当前 filters；弹窗打开后筛选变化时，context.isStale 会变为 true。
   nav: [
     {
       // 页面唯一标识，用于记录当前选中导航页，不要重复。
