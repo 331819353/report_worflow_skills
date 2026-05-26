@@ -1,11 +1,27 @@
 ---
 name: sci-fi-dashboard-template
-description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 1920x1080 multi-page sci-fi dashboard/cockpit template for Codex or hgermes workflows. It covers the reusable project boilerplate, dashboard.config.ts page/layout configuration, WidgetTemplate-based component development, widget type registration, independent data files, widget data-source binding, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup.
+description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 fixed 1920x1080 sci-fi dashboard/cockpit template for command centers, monitoring walls, exhibition screens, leadership cockpit presentations, and high-visual-impact big-screen demos. It covers multi-page cockpit navigation, dashboard.config.ts layout configuration, independent data files, widget data-source binding, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup. Do not use it for ordinary enterprise workbenches or lightweight single-page top-bar reports.
 ---
 
 # Sci-Fi Dashboard Template
 
 Use this skill to produce a clean, reusable sci-fi big-screen dashboard template. The bundled asset is a TypeScript + Vue 3 + Vite project designed around a fixed 1920x1080 canvas, multi-page navigation, independent data files, data-source-backed widgets and filters, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
+
+## When To Use
+
+Choose this template when:
+
+- The target is a large display, monitoring wall, command center, exhibition booth, leadership cockpit, or presentation screen.
+- The user asks for 大屏, 驾驶舱, 指挥中心, 科技风, 监控屏, 展示屏, or 1920x1080 fixed cockpit.
+- The page is meant to be viewed full-screen from a distance, with strong dark visual framing and high-impact status signals.
+- Real-time or near-real-time monitoring is more important than dense daily office operation.
+- Interaction should be relatively shallow: switch page, filter, inspect drawer/modal, fullscreen, or jump to handling/detail pages.
+
+Do not choose this template when:
+
+- The page is a normal enterprise analytics workbench with dense tables, forms, or repeated office use; use `left-nav-analytics-dashboard-template`.
+- The user asks for a focused single report with top menu only; use `single-page-dashboard-template`.
+- The main goal is maximum readability for long text, wide tables, or frequent editing rather than large-screen scanning.
 
 ## Technical Architecture
 

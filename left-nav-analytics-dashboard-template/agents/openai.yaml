@@ -1,4 +1,4 @@
 interface:
   display_name: "左侧导航分析模板"
-  short_description: "生成 TypeScript + Vue3 + ECharts + AntV S2 中文左侧导航、8*N布局与筛选联动分析模板。"
-  default_prompt: "Use $left-nav-analytics-dashboard-template to copy and configure a 1920x1080 TypeScript Vue 3 analytics dashboard with ECharts, AntV S2, filter/data/action linkage, a Chinese collapsible left sidebar, and 8*N content layout."
+  short_description: "用于多页报表合集、企业分析工作台、日常运营使用的 Vue3 左侧导航模板。"
+  default_prompt: "Use $left-nav-analytics-dashboard-template for a multi-page 1920x1080 TypeScript Vue 3 enterprise analytics dashboard or operational workbench with ECharts, AntV S2, filter/data/action linkage, a Chinese collapsible left sidebar, and 8*N content layout."

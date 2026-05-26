@@ -1,4 +1,4 @@
 interface:
   display_name: "单页顶部栏报表模板"
-  short_description: "生成 TypeScript + Vue3 + ECharts + AntV S2 单页顶部栏、亮暗布局、右侧操作与8*N内容布局模板。"
-  default_prompt: "Use $single-page-dashboard-template to copy and configure a 1920x1080 TypeScript Vue 3 single-page dashboard with light/dark layouts, a centered top title, Haier logo, right-side theme switch, refresh, filter, download, ECharts, AntV S2, and 8*N content layout."
+  short_description: "用于单一报表主题、无侧边栏、顶部栏直达核心的 Vue3 单页报表模板。"
+  default_prompt: "Use $single-page-dashboard-template for a focused standalone 1920x1080 TypeScript Vue 3 single-page report with no sidebar, light/dark layouts, a centered top title, Haier logo, right-side theme switch, refresh, filter, download, ECharts, AntV S2, and 8*N content layout."

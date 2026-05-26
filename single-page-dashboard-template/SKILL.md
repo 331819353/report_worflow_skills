@@ -1,11 +1,27 @@
 ---
 name: single-page-dashboard-template
-description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 single-page business dashboard/report template with light and dark layouts, a centered top-bar title, Haier logo at top-left position one, right-side theme switch, refresh, filter, download controls, and an 8*N content grid. It covers the reusable boilerplate, dashboard.config.ts single-page layout configuration, WidgetTemplate-based component development, independent data files, widget data-source binding, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup.
+description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 standalone single-page business dashboard/report template. Choose it for one focused report topic, top-bar navigation only, no sidebar, direct first-screen answers, light/dark layouts, centered title, Haier logo, right-side theme/refresh/filter/download controls, and an 8*N content grid. Do not use it for multi-page report suites or command-center big-screen presentation pages.
 ---
 
 # Single Page Dashboard Template
 
 Use this skill to produce a reusable single-page report dashboard template. The bundled asset is a TypeScript + Vue 3 + Vite project designed around a fixed 1920x1080 canvas, light/dark layout themes, a top menu bar, one 8*N page content grid, independent data files, data-source-backed widgets and filters, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
+
+## When To Use
+
+Choose this template when:
+
+- The output is one standalone report page, not a report suite.
+- The user asks for 单页, 顶部栏, 无侧边栏, or a lightweight page shell.
+- The page should answer one focused business question quickly, such as a single 总览, 诊断, 明细查询, 复盘, or核对 page.
+- The report can be understood through one 8*N content grid with optional drawers/modals, rather than navigation across many pages.
+- The page may be embedded, shared as a preview URL, used in a meeting, or opened as a focused prototype.
+
+Do not choose this template when:
+
+- The product needs several report pages or modules; use `left-nav-analytics-dashboard-template`.
+- The screen is a command-center, exhibition, monitoring wall, or sci-fi cockpit; use `sci-fi-dashboard-template`.
+- Users need persistent sidebar navigation, saved workbench behavior, or frequent switching between related reports.
 
 ## Technical Architecture
 

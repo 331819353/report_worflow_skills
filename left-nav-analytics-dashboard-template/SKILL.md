@@ -1,11 +1,27 @@
 ---
 name: left-nav-analytics-dashboard-template
-description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 1920x1080 multi-page analytics dashboard template with a Chinese collapsible left sidebar, filter popover, right-side full content canvas, 8*N card layout, dashboard.config.ts page/layout configuration, WidgetTemplate-based component development, independent data files, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup for Codex or hgermes workflows.
+description: Use this skill when creating, copying, or adapting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 1920x1080 enterprise analytics dashboard template for multi-page report suites, daily operational workbenches, dense analysis, repeated filtering, and related report modules that need a Chinese collapsible left sidebar, filter popover, right-side content canvas, 8*N card layout, independent data files, scoped filters, configurable actions, modal drilldowns, and pan/zoom widget viewport setup. Do not use it for one-off single-page top-bar reports or sci-fi command-center big screens.
 ---
 
 # Left-Nav Analytics Dashboard Template
 
 Use this skill to produce a clean enterprise analytics dashboard template. The bundled asset is a TypeScript + Vue 3 + Vite project designed around a fixed 1920x1080 canvas, Chinese collapsible left navigation, a sidebar-anchored filter popover, a right-side full content canvas, 8*N card-style page layouts, independent data files, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
+
+## When To Use
+
+Choose this template when:
+
+- The report prototype contains multiple pages, modules, or views.
+- Users need to switch between related pages such as 总览, 诊断, 明细, 绩效, 异常, 任务, 复盘, or 核对.
+- The page is a daily enterprise analytics workbench with repeated filtering, sorting, drilldown, table inspection, export, and operations.
+- Dense tables, wide metric matrices, task lists, or detail records are important enough to need a stable work area.
+- The user expects a standard management system or analytics product feel rather than a presentation cockpit.
+
+Do not choose this template when:
+
+- The user explicitly asks for a single top-bar page with no sidebar; use `single-page-dashboard-template`.
+- The target is a fixed command-center display, exhibition, monitoring wall, or sci-fi cockpit; use `sci-fi-dashboard-template`.
+- The page is only a lightweight standalone prototype with one report topic and no module navigation.
 
 ## Technical Architecture
 

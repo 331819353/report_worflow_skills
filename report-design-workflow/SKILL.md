@@ -327,10 +327,30 @@ Default technical architecture:
 
 Template choice:
 
-- Use `single-page-dashboard-template` for one-page report prototypes whose frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and an 8*N content grid.
-- Use `left-nav-analytics-dashboard-template` for enterprise analytics reports with sidebar navigation, filters, 8*N cards, business widgets, and standard workbench behavior.
-- Use `sci-fi-dashboard-template` for fixed 1920x1080 cockpit screens or command-center presentations.
+- Use `single-page-dashboard-template` for one focused report page whose frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and an 8*N content grid.
+- Use `left-nav-analytics-dashboard-template` for enterprise analytics report suites or workbenches with multiple pages/modules, sidebar navigation, filters, 8*N cards, business widgets, and standard repeated-use behavior.
+- Use `sci-fi-dashboard-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
 - If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
+
+Template selection rules:
+
+| Situation | Choose | Why |
+| --- | --- | --- |
+| One report topic, no page navigation, users need a direct first-screen answer and a compact top toolbar | `single-page-dashboard-template` | It keeps the frame light and lets the 8*N content grid carry the report. |
+| Multiple report pages, modules, or views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-dashboard-template` | Sidebar navigation makes a report suite feel stable and discoverable. |
+| Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-dashboard-template` | It is optimized for enterprise work rather than showpiece display. |
+| Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `sci-fi-dashboard-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact. |
+| The user explicitly asks for 单页 / 顶部栏 / 无侧边栏 | `single-page-dashboard-template` | Respect the requested shell unless existing code forces another pattern. |
+| The user explicitly asks for 大屏 / 驾驶舱 / 指挥中心 / 科技风 | `sci-fi-dashboard-template` | These terms indicate presentation or monitoring display. |
+
+Selection priority:
+
+1. Existing project framework and user-stated shell.
+2. Display scenario: big-screen/presentation uses `sci-fi-dashboard-template`.
+3. Information architecture: multi-page/report-suite uses `left-nav-analytics-dashboard-template`.
+4. Standalone focused report uses `single-page-dashboard-template`.
+
+Do not choose a template only because it "looks better"; choose by scenario, navigation depth, interaction density, and display environment.
 
 Implementation must:
 
