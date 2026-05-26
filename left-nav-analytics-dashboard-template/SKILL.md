@@ -65,8 +65,9 @@ Use this stack for report prototypes built from this template:
 12. Use `navigateUrl` for jumps. It appends active filters to URL query parameters by default; set `includeFilters: false` only for targets that must not receive filter context.
 13. For large widgets such as relation graphs, DuPont analysis, or wide canvases, configure `viewport` in `dashboard.config.ts` instead of implementing pan/zoom inside the widget.
 14. Keep widget-specific CSS inside each widget's `<style scoped>` block. Keep `src/styles.css` for the dashboard shell only.
-15. Run `npm run build` before handing off.
-16. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
+15. Run `npm run validate:dashboard` before handoff. This blocks unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
+16. Run `npm run build` before handing off; build runs the same dashboard contract validation first.
+17. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
 
 ## Layout Rules
 
@@ -85,6 +86,7 @@ Use this stack for report prototypes built from this template:
 - `WidgetViewport` handles drag, zoom, reset, and initial centering when `viewport` is enabled.
 - Business widgets should receive data through typed props and `context`, fill their parent with `width: 100%; height: 100%`, and own their private styles locally.
 - Widget `data` is resolved by the shell and passed as a `data` prop. `context.filters` contains only filters visible to that widget's `filterScope`; `context.allFilters` contains every filter.
+- A widget without `data` must declare `dataPolicy: 'static' | 'external'`; otherwise `validate:dashboard` fails.
 - Business widgets should emit `dashboard-action` with `{ name, payload }` for cross-widget behavior. The shell executes configured actions.
 - In modal widgets, read `context.isStale` to detect that active filters changed after the modal opened.
 

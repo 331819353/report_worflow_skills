@@ -204,6 +204,25 @@ Recommended spans:
 
 Use the grid to make the report feel ordered, not rigid. If a component is important, give it more blocks; if it is secondary, reduce its span or move it lower.
 
+### Block Internal Anatomy
+
+Each `8 * N` content block must separate the frame from the component body:
+
+- Block frame: border, background, safe padding, and optional block-level actions.
+- Header/title area: fixed or content-aware height for title, subtitle, unit, status tag, and small actions.
+- Component body area: the only viewport where charts, tables, KPI groups, text summaries, empty states, diagrams, and business components render.
+- Optional footer area: source, pagination, note, or legend only when it has reserved height.
+
+Hard rules:
+
+- Do not let a chart, icon, table, empty state, or business component render behind or across the title/header area.
+- Do not style a block title as a boxed nested card by default. Prefer plain text, subtle divider, underline, or small accent mark unless the product design system explicitly requires a title box.
+- The body viewport must have explicit `min-width: 0`, `min-height: 0`, and a defined overflow strategy.
+- ECharts and AntV S2 instances must mount and resize against the body viewport, not the whole card frame.
+- If the header needs two lines, more actions, or a status explanation, increase the row span or move secondary text into a tooltip/drawer.
+- Empty/loading/no-permission states must be centered inside the body viewport and must not replace the title area.
+- For complex diagrams, the body viewport is the visible pan/zoom window; the diagram's logical size may exceed it, but the block rectangle must not expand.
+
 ## Viewport And Overflow Rules
 
 Design the page so the report never appears visually cut off by the browser viewport, sidebar, or grid container.

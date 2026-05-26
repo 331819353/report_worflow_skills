@@ -247,10 +247,12 @@ For custom implementations without a template, define the equivalent adapter con
 For bundled template implementations, use the template contracts instead of ad hoc wiring:
 
 - Widget data must use `widget.data.id`, `params`, `filterFields`, `requiredFilters`, `requiredParams`, and `ignoredFilters` rather than hidden filtering inside the visual component.
+- Every configured widget must either declare `data` or explicitly declare `dataPolicy: 'static' | 'external'`; unbound first-screen cards are not allowed.
 - Dynamic filters should return stable `id`/`label` options and may return `disabled`, `reason`, `count`, `parentId`, `level`, `sortOrder`, `permissionScope`, and `meta` for cascades, permissions, and result counts.
 - Widget code should render from the `data` prop and `context`; it should not maintain a separate copy of active filters unless that state is explicitly reset on filter changes.
 - Widget interactions should emit `dashboard-action`; modal, setFilters, navigation, refresh, fullscreen, and URL jumps stay in the shell/action layer.
 - If a component intentionally ignores a global filter, configure `ignoredFilters` and make the scope difference visible in title, subtitle, or helper text.
+- Run `npm run validate:dashboard` before `npm run build`; the bundled templates also run this check automatically inside `build`.
 
 For custom implementations without a bundled template, build the same runtime contract explicitly:
 
@@ -265,16 +267,20 @@ Template and custom implementations must both pass the same audit:
 - Filter audit: every primary filter has at least one visible affected component and at least one validation case.
 - Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
 - Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
+- Layout-body audit: every visual block separates title/header from component body; charts, tables, icons, empty states, and custom canvases render only inside the body viewport.
 - Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
 
 Minimum smoke tests before delivery:
 
+- `npm run validate:dashboard` passes for bundled templates, or an equivalent custom validation checklist is completed.
 - Default filters load and all visible components show data from the same scope.
 - Each primary filter changes at least one KPI/chart/table/list and reconciles the related counts or totals.
 - A filter combination with no data shows empty states without stale numbers.
 - A disabled or unauthorized filter option cannot be selected and does not leak counts.
 - Opening a drawer/modal, then changing a filter, either synchronizes or shows a stale-selection state.
 - Export/download/jump/fullscreen receives the same filter context as the source component.
+- Block body QA passes: titles remain readable, and charts/tables/empty states do not overlap the header after default and filtered data changes.
+- Radar/chart label QA passes: category labels, dimension labels, legends, and graphics do not overlap after default and filtered data changes.
 
 ### Stage 8: Visual Layout Design
 
@@ -289,6 +295,7 @@ Output must include:
 - Content pattern: 总分总, 总分, 分总, 明细优先, 告警处理, 执行闭环, or recap narrative.
 - Visual style preset.
 - Empty/loading/error states.
+- Block header/body separation and chart/table body viewport rules.
 - Responsive and overflow rules.
 
 Always respect the bundled Haier logo rule: original color on light backgrounds and white on dark backgrounds.
@@ -303,6 +310,7 @@ Output must include:
 - Background, typography, color, border, shadow.
 - Alignment and centering.
 - Label and legend rules.
+- Header/body fit rules for every component viewport.
 - Overflow/clipping strategy.
 - Complex diagram viewport behavior.
 - Table/card/chart/drawer style rules.
@@ -357,6 +365,7 @@ Implementation must:
 - Keep business data out of config when the template expects data files or data sources.
 - Use stable IDs for filters, interactions, and mock records.
 - Implement the data/filter/component linkage contract in the template config or custom runtime before visual polish.
+- Run the template `validate:dashboard` script or equivalent custom checks to block unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
 - Use ECharts before custom SVG/canvas for standard charts.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
 - Implement component overflow and responsive behavior from earlier stages.

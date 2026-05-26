@@ -190,6 +190,13 @@ For each affected component, verify:
 
 No filter is complete until at least one expected component change is defined and testable.
 
+Force-check rule:
+
+- A runnable prototype must fail validation when a primary filter has no explicit component binding.
+- A data widget affected by filters must declare its binding through `filterFields`, `requiredFilters`, or an equivalent custom `filterMap`.
+- If a filter is intentionally ignored by a component, the ignored relationship must be declared and visible to the user.
+- Filter controls are not acceptable if they only change UI state but do not refetch, recompute, clear selection, update export scope, or pass query parameters.
+
 Template implementation contract:
 
 - Use `filters[].options` for static options and `filters[].source` for dynamic options.

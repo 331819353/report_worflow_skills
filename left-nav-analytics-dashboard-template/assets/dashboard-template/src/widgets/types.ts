@@ -23,6 +23,8 @@ export interface BaseWidgetConfig<TType extends string, TProps extends Record<st
   // 组件数据源。真实数据放在 src/data，或由 src/dataSources/registry.ts 请求接口。
   // 配置里只保留引用和参数映射，避免把业务数据塞进 dashboard.config.ts。
   data?: DashboardDataSourceRef;
+  // 无 data 的组件必须声明原因：static 表示纯静态叙述/说明，external 表示自行管理外部运行态。
+  dataPolicy?: 'static' | 'external';
   // 筛选作用域。未配置时只接收全局筛选；配置后会接收全局筛选 + 匹配 scope 的筛选。
   filterScope?: DashboardFilterScope;
   viewport?: boolean | WidgetViewportConfig;

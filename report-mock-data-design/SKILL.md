@@ -230,6 +230,15 @@ When not using a bundled template:
 - Define an equivalent dataset contract with `datasetId`, `rowGrain`, `primaryKey`, `filterMap`, `requiredFilters`, `ignoredFilters`, `requiredParams`, `formulas`, `rollups`, and `emptyState`.
 - Keep raw mock rows outside visual components so KPI cards, charts, tables, drawers, and exports can use the same source.
 
+Card and summary components must also be data-managed:
+
+- KPI cards, conclusion cards, status cards, warning cards, and text-summary cards must have a source dataset or an explicit static policy.
+- Do not leave a large card showing only "暂无数据" unless it is an intentional empty-state test case.
+- Empty states must name the reason: no matching filter result, no permission, data loading failed, source not configured, or static placeholder not yet implemented.
+- If a card is static narrative, mark it as static in the implementation contract, for example template `dataPolicy: 'static'`.
+- If a card uses external runtime state, mark it as external and define refresh and error behavior, for example template `dataPolicy: 'external'`.
+- Default mock data must populate all first-screen cards unless the page is explicitly demonstrating empty-state handling.
+
 For each primary filter, include at least one mock-data scenario proving that:
 
 - KPI cards, charts, tables, lists, drawers, and exports change consistently.

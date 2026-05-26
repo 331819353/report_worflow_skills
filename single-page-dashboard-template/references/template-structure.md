@@ -13,6 +13,7 @@
 - `src/widgets/registry.ts`: component registration table used by `WidgetRenderer`.
 - `src/widgets/WidgetRenderer.vue`: resolves configured widgets, injects `context`, and applies shared content depth.
 - `src/widgets/WidgetViewport.vue`: optional drag/zoom viewport for large widgets.
+- `scripts/validate-dashboard-contract.mjs`: build-time contract check for widget data, filter binding, actions, and radar chart safety.
 - `src/actions/registry.ts`: extension point for business-specific custom actions.
 - `src/dataSources/registry.ts`: extension point for widget data, dynamic filter option data, and API resolvers.
 - `src/utils/dashboardExpressions.ts`: resolves `$event`, `$filters`, `$context`, and `$params` expressions used by action and data-source config.
@@ -36,6 +37,10 @@ page: {
 - `.` and spaces are empty cells.
 - The generated block id is the character itself, so widget keys must match those characters.
 - There is no page navigation or sidebar in this template.
+- Each generated block uses an explicit internal structure: block frame, title/header area, and component body area.
+- `WidgetRenderer` is mounted inside the component body area only. Business widgets must not absolutely position charts, icons, empty states, or canvases relative to the outer block frame.
+- ECharts, AntV S2, and custom diagram widgets should measure the body area and resize from that container.
+- If a chart label, legend, or table needs more room after the title/header is reserved, increase the block's column/row span or configure `viewport`; do not hide overflow behind the title area.
 
 ## Top Bar Contract
 
@@ -147,7 +152,9 @@ Avoid mixing two filter mechanisms for the same field. Prefer `filterFields` for
 
 For API data, add a resolver in `src/dataSources/registry.ts` and use its key as `data.id`.
 
-`WidgetRenderer` passes resolved rows into the component as a `data` prop. Business widgets should declare `data?: RowType[]` and render from it.
+`WidgetRenderer` passes resolved rows into the component as a `data` prop. Business widgets should declare `data?: RowType[]` and render from it. Business widgets receive the body viewport, not the whole card frame. Their root element should fill that viewport with `width: 100%; height: 100%; min-width: 0; min-height: 0;`.
+
+Widgets without `data` must set `dataPolicy: 'static'` for pure narrative/static content or `dataPolicy: 'external'` for externally managed runtime state. Otherwise `npm run validate:dashboard` fails.
 
 ## Filter Scope
 

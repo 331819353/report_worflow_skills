@@ -13,6 +13,7 @@
 - `src/widgets/registry.ts`: component registration table used by `WidgetRenderer`.
 - `src/widgets/WidgetRenderer.vue`: resolves configured widgets, injects `context`, and applies shared content depth.
 - `src/widgets/WidgetViewport.vue`: optional drag/zoom viewport for large widgets.
+- `scripts/validate-dashboard-contract.mjs`: build-time contract check for widget data, filter binding, actions, and radar chart safety.
 - `src/actions/registry.ts`: extension point for business-specific custom actions.
 - `src/dataSources/registry.ts`: extension point for widget data, dynamic filter option data, and API resolvers.
 - `src/utils/dashboardExpressions.ts`: resolves `$event`, `$filters`, `$context`, and `$params` expressions used by action and data-source config.
@@ -142,6 +143,8 @@ data: {
 For API data, add a resolver in `src/dataSources/registry.ts` and use its key as `data.id`.
 
 `WidgetRenderer` passes resolved rows into the component as a `data` prop. Business widgets should declare `data?: RowType[]` and render from it.
+
+Widgets without `data` must set `dataPolicy: 'static'` for pure narrative/static content or `dataPolicy: 'external'` for externally managed runtime state. Otherwise `npm run validate:dashboard` fails.
 
 Avoid mixing two filter mechanisms for the same field. Prefer `filterFields` for normal filter-to-data binding. Use explicit `params` only for fixed component parameters or source-specific API parameters.
 

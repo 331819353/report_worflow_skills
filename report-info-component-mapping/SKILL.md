@@ -185,6 +185,7 @@ Minimum columns:
 Rules:
 
 - A component without a data source is decorative unless it is explicitly static narrative.
+- First-screen cards and large panels cannot be left as unbound "暂无数据" placeholders; assign a dataset, mark static narrative, or remove the component.
 - A filter without an affected component is dead UI unless it only controls navigation or permissions.
 - A filter whose ID differs from the data field must define explicit mapping rather than relying on label matching.
 - A chart/table/card cannot use a different filter scope from its surrounding summary unless labeled as intentionally different.

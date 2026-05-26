@@ -193,6 +193,13 @@ Custom implementation contract:
 - Store selection and drill path in one place so filter changes can invalidate them consistently.
 - Keep drawer/modal data loaded from the same resolver layer as the source component.
 
+Force-check rule:
+
+- A clickable visual element is not complete until its emitted event and configured action are both present.
+- `openModal` must declare target/modal and params; `navigateUrl` must declare target/url and query behavior; `setFilters` must declare target filters.
+- If a widget emits `dashboard-action`, the page config must map that event name to an action unless the component is explicitly self-contained.
+- A refresh, export, fullscreen, modal, drawer, or jump that ignores active filters must document why and show that scope difference.
+
 ## Breadcrumbs And Navigation
 
 Use breadcrumbs for:

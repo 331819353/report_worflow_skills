@@ -67,8 +67,9 @@ Use this stack for report prototypes built from this template:
 12. Use `navigateUrl` for jumps. It appends active filters to URL query parameters by default; set `includeFilters: false` only for targets that must not receive filter context.
 13. For large widgets such as DuPont analysis, relation graphs, or wide canvases, configure `viewport` in `dashboard.config.ts` instead of implementing pan/zoom inside the widget.
 14. Keep widget-specific CSS inside each widget's `<style scoped>` block. Keep `src/styles.css` for the dashboard shell only.
-15. Run `npm run build` before handing off.
-16. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
+15. Run `npm run validate:dashboard` before handoff. This blocks unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
+16. Run `npm run build` before handing off; build runs the same dashboard contract validation first.
+17. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
 
 ## Layout Rules
 
@@ -83,6 +84,10 @@ Use this stack for report prototypes built from this template:
 - The theme switch toggles the built-in light and dark layouts and persists the choice in `sessionStorage`.
 - The content area starts below the top menu bar and uses the 8*N rule: each `layoutRows` string is one row, each character is one column, adjacent equal characters merge into a rectangular block, and `.` or spaces create empty cells.
 - The template ships without demo business components. Empty blocks are valid placeholders until registered widgets are added.
+- Every content block is split into a title/header zone and a component body zone.
+- Business widgets render only inside the body zone. Charts, tables, icons, empty states, and custom canvases must never overlap or cover the block title/header.
+- ECharts and AntV S2 widgets must size themselves from the body zone, not from the full block frame.
+- If a widget needs more vertical room after reserving the title/header zone, increase its row span, remove duplicate internal titles, or enable the shared `viewport` behavior for large diagrams.
 
 ## Widget Rules
 
@@ -90,7 +95,9 @@ Use this stack for report prototypes built from this template:
 - `WidgetRenderer` reads `dashboard.config.ts`, finds the component in `widgetRegistry`, injects `context`, and adds the shared content layer.
 - `WidgetViewport` handles drag, zoom, reset, and initial centering when `viewport` is enabled.
 - Business widgets should receive data through typed props and `context`, fill their parent with `width: 100%; height: 100%`, and own their private styles locally.
+- Business widgets should treat their parent as the component body viewport. Use `min-width: 0`, `min-height: 0`, and internal layout that keeps labels, legends, tables, and empty states inside that viewport.
 - Widget `data` is resolved by the shell and passed as a `data` prop. `context.filters` contains only filters visible to that widget's `filterScope`; `context.allFilters` contains every filter.
+- A widget without `data` must declare `dataPolicy: 'static' | 'external'`; otherwise `validate:dashboard` fails.
 - Business widgets should emit `dashboard-action` with `{ name, payload }` for cross-widget behavior. The shell executes configured actions.
 - In modal widgets, read `context.isStale` to detect that active filters changed after the modal opened.
 

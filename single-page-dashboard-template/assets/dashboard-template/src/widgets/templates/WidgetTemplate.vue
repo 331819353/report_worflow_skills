@@ -93,6 +93,7 @@
  *    如果组件必须受某个筛选影响，写 requiredFilters，避免字段漏配后筛选静默失效。
  *    如果固定 params 必须过滤 staticData，写 requiredParams，避免参数字段拼错后静默不过滤。
  *    如果组件明确不受某个全局筛选影响，写 ignoredFilters，不要让联动关系变成隐性假设。
+ *    无 data 的组件必须在配置里写 dataPolicy: 'static' | 'external'，否则 validate:dashboard 会失败。
  *
  * 9. 筛选作用域通过 filterScope 控制：
  *    - filter 配置没有 scope 时是全局筛选，所有组件都能拿到。
@@ -130,6 +131,7 @@
  * - 如果确实要做组件自己的内部卡片或图表背景，请写在当前组件的 <style scoped>。
  * - 大图、关系图、杜邦图这类组件建议声明 naturalWidth/naturalHeight，
  *   再用 viewport 承接拖拽和缩放。
+ * - 雷达图必须显式配置 axisName/nameGap、legend 和 radius，避免维度标签与分类/图例重叠。
  */
 import type { DashboardWidgetActionEvent } from '../../types/actions';
 import type { WidgetContext } from '../types';

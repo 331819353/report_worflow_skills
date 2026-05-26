@@ -43,6 +43,7 @@ Every component should define:
 
 - Container: the assigned grid block or viewport.
 - Safe padding: inner spacing that prevents labels and graphics from touching edges.
+- Header box: reserved title/action/status area when the block has a visible title.
 - Content box: the area where the main visual or text lives.
 - Header area: optional title, subtitle, metric unit, or actions.
 - Footer area: optional notes, data source, pagination, or legend.
@@ -58,6 +59,20 @@ Default alignment:
 - Drawers/forms: top-aligned content with aligned fields and sticky action area.
 
 If the component cannot fit cleanly, reduce nonessential labels, move legends, enable scroll/zoom, or increase the grid span. Do not squeeze until text becomes unreadable.
+
+## Block Header And Body Rules
+
+When a component is placed in a report block, distinguish the block header from the component body.
+
+Hard rules:
+
+- The component may only render inside the block body viewport. It must not position charts, icons, legends, labels, empty states, or canvases across the header/title area.
+- The block body must be a measurable container with `width: 100%`, `height: 100%`, `min-width: 0`, `min-height: 0`, and a deliberate overflow policy.
+- ECharts canvases, AntV S2 tables, custom SVGs, and diagram canvases must mount to the body viewport and resize from that viewport.
+- Component-level internal titles are optional only when the block header already names the component. Avoid duplicate titles.
+- If the business component needs its own toolbar, place it inside the body top edge with reserved space, or promote the action to the block header.
+- Empty, loading, and no-data states are body content. They should be centered in the body and explain the state without hiding the block title.
+- In templates, the DOM should make this separation explicit, such as `block > header/title + body > widget`.
 
 ## Anti-Overlap Rules
 
@@ -239,6 +254,7 @@ Title rules:
 - Align all component titles consistently, usually top-left inside the component header.
 - Vertically center title text with header actions.
 - Do not let title text overlap action icons.
+- Do not wrap ordinary component titles in a visible boxed title card. Use plain text plus a subtle underline/divider/accent mark unless a very specific visual system asks for boxed headers.
 - Do not truncate decision-critical titles; wrap to two lines or shorten wording.
 - Use a title only when it helps scanning. Tiny KPI cards may use label-as-title.
 - For charts, title should state the measure and comparison dimension, such as "收入完成率 by 区域".
@@ -532,6 +548,22 @@ For dense charts:
 - Use Top N plus "others" instead of unreadable long tails.
 - Switch to table when exact reading matters more than shape.
 
+### Radar Chart Rules
+
+Radar charts are high risk for label and legend collision. Use them only for a small number of dimensions and only when the component has enough space.
+
+Hard rules:
+
+- Do not place a radar chart in a narrow or shallow card if it also needs an internal legend.
+- Reserve separate zones for title, radar dimension labels, plot area, and legend.
+- Put the legend outside the plot area, usually below or to the right; never let the legend sit on top of radar axis labels.
+- Keep `indicator.name` labels short. If a label exceeds 4-6 Chinese characters or 8-10 Latin characters, abbreviate it and provide tooltip/full text.
+- Configure ECharts radar label spacing explicitly with `axisName`/`nameGap`; do not rely on defaults.
+- Set `radar.center` and `radar.radius` after reserving legend and label space. As a rule of thumb, keep radius at or below 45%-55% when there are 5+ dimensions or long labels.
+- If top/bottom labels collide with title or legend, move the legend, reduce radius, shift center, or increase the block span. Do not hide overflow.
+- If there are more than 6-7 dimensions, use a scorecard, horizontal bar group, or matrix table instead of radar.
+- In runnable templates, radar components must pass `validate:dashboard`: radar options must include `axisName`/`nameGap` and legend handling.
+
 ## Table Component Rules
 
 Tables are work surfaces.
@@ -624,6 +656,7 @@ Before finalizing, verify:
 - Component content fits inside its assigned block or viewport.
 - Each component has an explicit overflow strategy: grow, wrap, scroll, clamp, drawer, fullscreen, zoom/pan, or split.
 - Labels, legends, axes, values, graphics, and actions do not overlap.
+- Radar dimension labels, category labels, and legends have separate reserved zones and do not overlap.
 - Core text and values are not truncated.
 - Low-priority truncation has tooltip or full-text access.
 - Colors are readable and not too pale.
