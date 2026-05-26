@@ -117,6 +117,7 @@ data: {
 - `data.filterFields`: optional mapping when filter ids and row fields differ.
 - `data.requiredFilters`: filters that must find a mapped row field; otherwise the row is excluded.
 - `data.ignoredFilters`: global filters this component intentionally ignores.
+- `data.requiredParams`: fixed params that must find a matching row field; otherwise the row is excluded. Use this when a widget param is intended to filter `staticData`, so typos do not silently leave rows unfiltered.
 
 Use option id `all` or `__all` for "no filtering".
 
@@ -241,6 +242,16 @@ Static filters use `options`. Dynamic filters use `source`:
 ```
 
 Register `regionOptions` in `src/dataSources/registry.ts`. A data source returns an array of strings, numbers, or objects. For objects, `labelField` and `valueField` decide how options are generated.
+
+Object options may also include:
+
+- `disabled`: disabled option that cannot be selected.
+- `reason`: tooltip text explaining disabled state.
+- `count`: visible result count badge.
+- `parentId` or `parent_id`: parent option for cascades.
+- `level`, `sortOrder` or `sort_order`, `permissionScope` or `permission_scope`, and `meta`.
+
+When a dynamic option list changes, the shell automatically clears an invalid or disabled current value and selects the first enabled option. If all options are disabled or missing, the filter value becomes empty and downstream widgets should show empty or no-permission states.
 
 When loading dynamic options, the shell passes all active filters except the filter currently being loaded, so a selected value does not collapse its own option list. Use `source.params` only when a filter option source intentionally needs the current selected value.
 

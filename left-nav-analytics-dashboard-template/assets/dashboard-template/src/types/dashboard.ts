@@ -52,6 +52,14 @@ export interface DashboardControlLabels {
 export interface DashboardFilterOption {
   id: string;
   label: string;
+  disabled?: boolean;
+  reason?: string;
+  count?: number;
+  parentId?: string;
+  level?: number;
+  sortOrder?: number;
+  permissionScope?: string;
+  meta?: Record<string, unknown>;
 }
 
 export interface DashboardFilterGroup {

@@ -14,6 +14,8 @@ export interface DashboardDataSourceRef {
   ignoredFilters?: string[];
   // 明确声明必须命中的筛选字段。若数据行缺少对应字段，该行不会通过筛选。
   requiredFilters?: string[];
+  // 明确声明必须命中的固定参数。用于防止 params 字段拼错后 staticData 静默不过滤。
+  requiredParams?: string[];
   // 当数据源返回对象数组时，用哪个字段作为显示文本。
   labelField?: string;
   // 当数据源返回对象数组时，用哪个字段作为真实值。

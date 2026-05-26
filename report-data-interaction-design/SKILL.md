@@ -178,6 +178,21 @@ Interaction rules:
 - Page jumps must pass stable IDs, not display labels, and must include enough filter context to avoid re-querying a broader or narrower scope accidentally.
 - Return/back behavior must restore the prior filter and selection state, or explicitly state that the context changed.
 
+Template implementation contract:
+
+- Business widgets emit `dashboard-action` with stable IDs in the payload.
+- `openModal`, `setFilters`, `navigateUrl`, `refresh`, `fullscreen`, and custom operations are configured in the widget action map or central action registry, not hard-coded inside visual components.
+- `navigateUrl` should include active filters by default; use `includeFilters: false` only when the target must intentionally reset scope.
+- Modal and drawer widgets must read `context.params`, `context.sourceFilters`, and `context.isStale` to avoid acting on stale evidence after filters change.
+- If a click selects a chart mark or row, the component must clear or mark it stale when its `data` prop no longer contains that object.
+
+Custom implementation contract:
+
+- Use a shared action dispatcher or equivalent service for all drilldowns, drawers, modals, jumps, exports, refresh, and fullscreen actions.
+- Pass `(activeFilters, selectedObjectId, metricId, period, permissionScope, returnTo)` together through every action.
+- Store selection and drill path in one place so filter changes can invalidate them consistently.
+- Keep drawer/modal data loaded from the same resolver layer as the source component.
+
 ## Breadcrumbs And Navigation
 
 Use breadcrumbs for:

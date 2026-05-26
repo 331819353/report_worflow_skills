@@ -358,6 +358,9 @@ button {
 }
 
 .filter-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   padding: 0 14px;
   border: 1px solid var(--line);
   color: var(--muted);
@@ -370,6 +373,33 @@ button {
   color: var(--primary);
   border-color: var(--line-strong);
   background: var(--primary-soft);
+}
+
+.filter-option:disabled {
+  color: color-mix(in srgb, var(--muted) 54%, transparent);
+  cursor: not-allowed;
+  opacity: 0.58;
+  background: color-mix(in srgb, var(--surface-raised) 62%, transparent);
+}
+
+.filter-option:disabled:hover {
+  color: color-mix(in srgb, var(--muted) 54%, transparent);
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--surface-raised) 62%, transparent);
+}
+
+.filter-option-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  color: var(--text-strong);
+  background: var(--primary-soft);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
 }
 
 .filter-empty {

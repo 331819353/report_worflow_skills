@@ -196,6 +196,14 @@ Design data so common filters work:
 
 Default filters should produce a strong first-screen story.
 
+Filter option mock data should also support implementation behavior:
+
+- Include stable `id` and user-facing `label` for every option.
+- Include `count` when the UI shows result counts, and make the count match filtered rows.
+- Include `disabled` and `reason` for permission-blocked, parent-filter-blocked, or unavailable options.
+- Include `parentId` or `parent_id` for cascades and enough child options to test parent changes.
+- Include at least one option that produces an empty state when that state is part of the UX.
+
 ## Data Binding And Accuracy Contract
 
 Mock data must be designed so data, filters, and components can be verified together. This requirement applies even when no template is used.
@@ -208,6 +216,19 @@ For each visible component, define:
 - Which filters affect it and which filters do not.
 - Expected total, count, rank, or status after default filters.
 - Empty-state or permission-limited state when a filter removes all rows.
+
+When using bundled templates:
+
+- `widget.data.params.key` must point to a real dataset in `dashboardData`.
+- Use `filterFields` when filter IDs differ from row fields.
+- Use `requiredFilters` for filters that must affect the dataset.
+- Use `requiredParams` for fixed params that must filter `staticData`.
+- Use `ignoredFilters` only when the component is intentionally outside a global filter scope.
+
+When not using a bundled template:
+
+- Define an equivalent dataset contract with `datasetId`, `rowGrain`, `primaryKey`, `filterMap`, `requiredFilters`, `ignoredFilters`, `requiredParams`, `formulas`, `rollups`, and `emptyState`.
+- Keep raw mock rows outside visual components so KPI cards, charts, tables, drawers, and exports can use the same source.
 
 For each primary filter, include at least one mock-data scenario proving that:
 

@@ -88,6 +88,7 @@
  *    推荐放到 src/data/dashboard.data.ts，或者在 src/dataSources/registry.ts 接口请求。
  *    组件配置只写 data.id、data.params 和 filterFields；框架会把数据源结果作为 data prop 传入组件。
  *    如果组件必须受某个筛选影响，写 requiredFilters，避免字段漏配后筛选静默失效。
+ *    如果固定 params 必须过滤 staticData，写 requiredParams，避免参数字段拼错后静默不过滤。
  *    如果组件明确不受某个全局筛选影响，写 ignoredFilters，不要让联动关系变成隐性假设。
  *
  * 9. 筛选作用域通过 filterScope 控制：

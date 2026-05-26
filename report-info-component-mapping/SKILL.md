@@ -180,6 +180,7 @@ Minimum columns:
 - Update trigger: filter change, refresh, drilldown, permission change, data reload, resize, fullscreen.
 - Reset/stale behavior when the selected object leaves scope.
 - Export/download behavior if applicable.
+- Validation case: default state, at least one filtered state, empty or permission-limited state, and one interaction state when the component is clickable.
 
 Rules:
 
@@ -190,6 +191,7 @@ Rules:
 - Drawers, exports, jumps, and fullscreen views must reuse the same filtered context as the source component.
 - If exact reconciliation matters, include a table or debug row count that proves the KPI/chart total.
 - Custom implementations must still define equivalent `dataSource`, `filterMap`, `componentBindings`, and `updateTriggers` contracts.
+- Template implementations should express the same matrix through `widget.data`, `filterFields`, `requiredFilters`, `requiredParams`, `ignoredFilters`, `filterScope`, and widget `actions` instead of hiding it in component code.
 
 ## Layout Coordination
 

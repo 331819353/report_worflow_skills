@@ -1,6 +1,6 @@
 ---
 name: report-design-workflow
-description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, or return a URL for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data-backed demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 可运行页面, 生成页面, 实现报表, 落地报表, 重构页面, 截图还原, 自动部署, 部署URL, 返回URL, demo, mock 数据, Vue 报表, template implementation, 数据联动, 筛选联动, and 组件联动准确性. For pure methodology questions, prefer the relevant report-type skill. Orchestrates requirement extraction, report-type skills, mapping, mock data, filters, interactions, data/filter/component linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, deployment, and URL return."
+description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, or return a URL for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data-backed demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 单页报表, 顶部栏报表, 可运行页面, 生成页面, 实现报表, 落地报表, 重构页面, 截图还原, 自动部署, 部署URL, 返回URL, demo, mock 数据, Vue 报表, template implementation, 数据联动, 筛选联动, and 组件联动准确性. For pure methodology questions, prefer the relevant report-type skill. Orchestrates requirement extraction, report-type skills, mapping, mock data, filters, interactions, data/filter/component linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, deployment, and URL return."
 ---
 
 # Report Design Workflow
@@ -74,7 +74,7 @@ Deliver:
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Use `left-nav-analytics-dashboard-template` for standard enterprise analytics dashboards and `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. Both implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
+Use `single-page-dashboard-template` for single-page report prototypes with light/dark layouts, a centered top-bar title, top-left logo, right-side theme switch, refresh, filter, download, and 8*N content grid. Use `left-nav-analytics-dashboard-template` for standard enterprise analytics dashboards with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
 
 ### 4. Review And Repair Mode
 
@@ -98,7 +98,7 @@ Clarify or infer:
 - Is the user asking for thinking, design proposal, actual prototype, or repair?
 - Is there a specific report page or a report category?
 - Is the expected output text, specification, code, or both?
-- Is the page standard enterprise dashboard or sci-fi/big-screen cockpit?
+- Is the page a single-page top-bar report, standard enterprise sidebar dashboard, or sci-fi/big-screen cockpit?
 - Does the user need automatic deployment and a returned URL?
 
 Do not block if missing details can be safely assumed.
@@ -244,6 +244,21 @@ For custom implementations without a template, define the equivalent adapter con
 - `componentBindings`: which components subscribe to which filters and interaction state.
 - `updateTriggers`: when components recompute, refetch, resize, reset, or clear selection.
 
+For bundled template implementations, use the template contracts instead of ad hoc wiring:
+
+- Widget data must use `widget.data.id`, `params`, `filterFields`, `requiredFilters`, `requiredParams`, and `ignoredFilters` rather than hidden filtering inside the visual component.
+- Dynamic filters should return stable `id`/`label` options and may return `disabled`, `reason`, `count`, `parentId`, `level`, `sortOrder`, `permissionScope`, and `meta` for cascades, permissions, and result counts.
+- Widget code should render from the `data` prop and `context`; it should not maintain a separate copy of active filters unless that state is explicitly reset on filter changes.
+- Widget interactions should emit `dashboard-action`; modal, setFilters, navigation, refresh, fullscreen, and URL jumps stay in the shell/action layer.
+- If a component intentionally ignores a global filter, configure `ignoredFilters` and make the scope difference visible in title, subtitle, or helper text.
+
+For custom implementations without a bundled template, build the same runtime contract explicitly:
+
+- A single source of truth for `activeFilters`, selected object, drill path, modal/drawer state, permission scope, and refresh timestamp.
+- A deterministic data resolver layer that accepts `(filters, params, permissionScope)` and returns normalized rows.
+- A component registry or binding table that declares each component's dataset, fields, formulas, affected filters, ignored filters, required filters, interaction outputs, and stale behavior.
+- A shared action dispatcher for drilldown, cross-filtering, drawer, modal, jump, export, refresh, and fullscreen so components do not invent incompatible state.
+
 Template and custom implementations must both pass the same audit:
 
 - Mock data audit: default state, filtered state, empty state, and permission-limited state all have matching component outputs.
@@ -251,6 +266,15 @@ Template and custom implementations must both pass the same audit:
 - Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
 - Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
 - Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
+
+Minimum smoke tests before delivery:
+
+- Default filters load and all visible components show data from the same scope.
+- Each primary filter changes at least one KPI/chart/table/list and reconciles the related counts or totals.
+- A filter combination with no data shows empty states without stale numbers.
+- A disabled or unauthorized filter option cannot be selected and does not leak counts.
+- Opening a drawer/modal, then changing a filter, either synchronizes or shows a stale-selection state.
+- Export/download/jump/fullscreen receives the same filter context as the source component.
 
 ### Stage 8: Visual Layout Design
 
@@ -303,6 +327,7 @@ Default technical architecture:
 
 Template choice:
 
+- Use `single-page-dashboard-template` for one-page report prototypes whose frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and an 8*N content grid.
 - Use `left-nav-analytics-dashboard-template` for enterprise analytics reports with sidebar navigation, filters, 8*N cards, business widgets, and standard workbench behavior.
 - Use `sci-fi-dashboard-template` for fixed 1920x1080 cockpit screens or command-center presentations.
 - If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
@@ -311,6 +336,7 @@ Implementation must:
 
 - Keep business data out of config when the template expects data files or data sources.
 - Use stable IDs for filters, interactions, and mock records.
+- Implement the data/filter/component linkage contract in the template config or custom runtime before visual polish.
 - Use ECharts before custom SVG/canvas for standard charts.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
 - Implement component overflow and responsive behavior from earlier stages.

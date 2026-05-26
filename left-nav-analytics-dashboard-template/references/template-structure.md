@@ -118,6 +118,7 @@ data: {
 - `data.filterFields`: optional mapping when filter ids and row fields differ.
 - `data.requiredFilters`: filters that must find a mapped row field; otherwise the row is excluded.
 - `data.ignoredFilters`: global filters this component intentionally ignores.
+- `data.requiredParams`: fixed params that must find a matching row field; otherwise the row is excluded. Use this when a widget param is intended to filter `staticData`, so typos do not silently leave rows unfiltered.
 
 Use option id `all` or `__all` for "no filtering".
 
@@ -143,6 +144,21 @@ For API data, add a resolver in `src/dataSources/registry.ts` and use its key as
 `WidgetRenderer` passes resolved rows into the component as a `data` prop. Business widgets should declare `data?: RowType[]` and render from it.
 
 Avoid mixing two filter mechanisms for the same field. Prefer `filterFields` for normal filter-to-data binding. Use explicit `params` only for fixed component parameters or source-specific API parameters.
+
+## Dynamic Filters
+
+Static filters use `options`; dynamic filters use `source`. Dynamic option resolvers may return strings, numbers, or objects.
+
+Object options may include:
+
+- `id` and `label`: stable value and display text.
+- `disabled`: disabled option that cannot be selected.
+- `reason`: tooltip text explaining disabled state.
+- `count`: visible result count badge.
+- `parentId` or `parent_id`: parent option for cascades.
+- `level`, `sortOrder` or `sort_order`, `permissionScope` or `permission_scope`, and `meta`.
+
+When a dynamic option list changes, the shell automatically clears an invalid or disabled current value and selects the first enabled option. If all options are disabled or missing, the filter value becomes empty and downstream widgets should show empty or no-permission states.
 
 ## Filter Scope
 

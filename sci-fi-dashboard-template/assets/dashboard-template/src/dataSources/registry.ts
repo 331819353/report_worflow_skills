@@ -40,7 +40,11 @@ const readStaticDataRows = (key: unknown) => {
   return dashboardData[dataKey] ?? [];
 };
 
-const filterRowsByParams = (rows: Record<string, unknown>[], params: Record<string, unknown>) =>
+const filterRowsByParams = (
+  rows: Record<string, unknown>[],
+  params: Record<string, unknown>,
+  source: DashboardDataSourceRef,
+) =>
   rows.filter((row) =>
     Object.entries(params).every(([key, value]) => {
       if (key === 'key' || isEmptyFilterValue(value)) {
@@ -48,7 +52,7 @@ const filterRowsByParams = (rows: Record<string, unknown>[], params: Record<stri
       }
 
       if (!(key in row)) {
-        return true;
+        return !source.requiredParams?.includes(key);
       }
 
       const acceptedValues = toComparableValues(value);
@@ -103,6 +107,7 @@ const filterRowsByFilters = (
 // - 筛选值为空、all 或 __all 时表示不过滤。
 // - 组件确实不受某个全局筛选影响时，写 source.ignoredFilters 显式声明。
 // - 组件必须受某个筛选影响时，写 source.requiredFilters 防止字段漏配后静默失效。
+// - 固定 params 也必须参与过滤时，写 source.requiredParams 防止字段漏配后静默失效。
 // - 如果要接 API，可以新增一个 resolver，不需要改组件。
 //
 // 示例：
@@ -114,7 +119,8 @@ const filterRowsByFilters = (
 //   },
 // };
 export const builtinDataSourceRegistry: Record<string, DashboardDataSourceResolver | undefined> = {
-  staticData: ({ source, filters, params }) => filterRowsByFilters(filterRowsByParams(readStaticDataRows(params.key), params), filters, source),
+  staticData: ({ source, filters, params }) =>
+    filterRowsByFilters(filterRowsByParams(readStaticDataRows(params.key), params, source), filters, source),
 };
 
 export const dataSourceRegistry: Record<string, DashboardDataSourceResolver | undefined> = {

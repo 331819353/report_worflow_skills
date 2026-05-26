@@ -119,6 +119,14 @@ Every filter option should include:
 
 Do not use display names as query keys if names can change.
 
+For runnable prototypes, option metadata must be wired into behavior:
+
+- Disabled options cannot be selected.
+- Disabled options should explain why through `reason`.
+- Option `count` must reconcile to the current filtered result when displayed.
+- Parent-child option relationships must reset invalid child selections when the parent changes.
+- Permission-blocked options should be hidden or disabled without leaking unauthorized totals.
+
 ## Query Behavior
 
 Define how filter values become query parameters:
@@ -181,6 +189,22 @@ For each affected component, verify:
 - Filters intentionally ignored by the component are declared and visibly explained through title, subtitle, or scope label.
 
 No filter is complete until at least one expected component change is defined and testable.
+
+Template implementation contract:
+
+- Use `filters[].options` for static options and `filters[].source` for dynamic options.
+- Use `widget.filterScope` plus `filters[].scope` for local filter behavior.
+- Use `widget.data.filterFields` when a filter ID differs from the dataset field.
+- Use `widget.data.requiredFilters` to prevent required filters from silently missing the dataset.
+- Use `widget.data.requiredParams` when fixed params should filter `staticData`.
+- Use `widget.data.ignoredFilters` for intentionally ignored global filters, and label that scope difference in the UI.
+
+Custom implementation contract:
+
+- Keep `activeFilters` as a single runtime object, not duplicated independently inside components.
+- Keep a `filterMap` table from filter IDs to data fields, API query params, permission scopes, and affected components.
+- Keep a cascade/reset function that clears invalid child values and selected objects.
+- Keep exports, jumps, fullscreen views, drawers, and modals reading from the same filtered context as the visible component.
 
 ## Permission Rules
 

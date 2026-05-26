@@ -432,6 +432,9 @@ button {
 }
 
 .filter-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   flex: 0 0 auto;
   min-height: 34px;
   padding: 0 13px;
@@ -451,6 +454,33 @@ button {
   color: var(--text-strong);
   border-color: var(--line-strong);
   background: rgba(37, 201, 255, 0.17);
+}
+
+.filter-option:disabled {
+  color: color-mix(in srgb, var(--muted) 52%, transparent);
+  cursor: not-allowed;
+  opacity: 0.58;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.filter-option:disabled:hover {
+  color: color-mix(in srgb, var(--muted) 52%, transparent);
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.filter-option-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  color: var(--text-strong);
+  background: var(--accent-soft);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
 }
 
 .filter-empty {

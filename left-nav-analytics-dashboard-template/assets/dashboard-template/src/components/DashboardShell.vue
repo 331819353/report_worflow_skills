@@ -351,7 +351,16 @@ const normalizeFilterOptions = (rows: unknown[], group: DashboardFilterGroup): D
   const labelField = group.source?.labelField ?? 'label';
   const valueField = group.source?.valueField ?? 'id';
 
-  return rows.flatMap((row) => {
+  const toOptionalNumber = (value: unknown) => {
+    const numberValue = Number(value);
+
+    return Number.isFinite(numberValue) ? numberValue : undefined;
+  };
+
+  const toOptionalText = (value: unknown) =>
+    value === undefined || value === null || value === '' ? undefined : String(value);
+
+  const options: DashboardFilterOption[] = rows.flatMap((row) => {
     if (typeof row === 'string' || typeof row === 'number') {
       const value = String(row);
       return [{ id: value, label: value }];
@@ -369,9 +378,27 @@ const normalizeFilterOptions = (rows: unknown[], group: DashboardFilterGroup): D
       return [];
     }
 
-    return [{ id: String(id), label: String(label) }];
+    return [
+      {
+        id: String(id),
+        label: String(label),
+        disabled: record.disabled === true,
+        reason: toOptionalText(record.reason),
+        count: toOptionalNumber(record.count),
+        parentId: toOptionalText(record.parentId ?? record.parent_id),
+        level: toOptionalNumber(record.level),
+        sortOrder: toOptionalNumber(record.sortOrder ?? record.sort_order),
+        permissionScope: toOptionalText(record.permissionScope ?? record.permission_scope),
+        meta: record.meta && typeof record.meta === 'object' ? (record.meta as Record<string, unknown>) : undefined,
+      },
+    ];
   });
+
+  return options.sort((left, right) => (left.sortOrder ?? Number.MAX_SAFE_INTEGER) - (right.sortOrder ?? Number.MAX_SAFE_INTEGER));
 };
+
+const getFirstEnabledFilterOption = (group: DashboardFilterGroup) =>
+  getFilterOptions(group).find((option) => !option.disabled);
 
 const syncFilterSelections = () => {
   const nextFilters = { ...activeFilters.value };
@@ -381,7 +408,9 @@ const syncFilterSelections = () => {
     const options = getFilterOptions(group);
     const selected = nextFilters[group.id];
 
-    if (options.length === 0) {
+    const enabledOptions = options.filter((option) => !option.disabled);
+
+    if (enabledOptions.length === 0) {
       if (selected !== '') {
         nextFilters[group.id] = '';
         changed = true;
@@ -389,8 +418,8 @@ const syncFilterSelections = () => {
       return;
     }
 
-    if (!options.some((option) => option.id === selected)) {
-      nextFilters[group.id] = options[0]?.id ?? '';
+    if (!options.some((option) => option.id === selected && !option.disabled)) {
+      nextFilters[group.id] = enabledOptions[0]?.id ?? '';
       changed = true;
     }
   });
@@ -510,6 +539,13 @@ const loadWidgetData = async () => {
 };
 
 const setFilter = (groupId: string, optionId: string) => {
+  const group = props.config.filters.find((item) => item.id === groupId);
+  const option = group ? getFilterOptions(group).find((item) => item.id === optionId) : null;
+
+  if (!group || option?.disabled) {
+    return;
+  }
+
   activeFilters.value = {
     ...activeFilters.value,
     [groupId]: optionId,
@@ -518,7 +554,7 @@ const setFilter = (groupId: string, optionId: string) => {
 
 const resetFilters = () => {
   activeFilters.value = Object.fromEntries(
-    props.config.filters.map((group) => [group.id, getFilterOptions(group)[0]?.id ?? '']),
+    props.config.filters.map((group) => [group.id, getFirstEnabledFilterOption(group)?.id ?? '']),
   );
 };
 
@@ -952,9 +988,12 @@ watch(
               class="filter-option"
               :class="{ active: activeFilters[group.id] === option.id }"
               type="button"
+              :disabled="option.disabled"
+              :title="option.reason ?? option.label"
               @click="setFilter(group.id, option.id)"
             >
-              {{ option.label }}
+              <span>{{ option.label }}</span>
+              <em v-if="option.count !== undefined" class="filter-option-count">{{ option.count }}</em>
             </button>
             <span v-if="getFilterOptions(group).length === 0" class="filter-empty">暂无选项</span>
           </div>
