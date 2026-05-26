@@ -1,0 +1,4 @@
+interface:
+  display_name: "核对追溯报表设计"
+  short_description: "沉淀核对追溯类报表的通用设计方法论，覆盖差异、来源、血缘、版本与闭环"
+  default_prompt: "Use $reconciliation-traceability-report-design to explain how to design a reconciliation traceability report category."

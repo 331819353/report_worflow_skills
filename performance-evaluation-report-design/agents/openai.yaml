@@ -1,0 +1,4 @@
+interface:
+  display_name: "绩效评估报表设计"
+  short_description: "沉淀绩效评估型报表的通用设计方法论，覆盖目标、评分、排名、差距与改进"
+  default_prompt: "Use $performance-evaluation-report-design to explain how to design a performance evaluation report category."

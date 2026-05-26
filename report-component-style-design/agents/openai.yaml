@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表组件风格设计"
+  short_description: "沉淀报表组件视觉规范，覆盖居中、自适应、防重叠、缩放拖拽与统一风格"
+  default_prompt: "Use $report-component-style-design to design consistent responsive report components."
