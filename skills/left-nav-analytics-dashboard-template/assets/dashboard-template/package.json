@@ -1,0 +1,22 @@
+{
+  "name": "left-nav-analytics-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@lucide/vue": "^1.16.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.1",
+    "vue": "^3.5.13",
+    "vue-tsc": "^2.1.10"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1"
+  }
+}
