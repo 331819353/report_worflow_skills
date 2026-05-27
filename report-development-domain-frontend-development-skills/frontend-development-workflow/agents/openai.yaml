@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Development Workflow"
+  short_description: "Connect prototype mocks to documented APIs"
+  default_prompt: "Use $frontend-development-workflow to replace prototype mock data with HTTP APIs and verify the frontend runs successfully."
