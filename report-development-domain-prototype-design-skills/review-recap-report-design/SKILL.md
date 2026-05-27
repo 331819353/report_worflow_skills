@@ -174,6 +174,7 @@ This skill owns recap narrative and meeting logic. For implementation-ready desi
 - Use `report-filter-data-design` to define period, organization, topic, version, chapter, and saved-report filters.
 - Use `report-data-interaction-design` to define conclusion-to-evidence expansion, support drawers, source jumps, action detail, and return state.
 - Use `report-visual-layout-design` and `report-component-style-design` for meeting-ready layout, chapter navigation, export actions, annotations, and readable summaries.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

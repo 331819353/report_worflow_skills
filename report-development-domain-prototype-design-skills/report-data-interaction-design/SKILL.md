@@ -142,6 +142,7 @@ This skill owns interaction mechanics and state preservation. It does not choose
 - Use `report-mock-data-design` when clicked objects, drilldown targets, drawer records, or jump targets need synthetic but consistent data.
 - Use `report-info-component-mapping` to decide which information objects should be interactive.
 - Use `report-visual-layout-design` and `report-component-style-design` to decide where drawers, popovers, fullscreen, selected states, and action buttons appear visually.
+- When interactions add, expand, or reveal visible blocks in scrollable page templates, preserve the block-height rule: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## State Preservation
 

@@ -517,14 +517,14 @@ button {
 .canvas-shell {
   position: relative;
   display: grid;
-  height: calc(var(--content-end-y) - var(--content-start-y));
+  height: var(--canvas-height);
   margin-top: var(--content-start-y);
 }
 
 .placeholder-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
-  grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--grid-rows), var(--content-row-height));
   gap: var(--content-gap);
   width: 100%;
   height: 100%;

@@ -285,6 +285,7 @@ This skill owns synthetic data structure and consistency. It does not own the UI
 - Use `report-data-interaction-design` to define how selected mock records, chart marks, tasks, alerts, or differences pass context through drilldowns, drawers, and jumps.
 - Use `report-info-component-mapping` to decide which mock datasets are required by each block or component.
 - Use `report-component-style-design` and `report-visual-layout-design` after the mock data is mapped to visible components.
+- When mock data drives visible blocks in scrollable page templates, preserve the block-height rule: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Privacy And Naming
 

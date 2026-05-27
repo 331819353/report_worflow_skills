@@ -279,6 +279,7 @@ Template and custom implementations must both pass the same audit:
 - Layout-body audit: every visual block separates title/header from component body; charts, tables, icons, empty states, and custom canvases render only inside the body viewport.
 - Component viewport audit: every rendered widget has a full-size viewport layer between block body and business component; the viewport owns background, clipping, scroll, and resize bounds.
 - Span audit: every component declares `visualType` and uses one of the legal `columns * rows` spans from `report-visual-layout-design`.
+- Block-height audit: for scrollable page templates, every resolved content block is at least 220px tall; when the total grid height exceeds 1080px, the page or content region scrolls vertically instead of shrinking blocks. Fixed sci-fi/big-screen templates are exempt.
 - Table viewport audit: every native table, AntV S2 table, wide matrix, and comparison grid declares `visualType: 'table'`, mounts inside the block body, and scrolls internally instead of expanding or clipping the block.
 - Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
 
@@ -308,6 +309,7 @@ Output must include:
 - Header, filter bar, toolbar, sidebar/menu, footer decisions.
 - 8*N rectangular grid structure.
 - Legal component span matrix and each component's selected `columns * rows` span.
+- Block-height and overflow rule: for scrollable page templates, all resolved blocks are at least 220px tall, and grids taller than 1080px use vertical scrolling. Fixed sci-fi/big-screen templates are exempt.
 - Content pattern: 总分总, 总分, 分总, 明细优先, 告警处理, 执行闭环, or recap narrative.
 - Visual style preset.
 - Empty/loading/error states.
@@ -425,6 +427,7 @@ Self-check dimensions:
 
 4. Configuration completeness.
    - `layoutRows` follows the 8*N rule and every block is rectangular.
+   - For scrollable page templates, every resolved content block is at least 220px tall; if the total grid height exceeds 1080px, vertical scrolling is enabled instead of row compression. Fixed sci-fi/big-screen templates are exempt.
    - Every configured widget mounts to an existing block, declares `visualType`, and either declares `data` or an explicit `dataPolicy`.
    - Widget registry, widget props/types, data-source registry, filter sources, modals, assets, logo, theme, toolbar, and route/download configs are complete.
    - Component spans obey the legal component span matrix; oversized diagrams use viewport zoom/pan rather than overflowing their block.

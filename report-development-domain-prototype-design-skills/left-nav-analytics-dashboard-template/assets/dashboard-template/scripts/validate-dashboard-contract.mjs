@@ -44,6 +44,18 @@ const getStringValue = (node) => {
   return '';
 };
 
+const getNumberValue = (node) => {
+  if (!node) {
+    return undefined;
+  }
+
+  if (ts.isNumericLiteral(node)) {
+    return Number(node.text);
+  }
+
+  return undefined;
+};
+
 const getObjectKeys = (objectNode) =>
   isObject(objectNode)
     ? objectNode.properties
@@ -56,6 +68,25 @@ const getStringArray = (node) =>
   isArray(node)
     ? node.elements.map((element) => getStringValue(element)).filter(Boolean)
     : [];
+
+const collectGridRowHeights = () => {
+  const rowHeights = [];
+
+  const visit = (node) => {
+    if (ts.isPropertyAssignment(node) && getName(node.name) === 'grid' && isObject(node.initializer)) {
+      const rowHeight = getNumberValue(getProperty(node.initializer, 'rowHeight'));
+
+      if (rowHeight !== undefined) {
+        rowHeights.push(rowHeight);
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sourceFile);
+  return rowHeights;
+};
 
 const collectFilterIds = () => {
   const filterIds = [];
@@ -79,6 +110,8 @@ const collectFilterIds = () => {
 };
 
 const filterIds = collectFilterIds();
+const gridRowHeights = collectGridRowHeights();
+const minimumBlockHeight = 220;
 const builtinActions = new Set([
   'openModal',
   'closeModal',
@@ -401,6 +434,16 @@ const validateWidgetSource = (filePath) => {
     }
   }
 };
+
+if (gridRowHeights.length === 0) {
+  errors.push(`screen.grid.rowHeight must be configured and at least ${minimumBlockHeight}.`);
+}
+
+gridRowHeights.forEach((rowHeight) => {
+  if (rowHeight < minimumBlockHeight) {
+    errors.push(`screen.grid.rowHeight must be at least ${minimumBlockHeight}; received ${rowHeight}.`);
+  }
+});
 
 collectWidgets().forEach(({ node, location, span }) => validateWidget(node, location, span));
 walkVueFiles(widgetComponentsPath).forEach(validateWidgetSource);

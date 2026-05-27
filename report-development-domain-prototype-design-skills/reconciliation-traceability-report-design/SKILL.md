@@ -196,6 +196,7 @@ This skill owns data-trust and reconciliation logic. For implementation-ready de
 - Use `report-filter-data-design` to define source system, batch, version, difference type, status, rule, organization, and owner filters.
 - Use `report-data-interaction-design` to define difference drilldown, source drilldown, version switch, lineage navigation, correction flows, and source-system jumps.
 - Use `report-visual-layout-design` and `report-component-style-design` for comparison tables, diff highlights, lineage viewports, logs, and dense evidence layout.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

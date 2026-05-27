@@ -42,6 +42,7 @@ Use this stack for report prototypes built from this template:
 3. Configure pages in `src/config/dashboard.config.ts`.
    - `nav` controls page count and left-sidebar navigation labels.
    - `layoutRows` controls the 8*N card layout for each page.
+   - `screen.grid.rowHeight` must stay at least `220`; if row count and gaps exceed the 1080px canvas, the right content area scrolls vertically.
    - `filters` controls the sidebar-anchored filter popover.
    - `assets.logoSrc` controls the left navigation logo.
 4. Create business widgets by copying `src/widgets/templates/WidgetTemplate.vue` into `src/widgets/components/MyWidget.vue`.
@@ -81,7 +82,7 @@ Use this stack for report prototypes built from this template:
 - Check data completeness: every first-screen widget has `data` or explicit `dataPolicy`, stable mock records, required fields, units, formulas, empty states, and reconciled KPI/chart/table/drawer totals.
 - Check filter configuration: every filter has a stable id, default, option source, scope, visible active state, reset behavior, and exact mapping through same-name fields or `widget.data.filterFields`.
 - Check interactions: `dashboard-action` events, modal targets, `navigateUrl`, filter mutation, page navigation, fullscreen, refresh, download, stale-state handling, and close/back flows work with active filter context.
-- Check configuration completeness: `dashboard.config.ts`, `layoutRows`, `nav`, widget registry, widget props/types, `visualType`, `filterScope`, data-source registry, filter sources, modals, assets, logo, theme, and toolbar controls are complete.
+- Check configuration completeness: `dashboard.config.ts`, `layoutRows`, `screen.grid.rowHeight >= 220`, `nav`, widget registry, widget props/types, `visualType`, `filterScope`, data-source registry, filter sources, modals, assets, logo, theme, and toolbar controls are complete.
 - Check visual/runtime behavior: run `npm run validate:dashboard`, run `npm run build`, start or preview the page on an available port when useful, and verify no component overflows outside the block body or component-area background.
 - Severity levels are `Blocker`, `Major`, and `Minor`. Repair all unresolved issues and re-run the report; stop early only when the latest report has no unresolved issues. Stop after 3 cycles and report any remaining issues clearly.
 
@@ -105,6 +106,8 @@ Use this stack for report prototypes built from this template:
 - The right side is entirely page content. It has no extra page header or footer.
 - The right content area scrolls vertically and uses card-style blocks.
 - Page layouts use the 8*N rule: each `layoutRows` string must contain 8 characters; the array length is the row count N.
+- Every resolved content block must be at least 220px tall. Keep `screen.grid.rowHeight >= 220`; one-row blocks may be taller when the available 1080px canvas has extra space.
+- If `layoutRows.length * screen.grid.rowHeight + gaps + vertical offsets` exceeds 1080px, the right content area must scroll vertically and keep row/block heights instead of compressing rows.
 - Each `layoutRows` string is one grid row. Each character is one grid cell. Adjacent equal characters merge into one block; `.` and spaces create empty cells.
 - The template ships without demo business components. Empty blocks are valid placeholders until registered widgets are added.
 

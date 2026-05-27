@@ -156,6 +156,7 @@ Component size behavior:
 
 - Width follows the assigned block.
 - Height follows the assigned row span or content rules.
+- In scrollable page templates, the resolved height of any report block must be at least 220px. If a one-row block would be shorter, increase the grid row height or choose a larger row span.
 - Typography uses a small set of fixed semantic sizes and may step down within bounds.
 - Charts recalculate plot area after title, axes, legends, and labels.
 - Tables use horizontal scroll only when field count demands it.
@@ -199,6 +200,7 @@ Use these strategies:
 Hard rules:
 
 - Do not set fixed component height when content length is variable unless internal scroll is defined.
+- In scrollable page templates, do not let any assigned report block resolve below 220px tall. If the full grid becomes taller than 1080px, use vertical page/content scrolling instead of shrinking blocks.
 - Do not hide overflow for charts, titles, KPI values, status labels, or action buttons.
 - Do not let a component's child element define a width larger than the component viewport.
 - Do not let legends, labels, controls, or values extend beyond component bounds.
@@ -255,6 +257,7 @@ Hard rules:
 - 指标卡 only use `1*1`, `2*1`.
 - 表格 only use `3*2`, `4*2`, `5*2`, `3*3`, `4*3`, `5*3`, `6*3`, `7*3`, `8*3`, `4*4`, `5*4`, `6*4`, `7*4`, `8*4`.
 - 其他组件 only use `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3`.
+- For scrollable page templates, legal spans are valid only after the row-height rule is satisfied: every resulting block must be at least 220px tall.
 
 If the selected span is legal but still visually cramped, choose a larger legal span. Do not invent an unsupported span during implementation.
 

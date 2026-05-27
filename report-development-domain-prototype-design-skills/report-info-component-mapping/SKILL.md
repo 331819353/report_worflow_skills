@@ -202,6 +202,7 @@ After choosing components, coordinate with visual layout:
 - Put high-level judgment before detailed evidence unless the report type is detail query.
 - Use the 8*N grid from `report-visual-layout-design`; every component must occupy a rectangular group of blocks.
 - Choose each component's span from the legal component span matrix in `report-visual-layout-design`; do not invent unsupported sizes.
+- Preserve the prototype block-height rule for scrollable page templates: every resolved block must be at least 220px tall, and layouts taller than 1080px must scroll vertically instead of compressing rows. Fixed sci-fi/big-screen templates are exempt.
 - Explanation, abstract, and conclusion text components use `text-summary` and the legal spans `4*1`, `5*1`, `6*1`, `7*1`, `8*1`, or `3*2`.
 - Allocate larger spans to charts with long labels, dense legends, many categories, or horizontal comparisons.
 - Do not force KPI cards, text summaries, charts, and tables into equal sizes if their content density differs.

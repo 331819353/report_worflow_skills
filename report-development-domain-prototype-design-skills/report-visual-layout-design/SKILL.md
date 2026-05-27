@@ -185,6 +185,9 @@ All report content areas must use an `8 * N` grid:
 - N is flexible and grows with page length.
 - Every component must occupy one or more complete grid blocks.
 - Every component's occupied area must be rectangular.
+- For scrollable page templates such as single-page and left-nav analytics layouts, each resolved content block must be at least 220px tall. A one-row block therefore needs a resolved row height of at least 220px.
+- If a scrollable page's resolved content grid height, including row gaps and vertical offsets, exceeds the 1080px design canvas, keep row/block heights and enable vertical scrolling instead of compressing blocks.
+- Fixed sci-fi/big-screen cockpit layouts are exempt from the 220px rule because they must fit the fixed 1920x1080 canvas.
 - Do not use masonry, staggered, diagonal, floating, or irregular component shapes.
 - Do not let a component visually spill outside its assigned rectangle.
 - Components may span 1-8 columns and multiple rows according to importance.
@@ -265,7 +268,8 @@ Layout rules:
 - Avoid page-level horizontal overflow. Only true wide tables, timelines, and complex diagrams may scroll or pan inside their own component viewport.
 - When a right-side column is narrow, use wrapping, smaller spans, or move content to a wider row; do not let text continue beyond the visible area.
 - Do not use fixed page heights for sections that contain dynamic text, KPI cards, legends, or multiline labels.
-- Each grid row should have a minimum height that fits the component's title, controls, content, and safe padding.
+- In scrollable page templates, each grid row must resolve to at least 220px and still fit the component's title, controls, content, and safe padding.
+- When `N * rowHeight + gaps + vertical offsets` is greater than 1080px in a scrollable page template, the page or content region must scroll vertically; do not shrink rows below 220px to force everything into the first viewport.
 - If a component needs more content than its block can show, choose one strategy explicitly: increase its grid span, add internal scroll, add expand/fullscreen, or move details to drawer.
 
 Common fixes for clipping and overlap:
@@ -282,6 +286,7 @@ Visual QA:
 - Check the right edge of every component for clipping.
 - Check the bottom edge of every component for hidden rows, hidden labels, or cut-off cards.
 - Check that no component visually crosses into another component's rectangle.
+- For scrollable page templates, check that no content block resolves below 220px tall, and that pages exceeding 1080px expose vertical scrolling.
 
 ### 1. 总分总: Executive Narrative
 

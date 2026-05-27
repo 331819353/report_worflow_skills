@@ -251,6 +251,10 @@ const modalStyle = computed(() => ({
 }));
 const navToggleLabel = computed(() => (isNavOpen.value ? props.config.screen.controls.navigation : '展开'));
 const navToggleIcon = computed(() => (isNavOpen.value ? ChevronLeft : ChevronRight));
+const contentRowHeight = computed(() => Math.max(props.config.screen.grid.rowHeight ?? 220, 220));
+const contentGridHeight = computed(
+  () => layoutRowCount.value * contentRowHeight.value + Math.max(layoutRowCount.value - 1, 0) * props.config.screen.layout.contentGap,
+);
 const appStyle = computed(() => ({
   '--design-width': `${props.config.screen.layout.designWidth}px`,
   '--design-height': `${props.config.screen.layout.designHeight}px`,
@@ -261,8 +265,8 @@ const appStyle = computed(() => ({
   '--grid-rows': String(layoutRowCount.value),
   '--content-start-y': `${props.config.screen.grid.contentStartY}px`,
   '--content-end-y': `${props.config.screen.grid.contentEndY}px`,
-  '--content-row-height': `${props.config.screen.grid.rowHeight}px`,
-  '--content-grid-height': `${layoutRowCount.value * props.config.screen.grid.rowHeight + Math.max(layoutRowCount.value - 1, 0) * props.config.screen.layout.contentGap}px`,
+  '--content-row-height': `${contentRowHeight.value}px`,
+  '--content-grid-height': `${contentGridHeight.value}px`,
   '--cell-padding': `${props.config.screen.grid.cellPadding}px`,
   '--cell-inner-background': props.config.screen.grid.innerBackgroundColor,
   '--title-dominant-color': props.config.screen.grid.dominantTitleColor,

@@ -25,6 +25,7 @@ export interface DashboardModalConfig {
 export interface DashboardGridConfig {
   contentStartY: number;
   contentEndY: number;
+  rowHeight: number;
   cellPadding: number;
   innerBackgroundColor: string;
   dominantTitleColor: string;

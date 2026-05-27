@@ -34,6 +34,7 @@ layoutRows: ['ABCDEFGH', 'iggkllmm', 'innkoopp']
 - `.` and spaces are empty cells.
 - The generated block id is the character itself, so widget keys must match those characters.
 - The number of `nav` items is the number of pages shown in the navigation drawer.
+- This fixed big-screen template is exempt from the scrollable-page 220px block-height rule. Fit the cockpit layout within the fixed 1920x1080 canvas.
 - The component-area background fills the entire body rectangle. It must not be inset to an internal safety line, and the body does not draw a default nested border.
 - The shared card frame owns the visual base. Dark cockpit cards use black-blue tokens with 8px radius, 24px padding, light controlled shadow, and no hard default border; light theme cards are white with the same geometry.
 - Block titles are plain top-left text, 16px and 600 weight. Business widgets should not duplicate the block title or add a boxed internal title.

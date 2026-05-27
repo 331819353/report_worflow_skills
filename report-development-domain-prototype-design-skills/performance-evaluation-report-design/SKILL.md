@@ -176,6 +176,7 @@ This skill owns evaluation logic and fairness. For implementation-ready design, 
 - Use `report-filter-data-design` to define period, object level, peer group, scoring version, ranking metric, and organization filters.
 - Use `report-data-interaction-design` to define ranking clicks, score decomposition, rule popovers, object drawers, and diagnostic/execution jumps.
 - Use `report-visual-layout-design` and `report-component-style-design` for scorecards, ranking lists, benchmark panels, rule notes, and overflow behavior.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

@@ -210,6 +210,7 @@ This skill owns task execution and closed-loop logic. For implementation-ready d
 - Use `report-filter-data-design` to define task status, owner, priority, deadline, source, current-user, and organization filters.
 - Use `report-data-interaction-design` to define task drawers, progress updates, transfer/reminder/delay/acceptance actions, source jumps, and closure state.
 - Use `report-visual-layout-design` and `report-component-style-design` for workbench layout, Kanban, task tables, Gantt, step flows, and operation states.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

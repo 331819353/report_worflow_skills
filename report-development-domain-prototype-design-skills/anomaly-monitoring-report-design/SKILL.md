@@ -193,6 +193,7 @@ This skill owns anomaly rules, priority, and handling logic. For implementation-
 - Use `report-filter-data-design` to define severity, anomaly type, status, owner, SLA, recurrence, period, and organization filters.
 - Use `report-data-interaction-design` to define severity drilldown, alert drawers, assignment/close modals, batch operations, and execution/detail jumps.
 - Use `report-visual-layout-design` and `report-component-style-design` for monitoring layout, red/yellow/green states, alert lists, cards, and noise-controlled emphasis.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

@@ -171,6 +171,7 @@ This skill owns filter design and query state. It does not own the report's full
 - Use `report-data-interaction-design` when filter state must be passed through drilldowns, drawers, jumps, breadcrumbs, shared links, and return paths.
 - Use `report-info-component-mapping` to decide which blocks need global filters, local filters, or no filters.
 - Use `report-component-style-design` for the visual treatment of filter controls, chips, labels, density, and overflow.
+- When filters affect visible blocks in scrollable page templates, preserve the block-height rule: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Cross-Component Linkage
 

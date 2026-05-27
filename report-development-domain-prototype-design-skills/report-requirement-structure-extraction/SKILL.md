@@ -216,6 +216,7 @@ After extraction, recommend next skills:
 - Use `report-data-interaction-design` when drilldown, cross-filtering, popovers, drawers, jumps, parameter passing, breadcrumbs, or state preservation must be designed.
 - Use `report-visual-layout-design` for page shell, grid, logo, and layout.
 - Use `report-component-style-design` for component-level readability, fit, and style.
+- Preserve the prototype block-height rule in extracted layout risks for scrollable page templates: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 If multiple report-type skills apply, name the primary type and secondary roles. Do not blur the primary purpose.
 

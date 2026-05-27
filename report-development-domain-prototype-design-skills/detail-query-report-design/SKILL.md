@@ -163,6 +163,7 @@ This skill owns detail-query logic. For implementation-ready design, hand off to
 - Use `report-filter-data-design` to define keyword search, quick filters, advanced filters, saved views, permissions, and export query state.
 - Use `report-data-interaction-design` to define row clicks, source jumps, batch actions, drawer context, and return state.
 - Use `report-visual-layout-design` and `report-component-style-design` for filters-first layout, table density, sticky headers, columns, tags, and overflow behavior.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

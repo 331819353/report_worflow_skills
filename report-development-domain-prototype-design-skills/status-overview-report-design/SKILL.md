@@ -150,6 +150,7 @@ This skill owns the status-overview business logic. For implementation-ready des
 - Use `report-filter-data-design` to define period, organization, business line, baseline, status, and risk filters.
 - Use `report-data-interaction-design` to define KPI clicks, hierarchy drilldown, risk drawers, and diagnostic/detail jumps.
 - Use `report-visual-layout-design` and `report-component-style-design` for 8*N layout, logo, toolbar, cards, charts, and overflow behavior.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

@@ -216,18 +216,30 @@ const modalStyle = computed(() => ({
   '--modal-columns': String(modalLayoutColumnCount.value),
   '--modal-rows': String(modalLayoutRowCount.value),
 }));
+const contentRowHeight = computed(() => Math.max(props.config.screen.grid.rowHeight ?? 220, 220));
+const contentAreaHeight = computed(() => props.config.screen.grid.contentEndY - props.config.screen.grid.contentStartY);
+const contentGridHeight = computed(
+  () => layoutRowCount.value * contentRowHeight.value + Math.max(layoutRowCount.value - 1, 0) * props.config.screen.layout.contentGap,
+);
+const canvasHeight = computed(() => Math.max(contentAreaHeight.value, contentGridHeight.value));
+const resolvedDesignHeight = computed(() =>
+  Math.max(props.config.screen.layout.designHeight, props.config.screen.grid.contentStartY + canvasHeight.value),
+);
 const appStyle = computed(() => ({
   '--page-background-image': props.config.assets.backgroundSrc
     ? `url("${props.config.assets.backgroundSrc}")`
     : 'none',
   '--design-width': `${props.config.screen.layout.designWidth}px`,
-  '--design-height': `${props.config.screen.layout.designHeight}px`,
+  '--design-height': `${resolvedDesignHeight.value}px`,
   '--topbar-height': `${props.config.screen.layout.topbarHeight}px`,
   '--content-gap': `${props.config.screen.layout.contentGap}px`,
   '--grid-columns': String(layoutColumnCount.value),
   '--grid-rows': String(layoutRowCount.value),
   '--content-start-y': `${props.config.screen.grid.contentStartY}px`,
   '--content-end-y': `${props.config.screen.grid.contentEndY}px`,
+  '--content-row-height': `${contentRowHeight.value}px`,
+  '--content-grid-height': `${contentGridHeight.value}px`,
+  '--canvas-height': `${canvasHeight.value}px`,
   '--cell-padding': `${props.config.screen.grid.cellPadding}px`,
   '--cell-inner-background': props.config.screen.grid.innerBackgroundColor,
   '--title-dominant-color': props.config.screen.grid.dominantTitleColor,

@@ -43,6 +43,7 @@ Use this stack for report prototypes built from this template:
 3. Configure the single page in `src/config/dashboard.config.ts`.
    - `screen.title` controls the centered top-bar title.
    - `page.layoutRows` controls the 8*N content grid.
+   - `screen.grid.rowHeight` must stay at least `220`; if row count and gaps exceed the 1080px canvas, the page scrolls vertically.
    - `page.widgets` mounts widgets under matching grid block keys.
    - `filters` controls the right-side filter drawer.
    - `assets.logoSrc` controls the top-left logo.
@@ -84,7 +85,7 @@ Use this stack for report prototypes built from this template:
 - Check data completeness: every first-screen widget has `data` or explicit `dataPolicy`, stable mock records, required fields, units, formulas, empty states, and reconciled KPI/chart/table/drawer totals.
 - Check filter configuration: every filter has a stable id, default, option source, scope, visible active state, reset behavior, and exact mapping through same-name fields or `widget.data.filterFields`.
 - Check interactions: `dashboard-action` events, modal targets, `navigateUrl`, filter mutation, fullscreen, refresh, download, stale-state handling, and close/back flows work with active filter context.
-- Check configuration completeness: `dashboard.config.ts`, `layoutRows`, widget registry, widget props/types, `visualType`, `filterScope`, data-source registry, filter sources, modals, assets, logo, theme, and toolbar controls are complete.
+- Check configuration completeness: `dashboard.config.ts`, `layoutRows`, `screen.grid.rowHeight >= 220`, widget registry, widget props/types, `visualType`, `filterScope`, data-source registry, filter sources, modals, assets, logo, theme, and toolbar controls are complete.
 - Check visual/runtime behavior: run `npm run validate:dashboard`, run `npm run build`, start or preview the page on an available port when useful, and verify no component overflows outside the block body or component-area background.
 - Severity levels are `Blocker`, `Major`, and `Minor`. Repair all unresolved issues and re-run the report; stop early only when the latest report has no unresolved issues. Stop after 3 cycles and report any remaining issues clearly.
 
@@ -113,6 +114,8 @@ Use this stack for report prototypes built from this template:
 - Refresh is also on the right side, immediately before the filter/download group.
 - The theme switch toggles the built-in light and dark layouts and persists the choice in `sessionStorage`.
 - The content area starts below the top menu bar and uses the 8*N rule: each `layoutRows` string is one row, each character is one column, adjacent equal characters merge into a rectangular block, and `.` or spaces create empty cells.
+- Every resolved content block must be at least 220px tall. Keep `screen.grid.rowHeight >= 220`; one-row blocks may be taller when the available 1080px canvas has extra space.
+- If `layoutRows.length * screen.grid.rowHeight + gaps + vertical offsets` exceeds 1080px, the page must scroll vertically and keep row/block heights instead of compressing rows.
 - The template ships without demo business components. Empty blocks are valid placeholders until registered widgets are added.
 - Every content block is split into a title/header zone and a component body zone.
 - Business widgets render only inside the body zone. Charts, tables, icons, empty states, and custom canvases must never overlap or cover the block title/header.

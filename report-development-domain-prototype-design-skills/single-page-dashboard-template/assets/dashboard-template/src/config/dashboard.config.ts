@@ -35,6 +35,8 @@ export const cockpitConfig: DashboardConfig = {
       contentStartY: 88,
       // 内容区结束 y 坐标。默认铺到 1080px 底部。
       contentEndY: 1064,
+      // Every resolved content block must be at least 220px tall. If the grid is taller than 1080px, the page scrolls vertically.
+      rowHeight: 316,
       cellPadding: 0,
       dominantTitleColor: '#20a8ff',
       innerBackgroundColor: 'rgba(9, 30, 48, 0.68)',

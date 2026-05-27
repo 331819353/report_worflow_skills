@@ -174,6 +174,7 @@ This skill owns diagnostic reasoning. For implementation-ready design, hand off 
 - Use `report-filter-data-design` to define diagnostic metric, period, comparison period, organization, dimension, and object filters.
 - Use `report-data-interaction-design` to define metric drilldown, driver selection, evidence drawers, and detail/execution/reconciliation jumps.
 - Use `report-visual-layout-design` and `report-component-style-design` for 8*N layout, decomposition trees, waterfall charts, drawers, labels, and overflow behavior.
+- Apply the prototype block-height rule for scrollable page templates during layout coordination: every resolved block is at least 220px tall, and grids taller than 1080px scroll vertically. Fixed sci-fi/big-screen templates are exempt.
 
 ## Output Format
 

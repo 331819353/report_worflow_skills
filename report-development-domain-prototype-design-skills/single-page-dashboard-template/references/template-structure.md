@@ -37,6 +37,8 @@ page: {
 - Adjacent equal characters merge across rows and columns.
 - `.` and spaces are empty cells.
 - The generated block id is the character itself, so widget keys must match those characters.
+- `screen.grid.rowHeight` must be at least 220px, so every one-row block resolves to at least 220px tall.
+- If the content grid height plus gaps and vertical offsets exceeds 1080px, the page scrolls vertically instead of shrinking rows below 220px.
 - There is no page navigation or sidebar in this template.
 - Each generated block uses an explicit internal structure: block frame, title/header area, and component body area.
 - `WidgetRenderer` is mounted inside the component body area only. Business widgets must not absolutely position charts, icons, empty states, or canvases relative to the outer block frame.

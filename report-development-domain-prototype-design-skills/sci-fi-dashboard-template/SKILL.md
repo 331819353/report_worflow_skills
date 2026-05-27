@@ -102,6 +102,7 @@ Use this stack for report prototypes built from this template:
 
 - The design canvas is fixed at 1920x1080. If the browser viewport is smaller, native scrollbars should expose the full canvas.
 - The title area is fixed and floats above the tiled background.
+- This fixed big-screen template is exempt from the scrollable-page 220px block-height rule. Fit the cockpit layout within the fixed 1920x1080 canvas.
 - Each `layoutRows` string is one grid row. Each character is one grid cell. Adjacent equal characters merge into one block; `.` and spaces create empty cells.
 - The template should ship without demo business components. Empty blocks are valid placeholders until registered widgets are added.
 
