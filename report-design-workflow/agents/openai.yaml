@@ -1,4 +1,0 @@
-interface:
-  display_name: "报表原型全流程工作流"
-  short_description: "串联报表原型的需求、类型、映射、mock数据、筛选、交互、联动门禁、视觉、实现、部署与URL返回"
-  default_prompt: "Use $report-design-workflow to create, implement, validate linkage, deploy, and return a URL for an end-to-end business report prototype."
