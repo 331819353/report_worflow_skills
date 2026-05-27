@@ -1,6 +1,6 @@
 ---
 name: report-design-workflow
-description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, auto-start, detect a free port, or return a URL for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data-backed demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 单页报表, 顶部栏报表, 可运行页面, 生成页面, 实现报表, 落地报表, 重构页面, 截图还原, 自动部署, 自动启动, 端口检测, 部署URL, 返回URL, demo, mock 数据, Vue 报表, template implementation, 数据联动, 筛选联动, and 组件联动准确性. For pure methodology questions, prefer the relevant report-type skill. Orchestrates requirement extraction, report-type skills, mapping, mock data, filters, interactions, data/filter/component linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, automatic local startup, deployment, and URL return."
+description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, auto-start, detect a free port, return a URL, self-check, inspect completeness, or repair issues for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 单页报表, 顶部栏报表, 可运行页面, 生成页面, 实现报表, 截图还原, 自动部署, 自动启动, 端口检测, 返回URL, 自检, 检查报告, mock 数据, Vue 报表, 数据联动, 筛选联动, and 组件联动准确性. Orchestrates report-type routing, mapping, mock data, filters, interactions, linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, self-check repair loops, local startup, deployment, and URL return."
 ---
 
 # Report Design Workflow
@@ -21,7 +21,7 @@ It does not replace the report-type or horizontal skills. It decides:
 
 The default flow is:
 
-`需求提取 -> 类型判断 -> 信息映射 -> 报表类型设计 -> 数据设计 -> 筛选设计 -> 数据交互设计 -> 数据/筛选/组件联动门禁 -> 视觉布局 -> 组件样式 -> 技术实现 -> 自动部署/URL返回 -> 质量验收`
+`需求提取 -> 类型判断 -> 信息映射 -> 报表类型设计 -> 数据设计 -> 筛选设计 -> 数据交互设计 -> 数据/筛选/组件联动门禁 -> 视觉布局 -> 组件样式 -> 技术实现 -> 自检报告/修复循环 -> 自动部署/URL返回 -> 质量验收`
 
 ## Workflow Modes
 
@@ -69,6 +69,7 @@ Deliver:
 - Template choice.
 - Data files or mock data.
 - Component implementation.
+- Self-check report and repair loop, repeated up to 3 cycles when unresolved issues remain.
 - Automatic deployment when requested or when a shareable prototype URL is part of the task.
 - Automatic local server startup on an available port when a runnable prototype should be shown.
 - Local verification.
@@ -378,7 +379,70 @@ Implementation must:
 - Use ECharts before custom SVG/canvas for standard charts.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
 - Implement component overflow and responsive behavior from earlier stages.
+- Run the self-check report and repair loop in Stage 10.4 before deployment or final handoff; start or preview the page inside the loop when runtime visual checks are needed.
 - Run and verify the page when a dev server is required. Do not finish by asking the user to start the project manually.
+
+### Stage 10.4: Self-Check Report And Repair Loop
+
+Use this stage for every implementation, repair, optimization, or runnable prototype before deployment or final delivery. It applies whether the page uses a bundled template or a custom implementation.
+
+Core rule:
+
+- Produce a written self-check report for each cycle.
+- Fix issues found by the report before handoff.
+- Repeat the cycle until the report has no unresolved issues, or stop after 3 cycles.
+- If unresolved blocker or major issues remain after 3 cycles, do not claim the project is complete; report the remaining issues, evidence, and blocker clearly.
+
+Self-check dimensions:
+
+1. Data completeness.
+   - Required datasets exist and have stable IDs, row grain, dimensions, facts, units, baselines, and formulas.
+   - Mock data covers default state, filtered states, empty state, abnormal/risk state, permission scope, and drilldown/detail records.
+   - KPI totals, chart totals, table row counts, drawer records, export rows, and summary text reconcile under the same active filters.
+   - Derived values are calculated from source fields or documented formulas; no first-screen card may show unmanaged placeholder data.
+
+2. Filter configuration.
+   - Every filter has a stable `id`, label, default value, option source, scope, reset behavior, and visible active state.
+   - Every filter maps to a real data field, resolver parameter, or permission scope through same-name fields or explicit `filterFields`.
+   - Widgets that require a filter declare `requiredFilters`; widgets intentionally outside a filter declare `ignoredFilters` and make the scope difference visible.
+   - Cascading filters, disabled options, export/download/share-link state, and permission-limited options are defined when relevant.
+
+3. Interaction usability.
+   - Click, drilldown, drawer, modal, popover, jump, refresh, fullscreen, download/export, and close/back actions work where configured.
+   - Widgets emit the expected action names and payloads; configured actions target existing modals, routes, filters, widgets, or URLs.
+   - Active filters, period, organization, object, metric, permission scope, and return path are preserved across drilldowns and jumps.
+   - Open drawers, selected marks, selected rows, and drill paths reset or show a stale-state message when filters remove the selected object.
+   - Failure, no-permission, loading, empty, and stale states are visible and not silent.
+
+4. Configuration completeness.
+   - `layoutRows` follows the 8*N rule and every block is rectangular.
+   - Every configured widget mounts to an existing block, declares `visualType`, and either declares `data` or an explicit `dataPolicy`.
+   - Widget registry, widget props/types, data-source registry, filter sources, modals, assets, logo, theme, toolbar, and route/download configs are complete.
+   - Component spans obey the legal component span matrix; oversized diagrams use viewport zoom/pan rather than overflowing their block.
+   - Custom implementations define equivalent `dataSource`, `filterMap`, `componentBindings`, and `updateTriggers` contracts.
+
+5. Visual and runtime verification.
+   - Run `npm run validate:dashboard` when the project uses a bundled template or has the script.
+   - Run the build command, usually `npm run build`, for runnable Vue projects.
+   - Start or preview the page when required, inspect the first viewport, and verify there is no overlap, clipping, critical truncation, low contrast, or component overflow outside the component body.
+   - Check at least one representative filter change and one representative interaction in the running page when browser tooling or local verification is available.
+
+Severity:
+
+- `Blocker`: breaks build/startup, leaves core data/filter/interaction unusable, or makes the main report conclusion unreliable.
+- `Major`: a dependent component, filter, export, drawer, or key visual is wrong or incomplete, but the page can still run.
+- `Minor`: polish, secondary copy, non-critical empty state, or low-risk style issue.
+
+Loop procedure:
+
+1. Run Cycle 1 self-check and write the report.
+2. If the report contains any unresolved issue or user-acceptance failure, repair it unless it is explicitly non-actionable and documented.
+3. Re-run the checks and write Cycle 2 report.
+4. Repeat once more if needed for Cycle 3.
+5. Stop early only when the latest report has zero unresolved issues.
+6. After Cycle 3, unresolved issues must be listed in the final response with severity, evidence, and why they remain.
+
+For pure design/specification tasks without code, provide the same report as a planning-level readiness review instead of running commands.
 
 ### Stage 10.5: Automatic Local Startup And Port Handling
 
@@ -438,6 +502,7 @@ Deployment workflow:
    - Public URL when deployment succeeds.
    - Local preview URL when public deployment is unavailable.
    - Build/verification status.
+   - Latest self-check report status and unresolved issue count.
 
 Do not claim deployment succeeded without a returned URL from the deployment tool or a verified reachable preview URL.
 
@@ -483,8 +548,9 @@ Use this structure:
 5. Interaction state and parameter plan.
 6. Visual layout and component style plan.
 7. Technical architecture: TypeScript, Vue 3, ECharts, AntV S2, and template choice.
-8. Automatic deployment plan and expected URL source.
-9. Verification plan.
+8. Self-check report and repair-loop plan.
+9. Automatic deployment plan and expected URL source.
+10. Verification plan.
 
 ### Review/Repair Output
 
@@ -497,6 +563,22 @@ Use this structure:
 5. Concrete implementation changes if requested.
 6. Verification checks.
 
+### Self-Check Report Output
+
+Use this structure after implementation and after each repair cycle:
+
+1. 自检轮次与总体结论.
+2. 本轮检查范围.
+3. 已执行命令/工具/页面验证.
+4. 数据完整性检查.
+5. 筛选配置检查.
+6. 交互可用性检查.
+7. 配置完整性检查.
+8. 视觉与运行态检查.
+9. 问题清单：severity, evidence, affected file/module, fix plan, current status.
+10. 本轮修复动作.
+11. 剩余风险与是否进入下一轮.
+
 ## End-To-End Quality Checklist
 
 Before final delivery, verify:
@@ -506,6 +588,10 @@ Before final delivery, verify:
 - The core user question is answered in the first meaningful viewport.
 - Metrics include baselines, direction, unit, and formulas where needed.
 - Mock data, if used, reconciles with KPI cards, charts, tables, and filters.
+- A self-check report has been produced for the latest implementation cycle.
+- The self-check report covers data completeness, filter configuration, interaction usability, configuration completeness, and visual/runtime state.
+- Self-check issues were repaired and rechecked, up to 3 cycles when needed.
+- The latest self-check report has zero unresolved issues; otherwise the final response states the remaining issues and why they remain after the third cycle.
 - Filters have defaults, stable IDs, cascades, permission rules, and visible active state.
 - Every filter has an explicit field/query mapping, and every component declares whether it is affected by that filter.
 - Changing any primary filter updates all dependent KPIs, charts, tables, drawers, exports, downloads, jumps, and fullscreen views without stale values.
@@ -532,6 +618,7 @@ Before final delivery, verify:
 - Do not treat mock data as random values.
 - Do not design filters or jumps without permission and state behavior.
 - Do not finish an implementation without checking for overlap, clipping, and broken layout.
+- Do not finish an implementation without producing the self-check report and completing the repair loop or explicitly reporting the unresolved issues after 3 cycles.
 - Do not replace ECharts or AntV S2 with ad hoc chart/table code for standard report components.
 - Do not leave a completed runnable prototype at "please run npm..." handoff; detect a port, start it, verify it, and return the URL.
 - Do not say deployment is done without returning a URL or a concrete deployment blocker.

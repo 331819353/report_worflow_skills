@@ -69,8 +69,19 @@ Use this stack for report prototypes built from this template:
 15. Keep widget-specific CSS inside each widget's `<style scoped>` block. Keep `src/styles.css` for the dashboard shell only.
 16. Run `npm run validate:dashboard` before handoff. This blocks unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
 17. Run `npm run build` before handing off; build runs the same dashboard contract validation first.
-18. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
-19. For local handoff, detect an available port, start the dev or preview server automatically, verify the URL, and return it instead of asking the user to start the project.
+18. Run the self-check report and repair loop. Check data completeness, filter configuration, interaction usability, configuration completeness, and visual/runtime behavior; fix issues and repeat up to 3 cycles before handoff.
+19. If the workflow requires deployment, deploy the Vite `dist` directory through the configured static hosting target and return the deployed URL. If deployment is blocked, return the local preview URL and state the blocker.
+20. For local handoff, detect an available port, start the dev or preview server automatically, verify the URL, and return it instead of asking the user to start the project.
+
+## Self-Check And Repair Loop
+
+- Produce a self-check report after implementation and after every repair cycle.
+- Check data completeness: every first-screen widget has `data` or explicit `dataPolicy`, stable mock records, required fields, units, formulas, empty states, and reconciled KPI/chart/table/drawer totals.
+- Check filter configuration: every filter has a stable id, default, option source, scope, visible active state, reset behavior, and exact mapping through same-name fields or `widget.data.filterFields`.
+- Check interactions: `dashboard-action` events, modal targets, `navigateUrl`, filter mutation, page navigation, fullscreen, refresh, download, stale-state handling, and close/back flows work with active filter context.
+- Check configuration completeness: `dashboard.config.ts`, `layoutRows`, `nav`, widget registry, widget props/types, `visualType`, `filterScope`, data-source registry, filter sources, modals, assets, logo, theme, cockpit background assets, and toolbar controls are complete.
+- Check visual/runtime behavior: run `npm run validate:dashboard`, run `npm run build`, start or preview the page on an available port when useful, and verify no component overflows outside the block body or component-area background.
+- Severity levels are `Blocker`, `Major`, and `Minor`. Repair all unresolved issues and re-run the report; stop early only when the latest report has no unresolved issues. Stop after 3 cycles and report any remaining issues clearly.
 
 ## Local Startup And Port Selection
 
