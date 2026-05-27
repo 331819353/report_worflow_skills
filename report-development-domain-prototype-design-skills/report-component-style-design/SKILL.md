@@ -28,6 +28,9 @@ Do not design components as isolated artboards with fixed dimensions. Every comp
 
 Apply these rules to every report component:
 
+- Wrap every component in the shared card base, including text summaries, KPI groups, charts, tables, and empty states.
+- Use the same card base by default: `#FFFFFF` background in light enterprise pages, 8px radius, `box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)`, no hard default border, and 24px internal padding.
+- For explicitly dark or cockpit themes, use the same card geometry and hierarchy with an approved dark panel token; do not mix unrelated glass, gradient, border, or shadow styles inside one page.
 - Center by default: align the component's main content horizontally and vertically within its visual body unless the component type requires top-left scanning, such as tables and long text.
 - Fit the viewport: use the assigned block as the visible container. Do not let inner content overflow, clip, or depend on hard-coded size.
 - Preserve readability: labels, values, legends, axes, and text must remain legible and not overlap graphics.
@@ -36,6 +39,50 @@ Apply these rules to every report component:
 - Keep style unified: all components on the same page should share radius, border, shadow, typography, color semantics, spacing, and control style.
 - Prefer restrained internet style: clean surfaces, subtle borders, crisp icons, soft status color, compact controls, and clear interaction states.
 - Prioritize meaning over decoration: component style should help scanning, comparison, and action.
+
+## Global Style Contract
+
+Use this contract as the default for any generated frontend component unless an existing product design system gives stricter tokens.
+
+### Cards And Containers
+
+- Every component must sit in one unified card container; do not leave standalone charts, text blocks, filters, or tables floating directly on the page.
+- Light theme card: `background: #FFFFFF`, `border-radius: 8px`, `box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)`, `border: 0`, `padding: 24px`.
+- Avoid nested visual cards inside the card body. If a component needs grouping, use spacing, subtle dividers, or table/grid structure before adding another framed card.
+- The block title is plain text at the top-left of the card, not a boxed header. A small accent line/divider is allowed if it does not look like a second container.
+- The component body inherits the card background; do not create a smaller inset background that leaves a white or mismatched gap around the safety line.
+
+### Typography Hierarchy
+
+- Module title: 16px, `font-weight: 600`, color `#333333` in light theme, one line unless the block is deliberately narrative.
+- Core KPI value: 28-32px, numeric font or clean sans-serif, color brand primary or near-black.
+- Unit, helper label, YoY/MoM label, source, and metadata: 12-14px, lighter neutral such as `#888888`.
+- Text summaries are left-aligned. KPI numbers inside comparison tables/lists are right-aligned so magnitudes compare vertically.
+- Do not shrink text below readability to force a crowded layout; choose a larger legal span or move details to drawer/tooltip.
+
+### Semantic Color System
+
+- Define one global palette per page. Do not let every chart choose unrelated colors.
+- Current/actual/completed values use the brand primary color.
+- Target, baseline, plan, and reference values use neutral gray or a pale brand tint.
+- Negative/risk/unreached/warning states use one red family; positive/healthy/reached/growth states use one green family.
+- The red/green business semantics must be globally unique on the page. If the company uses red for growth, apply that consistently and document it in the style output.
+- Color is never the only signal: pair semantic color with text, icon, sign, badge, or shape.
+
+### Visualization Clarity
+
+- Any chart with multiple data series must show a clear legend at the top-right or bottom-center, outside the plot area.
+- Weak gridlines by default: hide outer chart borders and vertical gridlines; use very light dashed horizontal gridlines such as `#EEEEEE`.
+- ECharts options should reserve space for legend, axis labels, and labels through `grid`, `legend`, `axisLabel`, and component-specific spacing.
+- Table status text such as "预警大差", "同比下滑", "已逾期", "未达标" must render as a badge/pill or icon+text, not plain unstyled text.
+- Badge defaults: rounded pill, 12px label, 4-8px horizontal padding, soft semantic background, darker semantic text.
+
+### Structure And Noise Control
+
+- Remove repeated words inside one component. If several metrics share "完成率", "同比", "万元", or "%", promote the common label to a header, axis, unit label, or column title.
+- Use grid/table layout for repeated metric groups instead of repeating labels beside every number.
+- Diagnostic summary, executive conclusion, abstract, and insight text components should be visually stronger than ordinary lists: prefer full-width spans or a very pale brand-tint background inside the card.
+- When a component becomes crowded, grow its legal span, split it, or move details to drawer. Do not patch the symptom with random colors, tiny type, or overlapping labels.
 
 ## Fit And Alignment Rules
 
@@ -242,11 +289,12 @@ Keep all report components visually related.
 
 Use shared rules:
 
-- Border radius: 8px or less unless the product design system requires otherwise.
-- Border: subtle neutral border for cards, tables, and containers.
-- Shadow: minimal; use border and background separation first.
-- Background: white or near-white for light theme; controlled dark panels only for monitoring/presentation cases.
-- Spacing: 8px rhythm.
+- Card base: white background, 8px radius, 24px padding, and `0 2px 10px rgba(0, 0, 0, 0.05)` shadow in light enterprise pages.
+- Border radius: 8px by default, 12px only when the page style intentionally uses softer cards.
+- Border: no hard default border on cards. Use subtle dividers inside dense tables/lists only when needed.
+- Shadow: light and consistent; do not mix heavy shadows, glows, and borders across components.
+- Background: white card surfaces for light theme; controlled dark blue/black panels only for explicitly dark monitoring or cockpit cases.
+- Spacing: 8px rhythm, with 24px card padding as the default component safe area.
 - Typography: consistent label, value, title, helper, and metadata sizes.
 - Icon style: consistent stroke width and size.
 - Status labels: same color semantics across all components.
@@ -554,7 +602,9 @@ Rules:
 - Reserve space for title, legend, axes, labels, and tooltip.
 - Keep plot area centered within remaining space.
 - Avoid overlapping data labels; show labels only when they add value.
-- Keep legends close to the chart but outside the plot area unless intentionally embedded.
+- Charts with multiple data series must show a legend. Keep legends close to the chart but outside the plot area unless intentionally embedded with reserved space.
+- Hide chart outer borders and vertical gridlines by default; use very light dashed horizontal gridlines such as `#EEEEEE`.
+- Use the page-level palette for actual, target, positive, negative, selected, and disabled states. Do not rely on ECharts default random color order.
 - Use tooltips for detailed values.
 - Show empty/no-data state clearly.
 - Provide fullscreen when a chart has many series or labels.

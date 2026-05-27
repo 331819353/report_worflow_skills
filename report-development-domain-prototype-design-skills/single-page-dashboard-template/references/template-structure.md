@@ -43,6 +43,8 @@ page: {
 - ECharts, AntV S2, and custom diagram widgets should measure the body area and resize from that container.
 - If a chart label, legend, or table needs more room after the title/header is reserved, increase the block's column/row span or configure `viewport`; do not hide overflow behind the title area.
 - The component-area background fills the entire body rectangle. It must not be inset to an internal safety line, and the body does not draw a default nested border.
+- The shared card frame owns the visual base. Light theme cards are white, 8px radius, 24px padding, light `0 2px 10px` shadow, and no hard default border. Dark theme keeps the same geometry with black-blue tokens.
+- Block titles are plain top-left text, 16px and 600 weight. Business widgets should not duplicate the block title or add a boxed internal title.
 - Simple HTML tables fit the body by default with fixed layout and ellipsis. Add `.wide-table` or `data-wide="true"` only for true wide tables that should scroll horizontally inside the body viewport.
 
 ## Top Bar Contract

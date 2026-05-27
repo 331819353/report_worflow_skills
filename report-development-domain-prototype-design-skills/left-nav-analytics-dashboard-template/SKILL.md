@@ -114,9 +114,12 @@ Use this stack for report prototypes built from this template:
 - `WidgetRenderer` reads `dashboard.config.ts`, finds the component in `widgetRegistry`, injects `context`, and creates the full-size component viewport under the block body.
 - The component viewport is the only area where business widgets may paint. It owns clipping, table scrolling, and chart/canvas bounds so widgets cannot overflow the component-area background.
 - The component-area background must fill the whole body rectangle; do not inset it to an internal safety line or draw a default body border.
+- The shared card base is owned by the template: light theme uses white cards, 8px radius, 24px padding, and light `0 2px 10px` shadow with no hard border; dark theme uses matching enterprise dark tokens with the same geometry.
+- Block titles are plain top-left text: 16px, 600 weight, no boxed title container. Avoid duplicate internal titles inside business widgets.
 - `WidgetViewport` handles drag, zoom, reset, and initial centering when `viewport` is enabled.
 - Business widgets should receive data through typed props and `context`, fill their parent with `width: 100%; height: 100%`, and own their private styles locally.
 - Simple table widgets fit the body by default with fixed layout and ellipsis. Use `.wide-table` or `data-wide="true"` only for true wide tables that should scroll horizontally inside the body viewport.
+- Multi-series charts must show a legend, use one page-level semantic palette, and keep legends/labels outside the plot area. Status text must render as badge/pill or icon+text.
 - Widget `data` is resolved by the shell and passed as a `data` prop. `context.filters` contains only filters visible to that widget's `filterScope`; `context.allFilters` contains every filter.
 - A widget without `data` must declare `dataPolicy: 'static' | 'external'`; otherwise `validate:dashboard` fails.
 - Every widget must declare `visualType`: `line`, `bar`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, or `other`.

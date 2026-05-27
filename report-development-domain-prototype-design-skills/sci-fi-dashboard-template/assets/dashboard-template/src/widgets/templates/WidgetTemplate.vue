@@ -122,8 +122,13 @@
  * - props 中不要写 context，context 由 WidgetRenderer 自动传入。
  * - props 中不要写 data，data 由 WidgetRenderer 根据 widget.data 自动传入。
  * - 组件根元素必须撑满 100% 宽高，避免在分块里塌陷。
- * - 本组件只负责“内容区”内部显示，外层分块标题、边框、角标、背景由模板统一生成。
+ * - 本组件只负责“内容区”内部显示，外层统一卡片由模板生成：白底、8px 圆角、轻阴影、24px 安全内边距。
+ * - 暗色/大屏主题会使用对应黑蓝卡片 token，但圆角、阴影、padding 和标题层级保持一致。
+ * - 不要在组件根节点再包一层硬边框卡片，也不要把标题做成带框的小盒子。
  * - 内容区背景由模板铺满整个 body，不要再做一个缩进背景或默认边框。
+ * - KPI 核心数字使用 28-32px；单位/同比/辅助标签使用 12-14px；表格/列表里的财务和指标数字右对齐。
+ * - 多系列 ECharts 必须显示 legend；隐藏外边框和纵向网格，横向网格用浅色虚线。
+ * - 状态文字必须渲染成 badge/pill 或 icon+text，不要只输出纯文本。
  * - 简单表格默认应撑满 body 并用固定布局/省略号；只有真正宽表才加 .wide-table 或 data-wide="true"。
  * - WidgetRenderer/WidgetViewport 是外层能力，业务组件只写自己的展示逻辑和私有样式。
  * - WidgetRenderer 已经提供统一内容层次底纹，业务组件无需再重复外框。
@@ -202,6 +207,9 @@ const triggerExampleAction = () => {
   /* 必备：填满 WidgetRenderer 提供的组件视窗，也就是分块的组件区，不包含标题区。 */
   width: 100%;
   height: 100%;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
 
   /* 必备：允许组件在 CSS Grid/Flex 容器中正确收缩，避免撑破分块。 */
   min-width: 0;
@@ -232,10 +240,10 @@ const triggerExampleAction = () => {
   min-height: 30px;
   margin-top: 12px;
   padding: 0 12px;
-  border: 1px solid rgba(127, 213, 255, 0.28);
-  border-radius: 6px;
+  border: 0;
+  border-radius: 8px;
   color: #f3fbff;
-  background: rgba(37, 201, 255, 0.1);
+  background: rgba(37, 201, 255, 0.16);
   cursor: pointer;
 }
 </style>

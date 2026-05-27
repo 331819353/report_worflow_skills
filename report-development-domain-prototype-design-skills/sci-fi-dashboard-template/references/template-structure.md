@@ -35,6 +35,8 @@ layoutRows: ['ABCDEFGH', 'iggkllmm', 'innkoopp']
 - The generated block id is the character itself, so widget keys must match those characters.
 - The number of `nav` items is the number of pages shown in the navigation drawer.
 - The component-area background fills the entire body rectangle. It must not be inset to an internal safety line, and the body does not draw a default nested border.
+- The shared card frame owns the visual base. Dark cockpit cards use black-blue tokens with 8px radius, 24px padding, light controlled shadow, and no hard default border; light theme cards are white with the same geometry.
+- Block titles are plain top-left text, 16px and 600 weight. Business widgets should not duplicate the block title or add a boxed internal title.
 - Simple HTML tables fit the body by default with fixed layout and ellipsis. Add `.wide-table` or `data-wide="true"` only for true wide tables that should scroll horizontally inside the body viewport.
 
 ## Widget Registration Checklist

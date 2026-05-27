@@ -167,6 +167,55 @@ const handleDashboardAction = (event: DashboardWidgetActionEvent) => {
   white-space: nowrap;
 }
 
+.widget-renderer-content :deep(.numeric),
+.widget-renderer-content :deep(.metric-number),
+.widget-renderer-content :deep([data-align='number']) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.widget-renderer-content :deep(.status-badge),
+.widget-renderer-content :deep(.status-pill),
+.widget-renderer-content :deep(.badge),
+.widget-renderer-content :deep(.pill) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.widget-renderer-content :deep(.status-badge.is-danger),
+.widget-renderer-content :deep(.status-pill.is-danger),
+.widget-renderer-content :deep(.badge-danger) {
+  color: #ba1a1a;
+  background: rgba(186, 26, 26, 0.1);
+}
+
+.widget-renderer-content :deep(.status-badge.is-success),
+.widget-renderer-content :deep(.status-pill.is-success),
+.widget-renderer-content :deep(.badge-success) {
+  color: #0f8f5f;
+  background: rgba(15, 143, 95, 0.1);
+}
+
+.widget-renderer-content :deep(.chart-legend),
+.widget-renderer-content :deep(.legend) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: 100%;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .widget-renderer-visual-table .widget-renderer-content :deep(.antv-s2-container),
 .widget-renderer-visual-table .widget-renderer-content :deep(.s2-container),
 .widget-renderer-visual-table .widget-renderer-content :deep(.s2-table) {
@@ -180,11 +229,9 @@ const handleDashboardAction = (event: DashboardWidgetActionEvent) => {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%),
-    linear-gradient(90deg, rgba(32, 168, 255, 0.06), transparent 40%, rgba(105, 226, 189, 0.035));
+  background: transparent;
   content: "";
-  opacity: 0.86;
+  opacity: 1;
 }
 
 .widget-empty {

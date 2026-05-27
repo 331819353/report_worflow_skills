@@ -218,7 +218,10 @@ After mapping, apply `report-component-style-design`:
 - Values should scale within sensible bounds, not with viewport width alone.
 - Long labels need wrapping, abbreviation plus tooltip, or a larger block.
 - Complex diagrams should use zoom and drag instead of overflowing the page.
-- All components on the same page should share radius, border, shadow, typography, status colors, and interaction states.
+- All components on the same page should share card base, radius, shadow, typography, status colors, and interaction states.
+- Light enterprise components default to white cards with 8px radius, 24px padding, `0 2px 10px rgba(0, 0, 0, 0.05)` shadow, and no hard default border.
+- Status fields, risk labels, SLA states, and trend judgments should map to badge/pill or icon+text components rather than plain text.
+- Multi-series chart mappings must include a visible legend zone; do not map dense series into a chart span that cannot reserve legend space.
 
 ## Output Format
 

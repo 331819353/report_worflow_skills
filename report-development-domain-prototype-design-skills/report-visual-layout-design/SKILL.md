@@ -231,13 +231,16 @@ Rules:
 
 Each `8 * N` content block must separate the frame from the component body:
 
-- Block frame: border, background, safe padding, and optional block-level actions.
+- Block frame: unified card background, radius, shadow, safe padding, and optional block-level actions.
 - Header/title area: fixed or content-aware height for title, subtitle, unit, status tag, and small actions.
 - Component body area: the only viewport where charts, tables, KPI groups, text summaries, empty states, diagrams, and business components render.
 - Optional footer area: source, pagination, note, or legend only when it has reserved height.
 
 Hard rules:
 
+- Default light card style is pure white `#FFFFFF`, 8px radius, 24px padding, `box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)`, and no hard outer border.
+- Module title sits at the top-left as plain text: 16px, `font-weight: 600`, deep gray `#333333` in light theme. Do not put the title in a boxed mini-card.
+- Use semantic color tokens consistently: actual/current uses brand primary, target/baseline uses neutral or pale brand tint, risk/negative uses one red family, healthy/positive uses one green family.
 - Do not let a chart, icon, table, empty state, or business component render behind or across the title/header area.
 - Do not style a block title as a boxed nested card by default. Prefer plain text, subtle divider, underline, or small accent mark unless the product design system explicitly requires a title box.
 - The component body background must fill the full body rectangle up to the body edge. Do not create a smaller inner background that leaves a white or unrelated-color moat between the body edge and the safe content line.
@@ -551,7 +554,7 @@ Guidelines:
 - Align all content to the `8 * N` rectangular grid.
 - Use 8px spacing rhythm.
 - Use 8px or smaller card radius unless the product design system says otherwise.
-- Use subtle borders over heavy shadows.
+- Use a light unified card shadow over hard borders: default `0 2px 10px rgba(0, 0, 0, 0.05)`.
 - Keep card nesting shallow; avoid cards inside cards.
 - Use full-width bands or section blocks for major content groups.
 - Keep important numbers aligned and easy to compare.
