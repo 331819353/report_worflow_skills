@@ -13,10 +13,35 @@ export interface WidgetViewportConfig {
   naturalHeight?: number;
 }
 
+export type WidgetVisualType =
+  | 'line'
+  | 'bar'
+  | 'candlestick'
+  | 'heatmap'
+  | 'pie'
+  | 'radar'
+  | 'path'
+  | 'sunburst'
+  | 'gauge'
+  | 'scatter'
+  | 'boxplot'
+  | 'parallel'
+  | 'map'
+  | 'graph'
+  | 'tree'
+  | 'treemap'
+  | 'sankey'
+  | 'funnel'
+  | 'metric-card'
+  | 'table'
+  | 'other';
+
 export interface BaseWidgetConfig<TType extends string, TProps extends Record<string, unknown>> {
   type: TType;
   title?: string;
   props: TProps;
+  // 组件视觉类型。框架校验会用它检查当前 layoutRows 占位是否属于允许尺寸。
+  visualType: WidgetVisualType;
   // 组件抛出 dashboard-action 后，框架会按 actions[event.name] 执行对应动作。
   // 业务组件不直接打开弹窗或跳转，保持可复用。
   actions?: DashboardActionMap;

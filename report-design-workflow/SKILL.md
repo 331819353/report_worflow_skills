@@ -1,6 +1,6 @@
 ---
 name: report-design-workflow
-description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, or return a URL for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data-backed demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 单页报表, 顶部栏报表, 可运行页面, 生成页面, 实现报表, 落地报表, 重构页面, 截图还原, 自动部署, 部署URL, 返回URL, demo, mock 数据, Vue 报表, template implementation, 数据联动, 筛选联动, and 组件联动准确性. For pure methodology questions, prefer the relevant report-type skill. Orchestrates requirement extraction, report-type skills, mapping, mock data, filters, interactions, data/filter/component linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, deployment, and URL return."
+description: "Run the end-to-end workflow for business report prototypes and runnable dashboard prototypes. Use when a task asks to build, generate, implement, redesign, repair, optimize, deploy, auto-start, detect a free port, or return a URL for a report prototype, dashboard prototype, Vue report page, runnable analytics page, screenshot-to-prototype conversion, mock-data-backed demo, or implementation-ready report page. Trigger strongly on 原型, 页面原型, 报表原型, 仪表盘原型, 单页报表, 顶部栏报表, 可运行页面, 生成页面, 实现报表, 落地报表, 重构页面, 截图还原, 自动部署, 自动启动, 端口检测, 部署URL, 返回URL, demo, mock 数据, Vue 报表, template implementation, 数据联动, 筛选联动, and 组件联动准确性. For pure methodology questions, prefer the relevant report-type skill. Orchestrates requirement extraction, report-type skills, mapping, mock data, filters, interactions, data/filter/component linkage gates, visual/component design, TypeScript + Vue 3 + ECharts + AntV S2 implementation, templates, automatic local startup, deployment, and URL return."
 ---
 
 # Report Design Workflow
@@ -70,11 +70,12 @@ Deliver:
 - Data files or mock data.
 - Component implementation.
 - Automatic deployment when requested or when a shareable prototype URL is part of the task.
+- Automatic local server startup on an available port when a runnable prototype should be shown.
 - Local verification.
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Use `single-page-dashboard-template` for single-page report prototypes with light/dark layouts, a centered top-bar title, top-left logo, right-side theme switch, refresh, filter, download, and 8*N content grid. Use `left-nav-analytics-dashboard-template` for standard enterprise analytics dashboards with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use `single-page-dashboard-template` for compact focused reports with light/dark layouts, a centered top-bar title, top-left logo, right-side theme switch, refresh, filter, download, and 8*N content grid. Use `left-nav-analytics-dashboard-template` for standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
 
 ### 4. Review And Repair Mode
 
@@ -99,7 +100,7 @@ Clarify or infer:
 - Is there a specific report page or a report category?
 - Is the expected output text, specification, code, or both?
 - Is the page a single-page top-bar report, standard enterprise sidebar dashboard, or sci-fi/big-screen cockpit?
-- Does the user need automatic deployment and a returned URL?
+- Does the user need automatic deployment, automatic local startup, and a returned URL?
 
 Do not block if missing details can be safely assumed.
 
@@ -268,6 +269,9 @@ Template and custom implementations must both pass the same audit:
 - Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
 - Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
 - Layout-body audit: every visual block separates title/header from component body; charts, tables, icons, empty states, and custom canvases render only inside the body viewport.
+- Component viewport audit: every rendered widget has a full-size viewport layer between block body and business component; the viewport owns background, clipping, scroll, and resize bounds.
+- Span audit: every component declares `visualType` and uses one of the legal `columns * rows` spans from `report-visual-layout-design`.
+- Table viewport audit: every native table, AntV S2 table, wide matrix, and comparison grid declares `visualType: 'table'`, mounts inside the block body, and scrolls internally instead of expanding or clipping the block.
 - Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
 
 Minimum smoke tests before delivery:
@@ -280,7 +284,10 @@ Minimum smoke tests before delivery:
 - Opening a drawer/modal, then changing a filter, either synchronizes or shows a stale-selection state.
 - Export/download/jump/fullscreen receives the same filter context as the source component.
 - Block body QA passes: titles remain readable, and charts/tables/empty states do not overlap the header after default and filtered data changes.
+- Component viewport QA passes: charts, tables, KPI cards, text blocks, canvases, SVGs, and empty states do not paint outside the component-area background.
+- Table body QA passes: each table shows either all columns within the block or a visible internal horizontal scroll path; no table content is silently clipped at the right or bottom edge.
 - Radar/chart label QA passes: category labels, dimension labels, legends, and graphics do not overlap after default and filtered data changes.
+- Component span QA passes: line/bar/K-line/heatmap, pie/radar/path/sunburst/gauge, scatter/box/parallel, map/graph/tree/treemap/sankey/funnel, metric cards, tables, and other components all use their legal span sets.
 
 ### Stage 8: Visual Layout Design
 
@@ -292,6 +299,7 @@ Output must include:
 - Haier logo usage.
 - Header, filter bar, toolbar, sidebar/menu, footer decisions.
 - 8*N rectangular grid structure.
+- Legal component span matrix and each component's selected `columns * rows` span.
 - Content pattern: 总分总, 总分, 分总, 明细优先, 告警处理, 执行闭环, or recap narrative.
 - Visual style preset.
 - Empty/loading/error states.
@@ -335,8 +343,9 @@ Default technical architecture:
 
 Template choice:
 
-- Use `single-page-dashboard-template` for one focused report page whose frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and an 8*N content grid.
-- Use `left-nav-analytics-dashboard-template` for enterprise analytics report suites or workbenches with multiple pages/modules, sidebar navigation, filters, 8*N cards, business widgets, and standard repeated-use behavior.
+- Report is a content form, not a template decision. A "报告/报表/复盘/诊断" request can use any template after judging content volume and usage.
+- Use `single-page-dashboard-template` for a compact focused report whose frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and one 8*N content grid.
+- Use `left-nav-analytics-dashboard-template` for enterprise analytics reports, multi-chapter reports, report suites, or workbenches with multiple pages/modules, sidebar navigation, filters, 8*N cards, business widgets, and standard repeated-use behavior.
 - Use `sci-fi-dashboard-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
 - If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
 
@@ -344,8 +353,8 @@ Template selection rules:
 
 | Situation | Choose | Why |
 | --- | --- | --- |
-| One report topic, no page navigation, users need a direct first-screen answer and a compact top toolbar | `single-page-dashboard-template` | It keeps the frame light and lets the 8*N content grid carry the report. |
-| Multiple report pages, modules, or views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-dashboard-template` | Sidebar navigation makes a report suite feel stable and discoverable. |
+| Compact report: one decision question, usually 1-3 sections, roughly 4-12 components, no persistent page navigation, and users need a direct first-screen answer | `single-page-dashboard-template` | It keeps the frame light and lets one 8*N content grid carry the report. |
+| Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-dashboard-template` | Sidebar navigation can represent report chapters as well as different report modules. |
 | Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-dashboard-template` | It is optimized for enterprise work rather than showpiece display. |
 | Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `sci-fi-dashboard-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact. |
 | The user explicitly asks for 单页 / 顶部栏 / 无侧边栏 | `single-page-dashboard-template` | Respect the requested shell unless existing code forces another pattern. |
@@ -355,8 +364,8 @@ Selection priority:
 
 1. Existing project framework and user-stated shell.
 2. Display scenario: big-screen/presentation uses `sci-fi-dashboard-template`.
-3. Information architecture: multi-page/report-suite uses `left-nav-analytics-dashboard-template`.
-4. Standalone focused report uses `single-page-dashboard-template`.
+3. Content volume and information architecture: multi-chapter or dense reports use `left-nav-analytics-dashboard-template` even if the user calls it one report.
+4. Standalone compact report uses `single-page-dashboard-template`.
 
 Do not choose a template only because it "looks better"; choose by scenario, navigation depth, interaction density, and display environment.
 
@@ -369,7 +378,36 @@ Implementation must:
 - Use ECharts before custom SVG/canvas for standard charts.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
 - Implement component overflow and responsive behavior from earlier stages.
-- Run and verify the page when a dev server is required.
+- Run and verify the page when a dev server is required. Do not finish by asking the user to start the project manually.
+
+### Stage 10.5: Automatic Local Startup And Port Handling
+
+Use this stage for any implementation, repair, or handoff where a runnable local prototype should be shown, even when public deployment is not requested.
+
+Local startup workflow:
+
+1. Determine the preferred port.
+   Use the user-requested port, current in-app browser port, project `.env`, Vite config, package script, or the Vite default `5173`, in that priority order.
+
+   On interrupted or resumed work, first check the current browser URL and likely project ports. If a same-project server is already reachable and the page verifies correctly, reuse that URL instead of starting another server.
+
+2. Detect whether the port is available.
+   Use `lsof -nP -iTCP:<port> -sTCP:LISTEN` on macOS/Linux. If unavailable, use `nc -z 127.0.0.1 <port>` or an equivalent local socket check.
+
+3. Choose a usable port.
+   - If the port is free, use it.
+   - If the port is occupied by the same project and the page verifies correctly, reuse it and return that URL.
+   - If the port is occupied by another process, do not kill it. Increment the port until a free port is found.
+   - If a package script or config pins an unusable port, override it through the command-line `--port <port>` argument or update the local configuration when the project requires a fixed port.
+
+4. Start the server automatically.
+   If the project provides auto-port scripts, use `npm run dev:auto -- --port <port>` for development verification or `npm run preview:auto -- --port <port>` after a production build. Otherwise use `npm run dev -- --host 0.0.0.0 --port <port>` or `npm run preview -- --host 0.0.0.0 --port <port>`.
+
+5. Verify before final response.
+   Open or request `http://127.0.0.1:<port>/` with browser tooling or a local HTTP check. If it is unreachable, inspect terminal output, choose a new port if needed, and retry once before reporting a blocker.
+
+6. Return the exact URL.
+   Final handoff must include the verified local URL, usually `http://127.0.0.1:<port>/`, or the public deployed URL if deployment succeeds.
 
 ### Stage 11: Automatic Deployment And URL Return
 
@@ -381,7 +419,7 @@ Deployment workflow:
    Run dependency installation if needed, then run the project build command, usually `npm run build`.
 
 2. Verify production output.
-   Confirm the Vite output directory exists, usually `dist`. Run a local preview when useful, usually `npm run preview -- --host 0.0.0.0`, and inspect the page if browser tools are available.
+   Confirm the Vite output directory exists, usually `dist`. Run a local preview through Stage 10.5 when useful, using an available port, and inspect the page if browser tools are available.
 
 3. Choose deployment target.
    - If the project already has deployment configuration, use it.
@@ -482,6 +520,7 @@ Before final delivery, verify:
 - Empty, loading, no-permission, error, and stale-selection states are defined.
 - Implementation uses existing project patterns and is verified locally when built.
 - Runnable prototypes use TypeScript + Vue 3 + ECharts + AntV S2 unless the existing project has an explicit conflicting stack.
+- Runnable prototypes are automatically started on a verified available port and return the exact local URL when no public URL is available.
 - Deployment, when requested, builds successfully and returns a public URL or explains why only a local preview URL is available.
 
 ## Avoid
@@ -494,4 +533,5 @@ Before final delivery, verify:
 - Do not design filters or jumps without permission and state behavior.
 - Do not finish an implementation without checking for overlap, clipping, and broken layout.
 - Do not replace ECharts or AntV S2 with ad hoc chart/table code for standard report components.
+- Do not leave a completed runnable prototype at "please run npm..." handoff; detect a port, start it, verify it, and return the URL.
 - Do not say deployment is done without returning a URL or a concrete deployment blocker.

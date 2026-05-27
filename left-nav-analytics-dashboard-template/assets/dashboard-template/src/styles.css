@@ -18,6 +18,8 @@
   --accent: #0f9f8f;
   --danger: #ba1a1a;
   --shadow: 0 18px 50px rgba(25, 38, 58, 0.12);
+  --cell-body-background: rgba(255, 255, 255, 0.72);
+  --cell-body-line: rgba(115, 118, 134, 0.16);
   --sidebar-width: var(--sidebar-expanded-width, 256px);
 }
 
@@ -35,6 +37,8 @@
   --primary: #b4c5ff;
   --primary-soft: rgba(180, 197, 255, 0.12);
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+  --cell-body-background: rgba(12, 18, 26, 0.52);
+  --cell-body-line: rgba(196, 210, 224, 0.14);
 }
 
 * {
@@ -453,6 +457,7 @@ button {
 
 .placeholder-cell {
   position: relative;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   padding: var(--cell-padding);
@@ -465,6 +470,7 @@ button {
   inset: var(--cell-padding);
   display: grid;
   grid-template-rows: 34px minmax(0, 1fr);
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   padding: 16px;
@@ -487,7 +493,10 @@ button {
 }
 
 .placeholder-cell-title span {
+  display: block;
+  flex: 0 1 auto;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -505,8 +514,20 @@ button {
 .placeholder-cell-body {
   position: relative;
   display: grid;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
+  padding: 8px;
+  border: 1px solid var(--cell-body-line);
+  border-radius: 6px;
+  background: var(--cell-body-background);
+}
+
+.placeholder-cell-body > .widget-renderer {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
 }
 
 .dashboard-modal-layer {

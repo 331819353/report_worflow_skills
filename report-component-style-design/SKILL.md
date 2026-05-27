@@ -68,6 +68,7 @@ Hard rules:
 
 - The component may only render inside the block body viewport. It must not position charts, icons, legends, labels, empty states, or canvases across the header/title area.
 - The block body must be a measurable container with `width: 100%`, `height: 100%`, `min-width: 0`, `min-height: 0`, and a deliberate overflow policy.
+- The business component must render inside an explicit component viewport layer under the block body. The viewport owns background, clipping, scroll, and resize bounds; the business component must not bypass it with fixed dimensions or page-level positioning.
 - ECharts canvases, AntV S2 tables, custom SVGs, and diagram canvases must mount to the body viewport and resize from that viewport.
 - Component-level internal titles are optional only when the block header already names the component. Avoid duplicate titles.
 - If the business component needs its own toolbar, place it inside the body top edge with reserved space, or promote the action to the block header.
@@ -154,15 +155,20 @@ Hard rules:
 - Do not let legends, labels, controls, or values extend beyond component bounds.
 - Do not allow right-column cards to crop text at the viewport edge.
 - Do not let bottom rows or nested cards be partially visible unless the component clearly indicates scroll.
+- Tables and analytical grids must declare `visualType: 'table'` in runnable templates so the shell can apply table-specific viewport behavior.
+- Simple HTML tables must be wrapped by an internal scroll viewport; table cells should use stable max widths, ellipsis, and tooltip/full-value access instead of forcing the block wider.
+- AntV S2 tables must size from the block body and use S2's own scroll/frozen-header behavior; do not place an S2 canvas in a fixed-size wrapper larger than the block body.
 
 Implementation-oriented expectations:
 
 - Component containers should behave like viewports with `min-width: 0` and `min-height: 0` equivalents.
+- Business component root nodes should fill the component viewport with `width: 100%`, `height: 100%`, `min-width: 0`, and `min-height: 0`; avoid `100vw`, `100vh`, fixed pixel widths, or absolute positioning against the page.
 - Chart/table bodies should be allowed to shrink inside the card after title/action areas reserve space.
 - Text should wrap before it overflows.
 - Operations should collapse into an overflow menu before they overlap titles or content.
 - ECharts components should call resize when their container, tab, drawer, fullscreen state, or grid span changes.
 - AntV S2 components should receive explicit container dimensions or resize hooks so frozen headers, scrollbars, and cell text remain aligned.
+- Native table fallback should use `table-layout: auto` only inside a horizontal scroll viewport; use `table-layout: fixed` for compact fixed-column lists.
 
 ## Block Fit Rules
 
@@ -186,6 +192,22 @@ If the minimum viable size is larger than the assigned block:
 - Split the component into multiple grid-aligned rectangles.
 
 Do not solve fit problems by simply shrinking typography below readability.
+
+### Legal Span Rules
+
+When the page uses an `8 * N` grid, component body fit must start from the legal span matrix in `report-visual-layout-design`.
+
+Hard rules:
+
+- 折线图、柱状图、K 线图、热力图 only use `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3`.
+- 饼图、雷达图、路径图、旭日图、仪表盘 only use `1*1`, `2*2`, `3*2`, `2*3`, `3*3`, `4*4`.
+- 散点图、盒须图、平行坐标系 only use `3*1`, `2*2`, `3*2`, `2*3`, `3*3`, `2*4`, `4*4`, `4*2`, `4*3`, `3*4`.
+- 地图、关系图、树图、矩形树图、桑基图、漏斗图 only use `2*2`, `3*2`, `3*3`, `4*3`, `4*4`.
+- 指标卡 only use `1*1`, `2*1`.
+- 表格 only use `3*2`, `4*2`, `5*2`, `3*3`, `4*3`, `5*3`, `6*3`, `7*3`, `8*3`, `4*4`, `5*4`, `6*4`, `7*4`, `8*4`.
+- 其他组件 only use `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3`.
+
+If the selected span is legal but still visually cramped, choose a larger legal span. Do not invent an unsupported span during implementation.
 
 ## Complex Diagram Viewport Rules
 
@@ -256,6 +278,7 @@ Title rules:
 - Do not let title text overlap action icons.
 - Do not wrap ordinary component titles in a visible boxed title card. Use plain text plus a subtle underline/divider/accent mark unless a very specific visual system asks for boxed headers.
 - Do not truncate decision-critical titles; wrap to two lines or shorten wording.
+- If a template provides a one-line block title, the title must have `min-width: 0`, ellipsis, and full-title tooltip. If that hides decision-critical meaning, shorten the title or move口径 into subtitle/popover instead of letting it overflow.
 - Use a title only when it helps scanning. Tiny KPI cards may use label-as-title.
 - For charts, title should state the measure and comparison dimension, such as "收入完成率 by 区域".
 - For tables, title should describe the record set, such as "逾期回款明细".
@@ -574,6 +597,7 @@ S2 rules:
 
 - Mount S2 only after the container has measurable width and height.
 - Keep S2 width and height synchronized with the assigned grid block.
+- Never let the S2 logical table size expand the report block. The block body is the viewport; S2 handles horizontal/vertical scrolling inside it.
 - Use frozen rows/columns for identifiers and key dimensions.
 - Preserve readable cell text; do not shrink cells until values become unreadable.
 - Use S2 tooltip, hierarchy, totals, and interaction states before custom table overlays.

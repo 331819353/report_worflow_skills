@@ -19,6 +19,8 @@
   --accent-soft: rgba(37, 201, 255, 0.16);
   --warm: #ffcf7a;
   --shadow: 0 24px 72px rgba(0, 8, 16, 0.44);
+  --cell-body-background: rgba(1, 13, 26, 0.44);
+  --cell-body-line: rgba(127, 213, 255, 0.18);
 }
 
 :root[data-theme='light'] {
@@ -34,6 +36,8 @@
   --accent-secondary: #0ba982;
   --accent-soft: rgba(0, 120, 215, 0.12);
   --shadow: 0 24px 72px rgba(16, 48, 80, 0.16);
+  --cell-body-background: rgba(255, 255, 255, 0.68);
+  --cell-body-line: rgba(0, 91, 170, 0.14);
 }
 
 * {
@@ -509,6 +513,7 @@ button {
 
 .placeholder-cell {
   position: relative;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   padding: var(--cell-padding);
@@ -522,6 +527,8 @@ button {
   display: grid;
   grid-template-rows: 28px minmax(0, 1fr);
   gap: 6px;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   padding: 10px 12px 12px;
   border-color: color-mix(in srgb, var(--title-dominant-color) 34%, transparent);
@@ -566,6 +573,8 @@ button {
 .placeholder-cell-title span {
   position: relative;
   z-index: 1;
+  display: block;
+  flex: 0 1 auto;
   min-width: 0;
   max-width: 100%;
   padding: 0 12px 0 0;
@@ -577,8 +586,20 @@ button {
 .placeholder-cell-body {
   position: relative;
   display: grid;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
+  padding: 8px;
+  border: 1px solid var(--cell-body-line);
+  border-radius: 6px;
+  background: var(--cell-body-background);
+}
+
+.placeholder-cell-body > .widget-renderer {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
 }
 
 .placeholder-cell-inner::before,

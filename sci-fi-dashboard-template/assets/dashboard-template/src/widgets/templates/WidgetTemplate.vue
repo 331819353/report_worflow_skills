@@ -46,6 +46,7 @@
  *    widgets: {
  *      A: {
  *        type: 'MyWidget',
+ *        visualType: 'other',
  *        title: '业务标题',
  *        props: {
  *          value: '128.6',
@@ -91,6 +92,7 @@
  *    如果固定 params 必须过滤 staticData，写 requiredParams，避免参数字段拼错后静默不过滤。
  *    如果组件明确不受某个全局筛选影响，写 ignoredFilters，不要让联动关系变成隐性假设。
  *    无 data 的组件必须在配置里写 dataPolicy: 'static' | 'external'，否则 validate:dashboard 会失败。
+ *    每个组件必须写 visualType，框架会用它校验当前 layoutRows 占位是否合法。
  *
  * 9. 筛选作用域通过 filterScope 控制：
  *    - filter 配置没有 scope 时是全局筛选，所有组件都能拿到。
@@ -129,6 +131,7 @@
  * - 大图、关系图、杜邦图这类组件建议声明 naturalWidth/naturalHeight，
  *   再用 viewport 承接拖拽和缩放。
  * - 雷达图必须显式配置 axisName/nameGap、legend 和 radius，避免维度标签与分类/图例重叠。
+ * - 组件占位必须符合 visualType 的合法尺寸；不够用时换更大的合法分块，不要靠溢出或缩字解决。
  */
 import type { DashboardWidgetActionEvent } from '../../types/actions';
 import type { WidgetContext } from '../types';
@@ -191,7 +194,7 @@ const triggerExampleAction = () => {
 
 <style scoped>
 .custom-widget {
-  /* 必备：填满分块内容区域。 */
+  /* 必备：填满 WidgetRenderer 提供的组件视窗，也就是分块的组件区，不包含标题区。 */
   width: 100%;
   height: 100%;
 
@@ -199,7 +202,12 @@ const triggerExampleAction = () => {
   min-width: 0;
   min-height: 0;
 
-  /* 可选：如果组件内部自己滚动，打开下面两行。 */
+  /*
+   * 必备：不要给根节点或图表容器写大于组件视窗的固定宽高。
+   * ECharts、AntV S2、SVG、Canvas 都应从当前根节点读取尺寸并在 resize 时重算。
+   */
+
+  /* 可选：如果组件内部自己滚动，打开下面两行；否则交给 WidgetRenderer 兜底裁剪。 */
   /* overflow: auto; */
   /* overscroll-behavior: contain; */
 

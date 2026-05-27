@@ -91,6 +91,111 @@ const builtinActions = new Set([
   'refresh',
 ]);
 
+const allowedSpansByVisualType = {
+  line: ['2x1', '2x2', '3x2', '3x3', '4x4', '4x2', '4x3'],
+  bar: ['2x1', '2x2', '3x2', '3x3', '4x4', '4x2', '4x3'],
+  candlestick: ['2x1', '2x2', '3x2', '3x3', '4x4', '4x2', '4x3'],
+  heatmap: ['2x1', '2x2', '3x2', '3x3', '4x4', '4x2', '4x3'],
+  pie: ['1x1', '2x2', '3x2', '2x3', '3x3', '4x4'],
+  radar: ['1x1', '2x2', '3x2', '2x3', '3x3', '4x4'],
+  path: ['1x1', '2x2', '3x2', '2x3', '3x3', '4x4'],
+  sunburst: ['1x1', '2x2', '3x2', '2x3', '3x3', '4x4'],
+  gauge: ['1x1', '2x2', '3x2', '2x3', '3x3', '4x4'],
+  scatter: ['3x1', '2x2', '3x2', '2x3', '3x3', '2x4', '4x4', '4x2', '4x3', '3x4'],
+  boxplot: ['3x1', '2x2', '3x2', '2x3', '3x3', '2x4', '4x4', '4x2', '4x3', '3x4'],
+  parallel: ['3x1', '2x2', '3x2', '2x3', '3x3', '2x4', '4x4', '4x2', '4x3', '3x4'],
+  map: ['2x2', '3x2', '3x3', '4x3', '4x4'],
+  graph: ['2x2', '3x2', '3x3', '4x3', '4x4'],
+  tree: ['2x2', '3x2', '3x3', '4x3', '4x4'],
+  treemap: ['2x2', '3x2', '3x3', '4x3', '4x4'],
+  sankey: ['2x2', '3x2', '3x3', '4x3', '4x4'],
+  funnel: ['2x2', '3x2', '3x3', '4x3', '4x4'],
+  'metric-card': ['1x1', '2x1'],
+  table: ['3x2', '4x2', '5x2', '3x3', '4x3', '5x3', '6x3', '7x3', '8x3', '4x4', '5x4', '6x4', '7x4', '8x4'],
+  other: ['2x1', '2x2', '3x2', '3x3', '4x4', '4x2', '4x3'],
+};
+
+const emptyGridMarks = new Set(['.', ' ']);
+
+const formatAllowedSpans = (visualType) => allowedSpansByVisualType[visualType]?.join(', ') ?? '';
+
+const buildLayoutBlockSpans = (rowsToBuild, location) => {
+  const cells = new Map();
+  const spans = new Map();
+
+  rowsToBuild.forEach((row, rowIndex) => {
+    Array.from(row).forEach((label, columnIndex) => {
+      if (!emptyGridMarks.has(label)) {
+        cells.set(`${rowIndex}:${columnIndex}`, label);
+      }
+    });
+  });
+
+  const visited = new Set();
+  const directions = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ];
+  const toKey = (row, column) => `${row}:${column}`;
+
+  cells.forEach((label, cellKey) => {
+    if (visited.has(cellKey)) {
+      return;
+    }
+
+    const queue = [cellKey];
+    const component = [];
+    visited.add(cellKey);
+
+    while (queue.length > 0) {
+      const currentKey = queue.shift();
+
+      if (!currentKey) {
+        continue;
+      }
+
+      const [row, column] = currentKey.split(':').map(Number);
+      component.push([row, column]);
+
+      directions.forEach(([rowOffset, columnOffset]) => {
+        const nextKey = toKey(row + rowOffset, column + columnOffset);
+
+        if (!visited.has(nextKey) && cells.get(nextKey) === label) {
+          visited.add(nextKey);
+          queue.push(nextKey);
+        }
+      });
+    }
+
+    const rows = component.map(([row]) => row);
+    const columns = component.map(([, column]) => column);
+    const minRow = Math.min(...rows);
+    const maxRow = Math.max(...rows);
+    const minColumn = Math.min(...columns);
+    const maxColumn = Math.max(...columns);
+    const isRectangle = component.length === (maxRow - minRow + 1) * (maxColumn - minColumn + 1);
+
+    if (!isRectangle) {
+      errors.push(`${location}: layout block "${label}" must form one rectangle.`);
+      return;
+    }
+
+    if (spans.has(label)) {
+      errors.push(`${location}: layout block "${label}" appears in disconnected rectangles; use unique block ids.`);
+      return;
+    }
+
+    spans.set(label, {
+      columns: maxColumn - minColumn + 1,
+      rows: maxRow - minRow + 1,
+    });
+  });
+
+  return spans;
+};
+
 const validateActionObject = (actionNode, location) => {
   if (!isObject(actionNode)) {
     return;
@@ -143,18 +248,35 @@ const validateActions = (actionsNode, location) => {
   });
 };
 
-const validateWidget = (widgetNode, location) => {
+const validateWidget = (widgetNode, location, span) => {
   if (!isObject(widgetNode)) {
     errors.push(`${location}: widget config must be an object.`);
     return;
   }
 
   const widgetType = getStringValue(getProperty(widgetNode, 'type'));
+  const visualType = getStringValue(getProperty(widgetNode, 'visualType'));
   const dataNode = getProperty(widgetNode, 'data');
   const dataPolicy = getStringValue(getProperty(widgetNode, 'dataPolicy'));
 
   if (!widgetType) {
     errors.push(`${location}: widget is missing type.`);
+  }
+
+  if (!visualType) {
+    errors.push(`${location}: widget must set visualType so the 8*N span can be validated.`);
+  } else if (!allowedSpansByVisualType[visualType]) {
+    errors.push(`${location}: unsupported visualType "${visualType}".`);
+  } else if (!span) {
+    errors.push(`${location}: widget key does not match any layoutRows block.`);
+  } else {
+    const spanText = `${span.columns}x${span.rows}`;
+
+    if (!allowedSpansByVisualType[visualType].includes(spanText)) {
+      errors.push(
+        `${location}: visualType "${visualType}" cannot use span ${spanText}. Allowed spans: ${formatAllowedSpans(visualType)}.`,
+      );
+    }
   }
 
   if (!dataNode && dataPolicy !== 'static' && dataPolicy !== 'external') {
@@ -211,15 +333,28 @@ const collectWidgets = () => {
   const widgets = [];
 
   const visit = (node) => {
-    if (ts.isPropertyAssignment(node) && getName(node.name) === 'widgets' && isObject(node.initializer)) {
-      node.initializer.properties.forEach((property) => {
-        if (ts.isPropertyAssignment(property)) {
-          widgets.push({
-            location: `widgets.${getName(property.name)}`,
-            node: property.initializer,
-          });
+    if (isObject(node)) {
+      const widgetsNode = getProperty(node, 'widgets');
+
+      if (isObject(widgetsNode)) {
+        const layoutRows = getStringArray(getProperty(node, 'layoutRows'));
+        const layoutSpans = buildLayoutBlockSpans(layoutRows, 'layoutRows');
+
+        if (widgetsNode.properties.length > 0 && layoutRows.length === 0) {
+          errors.push('widgets: cannot validate widget spans because sibling layoutRows is missing.');
         }
-      });
+
+        widgetsNode.properties.forEach((property) => {
+          if (ts.isPropertyAssignment(property)) {
+            const blockId = getName(property.name);
+            widgets.push({
+              location: `widgets.${blockId}`,
+              node: property.initializer,
+              span: layoutSpans.get(blockId),
+            });
+          }
+        });
+      }
     }
 
     ts.forEachChild(node, visit);
@@ -266,7 +401,7 @@ const validateWidgetSource = (filePath) => {
   }
 };
 
-collectWidgets().forEach(({ node, location }) => validateWidget(node, location));
+collectWidgets().forEach(({ node, location, span }) => validateWidget(node, location, span));
 walkVueFiles(widgetComponentsPath).forEach(validateWidgetSource);
 
 warnings.forEach((warning) => console.warn(`[dashboard-contract warning] ${warning}`));

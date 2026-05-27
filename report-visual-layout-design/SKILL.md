@@ -204,6 +204,27 @@ Recommended spans:
 
 Use the grid to make the report feel ordered, not rigid. If a component is important, give it more blocks; if it is secondary, reduce its span or move it lower.
 
+### Component Span Matrix
+
+In an `8 * N` grid, component spans are written as `columns * rows`. Use only the following spans unless the user explicitly extends the matrix for a special component.
+
+| Component type | Allowed spans |
+| --- | --- |
+| 折线图 / 柱状图 / K 线图 / 热力图 | `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3` |
+| 饼图 / 雷达图 / 路径图 / 旭日图 / 仪表盘 | `1*1`, `2*2`, `3*2`, `2*3`, `3*3`, `4*4` |
+| 散点图 / 盒须图 / 平行坐标系 | `3*1`, `2*2`, `3*2`, `2*3`, `3*3`, `2*4`, `4*4`, `4*2`, `4*3`, `3*4` |
+| 地图 / 关系图 / 树图 / 矩形树图 / 桑基图 / 漏斗图 | `2*2`, `3*2`, `3*3`, `4*3`, `4*4` |
+| 指标卡 | `1*1`, `2*1` |
+| 表格 | `3*2`, `4*2`, `5*2`, `3*3`, `4*3`, `5*3`, `6*3`, `7*3`, `8*3`, `4*4`, `5*4`, `6*4`, `7*4`, `8*4` |
+| 其他组件 | `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3` |
+
+Rules:
+
+- Treat these spans as the legal placement set, not loose inspiration.
+- If a component's title, legend, axis labels, toolbars, or data density cannot fit in the chosen legal span, move to a larger legal span or switch component type.
+- Do not shrink text, hide overflow, or let legends overlap to force an illegal or too-small span to work.
+- For runnable templates, declare the component `visualType` in widget config so validation can check the actual `layoutRows` span.
+
 ### Block Internal Anatomy
 
 Each `8 * N` content block must separate the frame from the component body:
@@ -218,7 +239,9 @@ Hard rules:
 - Do not let a chart, icon, table, empty state, or business component render behind or across the title/header area.
 - Do not style a block title as a boxed nested card by default. Prefer plain text, subtle divider, underline, or small accent mark unless the product design system explicitly requires a title box.
 - The body viewport must have explicit `min-width: 0`, `min-height: 0`, and a defined overflow strategy.
+- A component viewport layer must sit inside the body viewport and carry the component-area background/clipping. The rendered chart/table/card must fit this viewport, not the full block and not the page.
 - ECharts and AntV S2 instances must mount and resize against the body viewport, not the whole card frame.
+- Tables must either fit their visible columns inside the body viewport or scroll inside the body viewport. They must never expand the grid block or rely on page-level horizontal overflow.
 - If the header needs two lines, more actions, or a status explanation, increase the row span or move secondary text into a tooltip/drawer.
 - Empty/loading/no-permission states must be centered inside the body viewport and must not replace the title area.
 - For complex diagrams, the body viewport is the visible pan/zoom window; the diagram's logical size may exceed it, but the block rectangle must not expand.

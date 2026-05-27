@@ -979,7 +979,7 @@ watch(
           >
             <div class="placeholder-cell-inner">
               <div class="placeholder-cell-title">
-                <span>{{ getBlockTitle(block.label) }}</span>
+                <span :title="getBlockTitle(block.label)">{{ getBlockTitle(block.label) }}</span>
               </div>
               <div class="placeholder-cell-body">
                 <WidgetRenderer
@@ -1029,7 +1029,7 @@ watch(
             >
               <div class="placeholder-cell-inner">
                 <div class="placeholder-cell-title">
-                  <span>{{ getModalBlockTitle(block.label) }}</span>
+                  <span :title="getModalBlockTitle(block.label)">{{ getModalBlockTitle(block.label) }}</span>
                 </div>
                 <div class="placeholder-cell-body">
                   <WidgetRenderer

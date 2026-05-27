@@ -169,6 +169,7 @@ Every mapping must produce a binding matrix before implementation or final speci
 Minimum columns:
 
 - Component ID and title.
+- Component type, `visualType`, and planned `columns * rows` span.
 - Business question answered.
 - Data source or dataset.
 - Row grain and required fields.
@@ -200,6 +201,7 @@ After choosing components, coordinate with visual layout:
 
 - Put high-level judgment before detailed evidence unless the report type is detail query.
 - Use the 8*N grid from `report-visual-layout-design`; every component must occupy a rectangular group of blocks.
+- Choose each component's span from the legal component span matrix in `report-visual-layout-design`; do not invent unsupported sizes.
 - Allocate larger spans to charts with long labels, dense legends, many categories, or horizontal comparisons.
 - Do not force KPI cards, text summaries, charts, and tables into equal sizes if their content density differs.
 - Give tables, decomposition trees, lineage graphs, maps, and Gantt charts dedicated scroll/fullscreen behavior.

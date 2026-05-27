@@ -528,6 +528,7 @@ button {
 
 .placeholder-cell {
   position: relative;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   padding: var(--cell-padding);
@@ -541,6 +542,8 @@ button {
   display: grid;
   grid-template-rows: 36px minmax(0, 1fr);
   gap: 10px;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   padding: 10px;
   border: 1px solid color-mix(in srgb, var(--block-accent) 34%, transparent);
@@ -590,6 +593,8 @@ button {
 .placeholder-cell-title span {
   position: relative;
   z-index: 1;
+  display: block;
+  flex: 0 1 auto;
   min-width: 0;
   max-width: 100%;
   padding: 0 12px 0 0;
@@ -601,6 +606,7 @@ button {
 .placeholder-cell-body {
   position: relative;
   display: grid;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   padding: 8px;
@@ -614,7 +620,6 @@ button {
   height: 100%;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
 }
 
 .placeholder-cell:hover .placeholder-cell-inner {

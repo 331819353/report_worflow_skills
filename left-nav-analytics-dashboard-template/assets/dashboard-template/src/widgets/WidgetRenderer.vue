@@ -39,6 +39,8 @@ const viewportConfig = computed<WidgetViewportConfig | null>(() => {
   return registration.value?.defaultViewport ?? null;
 });
 
+const visualTypeClass = computed(() => `widget-renderer-visual-${props.widget?.visualType ?? 'empty'}`);
+
 const handleDashboardAction = (event: DashboardWidgetActionEvent) => {
   if (!event?.name) {
     return;
@@ -49,42 +51,117 @@ const handleDashboardAction = (event: DashboardWidgetActionEvent) => {
 </script>
 
 <template>
-  <div class="widget-renderer" :class="{ 'widget-renderer-has-content': registration && widget }">
-    <WidgetViewport v-if="registration && widget && viewportConfig" :config="viewportConfig">
+  <div
+    class="widget-renderer"
+    :class="[visualTypeClass, { 'widget-renderer-has-content': registration && widget }]"
+  >
+    <div class="widget-renderer-content">
+      <WidgetViewport v-if="registration && widget && viewportConfig" :config="viewportConfig">
+        <component
+          :is="registration.component"
+          v-bind="widget.props"
+          :context="context"
+          :data="data ?? []"
+          @dashboard-action="handleDashboardAction"
+        />
+      </WidgetViewport>
+
       <component
         :is="registration.component"
+        v-else-if="registration && widget"
         v-bind="widget.props"
         :context="context"
         :data="data ?? []"
         @dashboard-action="handleDashboardAction"
       />
-    </WidgetViewport>
 
-    <component
-      :is="registration.component"
-      v-else-if="registration && widget"
-      v-bind="widget.props"
-      :context="context"
-      :data="data ?? []"
-      @dashboard-action="handleDashboardAction"
-    />
-
-    <div v-else class="widget-empty"></div>
+      <div v-else class="widget-empty"></div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.widget-renderer,
-.widget-empty {
+.widget-renderer {
+  display: grid;
+  place-items: stretch;
+  contain: layout paint;
+  position: relative;
   width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  isolation: isolate;
 }
 
-.widget-renderer {
+.widget-renderer-content,
+.widget-empty {
   position: relative;
-  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  contain: layout paint;
+}
+
+.widget-renderer-content {
+  display: grid;
+  place-items: stretch;
+}
+
+.widget-renderer-content :deep(*) {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+}
+
+.widget-renderer-content :deep(.echarts-for-react),
+.widget-renderer-content :deep(.echarts),
+.widget-renderer-content :deep(.chart),
+.widget-renderer-content :deep(.chart-container),
+.widget-renderer-content :deep(.s2-container),
+.widget-renderer-content :deep(.antv-s2-container) {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.widget-renderer:not(.widget-renderer-visual-table) .widget-renderer-content :deep(canvas),
+.widget-renderer:not(.widget-renderer-visual-table) .widget-renderer-content :deep(svg) {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.widget-renderer-visual-table .widget-renderer-content {
+  display: block;
+  overflow: auto;
+  scrollbar-gutter: stable both-edges;
+}
+
+.widget-renderer-visual-table .widget-renderer-content :deep(table) {
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.widget-renderer-visual-table .widget-renderer-content :deep(th),
+.widget-renderer-visual-table .widget-renderer-content :deep(td) {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.widget-renderer-visual-table .widget-renderer-content :deep(.antv-s2-container),
+.widget-renderer-visual-table .widget-renderer-content :deep(.s2-container),
+.widget-renderer-visual-table .widget-renderer-content :deep(.s2-table) {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .widget-renderer-has-content::before {

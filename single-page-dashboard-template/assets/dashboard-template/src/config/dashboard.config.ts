@@ -59,9 +59,10 @@ export const cockpitConfig: DashboardConfig = {
   // 7. 模板默认不内置业务组件；复制 WidgetTemplate.vue 后，再到 registry.ts 和 types.ts 注册。
   // 8. 组件数据不要写死在这里。真实数据放到 src/data/dashboard.data.ts，
   //    或在 src/dataSources/registry.ts 注册接口数据源；这里仅保留引用关系。
-  // 9. filterScope 用来声明当前组件受哪些有 scope 的筛选项影响。
+  // 9. visualType 用来声明组件视觉类型，校验脚本会用它检查当前块占位是否合法。
+  // 10. filterScope 用来声明当前组件受哪些有 scope 的筛选项影响。
   //    没有 scope 的筛选项是全局筛选，所有组件都会收到。
-  // 10. 组件交互不要直接写跳转/弹窗逻辑。组件只 emit('dashboard-action', { name, payload })，
+  // 11. 组件交互不要直接写跳转/弹窗逻辑。组件只 emit('dashboard-action', { name, payload })，
   //     然后在 widgets[块字符].actions 中声明 openModal、setFilters、navigateUrl 等动作。
   //     navigateUrl 默认追加当前 filters；弹窗打开后筛选变化时，context.isStale 会变为 true。
   page: {
