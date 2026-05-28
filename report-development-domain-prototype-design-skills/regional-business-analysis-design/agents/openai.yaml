@@ -1,0 +1,4 @@
+interface:
+  display_name: "区域经营分析"
+  short_description: "沉淀区域经营分析原型方法，覆盖盈利能力、营运质量、国家/产业/品牌问题定位与机会发现"
+  default_prompt: "Use $regional-business-analysis-design when a prototype or report request mentions 区域 to design a regional business analysis report."

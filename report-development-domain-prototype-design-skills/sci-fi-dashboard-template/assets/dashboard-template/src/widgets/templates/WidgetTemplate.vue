@@ -129,7 +129,7 @@
  * - KPI 核心数字使用 28-32px；单位/同比/辅助标签使用 12-14px；表格/列表里的财务和指标数字右对齐。
  * - 多系列 ECharts 必须显示 legend；隐藏外边框和纵向网格，横向网格用浅色虚线。
  * - 状态文字必须渲染成 badge/pill 或 icon+text，不要只输出纯文本。
- * - 简单表格默认应撑满 body 并用固定布局/省略号；只有真正宽表才加 .wide-table 或 data-wide="true"。
+ * - 简单表格默认按列内容自适应；单元格内容必须可换行或通过表格内部横向滚动完整查看，不用省略号表达未展示。
  * - WidgetRenderer/WidgetViewport 是外层能力，业务组件只写自己的展示逻辑和私有样式。
  * - WidgetRenderer 已经提供统一内容层次底纹，业务组件无需再重复外框。
  * - context.filters 已经按 filterScope 裁剪；需要全量筛选时读取 context.allFilters。

@@ -82,6 +82,7 @@ Use this stack for report prototypes built from this template:
 ## Self-Check And Repair Loop
 
 - Produce a self-check report after implementation and after every repair cycle.
+- Run a Z-shaped component audit from the top-left first widget, then left-to-right and row-by-row. For each widget, check used filters, filter configuration, mock coverage for every filter option, widget/data binding, filter binding, interaction/action binding, layout capacity, block size, and clipping/compression status.
 - Check data completeness: every first-screen widget has `data` or explicit `dataPolicy`, stable mock records, required fields, units, formulas, empty states, and reconciled KPI/chart/table/drawer totals.
 - Check filter configuration: every filter has a stable id, default, option source, scope, visible active state, reset behavior, and exact mapping through same-name fields or `widget.data.filterFields`.
 - Check interactions: `dashboard-action` events, modal targets, `navigateUrl`, filter mutation, fullscreen, refresh, download, stale-state handling, and close/back flows work with active filter context.
@@ -134,7 +135,7 @@ Use this stack for report prototypes built from this template:
 - Business widgets should receive data through typed props and `context`, fill their parent with `width: 100%; height: 100%`, and own their private styles locally.
 - Business widgets should treat their parent as the component body viewport. Use `min-width: 0`, `min-height: 0`, and internal layout that keeps labels, legends, tables, and empty states inside that viewport.
 - Multi-series charts must show a legend, use one page-level semantic palette, and keep legends/labels outside the plot area. Status text must render as badge/pill or icon+text.
-- Simple table widgets fit the body by default with fixed layout and ellipsis. Use `.wide-table` or `data-wide="true"` only for true wide tables that should scroll horizontally inside the body viewport.
+- Simple table widgets adapt column width to content and viewport. Full cell content must remain readable by wrapping or table-level horizontal scrolling; do not use fixed layout plus ellipsis to hide undisplayed table content.
 - Widget `data` is resolved by the shell and passed as a `data` prop. `context.filters` contains only filters visible to that widget's `filterScope`; `context.allFilters` contains every filter.
 - A widget without `data` must declare `dataPolicy: 'static' | 'external'`; otherwise `validate:dashboard` fails.
 - Every widget must declare `visualType`: `line`, `bar`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, or `other`.

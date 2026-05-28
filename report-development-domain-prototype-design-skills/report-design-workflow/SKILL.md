@@ -145,6 +145,10 @@ Choose one primary report-type skill:
 
 Use secondary report-type skills only for local blocks or follow-up flows. Do not invent extra report types for maps, funnels, tables, or charts.
 
+If the request contains `产业`, apply `industry-business-analysis-design` before choosing the primary report type. Treat it as a domain overlay that defines the industry/competitor/self-performance analysis path; then choose the primary report type such as status overview or analysis diagnostic.
+
+If the request contains `区域`, apply `regional-business-analysis-design` before choosing the primary report type. Treat it as a domain overlay that defines the regional profitability, operating-quality, problem-location, and opportunity-discovery path; then choose the primary report type such as status overview or analysis diagnostic.
+
 ### Stage 3: Business Design
 
 Apply the primary report-type skill.
@@ -404,28 +408,40 @@ Core rule:
 
 Self-check dimensions:
 
-1. Data completeness.
+1. Z-shaped component audit.
+   - Traverse each rendered page in Z-shaped reading order: start from the top-left first component, move left-to-right across the row, then continue row by row from top to bottom. For multi-page or tabbed prototypes, run the same audit per page/tab.
+   - For every component, record component id/name, block id, visual type, data source, displayed metrics, used filters, interaction outputs, and current pass/fail status.
+   - Check which filters the component uses: direct filters, scoped filters, required filters, ignored filters, implicit parameters, permission scope, and drilldown state.
+   - Check whether every used filter is configured successfully: stable `id`, label, default, option source, scope, reset behavior, visible active state, same-name field mapping or explicit `filterFields`.
+   - Check mock data completeness for the component: mock rows include all selectable values for every bound filter, including default value, non-default options, cascade children, empty-state combinations, abnormal/risk cases, and permission-limited cases.
+   - Check component configuration and binding: the widget mounts to an existing block, declares `visualType`, uses an existing `data.id` or explicit `dataPolicy`, receives the resolved mock/data prop, declares required fields/formulas/units, and binds to its filter component through the data-source/filter-map contract.
+   - Check interaction configuration and binding: clickable marks, rows, cards, buttons, drawers, modals, jumps, filter mutations, export/download/fullscreen, and close/back flows emit expected actions and target existing configured handlers.
+   - Check layout capacity for the component: the page layout can carry all displayed indicators, labels, legends, tables, controls, warnings, and actions. If the component cannot carry the content, expand the layout, increase block span, split the component, move secondary details to drawer/fullscreen, or enable internal scroll/zoom.
+   - Check block size and clipping: the assigned block and component body viewport are large enough after title/action/padding are reserved; no content is compressed, cropped, hidden behind overflow, or made unreadable.
+   - Any failed component in the Z-shaped audit must be repaired and rechecked before handoff.
+
+2. Data completeness.
    - Required datasets exist and have stable IDs, row grain, dimensions, facts, units, baselines, and formulas.
    - Multi-month, trend, MoM, YoY, quarter, year, and rolling-period views have complete rows for every selectable period, not just the default month.
    - Mock data covers default state, filtered states, empty state, abnormal/risk state, permission scope, and drilldown/detail records.
    - KPI totals, chart totals, table row counts, drawer records, export rows, and summary text reconcile under the same active filters.
    - Derived values are calculated from source fields or documented formulas; no first-screen card may show unmanaged placeholder data.
 
-2. Filter configuration.
+3. Filter configuration.
    - Every filter has a stable `id`, label, default value, option source, scope, reset behavior, and visible active state.
    - Data-bearing filter options are derived from dimension data, fact data, or resolvers by default. Static options are limited to stable enums such as status, severity, period granularity, view mode, and yes/no toggles.
    - Every filter maps to a real data field, resolver parameter, or permission scope through same-name fields or explicit `filterFields`.
    - Widgets that require a filter declare `requiredFilters`; widgets intentionally outside a filter declare `ignoredFilters` and make the scope difference visible.
    - Cascading filters, disabled options, export/download/share-link state, and permission-limited options are defined when relevant.
 
-3. Interaction usability.
+4. Interaction usability.
    - Click, drilldown, drawer, modal, popover, jump, refresh, fullscreen, download/export, and close/back actions work where configured.
    - Widgets emit the expected action names and payloads; configured actions target existing modals, routes, filters, widgets, or URLs.
    - Active filters, period, organization, object, metric, permission scope, and return path are preserved across drilldowns and jumps.
    - Open drawers, selected marks, selected rows, and drill paths reset or show a stale-state message when filters remove the selected object.
    - Failure, no-permission, loading, empty, and stale states are visible and not silent.
 
-4. Configuration completeness.
+5. Configuration completeness.
    - `layoutRows` follows the 8*N rule and every block is rectangular.
    - For scrollable page templates, every resolved content block is at least 220px tall; if the total grid height exceeds 1080px, vertical scrolling is enabled instead of row compression. Fixed sci-fi/big-screen templates are exempt.
    - Every configured widget mounts to an existing block, declares `visualType`, and either declares `data` or an explicit `dataPolicy`.
@@ -433,7 +449,7 @@ Self-check dimensions:
    - Component spans obey the legal component span matrix; oversized diagrams use viewport zoom/pan rather than overflowing their block.
    - Custom implementations define equivalent `dataSource`, `filterMap`, `componentBindings`, and `updateTriggers` contracts.
 
-5. Visual and runtime verification.
+6. Visual and runtime verification.
    - Run `npm run validate:dashboard` when the project uses a bundled template or has the script.
    - Run the build command, usually `npm run build`, for runnable Vue projects.
    - Start or preview the page when required, inspect the first viewport, and verify there is no overlap, clipping, critical truncation, low contrast, or component overflow outside the component body.
@@ -582,14 +598,15 @@ Use this structure after implementation and after each repair cycle:
 1. 自检轮次与总体结论.
 2. 本轮检查范围.
 3. 已执行命令/工具/页面验证.
-4. 数据完整性检查.
-5. 筛选配置检查.
-6. 交互可用性检查.
-7. 配置完整性检查.
-8. 视觉与运行态检查.
-9. 问题清单：severity, evidence, affected file/module, fix plan, current status.
-10. 本轮修复动作.
-11. 剩余风险与是否进入下一轮.
+4. Z型逐组件检查: in rendered order, list each component's filters, filter config, mock coverage, data/filter binding, interaction binding, layout capacity, block-size/clip status, and pass/fail result.
+5. 数据完整性检查.
+6. 筛选配置检查.
+7. 交互可用性检查.
+8. 配置完整性检查.
+9. 视觉与运行态检查.
+10. 问题清单：severity, evidence, affected file/module, fix plan, current status.
+11. 本轮修复动作.
+12. 剩余风险与是否进入下一轮.
 
 ## End-To-End Quality Checklist
 
@@ -601,7 +618,8 @@ Before final delivery, verify:
 - Metrics include baselines, direction, unit, and formulas where needed.
 - Mock data, if used, reconciles with KPI cards, charts, tables, and filters.
 - A self-check report has been produced for the latest implementation cycle.
-- The self-check report covers data completeness, filter configuration, interaction usability, configuration completeness, and visual/runtime state.
+- The self-check report covers Z-shaped component audit, data completeness, filter configuration, interaction usability, configuration completeness, and visual/runtime state.
+- Z-shaped component audit starts from the first rendered component and checks each component's filters, filter setup, mock coverage, component data binding, filter binding, interaction binding, layout capacity, and block-size/clipping status.
 - Self-check issues were repaired and rechecked, up to 3 cycles when needed.
 - The latest self-check report has zero unresolved issues; otherwise the final response states the remaining issues and why they remain after the third cycle.
 - Filters have defaults, stable IDs, cascades, permission rules, and visible active state.

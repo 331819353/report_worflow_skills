@@ -201,6 +201,8 @@ Only include interactions that support the report goal. Avoid adding interaction
 
 After extraction, recommend next skills:
 
+- Use `industry-business-analysis-design` when the theme or trigger word contains `产业`, especially for industry benchmark, competitor benchmark, self-performance, domestic/overseas经营问题, opportunities, and risks.
+- Use `regional-business-analysis-design` when the theme or trigger word contains `区域`, especially for regional profitability, operating quality, country/industry/brand problem location, DSO/DIO, receivable/inventory analysis, and opportunity discovery.
 - Use `status-overview-report-design` when the primary question is current health/status.
 - Use `analysis-diagnostic-report-design` when the primary question is cause/why.
 - Use `detail-query-report-design` when the user needs records.

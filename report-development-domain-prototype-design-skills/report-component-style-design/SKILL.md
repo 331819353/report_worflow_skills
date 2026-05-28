@@ -29,6 +29,7 @@ Do not design components as isolated artboards with fixed dimensions. Every comp
 Apply these rules to every report component:
 
 - Wrap every component in the shared card base, including text summaries, KPI groups, charts, tables, and empty states.
+- Start from available size: before designing or implementing a component, obtain the component's usable width and height, then choose layout density, typography, chart orientation, legend position, table columns, and content hierarchy according to that size.
 - Use the same card base by default: `#FFFFFF` background in light enterprise pages, 8px radius, `box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)`, no hard default border, and 24px internal padding.
 - For explicitly dark or cockpit themes, use the same card geometry and hierarchy with an approved dark panel token; do not mix unrelated glass, gradient, border, or shadow styles inside one page.
 - Center by default: align the component's main content horizontally and vertically within its visual body unless the component type requires top-left scanning, such as tables and long text.
@@ -39,6 +40,32 @@ Apply these rules to every report component:
 - Keep style unified: all components on the same page should share radius, border, shadow, typography, color semantics, spacing, and control style.
 - Prefer restrained internet style: clean surfaces, subtle borders, crisp icons, soft status color, compact controls, and clear interaction states.
 - Prioritize meaning over decoration: component style should help scanning, comparison, and action.
+
+## Available Size First
+
+Every component design must begin by measuring the real usable area. Do this before choosing the visual form or filling in content.
+
+Measure these layers separately:
+
+- Assigned block size: the resolved grid columns, rows, row height, gaps, and responsive container width.
+- Card inner size: assigned block minus card padding, border, and reserved safe space.
+- Header/action/footer size: title, subtitle, status badge, actions, legend, notes, and pagination.
+- Body viewport size: the remaining width and height available to the chart, table, KPI group, text, or diagram.
+- Minimum viable component size: the smallest size that can show core values, units, labels, warnings, axes, legends, controls, and essential evidence without clipping or unreadable text.
+
+Design from those numbers:
+
+- If the body viewport is narrow, reduce columns, stack secondary metadata, move legends below or into a menu, switch horizontal charts to vertical lists, or use tooltip/drawer for secondary details.
+- If the body viewport is short, reduce noncritical rows, move notes/actions to header or drawer, use pagination/internal scroll for repeated records, or increase row span.
+- If both width and height are insufficient for the component's minimum viable size, do not force the component into that block. Expand the grid span, split the component into multiple blocks, or move secondary content to drawer/fullscreen.
+- Do not solve insufficient size by shrinking core KPI values, labels, warnings, action text, or chart/table text below readable limits.
+
+Implementation expectations:
+
+- Use `ResizeObserver`, container query logic, or template-provided viewport dimensions to know the component's width and height.
+- Initialize ECharts, AntV S2, custom SVG/canvas, and complex diagrams only after their body viewport has measurable width and height.
+- Recompute layout when filters, tabs, drawers, fullscreen state, or grid span changes alter the available size.
+- In design output, state the required minimum body size or required span for any component at risk of clipping.
 
 ## Global Style Contract
 
@@ -159,7 +186,7 @@ Component size behavior:
 - In scrollable page templates, the resolved height of any report block must be at least 220px. If a one-row block would be shorter, increase the grid row height or choose a larger row span.
 - Typography uses a small set of fixed semantic sizes and may step down within bounds.
 - Charts recalculate plot area after title, axes, legends, and labels.
-- Tables use horizontal scroll only when field count demands it.
+- Tables first adapt column widths to content and viewport. When full column content cannot fit, use internal horizontal scrolling instead of ellipsis or clipped text.
 - Cards wrap secondary metadata before shrinking core values.
 - Buttons keep minimum tap/click target size.
 
@@ -192,7 +219,8 @@ Use these strategies:
 
 - Increase grid span when the component is structurally too important or too dense.
 - Use internal vertical scroll for long lists, evidence tables, logs, and repeated records.
-- Use horizontal scroll only for true wide tables and complex diagrams, not ordinary text.
+- Use horizontal scroll for tables when visible columns and full cell content cannot fit inside the body viewport; keep the scroll inside the table viewport, not the page.
+- Use horizontal scroll only for true wide tables and complex diagrams, not ordinary text outside table components.
 - Use line clamp only for secondary descriptions, with tooltip or drawer access.
 - Use fullscreen/expand for dense charts, maps, trees, and diagrams.
 - Use progressive disclosure: show summary first, details in drawer.
@@ -207,8 +235,9 @@ Hard rules:
 - Do not allow right-column cards to crop text at the viewport edge.
 - Do not let bottom rows or nested cards be partially visible unless the component clearly indicates scroll.
 - Tables and analytical grids must declare `visualType: 'table'` in runnable templates so the shell can apply table-specific viewport behavior.
-- Simple HTML tables must be wrapped by an internal viewport and fit by default with `table-layout: fixed`, stable max widths, ellipsis, and tooltip/full-value access instead of forcing the block wider. Use explicit wide-table opt-in only when horizontal scroll is truly required.
-- AntV S2 tables must size from the block body and use S2's own scroll/frozen-header behavior; do not place an S2 canvas in a fixed-size wrapper larger than the block body.
+- Simple HTML tables must be wrapped by an internal viewport. Columns should be content-aware with explicit min/max widths, readable wrapping for text fields, and stable widths for numbers/status/actions.
+- Do not use ellipsis as the way to express hidden table content. If the table cannot show every column and full cell value at the current width, enable table-level horizontal scroll and keep key identifier columns sticky/frozen.
+- AntV S2 tables must size from the block body and use S2's own scroll/frozen-header behavior; do not place an S2 canvas in a fixed-size wrapper larger than the block body. Configure column widths/meta so cell content remains readable, and use S2 horizontal scrolling when width is insufficient.
 
 Implementation-oriented expectations:
 
@@ -219,7 +248,7 @@ Implementation-oriented expectations:
 - Operations should collapse into an overflow menu before they overlap titles or content.
 - ECharts components should call resize when their container, tab, drawer, fullscreen state, or grid span changes.
 - AntV S2 components should receive explicit container dimensions or resize hooks so frozen headers, scrollbars, and cell text remain aligned.
-- Native table fallback should use `table-layout: auto` only inside a horizontal scroll viewport; use `table-layout: fixed` for compact fixed-column lists.
+- Native table fallback should prefer `table-layout: auto` or content-aware CSS grid columns inside a horizontal scroll viewport. Avoid `table-layout: fixed` plus ellipsis for meaningful data; compact fixed-column lists should wrap text, widen the table, or move low-priority fields to detail drawers.
 
 ## Block Fit Rules
 
@@ -587,6 +616,7 @@ Fit rules:
 - Keep the main value, unit, and status visible together.
 - If the card is narrow, move baseline/trend text below the value or into tooltip.
 - If two rows of KPI cards are needed inside a hero panel, the hero panel must grow or the KPI group must scroll internally with clear affordance.
+- For KPI panels with submetric tiles, calculate the body viewport height first. If the main value plus submetric grid cannot fit, increase the card row span, reduce the number of visible submetrics, split submetrics into a separate block, or move secondary submetrics to a drawer. Do not let submetric tiles crop numbers or overlap the main KPI value.
 
 ## Chart Component Rules
 
@@ -656,7 +686,8 @@ S2 rules:
 - Keep S2 width and height synchronized with the assigned grid block.
 - Never let the S2 logical table size expand the report block. The block body is the viewport; S2 handles horizontal/vertical scrolling inside it.
 - Use frozen rows/columns for identifiers and key dimensions.
-- Preserve readable cell text; do not shrink cells until values become unreadable.
+- Preserve readable cell text; do not shrink cells until values become unreadable, and do not rely on ellipsis for key business values.
+- When a table is wider than the body viewport, enable S2 horizontal scrolling and keep identifier columns frozen instead of compressing every column.
 - Use S2 tooltip, hierarchy, totals, and interaction states before custom table overlays.
 - Keep S2 data, fields, meta, and conditions in typed data/config files where possible.
 
@@ -664,13 +695,15 @@ Rules:
 
 - Header sticky when table scrolls.
 - Key columns frozen when the table is wide.
+- Columns adapt to content type: identifiers and long names get larger/wrapping columns; numeric, percent, status, and action columns use stable compact widths.
+- Full table cell content should be visible by wrapping, widening, or horizontal scroll. Do not use省略号/ellipsis as the primary way to hide undisplayed content.
 - Cell content vertically centered.
 - Text alignment follows data type: text left, numbers right, status centered or left with label.
 - Status tags do not overwhelm text.
 - Row height is consistent.
 - Operations are stable and do not shift layout.
 - Empty/loading/error states preserve table structure.
-- Horizontal scroll is acceptable for true wide tables, but core identifiers should remain frozen.
+- Horizontal scroll is acceptable whenever full columns cannot fit, and core identifiers should remain frozen.
 
 Avoid:
 
@@ -678,6 +711,7 @@ Avoid:
 - Too many colored tags.
 - Action buttons that wrap awkwardly.
 - Hidden overflow for critical fields.
+- Ellipsis-only table cells for business fields, metric values, object names, warning reasons, owners, dates, statuses, or actions.
 
 ## Card/List/Task Component Rules
 
@@ -710,24 +744,27 @@ Rules:
 When asked to define or apply component style, use this structure:
 
 1. 组件范围: list component types involved, such as filters, text summary, KPI cards, charts, tables, drawers.
-2. 标题规范: define title, subtitle, metadata, status tag, and action placement.
-3. 背景规范: define page/component/nested/hover/selected/warning backgrounds.
-4. 字号规范: define title, value, label, body, table, helper, and annotation sizes.
-5. 色彩规范: define brand, text, border, semantic, chart, selected, and disabled colors.
-6. 边框阴影: define radius, border, divider, selected border, hover elevation, drawer/modal shadow.
-7. 统一风格: define spacing, icon style, control style, states, and component variants.
-8. 居中与自适应: explain how each component centers, fits, wraps, scrolls, zooms, or pans inside its block.
-9. 溢出策略: define when to grow span, wrap, scroll, clamp, use drawer, fullscreen, zoom, or split component.
-10. 防重叠规则: define label, legend, axis, tooltip, text, and graphic collision handling.
-11. 复杂图形策略: specify viewport, zoom, drag, reset, fit-to-screen, minimap, and export behavior when needed.
-12. 可读性校验: contrast, font size, truncation, labels, units, precision, and responsive limits.
-13. 组件清单: describe each component's structure and states.
-14. 最终校验: confirm no overlap, no unreadable labels, no overflow, no inconsistent style.
+2. 可用尺寸: state each component's assigned block size, card inner size, body viewport width/height, and minimum viable size.
+3. 标题规范: define title, subtitle, metadata, status tag, and action placement.
+4. 背景规范: define page/component/nested/hover/selected/warning backgrounds.
+5. 字号规范: define title, value, label, body, table, helper, and annotation sizes.
+6. 色彩规范: define brand, text, border, semantic, chart, selected, and disabled colors.
+7. 边框阴影: define radius, border, divider, selected border, hover elevation, drawer/modal shadow.
+8. 统一风格: define spacing, icon style, control style, states, and component variants.
+9. 居中与自适应: explain how each component centers, fits, wraps, scrolls, zooms, or pans inside its block.
+10. 溢出策略: define when to grow span, wrap, scroll, clamp, use drawer, fullscreen, zoom, or split component.
+11. 防重叠规则: define label, legend, axis, tooltip, text, and graphic collision handling.
+12. 复杂图形策略: specify viewport, zoom, drag, reset, fit-to-screen, minimap, and export behavior when needed.
+13. 可读性校验: contrast, font size, truncation, labels, units, precision, and responsive limits.
+14. 组件清单: describe each component's structure and states.
+15. 最终校验: confirm no overlap, no unreadable labels, no overflow, no inconsistent style.
 
 ## Quality Checklist
 
 Before finalizing, verify:
 
+- Each component has measured or explicitly estimated usable width and height before its content layout is chosen.
+- The selected component form, grid span, font hierarchy, chart/table density, legend position, and metadata count match the measured body viewport.
 - Main content is horizontally and vertically centered when appropriate.
 - Component title, subtitle, metadata, and actions are aligned and readable.
 - Background layers are defined and do not create visual noise.
@@ -736,6 +773,7 @@ Before finalizing, verify:
 - Borders, radius, shadows, and dividers are consistent and restrained.
 - Component content fits inside its assigned block or viewport.
 - Each component has an explicit overflow strategy: grow, wrap, scroll, clamp, drawer, fullscreen, zoom/pan, or split.
+- If the component cannot carry its content at the available size, the design expands the block, splits the content, or moves secondary details to drawer/fullscreen instead of clipping or squeezing.
 - Labels, legends, axes, values, graphics, and actions do not overlap.
 - Radar dimension labels, category labels, and legends have separate reserved zones and do not overlap.
 - Core text and values are not truncated.

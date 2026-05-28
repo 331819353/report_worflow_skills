@@ -251,7 +251,7 @@ Hard rules:
 - The body viewport must have explicit `min-width: 0`, `min-height: 0`, and a defined overflow strategy.
 - A component viewport layer must sit inside the body viewport and carry the component-area background/clipping. The rendered chart/table/card must fit this viewport, not the full block and not the page.
 - ECharts and AntV S2 instances must mount and resize against the body viewport, not the whole card frame.
-- Tables must either fit their visible columns inside the body viewport or scroll inside the body viewport. Default simple tables should fit with fixed layout and ellipsis; only explicitly marked wide tables may use horizontal scroll. Tables must never expand the grid block or rely on page-level horizontal overflow.
+- Tables must either fit their visible columns and full cell content inside the body viewport or scroll horizontally inside the body viewport. Do not use ellipsis as the primary way to hide undisplayed table content; when content cannot fit, use content-aware column widths, wrapping, table-level horizontal scroll, and sticky/frozen key columns. Tables must never expand the grid block or rely on page-level horizontal overflow.
 - If the header needs two lines, more actions, or a status explanation, increase the row span or move secondary text into a tooltip/drawer.
 - Empty/loading/no-permission states must be centered inside the body viewport and must not replace the title area.
 - For complex diagrams, the body viewport is the visible pan/zoom window; the diagram's logical size may exceed it, but the block rectangle must not expand.

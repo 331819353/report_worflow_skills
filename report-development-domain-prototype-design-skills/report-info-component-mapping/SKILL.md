@@ -120,6 +120,8 @@ When this mapping is used for a runnable report prototype, map components to the
 
 Map information patterns to the eight report-design skills:
 
+- 产业经营分析: when the theme contains `产业`, first map the domain path 看行业 -> 看对手 -> 看自己 -> 经营问题 -> 洞察 through `industry-business-analysis-design`, then map each block to the appropriate report-type skill.
+- 区域经营分析: when the theme contains `区域`, first map the domain path 经营情况 -> 盈利能力/营运质量 -> 问题定位 -> 问题归因 -> 机会发现 through `regional-business-analysis-design`, then map each block to the appropriate report-type skill.
 - 状态总览型: current status, health judgment, target progress, variance, trend, structure, risk entry.
 - 分析诊断型: phenomenon, driver, cause, attribution, decomposition, evidence, recommendation.
 - 明细查询型: records, fields, filters, sorting, export, row detail, source object.

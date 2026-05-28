@@ -144,11 +144,11 @@ const handleDashboardAction = (event: DashboardWidgetActionEvent) => {
 }
 
 .widget-renderer-visual-table .widget-renderer-content :deep(table) {
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .widget-renderer-visual-table .widget-renderer-content :deep(.wide-table table),
@@ -161,10 +161,12 @@ const handleDashboardAction = (event: DashboardWidgetActionEvent) => {
 
 .widget-renderer-visual-table .widget-renderer-content :deep(th),
 .widget-renderer-visual-table .widget-renderer-content :deep(td) {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 96px;
+  max-width: 320px;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .widget-renderer-content :deep(.numeric),
