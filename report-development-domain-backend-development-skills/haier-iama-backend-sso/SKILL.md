@@ -28,19 +28,22 @@ Before coding against the remote API, read [references/iama-sso-api.md](referenc
    Call `POST {baseUrl}/api/oauth/code/get/v2` with JSON body `client_id`, `client_secret`, and `code`. This is the first backend SSO step after the frontend passes in a code. Treat `resultCode == "0"` as success. Preserve IAMA response fields such as `access_token`, optional token metadata, and `account`; the official overview says returned parameters must not be deleted, though local services may add fields.
 
 5. Validate users in later business flows with token check.
-   For page jumps, page changes, route transitions, and other authenticated business requests, call `GET {baseUrl}/api/oauth/token/check`, normally with `client_id` as a query parameter. Add request headers `Application-Key: {clientId}` and `Access-Token: {accessToken}`. Treat `resultCode == "0"` and `data == true` as valid; any other result is unauthenticated.
+   For page jumps, page changes, route transitions, and every authenticated business request from the frontend, read `Application-Key` and `Access-Token` from the incoming request headers. Treat `Application-Key` as the browser-provided `clientId` and `Access-Token` as the token to validate. Call `GET {baseUrl}/api/oauth/token/check`, normally with `client_id` as a query parameter. Forward request headers `Application-Key: {clientId}` and `Access-Token: {accessToken}` to IAMA. Treat `resultCode == "0"` and `data == true` as valid; any other result is unauthenticated.
 
 6. Bridge IAMA identity to local authentication.
    After a successful code exchange, map the returned account to the service's local user record by stable identifiers such as IAMA account id, `userName`, `account`, `domain`, `tenantId`, or a configured binding table. Then issue the service's existing local session or JWT. Avoid making downstream business endpoints depend directly on raw IAMA response objects.
 
 7. Protect business endpoints and navigation checks with IAMA token validation.
-   Use the project's native middleware, filter, interceptor, or guard structure, but make IAMA `token/check` the standard user validation point for SSO-backed route jumps and page transitions. Local sessions or JWTs may store derived account context, but they should not silently replace the required IAMA token validity check unless a later product requirement explicitly changes the SSO model.
+   Use the project's native middleware, filter, interceptor, or guard structure, but make IAMA `token/check` the standard user validation point for SSO-backed route jumps, page transitions, and business API access. Local sessions or JWTs may store derived account context, but they should not silently replace the required IAMA token validity check unless a later product requirement explicitly changes the SSO model.
 
 ## Implementation Notes
 
 - Do not automatically retry code exchange after an HTTP response from IAMA; authorization codes may be short-lived or single-use. A retry on connection failure is acceptable only if the project's HTTP policy already supports it and the request definitely did not reach the server.
 - Token check is idempotent and can use the service's standard timeout and retry policy for transient network failures, but fail closed when validity cannot be confirmed.
 - Normalize remote failures into the service's existing unauthenticated or upstream-auth-failed error types. Do not leak `client_secret`, raw token values, or full upstream account payloads in API error responses.
+- Missing `Application-Key` or missing `Access-Token` must fail closed with the service's unauthenticated response.
+- When `token/check` returns invalid, return a 401 or the project's normalized auth-expired/token-invalid error so the frontend can clear browser auth state and re-trigger SSO. Use 403 only for valid-token but no-permission cases.
+- Do not accept `clientId` and token from ordinary query parameters or body fields for browser business APIs unless the existing project contract explicitly requires it; headers are the default trust boundary for SSO validation.
 - Preserve the raw upstream response inside a typed DTO for auditability, but expose a smaller local login response if the existing frontend contract expects one.
 - If caching token validity, keep the TTL short and never let a cached `true` outlive the token's known expiry. Do not let cache behavior bypass required jump, page-change, or route-transition user validation.
 
@@ -52,6 +55,7 @@ Add focused tests around the wrapper rather than testing IAMA itself:
 - Code exchange failure when `resultCode` is not `0` maps to the local auth error.
 - Token check returns valid only for `resultCode == "0"` and `data == true`.
 - Missing `code`, missing `accessToken`, upstream timeout, and malformed upstream responses fail closed.
-- Controller or middleware tests verify that route jumps, page changes, and authenticated business requests call the token validation path and fail closed when IAMA reports invalid.
+- Missing `Application-Key`, missing `Access-Token`, and mismatched/invalid token responses return the local unauthenticated/token-invalid response.
+- Controller or middleware tests verify that route jumps, page changes, and authenticated business requests read frontend headers, call the token validation path, and fail closed when IAMA reports invalid.
 
 For live smoke tests, use the official test domain and injected credentials only. Never commit real `client_secret` values or captured access tokens.

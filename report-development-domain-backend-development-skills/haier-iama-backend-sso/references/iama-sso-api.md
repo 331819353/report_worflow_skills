@@ -80,6 +80,14 @@ Request headers:
 | `Application-Key` | Yes | string | Client ID. |
 | `Access-Token` | Yes | string | Token to validate. |
 
+Frontend-to-backend contract:
+
+- Authenticated browser requests to the business backend must include `Application-Key: {clientId}` and `Access-Token: {token}`.
+- The backend reads those two headers, then calls IAMA `token/check` with the same values.
+- Missing or invalid headers fail closed.
+- Invalid token responses should map to 401 or the service's normalized token-invalid response so the frontend can clear browser auth state and re-trigger SSO.
+- 403 is reserved for valid token but insufficient business permission.
+
 Query or request parameter:
 
 | Field | Required | Type | Notes |

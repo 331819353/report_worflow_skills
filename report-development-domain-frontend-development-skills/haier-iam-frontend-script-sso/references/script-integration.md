@@ -135,6 +135,8 @@ Call `login()` when the page loads. Do not pre-check local token existence as th
 const res = await iamSdk.login();
 if (res.success) {
   const { token, userInfo } = res;
+  localStorage.setItem("haier_iam_client_id", IAM_CLIENT_ID);
+  localStorage.setItem("haier_iam_access_token", token || "");
 } else {
   const { errorMessage, errorCode, result } = res;
 }
@@ -160,12 +162,30 @@ if (ok) {
 Adapt this pattern to the target project's request client instead of forcing a new HTTP layer.
 
 ```js
+const CLIENT_ID_STORAGE_KEY = "haier_iam_client_id";
+const TOKEN_STORAGE_KEY = "haier_iam_access_token";
+const CLIENT_ID_REQUEST_HEADER_KEY = "Application-Key";
 const TOKEN_REQUEST_HEADER_KEY = "Access-Token";
+const IAM_CLIENT_ID = "your client id";
+
+function persistIamAuth(token) {
+  localStorage.setItem(CLIENT_ID_STORAGE_KEY, IAM_CLIENT_ID);
+  localStorage.setItem(TOKEN_STORAGE_KEY, token || "");
+}
+
+function clearIamAuth() {
+  localStorage.removeItem(CLIENT_ID_STORAGE_KEY);
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
+}
 
 async function requestWithIam(input, init = {}) {
   const headers = new Headers(init.headers || {});
-  const token = window.__USERCENTER__?.getToken?.();
+  const clientId = localStorage.getItem(CLIENT_ID_STORAGE_KEY) || IAM_CLIENT_ID;
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY) || window.__USERCENTER__?.getToken?.();
 
+  if (clientId) {
+    headers.set(CLIENT_ID_REQUEST_HEADER_KEY, clientId);
+  }
   if (token) {
     headers.set(TOKEN_REQUEST_HEADER_KEY, token);
   }
@@ -173,9 +193,12 @@ async function requestWithIam(input, init = {}) {
   let response = await fetch(input, { ...init, headers });
 
   if (response.status === 401) {
+    clearIamAuth();
     const loginResult = await window.__USERCENTER__.login({ invalidateToken: true });
 
     if (loginResult.success && loginResult.token) {
+      persistIamAuth(loginResult.token);
+      headers.set(CLIENT_ID_REQUEST_HEADER_KEY, IAM_CLIENT_ID);
       headers.set(TOKEN_REQUEST_HEADER_KEY, loginResult.token);
       response = await fetch(input, { ...init, headers });
     }
@@ -190,6 +213,13 @@ async function requestWithIam(input, init = {}) {
   return response;
 }
 ```
+
+Backend-facing header contract:
+
+- Send `Application-Key: {clientId}` with every authenticated backend request.
+- Send `Access-Token: {token}` with every authenticated backend request.
+- If the backend returns 401 or a normalized token-invalid response, clear stale browser auth state and trigger `login({ invalidateToken: true })`.
+- Clear the stored `clientId` and token on logout.
 
 ## TypeScript Global Declaration
 

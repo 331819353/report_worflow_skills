@@ -1,13 +1,13 @@
 ---
 name: frontend-development-workflow
-description: "Run the end-to-end frontend development workflow for 前端, 可视化, 报表页面, 仪表盘, 数据大屏, dashboard, report page, visualization page, and prototype projects that receive prototype source files plus API/interface documentation. Use when Codex must inspect a frontend/可视化/报表页面 prototype, locate mock/static data, map mock fields to documented HTTP APIs, replace mock data with real request calls, perform 接口联调, wire request parameters and response adapters, preserve page interactions, check install/build/dev-server/browser runnability, and keep repairing compile, runtime, proxy, CORS, request, and UI issues until the project runs or a concrete external blocker remains."
+description: "Run the end-to-end frontend development workflow for 前端, 可视化, 报表页面, 仪表盘, 数据大屏, dashboard, report page, visualization page, and prototype projects that receive prototype source files plus API/interface documentation. Use when Codex must inspect a frontend/可视化/报表页面 prototype, locate mock/static data, map mock fields to documented HTTP APIs, replace mock data with real request calls, perform 接口联调, wire request parameters and response adapters, preserve page interactions, audit functional and user-facing copy issues left from the prototype, check install/build/dev-server/browser runnability, and keep repairing compile, runtime, proxy, CORS, request, UI, copy, and interaction issues until the project runs or a concrete external blocker remains."
 ---
 
 # Frontend Development Workflow
 
 ## Overview
 
-Use this skill as the top-level workflow for frontend implementation after prototype design. The normal input is a runnable or nearly runnable prototype project plus API documentation; the required output is a frontend that reads from documented HTTP interfaces instead of mock data and has been verified through install, build, startup, and browser/runtime checks.
+Use this skill as the top-level workflow for frontend implementation after prototype design. The normal input is a runnable or nearly runnable prototype project plus API documentation; the required output is a frontend that reads from documented HTTP interfaces instead of mock data and has been verified through install, build, startup, browser/runtime checks, and a post-integration review of functional behavior and user-facing copy.
 
 For mock-to-HTTP implementation details, read [references/mock-to-http-integration.md](references/mock-to-http-integration.md).
 
@@ -37,16 +37,19 @@ For mock-to-HTTP implementation details, read [references/mock-to-http-integrati
 8. Wire cross-cutting behavior.
    Ensure filters, search, date ranges, organization selectors, pagination, sorting, tabs, drilldowns, refresh, export/download, and linked charts pass correct query/body values. Add loading, empty, failed, and retry states where the mock prototype previously assumed data was always present.
 
-9. Apply authentication when required.
-   If the API docs or project require Haier account-center SSO and the user has not disabled it, use the existing project auth layer. For script-tag IAM access, use `$haier-iam-frontend-script-sso`; normally place the SDK script in `index.html` and initialization/login in `App.vue` or an IAM adapter imported by `App.vue`.
+9. Audit prototype functions and copy before deployment.
+   Traverse the updated app page by page and component by component. Check that every visible control, route jump, tab, drawer, modal, table operation, chart click, export, refresh, and empty/error state still works after mock data is replaced. Also clean user-facing copy left from the prototype, including titles, menus, breadcrumbs, labels, button text, placeholder text, tooltips, document title, download names, and error messages that still contain words such as `原型`, `mock`, `demo`, `示例`, or irrelevant placeholder descriptions. Fix dead controls, mismatched titles, stale explanatory text, malformed units, wrong field names, and any copy that no longer matches the real API-backed page.
 
-10. Configure local API access.
+10. Apply authentication when required.
+   If the API docs or project require Haier account-center SSO and the user has not disabled it, use the existing project auth layer. For script-tag IAM access, use `$haier-iam-frontend-script-sso`; normally place the SDK script in `index.html` and initialization/login in `App.vue` or an IAM adapter imported by `App.vue`. After login succeeds, persist browser `clientId` and token, and make the shared request layer send `Application-Key: {clientId}` and `Access-Token: {token}` on authenticated backend requests. On 401/token-invalid, clear stale auth state and re-trigger SSO.
+
+11. Configure local API access.
     Use environment variables and dev-server proxy settings for API base URLs instead of hard-coding private domains throughout components. Preserve the production build path and make local CORS/proxy behavior explicit.
 
-11. Verify and repair until runnable.
-    Run typecheck/lint/tests/build as available, start the dev or preview server, and open the page in a browser when a visual frontend is involved. Fix compile errors, runtime exceptions, request failures, proxy mistakes, CORS symptoms, malformed response adapters, missing fields, and UI regressions. Repeat the run-and-repair loop until the app runs successfully or the only remaining issue is a concrete external dependency such as unavailable API credentials, VPN, network, or backend service.
+12. Verify and repair until runnable.
+    Run typecheck/lint/tests/build as available, start the dev or preview server, and open the page in a browser when a visual frontend is involved. Fix compile errors, runtime exceptions, request failures, proxy mistakes, CORS symptoms, malformed response adapters, missing fields, broken interactions, stale prototype wording, and UI regressions. Repeat the run-and-repair loop until the app runs successfully or the only remaining issue is a concrete external dependency such as unavailable API credentials, VPN, network, or backend service.
 
-12. Return a verified URL.
+13. Return a verified URL.
     For local handoff, start the frontend on an available port and return the verified local URL. If startup is blocked, state the exact command, error, attempted fixes, and remaining external blocker.
 
 ## Implementation Defaults
@@ -68,6 +71,7 @@ Before or alongside implementation, maintain these notes in the task response or
 - `Mock Inventory`: mock source, consumers, fields, and affected interactions.
 - `API Mapping`: mock source to endpoint, request params, response adapter, and auth need.
 - `Changed Data Flow`: files changed and how UI state now reaches APIs.
+- `Prototype QA`: route/page/component checks, functional issues fixed, stale prototype wording removed, and any remaining product copy questions.
 - `Verification`: commands run, server URL, browser smoke checks, remaining blockers if any.
 
 ## Verification Checklist
@@ -75,6 +79,8 @@ Before or alongside implementation, maintain these notes in the task response or
 - Every mock data source used by the target pages is either replaced by an API call or intentionally retained for an explicit offline/demo mode.
 - Every implemented request is traceable to the provided API documentation.
 - Filters, pagination, sorting, refresh, drilldown, export, and route parameters feed the documented request params.
+- Each page/component has been checked for broken controls, dead routes, invalid interactions, and states that stopped working after mock replacement.
+- User-facing text no longer exposes prototype-only wording such as `原型`, `mock`, `demo`, `示例`, placeholder titles, or stale descriptions unless the business requirement explicitly keeps them.
 - Loading, empty, error, and retry states behave without layout breakage.
 - Typecheck, lint, test, and build are run when available, or skipped with a clear reason.
 - The frontend starts locally on an available port.

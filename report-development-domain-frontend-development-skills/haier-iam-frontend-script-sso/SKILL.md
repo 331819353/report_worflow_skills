@@ -33,22 +33,27 @@ For detailed snippets, API notes, and request-interceptor examples, read [refere
    Use `https://iama.haier.net` for production and `https://iam-test.haier.net` for test. Do not include a trailing slash on `ssoUrl`. `tokenUrl` must point to the business backend token service and should use HTTPS.
 
 6. Login on page startup.
-   In Vue projects, this usually belongs in `App.vue` startup logic. The recommended flow is to call `login()` when the page loads without first checking whether a token exists. On success, store or inject the returned token according to the app's existing request layer. On failure, surface `errorMessage` first.
+   In Vue projects, this usually belongs in `App.vue` startup logic. The recommended flow is to call `login()` when the page loads without first checking whether a token exists. On success, store the returned token together with the configured `clientId` in browser storage according to the app's storage convention, then inject both values into the request layer. On failure, surface `errorMessage` first.
 
-7. Handle token expiry and 401 responses.
-   When a token expires or an API returns 401, call `login({ invalidateToken: true })`, update the `Access-Token` request header with the new token, and retry the failed request once if the local request layer supports retry. For 403, call `notPermission()` or the app's existing no-permission flow.
+7. Attach SSO headers to backend API requests.
+   Every authenticated backend API request must include the stored `clientId` and token in headers. Use `Application-Key: {clientId}` for the client id and `Access-Token: {token}` for the token unless the backend contract explicitly names a compatible alias. Keep this in one request interceptor or API client hook, not scattered across components.
 
-8. Wire logout through the SDK.
+8. Handle token expiry and 401 responses.
+   When a token expires or an API returns 401/token-invalid, clear stale browser token state, call `login({ invalidateToken: true })`, persist the new `clientId` and token, update both `Application-Key` and `Access-Token` request headers, and retry the failed request once if the local request layer supports retry. For 403, call `notPermission()` or the app's existing no-permission flow.
+
+9. Wire logout through the SDK.
    Use `logout()` for explicit sign-out and keep the app's local state cleanup consistent with its router/session conventions.
 
-9. Verify in the target environment.
-   Smoke test first load, successful login, refresh, route change, API request with `Access-Token`, 401 re-login, 403 no-permission handling, logout redirect, and script-load failure messaging.
+10. Verify in the target environment.
+   Smoke test first load, successful login, refresh, route change, API request with `Application-Key` and `Access-Token`, backend token-invalid/401 re-login, 403 no-permission handling, logout redirect, and script-load failure messaging.
 
 ## Implementation Rules
 
 - Keep SDK config in environment-aware constants rather than scattering literals through business code.
 - Do not commit real tokens, captured user info, client secrets, or private backend token endpoints.
 - Prefer one small adapter module, such as `iam.ts` or `iam.js`, that wraps `configUserCenter`, `login`, `logout`, `getToken`, `getUserInfo`, and 401 handling.
+- Persist only the browser-side `clientId` and access token needed by backend requests. Use stable storage keys, clear them on logout and invalid-token/401 re-login, and never store `clientSecret` or raw authorization codes in the browser.
+- Add request interception at the shared API layer so all authenticated requests automatically receive `Application-Key` and `Access-Token` headers.
 - Add TypeScript declarations for `window.__USERCENTER__` when the project is TypeScript.
 - Use `extra.locationParseEnableHash: true` for hash-router projects.
 - Use `extra.debugLog: true`, `?iam_debug=1`, `?iamDebug=1`, or `window.FORCE_IAM_DEBUG = 1` only for diagnosis; do not leave noisy debug behavior enabled by default.
@@ -61,7 +66,9 @@ For detailed snippets, API notes, and request-interceptor examples, read [refere
 - Runtime code guards `window.__USERCENTER__` before calling SDK methods.
 - `appId` is omitted unless the product explicitly supplies a Feishu/ihaier app id.
 - First-load `login()` is wired and errors use `errorMessage`.
-- API requests include `Access-Token` where required.
-- 401 calls `login({ invalidateToken: true })`; 403 uses `notPermission()` or the product's no-permission handler.
+- Successful login persists browser `clientId` and token using the project's storage convention.
+- API requests include both `Application-Key` and `Access-Token` where required.
+- 401/token-invalid clears stale token state, calls `login({ invalidateToken: true })`, persists the refreshed `clientId` and token, and retries once when supported; 403 uses `notPermission()` or the product's no-permission handler.
 - Logout is wired through `logout()`.
+- Logout clears stored `clientId`, token, and related local auth state.
 - The implementation has been smoke tested in the expected browser/container.

@@ -177,3 +177,18 @@ After startup, verify:
 - Build output succeeds after mock imports are removed.
 
 Repeat edits and checks until verification passes or an external service dependency blocks progress.
+
+## Post-Integration Prototype QA
+
+Before deployment or final handoff, run a focused page-by-page pass after mock data has been replaced:
+
+- Exercise each visible control, route jump, tab, drawer, modal, table operation, chart click, export, refresh, and empty/error state.
+- Confirm interactions still use live API-backed data and the current filters, route params, pagination, and selected records.
+- Search user-facing source text for stale prototype copy:
+
+```bash
+rg -n "原型|mock|demo|示例|TODO|占位|placeholder|lorem|测试标题|未命名" src public index.html
+```
+
+- Clean titles, menus, breadcrumbs, labels, button text, placeholders, tooltips, document title, download names, and error messages that still describe the prototype instead of the delivered page.
+- Fix dead controls, mismatched titles, wrong metric names, malformed units, stale explanatory text, and any copy that no longer matches the API-backed feature.
