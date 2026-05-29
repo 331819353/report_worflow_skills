@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "Design, critique, or refine visual style and responsive behavior of business report components across dashboards, pages, and TypeScript + Vue 3 prototypes. Use when deciding how filters, text summaries, KPI cards, ECharts charts, AntV S2 analytical tables, legends, labels, titles, drawers, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, trees, funnels, or flows should look, align, resize, avoid overlap, preserve readability, support zoom/pan, and stay visually consistent. Covers titles, backgrounds, font sizes, colors, borders, shadows, centering, fit within grid blocks, no truncation, contrast, ECharts resize, S2 container behavior, and complex-diagram viewports."
+description: "Design, critique, or refine visual style and responsive behavior of business report components across dashboards, pages, and TypeScript + Vue 3 prototypes. Use when deciding how filters, text summaries, KPI cards, ECharts charts, AntV S2 analytical tables, legends, labels, titles, drawers, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, trees, funnels, or flows should look, align, resize, avoid overlap, preserve readability, support zoom/pan, animate, show hover values, and stay visually consistent. Covers titles, backgrounds, font sizes, colors, borders, shadows, centering, fit within grid blocks, no truncation, contrast, ECharts resize, S2 container behavior, chart element density, overcrowded labels, 标签过密, 图形元素过多, hover tooltip, animation, and complex-diagram viewports."
 ---
 
 # Report Component Style Design
@@ -174,6 +174,72 @@ Preferred solutions:
 - Use tooltips for secondary details.
 - Use responsive font sizes within defined min/max bounds.
 - Increase component span or enable zoom/pan for complex visuals.
+
+## Chart Label Density Rules
+
+When a chart has many elements, labels must be density-managed before rendering. Do not render every label and then rely on clipping, tiny fonts, or hidden overflow.
+
+Before choosing label strategy, calculate a label budget from the real chart viewport:
+
+- Available category slots: plot width or height divided by the minimum readable label footprint.
+- Minimum readable text: normally 11-12px for axis/legend text and 12px+ for data labels; never shrink below readability to fit more labels.
+- Minimum gaps: keep at least 4px between adjacent text boxes and between text and marks.
+- Plot viability: if reserved label/legend/axis zones leave too little plot area, expand the component, enable zoom/scroll, split the chart, or switch to table/list/summary.
+
+Density strategies:
+
+- Axis labels: use `axisLabel.hideOverlap`, calculated `interval`, wrapping, two-line labels, or 30-45 degree rotation only when still readable. If labels still collide, enable `dataZoom`, horizontal scroll, pagination, or show fewer categories.
+- Data labels: default to hidden for dense series. Show only key points such as latest, max, min, target gap, anomaly, selected item, or hovered item.
+- Bar/column charts: when bar width becomes too small for labels, move exact values to tooltip, show end labels only for Top N or highlighted bars, or switch to horizontal bars with scroll.
+- Line/area charts: do not label every point. Label endpoints, anomalies, max/min, or selected comparison points; use tooltip and axis pointer for exact reading.
+- Pie/donut/rose charts: if slices exceed a readable count, use Top N plus "others", hide low-value slice labels, use legend/tooltip for details, or switch to bar/table. Do not let outside labels and guide lines form a dense ring.
+- Scatter/bubble charts: when points are dense, label only selected/outlier points, use tooltip, brush, visualMap, and zoom. Do not print labels for every point.
+- Heatmap/calendar/map: prefer tooltip and selected labels; label only major regions or high-risk cells when space allows.
+- Tree/Sankey/flow/decomposition charts: collapse low-priority branches, provide zoom/pan/fullscreen, and label only visible nodes whose boxes can fully contain text.
+- Multi-series charts: use legend toggling, series grouping, small multiples, or tabs when the legend or labels become too dense.
+
+ECharts expectations:
+
+- Set `grid.containLabel: true` and reserve enough `grid` margins for axes and labels.
+- Use `labelLayout: { hideOverlap: true }` where supported; for vertical collisions, use `moveOverlap` only when it does not mislead reading order.
+- Use `dataZoom` (`inside` and/or `slider`) when categories exceed the visible label budget.
+- Keep `tooltip` complete enough that hidden labels can still be inspected.
+- Use emphasis/selection state to reveal labels on hover or click.
+
+Required design decision:
+
+- If a component's chart has more marks or categories than the label budget allows, explicitly state the chosen strategy: Top N, aggregation, label sampling, hidden data labels with tooltip, dataZoom, internal scroll, fullscreen, split chart, small multiples, or table fallback.
+
+## Motion And Hover Feedback Rules
+
+Runnable prototype components should feel alive and inspectable. Do not deliver charts or KPI components that look like static screenshots unless the user explicitly asks for a static export.
+
+Baseline feedback:
+
+- Charts must have entrance and update animation unless the dataset is so large that animation harms performance.
+- Charts must have hover or focus feedback for readable marks: highlight the hovered mark, dim unrelated series when useful, and show the exact value.
+- When data labels are hidden to control density, tooltip or hover reveal becomes mandatory.
+- KPI cards, task cards, anomaly cards, table rows, and clickable list items must show hover, active, selected, disabled, and loading states when those states exist.
+- Clickable chart marks or rows must use a pointer cursor and visible selected state after click.
+- Animations should be restrained: 150-500ms, ease-out or similar, no distracting loops unless representing live monitoring.
+- Respect reduced-motion needs: if motion is disabled, keep hover/selection state and tooltip value inspection available.
+
+ECharts interaction defaults:
+
+- Configure `tooltip` for every business chart: use `trigger: 'axis'` for line/bar comparison and `trigger: 'item'` for pie, scatter, map, tree, sankey, funnel, and node-like charts unless another trigger is clearly better.
+- Set `tooltip.confine: true` or an equivalent container-safe strategy so the tooltip stays readable inside the viewport.
+- Tooltip content must include category/name, series/metric name, value, unit, ratio/percentage when relevant, comparison/baseline when relevant, and active filter/time context when ambiguity is possible.
+- Configure `axisPointer` for axis charts and `emphasis`/`select`/`blur` states for mark-level charts.
+- Use `animation`, `animationDuration`, `animationDurationUpdate`, and `animationEasing` intentionally; avoid globally disabling animation because it makes state changes hard to perceive.
+- Use hover labels through `emphasis.label` only for important marks; keep permanent labels density-managed.
+- Use legend hover/selection where multi-series comparison is present.
+
+Custom SVG/canvas interaction:
+
+- Implement hit testing for marks that should reveal values.
+- Provide a tooltip layer or popover with exact values.
+- Keep hover target size usable; tiny marks should have a larger invisible hit area.
+- Animate data transitions or selection changes unless performance or accessibility requires static rendering.
 
 ## Adaptive Sizing Rules
 
@@ -627,6 +693,7 @@ Use ECharts as the default chart engine for runnable prototypes. Configure it so
 - Reserve space for title, axes, labels, legends, and data zoom before calculating plot area.
 - Prefer ECharts dataZoom, tooltip, legend, and visualMap over custom ad hoc controls when they fit the task.
 - Keep ECharts option data-driven; do not hard-code mock values inside component styling.
+- Keep ECharts interactive by default: tooltip, hover emphasis, selected state for clickable marks, and restrained entrance/update animation.
 
 Charts must prioritize legibility.
 
@@ -635,10 +702,11 @@ Rules:
 - Reserve space for title, legend, axes, labels, and tooltip.
 - Keep plot area centered within remaining space.
 - Avoid overlapping data labels; show labels only when they add value.
+- Apply the Chart Label Density Rules whenever categories, slices, points, nodes, or series exceed the readable label budget.
 - Charts with multiple data series must show a legend. Keep legends close to the chart but outside the plot area unless intentionally embedded with reserved space.
 - Hide chart outer borders and vertical gridlines by default; use very light dashed horizontal gridlines such as `#EEEEEE`.
 - Use the page-level palette for actual, target, positive, negative, selected, and disabled states. Do not rely on ECharts default random color order.
-- Use tooltips for detailed values.
+- Use tooltips for detailed values; moving over a chart mark must reveal the exact value unless the chart is explicitly non-interactive.
 - Show empty/no-data state clearly.
 - Provide fullscreen when a chart has many series or labels.
 - Provide download image/data when useful.
@@ -656,6 +724,8 @@ For dense charts:
 - Use data zoom, brush, scroll, pagination, or small multiples.
 - Allow series toggling.
 - Use Top N plus "others" instead of unreadable long tails.
+- Hide nonessential labels by default and reveal details through tooltip, hover, selection, drawer, or fullscreen.
+- When exact value reading matters, prefer table/list/detail drawer over a visually saturated chart.
 - Switch to table when exact reading matters more than shape.
 
 ### Radar Chart Rules
@@ -783,6 +853,9 @@ Before finalizing, verify:
 - Filters, text summaries, charts, cards, tables, and drawers share the same visual language.
 - Components remain readable after filter-driven data changes, including empty results, long labels, changed totals, hidden series, and stale selections.
 - Drawers, fullscreen views, exports, and refreshed components visually reflect the same active filter state as their source component.
+- Charts and clickable components have visible entrance/update animation unless intentionally disabled for performance or accessibility.
+- Hovering a chart mark, KPI submetric, table row, or interactive graphic reveals exact values or explanatory details through tooltip, emphasis label, popover, or drawer.
+- Hidden dense labels remain inspectable through tooltip, hover, selection, fullscreen, or detail drawer.
 - Complex diagrams use viewport, zoom, pan, reset, and fit-to-screen instead of forcing page overflow.
 - Responsive behavior is defined for narrow and wide blocks.
 - Screenshots at target width, narrower laptop width, and fullscreen show no clipped right edge, hidden bottom content, or component collision.
@@ -800,3 +873,4 @@ Before finalizing, verify:
 - Do not allow complex diagrams to expand the page layout horizontally.
 - Do not mix multiple unrelated visual styles on one page.
 - Do not make component styling decorative at the cost of scanning and action.
+- Do not deliver static-looking charts with no animation, hover emphasis, or tooltip value inspection unless explicitly required.

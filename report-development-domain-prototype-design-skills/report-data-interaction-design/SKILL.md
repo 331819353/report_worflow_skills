@@ -1,6 +1,6 @@
 ---
 name: report-data-interaction-design
-description: "Design report data interactions including drilldown, cross-filtering, linked highlighting, popovers, drawers, modals, page jumps, parameter passing, breadcrumbs, state preservation, back behavior, permissions, linkage accuracy, and interaction failure states. Use when defining what happens after users click KPI cards, chart marks, map regions, table rows, alerts, tasks, evidence nodes, or report navigation actions, especially when active filters must stay consistent across components, drawers, jumps, and exports."
+description: "Design report data interactions including drilldown, cross-filtering, linked highlighting, hover tooltips, value reveal, animation feedback, popovers, drawers, modals, page jumps, parameter passing, breadcrumbs, state preservation, back behavior, permissions, linkage accuracy, and interaction failure states. Use when defining what happens after users hover or click KPI cards, chart marks, map regions, table rows, alerts, tasks, evidence nodes, or report navigation actions, especially when active filters must stay consistent across components, drawers, jumps, and exports."
 ---
 
 # Report Data Interaction Design
@@ -46,8 +46,22 @@ Use for lightweight explanation:
 - One-point trend note.
 - Current value vs baseline.
 - Disabled-state reason.
+- Exact chart mark value, unit, series name, category, rank, ratio, contribution, and active period/filter context.
 
 Tooltips should be short and should not contain workflows or large tables.
+
+For charts, tooltip is not optional when the chart hides dense labels. If the user moves over a bar, line point, pie slice, map region, scatter point, tree node, sankey edge, funnel segment, or heatmap cell, the component should reveal the exact business value unless the mark is explicitly decorative.
+
+### Hover And Motion Feedback
+
+Use hover and motion to make data inspectable and state changes perceivable:
+
+- Hovering a chart mark should show value tooltip and visual emphasis.
+- Hovering a table row, KPI submetric, card, or list item should show whether it is clickable and reveal clipped secondary detail when needed.
+- Updating data after a filter, tab, refresh, or drilldown should use restrained transition animation or loading state so the user can see that the component changed.
+- Selected objects should remain visibly selected until cleared, invalidated, or replaced by another selection.
+- Disabled interactions should still explain why they are disabled through tooltip/popover or helper text.
+- Avoid decorative-only hover effects that do not reveal data, action, or state.
 
 ### Drawer
 
@@ -197,6 +211,7 @@ Custom implementation contract:
 Force-check rule:
 
 - A clickable visual element is not complete until its emitted event and configured action are both present.
+- A hoverable data mark is not complete until tooltip/value reveal and emphasis state are both present.
 - `openModal` must declare target/modal and params; `navigateUrl` must declare target/url and query behavior; `setFilters` must declare target filters.
 - If a widget emits `dashboard-action`, the page config must map that event name to an action unless the component is explicitly self-contained.
 - A refresh, export, fullscreen, modal, drawer, or jump that ignores active filters must document why and show that scope difference.
@@ -339,6 +354,8 @@ Before finalizing interactions, verify:
 - Drilldown depth does not trap users.
 - Cross-filter selections are visible and easy to clear.
 - Cross-filter selections update every dependent component or clearly identify components outside the selection scope.
+- Hovering charts, map regions, KPI submetrics, and table rows reveals exact values or useful detail where labels are hidden or compressed.
+- Filter, refresh, tab, and drilldown changes produce visible loading, transition, or update feedback instead of silently swapping data.
 - Drawers contain evidence or action, not duplicated page content.
 - Drawer data, related records, and action parameters reconcile with the selected object and active filters.
 - Page jumps do not force users to rebuild context manually.
