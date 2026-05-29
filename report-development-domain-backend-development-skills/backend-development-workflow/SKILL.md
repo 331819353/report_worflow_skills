@@ -1,6 +1,6 @@
 ---
 name: backend-development-workflow
-description: "Run the end-to-end backend development workflow for requests containing backend-development intent or keywords such as 后端, 数据服务, 接口, API, 服务端, Flask, 数据接口, 接口文档, 后台服务, backend, data service, or API service. Use when Codex must inspect input files, identify data sources, infer raw and response data models, transform source data into frontend/API display contracts, design final APIs with request and response contracts, output API documentation plus missing-information documentation, implement in the existing backend stack or default to Python Flask only for new unconstrained services, integrate default SSO when authentication is not explicitly disabled, start the backend service after development, and return a runnable local URL."
+description: "Run the end-to-end backend development workflow for requests containing backend-development intent or keywords such as 后端, 数据服务, 接口, API, 服务端, Flask, 数据接口, 接口文档, 后台服务, backend, data service, or API service. Use when Codex must inspect input files, identify data sources, infer raw and response data models, transform source data into frontend/API display contracts, design final APIs with request and response contracts, output API documentation plus missing-information documentation, implement in the existing backend stack or default to Python Flask only for new unconstrained services, use oracledb when Python connects to Oracle, integrate default SSO when authentication is not explicitly disabled, start the backend service after development, and return a runnable local URL."
 ---
 
 # Backend Development Workflow
@@ -84,6 +84,13 @@ Use these conventions:
 - `errors.py` owns shared error responses.
 - `data/` stores local sample data or parsed fixtures only when the project needs file-backed behavior.
 
+Database driver defaults:
+
+- When a Python backend connects to Oracle, use the `oracledb` package and `import oracledb` in repository/data-access code.
+- Prefer `oracledb` thin mode unless the project explicitly requires Oracle Client features that need thick mode. If thick mode is required, document the Oracle Client dependency, environment variables, and deployment impact.
+- Do not introduce `cx_Oracle` for new Python Oracle work. If existing code already uses `cx_Oracle`, keep compatibility only when migration is outside scope, and record the migration decision or blocker in the missing-information document.
+- Put Oracle connection settings in environment-based config, not hard-coded route or service files.
+
 For small prototypes, a flatter layout is acceptable, but keep data parsing, business logic, and routes separated enough that API contracts remain clear.
 
 ## Response Contract And Transformation Testing
@@ -125,6 +132,7 @@ Use this checklist before final response:
 - Large-result behavior is defined: pagination, maximum page size, cache/precompute strategy when needed, timeout behavior, and file/database failure handling.
 - Required request params and body fields are validated.
 - File parsing handles missing files, empty files, malformed rows, and unsupported formats.
+- Python Oracle integrations use `oracledb`; any retained `cx_Oracle` usage is explicitly documented as existing compatibility or a migration blocker.
 - Authenticated flows use SSO by default unless explicitly disabled.
 - Flask starts successfully in the background, or the blocker is stated clearly.
 - The final answer includes the backend URL when startup succeeds.

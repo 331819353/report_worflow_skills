@@ -1,4 +1,4 @@
 interface:
   display_name: "后端开发 Workflow"
-  short_description: "沉淀后端、数据服务、接口开发全流程，覆盖已有技术栈识别、数据模型、源数据加工、契约验证、接口文档、缺失信息文档与后台启动"
-  default_prompt: "Use $backend-development-workflow for 后端, 数据服务, 接口, API, and backend work: follow the existing stack when present, analyze files, data sources, raw and response data models, call backend transformation/contract/missing-info specialty skills when needed, document APIs, and start the service."
+  short_description: "沉淀后端、数据服务、接口开发全流程，覆盖技术栈识别、Oracle oracledb、数据模型、源数据加工、契约验证、接口文档、缺失信息文档与后台启动"
+  default_prompt: "Use $backend-development-workflow for 后端, 数据服务, 接口, API, and backend work: follow the existing stack when present, use oracledb for Python Oracle integrations, analyze files, data sources, raw and response data models, call backend transformation/contract/missing-info specialty skills when needed, document APIs, and start the service."
