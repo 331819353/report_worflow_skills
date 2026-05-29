@@ -1,4 +1,4 @@
 interface:
   display_name: "报表需求结构化提取"
-  short_description: "沉淀报表需求解析方法论，提取主题、类型、区块、指标、数据、筛选、交互与设计路径"
-  default_prompt: "Use $report-requirement-structure-extraction to extract report theme, type, metrics, blocks, data, filters, interactions, and design inputs."
+  short_description: "沉淀报表需求解析方法论，先明确用户意图和设计思路，再提取主题、类型、区块、指标、数据、筛选、交互与设计路径"
+  default_prompt: "Use $report-requirement-structure-extraction to extract user intent, design thinking, report theme, type, metrics, blocks, data, filters, interactions, and design inputs."

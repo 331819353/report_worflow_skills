@@ -1,0 +1,4 @@
+interface:
+  display_name: "后端数据转换设计"
+  short_description: "沉淀源数据到接口响应的后端加工规则，覆盖日期粒度、聚合、字段映射、枚举、单位、公式和验证样例"
+  default_prompt: "Use $backend-data-transformation-design to design source-to-response backend transformations, verify samples, and align API responses with frontend/mock display contracts."

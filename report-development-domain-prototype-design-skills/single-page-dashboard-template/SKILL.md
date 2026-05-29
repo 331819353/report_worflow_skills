@@ -1,11 +1,11 @@
 ---
 name: single-page-dashboard-template
-description: Use this skill when creating, copying, adapting, or auto-starting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 standalone single-page business dashboard/report template. Choose it for compact focused report content, top-bar navigation only, no sidebar, direct first-screen answers, light/dark layouts, centered title, Haier logo, right-side theme/refresh/filter/download controls, automatic free-port local preview, and an 8*N content grid. Do not use it for large multi-chapter reports, dense report suites, or command-center big-screen presentation pages.
+description: Use this skill when creating, copying, adapting, or auto-starting a TypeScript + Vue 3 + Vite + ECharts + AntV S2 standalone single-page business dashboard/report template. Choose it for compact focused report content, analysis/diagnostic reports when no template is specified, top-bar navigation only, no sidebar, direct first-screen answers, light/dark layouts, centered title, Haier logo, right-side theme/refresh/filter/download controls, automatic free-port local preview, and an 8*N content grid whose height may exceed 1080px with vertical scrolling. Do not use it for explicit large multi-chapter suites, dense workbenches, or command-center big screens.
 ---
 
 # Single Page Dashboard Template
 
-Use this skill to produce a reusable single-page report dashboard template. The bundled asset is a TypeScript + Vue 3 + Vite project designed around a fixed 1920x1080 canvas, light/dark layout themes, a top menu bar, one 8*N page content grid, independent data files, data-source-backed widgets and filters, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
+Use this skill to produce a reusable single-page report dashboard template. The bundled asset is a TypeScript + Vue 3 + Vite project designed around a 1920px-wide canvas with a minimum 1080px first viewport, light/dark layout themes, a top menu bar, one 8*N page content grid that may extend beyond 1080px, independent data files, data-source-backed widgets and filters, scoped filters, configurable actions, modal drilldowns, and WidgetTemplate-driven custom content.
 
 ## When To Use
 
@@ -13,6 +13,7 @@ Choose this template when:
 
 - The output is one compact standalone report page, not a large report suite.
 - The user asks for 单页, 顶部栏, 无侧边栏, or a lightweight page shell.
+- The report is analysis/diagnostic in nature and the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit.
 - The page should answer one focused business question quickly, such as a single 总览, 诊断, 明细查询, 复盘, or核对 page.
 - The content can be reasonably carried by one 8*N grid, usually 1-3 sections and about 4-12 components.
 - The report can be understood through one 8*N content grid with optional drawers/modals, rather than navigation across many pages.
@@ -43,7 +44,7 @@ Use this stack for report prototypes built from this template:
 3. Configure the single page in `src/config/dashboard.config.ts`.
    - `screen.title` controls the centered top-bar title.
    - `page.layoutRows` controls the 8*N content grid.
-   - `screen.grid.rowHeight` must stay at least `220`; if row count and gaps exceed the 1080px canvas, the page scrolls vertically.
+   - `screen.grid.rowHeight` must stay at least `220`; if row count and gaps exceed the first 1080px viewport, the page height grows and scrolls vertically.
    - `page.widgets` mounts widgets under matching grid block keys.
    - `filters` controls the right-side filter drawer.
    - `assets.logoSrc` controls the top-left logo.
@@ -105,7 +106,8 @@ Use this stack for report prototypes built from this template:
 
 ## Layout Rules
 
-- The design canvas is fixed at 1920x1080. If the browser viewport is smaller, native scrollbars should expose the full canvas.
+- The design canvas keeps a 1920px design width, but its height is not fixed to 1080px. Treat 1080px as the minimum first viewport, then let the resolved page height grow when the content grid needs more vertical room.
+- If the browser viewport is smaller than the resolved canvas, native scrollbars should expose the full canvas.
 - The top menu bar is fixed at the top of the canvas.
 - The top-bar title is centered.
 - Top-left position one is the Haier logo.
@@ -116,7 +118,8 @@ Use this stack for report prototypes built from this template:
 - The theme switch toggles the built-in light and dark layouts and persists the choice in `sessionStorage`.
 - The content area starts below the top menu bar and uses the 8*N rule: each `layoutRows` string is one row, each character is one column, adjacent equal characters merge into a rectangular block, and `.` or spaces create empty cells.
 - Every resolved content block must be at least 220px tall. Keep `screen.grid.rowHeight >= 220`; one-row blocks may be taller when the available 1080px canvas has extra space.
-- If `layoutRows.length * screen.grid.rowHeight + gaps + vertical offsets` exceeds 1080px, the page must scroll vertically and keep row/block heights instead of compressing rows.
+- If `layoutRows.length * screen.grid.rowHeight + gaps + vertical offsets` exceeds 1080px, the page height must exceed 1080px, scroll vertically, and keep row/block heights instead of compressing rows.
+- Download/print must include the full resolved page height. A page taller than 1080px should produce multiple 1920x1080 print/PDF pages, not clip to the first viewport.
 - The template ships without demo business components. Empty blocks are valid placeholders until registered widgets are added.
 - Every content block is split into a title/header zone and a component body zone.
 - Business widgets render only inside the body zone. Charts, tables, icons, empty states, and custom canvases must never overlap or cover the block title/header.

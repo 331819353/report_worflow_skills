@@ -7,7 +7,7 @@ description: "Extract, structure, classify, and normalize business report requir
 
 ## Core Positioning
 
-Treat this as the front-door skill for report design. It extracts the report's information architecture and design inputs before choosing layout, charts, components, or detailed interactions.
+Treat this as the front-door skill for report design. It extracts the report's information architecture and design inputs before choosing layout, charts, components, or detailed interactions. Every extraction must make the user's intent and the design thinking explicit before downstream design or implementation starts.
 
 This skill answers:
 
@@ -50,31 +50,34 @@ Use this sequence for every report requirement:
 1. Identify the report theme.
    Write one sentence that describes what the report is about and what business situation it observes.
 
-2. Identify target users and use scenario.
+2. State user intent and design thinking.
+   Write `User Intent` as the decision, judgment, or action the user wants the report to support. Write `Design Thinking` as the core report logic you will use, such as overview-to-drilldown, problem-to-cause, target-to-gap, anomaly-to-handling, detail-query, or evidence-to-conclusion.
+
+3. Identify target users and use scenario.
    Determine who uses it, when, in what meeting/workflow, and what decision or action follows.
 
-3. Extract the core question.
+4. Extract the core question.
    Convert vague goals into one or more questions the report must answer.
 
-4. Classify report type.
+5. Classify report type.
    Map to one primary report category and optional secondary categories. Use the eight report types as the taxonomy.
 
-5. Identify business objects.
+6. Identify business objects.
    Extract what entities the report observes: group, region, subsidiary, department, person, project, store, product, customer, channel, contract, order, task, exception, document, data source, metric, or process.
 
-6. Extract key business concerns.
+7. Extract key business concerns.
    Identify concerns such as result, target, variance, trend, cause, risk, execution, detail lookup, fairness, data trust, evidence, or action.
 
-7. Build the metric and dimension model.
+8. Build the metric and dimension model.
    Separate core metrics, supporting metrics, derived metrics, status metrics, dimensions, hierarchies, and baselines.
 
-8. Propose content blocks.
+9. Propose content blocks.
    Convert the information into page blocks such as summary, filters, KPI cards, decomposition, trend, distribution, table, alert list, task board, evidence chain, action plan, or conclusion.
 
-9. Identify interactions.
+10. Identify interactions.
    Extract required filters, drilldowns, popovers, drawers, jumps, exports, refresh, fullscreen, tasks, approvals, or source tracing.
 
-10. Route to design skills.
+11. Route to design skills.
    Recommend which report-type, information mapping, mock data, filter data, data interaction, visual layout, and component style skills should be used next.
 
 ## Report Type Classification
@@ -227,21 +230,23 @@ If multiple report-type skills apply, name the primary type and secondary roles.
 When extracting a report requirement, return this structure:
 
 1. 报表主题: one sentence.
-2. 类型判断: primary report type and secondary types, with reason.
-3. 用户与场景: target users, usage moment, decision/action.
-4. 核心问题: 3-5 questions the report must answer.
-5. 业务对象: main object, row/card/node grain, hierarchy, owner/status.
-6. 关键关注点: result, target, variance, trend, cause, risk, detail, execution, trust, action.
-7. 指标体系: core metrics, supporting metrics, derived metrics, baselines, direction, unit.
-8. 维度体系: time, organization, business dimensions, status/type/source/version.
-9. 内容区块: recommended page blocks and why each exists.
-10. 交互入口: filters, drilldowns, popovers, drawers, jumps, export/refresh/fullscreen/actions.
-11. 数据策略: mock data needs, row grain, formula dependencies, and validation requirements.
-12. 筛选策略: main filters, advanced filters, defaults, cascades, query state, and permission scope.
-13. 交互策略: drilldowns, cross-filtering, popovers, drawers, jumps, parameters, export/refresh/fullscreen/actions.
-14. 视觉与组件策略: layout pattern, component rules, and fit/overflow risks.
-15. 后续调用: specific design skills to use next.
-16. 假设与缺口: assumptions, missing information, risks that affect design.
+2. 用户意图: the decision, judgment, or action the user wants the report to support.
+3. 设计思路: the core report logic and reading path that will satisfy the intent.
+4. 类型判断: primary report type and secondary types, with reason.
+5. 用户与场景: target users, usage moment, decision/action.
+6. 核心问题: 3-5 questions the report must answer.
+7. 业务对象: main object, row/card/node grain, hierarchy, owner/status.
+8. 关键关注点: result, target, variance, trend, cause, risk, detail, execution, trust, action.
+9. 指标体系: core metrics, supporting metrics, derived metrics, baselines, direction, unit.
+10. 维度体系: time, organization, business dimensions, status/type/source/version.
+11. 内容区块: recommended page blocks and why each exists.
+12. 交互入口: filters, drilldowns, popovers, drawers, jumps, export/refresh/fullscreen/actions.
+13. 数据策略: mock data needs, row grain, formula dependencies, and validation requirements.
+14. 筛选策略: main filters, advanced filters, defaults, cascades, query state, and permission scope.
+15. 交互策略: drilldowns, cross-filtering, popovers, drawers, jumps, parameters, export/refresh/fullscreen/actions.
+16. 视觉与组件策略: layout pattern, component rules, and fit/overflow risks.
+17. 后续调用: specific design skills to use next.
+18. 假设与缺口: assumptions, missing information, risks that affect design.
 
 For very small inputs, keep output concise but preserve the same structure.
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端运行时 QA"
+  short_description: "在浏览器中系统检查 console、network、筛选联动、交互、空错态、文案残留、布局裁剪和可运行 URL"
+  default_prompt: "Use $frontend-runtime-qa-validation to run structured browser/runtime QA after frontend implementation or mock-to-API integration."

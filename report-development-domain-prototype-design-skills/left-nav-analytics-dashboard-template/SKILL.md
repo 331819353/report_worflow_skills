@@ -109,6 +109,7 @@ Use this stack for report prototypes built from this template:
 - Page layouts use the 8*N rule: each `layoutRows` string must contain 8 characters; the array length is the row count N.
 - Every resolved content block must be at least 220px tall. Keep `screen.grid.rowHeight >= 220`; one-row blocks may be taller when the available 1080px canvas has extra space.
 - If `layoutRows.length * screen.grid.rowHeight + gaps + vertical offsets` exceeds 1080px, the right content area must scroll vertically and keep row/block heights instead of compressing rows.
+- Download/print must include the full resolved height of the active page. A page taller than 1080px should produce multiple 1920x1080 print/PDF pages, not clip to the first viewport.
 - Each `layoutRows` string is one grid row. Each character is one grid cell. Adjacent equal characters merge into one block; `.` and spaces create empty cells.
 - The template ships without demo business components. Empty blocks are valid placeholders until registered widgets are added.
 

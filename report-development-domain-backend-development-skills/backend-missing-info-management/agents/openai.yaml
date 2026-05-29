@@ -1,0 +1,4 @@
+interface:
+  display_name: "后端缺失信息管理"
+  short_description: "沉淀后端缺失信息文档，管理数据源、字段口径、转换规则、接口契约、鉴权配置、部署和性能缺口"
+  default_prompt: "Use $backend-missing-info-management to create or update backend missing-information documentation and keep temporary assumptions consistent across code, API docs, and tests."

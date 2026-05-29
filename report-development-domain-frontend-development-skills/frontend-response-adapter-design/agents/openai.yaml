@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端响应适配设计"
+  short_description: "设计后端响应到前端 view model 的适配层，保护组件 props 稳定并处理字段、枚举、单位、空值和分页"
+  default_prompt: "Use $frontend-response-adapter-design to map backend API DTOs into stable frontend view models while replacing mock data."

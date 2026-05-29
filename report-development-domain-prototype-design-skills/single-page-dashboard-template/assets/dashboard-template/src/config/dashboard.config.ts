@@ -22,7 +22,7 @@ export const cockpitConfig: DashboardConfig = {
     layout: {
       // 固定设计稿宽度。浏览器显示区域不够时，页面使用原生滚动条。
       designWidth: 1920,
-      // 固定设计稿高度。内容超过时保持画布滚动，不压缩组件。
+      // 最小设计稿高度。单页报表内容超过 1080px 时允许页面继续向下增长并滚动，不压缩组件。
       designHeight: 1080,
       // 顶部菜单栏高度。内容区从 grid.contentStartY 开始。
       topbarHeight: 72,
@@ -35,7 +35,7 @@ export const cockpitConfig: DashboardConfig = {
       contentStartY: 88,
       // 内容区结束 y 坐标。默认铺到 1080px 底部。
       contentEndY: 1064,
-      // Every resolved content block must be at least 220px tall. If the grid is taller than 1080px, the page scrolls vertically.
+      // Every resolved content block must be at least 220px tall. If the grid is taller than the first 1080px viewport, the page grows and scrolls vertically.
       rowHeight: 316,
       cellPadding: 0,
       dominantTitleColor: '#20a8ff',

@@ -4,7 +4,7 @@
 
 - `src/config/dashboard.config.ts`: primary entry for assets, screen size, single-page `layoutRows`, block-to-widget mapping, modals, and filters.
 - `src/types/dashboard.ts`: dashboard shell types, including page layout, filter groups, theme labels, and screen layout fields.
-- `src/components/DashboardShell.vue`: fixed 1920x1080 shell, top menu bar, filter drawer, modal layer, and grid rendering.
+- `src/components/DashboardShell.vue`: 1920px-wide scrollable shell with a minimum 1080px first viewport, top menu bar, filter drawer, modal layer, and grid rendering.
 - `src/styles.css`: dashboard shell styles only. Do not put business widget CSS here.
 - `src/data/dashboard.data.ts`: static/mock business rows. Keep raw data here instead of `dashboard.config.ts`.
 - `src/widgets/templates/WidgetTemplate.vue`: copy this file to start every new business widget.
@@ -38,7 +38,8 @@ page: {
 - `.` and spaces are empty cells.
 - The generated block id is the character itself, so widget keys must match those characters.
 - `screen.grid.rowHeight` must be at least 220px, so every one-row block resolves to at least 220px tall.
-- If the content grid height plus gaps and vertical offsets exceeds 1080px, the page scrolls vertically instead of shrinking rows below 220px.
+- If the content grid height plus gaps and vertical offsets exceeds 1080px, the resolved page height grows beyond 1080px and scrolls vertically instead of shrinking rows below 220px.
+- Download/print should render the full resolved page height. Content taller than 1080px must paginate into multiple 1920x1080 print/PDF pages instead of clipping to the first viewport.
 - There is no page navigation or sidebar in this template.
 - Each generated block uses an explicit internal structure: block frame, title/header area, and component body area.
 - `WidgetRenderer` is mounted inside the component body area only. Business widgets must not absolutely position charts, icons, empty states, or canvases relative to the outer block frame.

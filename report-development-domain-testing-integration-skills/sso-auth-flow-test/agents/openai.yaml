@@ -1,0 +1,4 @@
+interface:
+  display_name: "SSO 认证流程测试"
+  short_description: "验证单点登录、clientId/token 存储、鉴权 header、401/403、刷新、深链、退出和重新登录"
+  default_prompt: "Use $sso-auth-flow-test to validate SSO auth storage, request headers, backend token validation, and recovery behavior."

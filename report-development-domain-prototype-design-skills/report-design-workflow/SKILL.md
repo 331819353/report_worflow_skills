@@ -83,7 +83,7 @@ Deliver:
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use `single-page-dashboard-template` for compact focused reports with light/dark layouts, a centered top-bar title, top-left logo, right-side theme switch, refresh, filter, download, and 8*N content grid. Use `left-nav-analytics-dashboard-template` for standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
 
 ### 4. Review And Repair Mode
 
@@ -110,6 +110,8 @@ Clarify or infer:
 - Is the page a single-page top-bar report, standard enterprise sidebar dashboard, or sci-fi/big-screen cockpit?
 - Does the user need automatic deployment, automatic local startup, and a returned URL?
 
+Before moving to design or implementation, write two explicit statements: `User Intent` (what the user is trying to accomplish and decide) and `Design Thinking` (the report logic and layout direction you will use to satisfy that intent). Keep them concise, but do not skip them for prototype work.
+
 Do not block if missing details can be safely assumed.
 
 ### Stage 1: Requirement Extraction
@@ -119,6 +121,8 @@ Use `report-requirement-structure-extraction`.
 Output must include:
 
 - Report theme.
+- User intent.
+- Design thinking.
 - Primary and secondary report types.
 - Users and scenario.
 - Core questions.
@@ -285,6 +289,7 @@ Template and custom implementations must both pass the same audit:
 - Span audit: every component declares `visualType` and uses one of the legal `columns * rows` spans from `report-visual-layout-design`.
 - Block-height audit: for scrollable page templates, every resolved content block is at least 220px tall; when the total grid height exceeds 1080px, the page or content region scrolls vertically instead of shrinking blocks. Fixed sci-fi/big-screen templates are exempt.
 - Table viewport audit: every native table, AntV S2 table, wide matrix, and comparison grid declares `visualType: 'table'`, mounts inside the block body, and scrolls internally instead of expanding or clipping the block.
+- Download/print audit: scrollable pages taller than 1080px export or print their full resolved height across multiple 1920x1080 pages; no print/download path may clip to only the first viewport.
 - Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
 
 Minimum smoke tests before delivery:
@@ -296,6 +301,7 @@ Minimum smoke tests before delivery:
 - A disabled or unauthorized filter option cannot be selected and does not leak counts.
 - Opening a drawer/modal, then changing a filter, either synchronizes or shows a stale-selection state.
 - Export/download/jump/fullscreen receives the same filter context as the source component.
+- Download/print of a page taller than 1080px includes the lower content on later PDF/print pages.
 - Block body QA passes: titles remain readable, and charts/tables/empty states do not overlap the header after default and filtered data changes.
 - Component viewport QA passes: charts, tables, KPI cards, text blocks, canvases, SVGs, and empty states do not paint outside the component-area background.
 - Table body QA passes: each table shows either all columns within the block or a visible internal horizontal scroll path; no table content is silently clipped at the right or bottom edge.
@@ -358,7 +364,7 @@ Default technical architecture:
 Template choice:
 
 - Report is a content form, not a template decision. A "报告/报表/复盘/诊断" request can use any template after judging content volume and usage.
-- Use `single-page-dashboard-template` for a compact focused report whose frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and one 8*N content grid.
+- Use `single-page-dashboard-template` for a compact focused report, and use it by default for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and one 8*N content grid that may grow beyond 1080px.
 - Use `left-nav-analytics-dashboard-template` for enterprise analytics reports, multi-chapter reports, report suites, or workbenches with multiple pages/modules, sidebar navigation, filters, 8*N cards, business widgets, and standard repeated-use behavior.
 - Use `sci-fi-dashboard-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
 - If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
@@ -367,6 +373,7 @@ Template selection rules:
 
 | Situation | Choose | Why |
 | --- | --- | --- |
+| Primary type is analysis/diagnostic and the user does not explicitly ask for sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit | `single-page-dashboard-template` | Analysis pages should default to one focused reading flow; let the single-page content height exceed 1080px with vertical scrolling rather than forcing a sidebar. |
 | Compact report: one decision question, usually 1-3 sections, roughly 4-12 components, no persistent page navigation, and users need a direct first-screen answer | `single-page-dashboard-template` | It keeps the frame light and lets one 8*N content grid carry the report. |
 | Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-dashboard-template` | Sidebar navigation can represent report chapters as well as different report modules. |
 | Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-dashboard-template` | It is optimized for enterprise work rather than showpiece display. |
@@ -378,8 +385,9 @@ Selection priority:
 
 1. Existing project framework and user-stated shell.
 2. Display scenario: big-screen/presentation uses `sci-fi-dashboard-template`.
-3. Content volume and information architecture: multi-chapter or dense reports use `left-nav-analytics-dashboard-template` even if the user calls it one report.
-4. Standalone compact report uses `single-page-dashboard-template`.
+3. Analysis/diagnostic default: if the primary report type is analysis/diagnostic and the user has not explicitly requested another shell, use `single-page-dashboard-template` even when the page needs to scroll beyond 1080px.
+4. Content volume and information architecture: explicit multi-chapter or dense workbench reports use `left-nav-analytics-dashboard-template` even if the user calls it one report.
+5. Standalone compact report uses `single-page-dashboard-template`.
 
 Do not choose a template only because it "looks better"; choose by scenario, navigation depth, interaction density, and display environment.
 
@@ -444,6 +452,7 @@ Self-check dimensions:
 5. Configuration completeness.
    - `layoutRows` follows the 8*N rule and every block is rectangular.
    - For scrollable page templates, every resolved content block is at least 220px tall; if the total grid height exceeds 1080px, vertical scrolling is enabled instead of row compression. Fixed sci-fi/big-screen templates are exempt.
+   - For single-page analysis/diagnostic prototypes, the layout may exceed 1080px in height. Treat 1080px as the first viewport, not a compression target.
    - Every configured widget mounts to an existing block, declares `visualType`, and either declares `data` or an explicit `dataPolicy`.
    - Widget registry, widget props/types, data-source registry, filter sources, modals, assets, logo, theme, toolbar, and route/download configs are complete.
    - Component spans obey the legal component span matrix; oversized diagrams use viewport zoom/pan rather than overflowing their block.
@@ -454,6 +463,7 @@ Self-check dimensions:
    - Run the build command, usually `npm run build`, for runnable Vue projects.
    - Start or preview the page when required, inspect the first viewport, and verify there is no overlap, clipping, critical truncation, low contrast, or component overflow outside the component body.
    - Check at least one representative filter change and one representative interaction in the running page when browser tooling or local verification is available.
+   - If the page is taller than 1080px, verify download/print includes the full scrollable content across multiple pages rather than only the first viewport.
 
 Severity:
 

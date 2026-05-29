@@ -38,6 +38,7 @@ layoutRows: ['ABCDEFGH', 'iijjkkll', 'mmnnoopp']
 - `screen.grid.rowHeight` controls the base height for each row. When `N * rowHeight + gaps` exceeds the visible area, the right-side content area scrolls vertically.
 - `screen.grid.rowHeight` must be at least 220px, so every one-row block resolves to at least 220px tall.
 - If the content grid height plus gaps and vertical offsets exceeds 1080px, keep row heights and use vertical scrolling instead of shrinking rows below 220px.
+- Download/print should render the full resolved height of the active page. Content taller than 1080px must paginate into multiple 1920x1080 print/PDF pages instead of clipping to the first viewport.
 - The component-area background fills the entire body rectangle. It must not be inset to an internal safety line, and the body does not draw a default nested border.
 - The shared card frame owns the visual base. Light theme cards are white, 8px radius, 24px padding, light `0 2px 10px` shadow, and no hard default border. Dark theme keeps the same geometry with enterprise dark tokens.
 - Block titles are plain top-left text, 16px and 600 weight. Business widgets should not duplicate the block title or add a boxed internal title.

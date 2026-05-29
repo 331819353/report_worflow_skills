@@ -653,8 +653,10 @@ button {
   body,
   .analytics-app {
     width: 1920px;
-    height: 1080px;
-    overflow: hidden !important;
+    min-width: 1920px;
+    min-height: 1080px;
+    height: auto;
+    overflow: visible !important;
     background: var(--surface) !important;
   }
 
@@ -665,10 +667,21 @@ button {
 
   .analytics-app {
     margin: 0;
-    break-after: avoid;
-    break-inside: avoid;
-    page-break-after: avoid;
-    page-break-inside: avoid;
+    min-height: var(--design-height);
+    break-after: auto;
+    break-inside: auto;
+    page-break-after: auto;
+    page-break-inside: auto;
+  }
+
+  .analytics-main {
+    height: auto;
+    min-height: var(--design-height);
+    overflow: visible !important;
+  }
+
+  .canvas-shell {
+    overflow: visible !important;
   }
 
   .panel-dismiss-layer,

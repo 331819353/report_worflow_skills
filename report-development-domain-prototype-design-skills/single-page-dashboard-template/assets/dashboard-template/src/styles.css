@@ -825,10 +825,10 @@ button {
   html,
   body {
     width: 1920px;
-    height: 1080px;
     min-width: 1920px;
     min-height: 1080px;
-    overflow: hidden !important;
+    height: auto;
+    overflow: visible !important;
     background: #020a12 !important;
   }
 
@@ -839,15 +839,15 @@ button {
 
   .dashboard-app {
     width: var(--design-width);
-    height: var(--design-height);
+    height: auto;
     min-width: var(--design-width);
     min-height: var(--design-height);
     margin: 0;
-    overflow: hidden !important;
-    break-after: avoid;
-    break-inside: avoid;
-    page-break-after: avoid;
-    page-break-inside: avoid;
+    overflow: visible !important;
+    break-after: auto;
+    break-inside: auto;
+    page-break-after: auto;
+    page-break-inside: auto;
   }
 
   .dashboard-app::before,
@@ -859,8 +859,14 @@ button {
 
   .dashboard-shell {
     width: var(--design-width);
-    height: var(--design-height);
-    overflow: hidden !important;
+    height: auto;
+    min-height: var(--design-height);
+    overflow: visible !important;
+  }
+
+  .canvas-shell {
+    height: var(--canvas-height);
+    overflow: visible !important;
   }
 
   .topbar {
