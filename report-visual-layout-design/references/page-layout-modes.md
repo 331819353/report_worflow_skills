@@ -4,14 +4,20 @@
 
 Before designing a report page, decide which mode controls the page shell:
 
-- Blank report page: no template is specified, the page starts from an empty canvas, or the user asks for a custom report shell.
-- Template-based report page: the selected implementation uses one of this skill's bundled assets under `assets/templates/`: `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, `sci-fi-dashboard-template`, or another existing project template.
+- Template-based report page: default when the user has not specified a page style and has not provided HTML/source/sample styling. Use the selected implementation asset under `assets/templates/`: `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, `sci-fi-dashboard-template`, or another existing project template.
+- Custom report page: use only when the user asks for a custom shell/style, provides a sample/HTML/source style to follow, or a documented template limitation makes a bundled template unsuitable.
 
 This decision comes before choosing cards, charts, filters, or navigation.
 
-## 2. Blank Report Page
+Declare `pageStyleSource` before implementation:
 
-Blank pages need these capabilities, but they do not need to be three separate visual regions:
+- `templateDefault`: no style specified and no HTML/source/sample styling provided; use a bundled template.
+- `userSpecified`: user names the design style or shell; follow that design.
+- `sampleProvided`: screenshot, HTML source, image, or display sample supplies style; follow the sample unless optimization/redesign is requested.
+
+## 2. Custom Report Page
+
+Custom pages need these capabilities, but they do not need to be three separate visual regions:
 
 - Title identity: Haier logo, report title, period/scope, data status, and primary actions.
 - Navigation: view switching, report hierarchy, chapter jump, or cross-report entry when needed.
@@ -20,14 +26,23 @@ Blank pages need these capabilities, but they do not need to be three separate v
 
 Design title, navigation, and filter access as one coherent header/control area when that improves simplicity. Do not force a separate title strip, separate nav strip, and separate filter strip unless the product style or task genuinely needs them.
 
-Good blank-page shell patterns:
+Choose exactly one `customLayoutPattern` before designing a custom page:
+
+- `symmetricBalance` / 对称式: balanced left-right or top-bottom blocks for comparison, paired metric groups, or two-side diagnosis.
+- `threePart` / 三部式: summary, analysis, and detail/action zones; useful when the page needs a clear top answer and two supporting layers.
+- `masterDetail` / 主从式: primary list/map/chart with detail panel/drawer/table; useful for record exploration, monitoring, and traceability.
+- `narrativeStack` / 分层叙事式: vertical conclusion-evidence-diagnosis-detail-action flow; useful for recap, diagnosis, and leadership reading.
+
+Do not invent another custom layout pattern unless the user explicitly asks for it.
+
+Good custom-page shell patterns:
 
 - Integrated top control area: logo + title on the left, compact tabs or breadcrumb below/near the title, filter trigger and actions on the right.
 - Title + segmented views: logo/title/scope in one row, view tabs as small segmented controls, filters opened from a button with active chips.
 - Compact workbench header: logo/title/status plus icon actions; filter drawer or popover opens from the toolbar.
 - Low-intrusion side navigation: icon-collapsed or narrow nav only when many report chapters must be visible.
 
-Blank-page content rules:
+Custom-page content rules:
 
 - The content display area starts after the unified control area.
 - Use an `8 * N` rectangular grid.

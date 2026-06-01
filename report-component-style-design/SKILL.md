@@ -46,6 +46,8 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable container.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
 - Do not create one-off component styles that conflict with the page shell, Haier branding, or existing design system.
+- Do not use naked native `<select>` controls as the final visual surface for primary filters.
+- Do not accept flow, Sankey, graph, tree, decomposition, lineage, DuPont, or process-chain diagrams until rail, node, label, gutter, and edge-bend spacing has been calculated.
 
 ## Output Format
 
@@ -65,6 +67,8 @@ When using this skill, provide:
 - Hidden or abbreviated values are inspectable.
 - Dense charts use label budgets and tooltips; dense tables use S2 or horizontal scroll.
 - Complex diagrams use zoom/pan, minimap, drawer, or fullscreen instead of overflowing.
+- Complex diagrams keep layer numbers, labels, nodes, and edges at least 16px apart and reserve rail/edge-bend space.
+- Primary filters use design-system/custom select/dropdown controls, or a fully styled native select only for baseline prototype acceptance.
 - Controls inside components have clear selected/hover/disabled/loading states and do not resize the block.
 - Loading, empty, error, no-permission, and stale states preserve geometry.
 - Runtime resize or visual verification is performed when the component is implemented.

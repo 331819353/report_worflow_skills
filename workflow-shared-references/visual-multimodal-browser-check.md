@@ -22,9 +22,12 @@ Do not mark a runnable frontend/prototype visual check as passed without screens
 Capture the smallest set that can prove the page is visually usable:
 
 - First viewport at the target desktop size.
+- Header/logo area for Haier or branded pages, including placeholder state when the asset is missing.
 - Full-page screenshot when the page scrolls.
 - Mobile/tablet screenshots when the page is responsive or embedded in variable containers.
 - One screenshot after changing a representative primary filter.
+- One screenshot of opened custom filter popovers/dropdowns when filter visual acceptance is in scope.
+- One screenshot focused on complex flow, Sankey, graph, tree, decomposition, or lineage diagrams when present.
 - One screenshot after opening each important tab, drawer, modal, drilldown, fullscreen view, or export preview.
 - Error, empty, loading, no-permission, and token-invalid states when those states are in scope and reachable.
 
@@ -45,6 +48,10 @@ Ask the multimodal model to inspect screenshots for:
 - Component too small: chart/table/KPI/detail content is compressed, unreadable, or occupies too little of its block.
 - Clipping or truncation: important text, values, legends, axes, controls, drawers, modals, or table content is cropped.
 - Nonblank rendering: charts, canvases, maps, icons, logos, images, and tables render with visible content.
+- Brand/logo acceptance: required logo or declared placeholder is visible, uses the correct light/dark variant, keeps aspect ratio, and is not clipped.
+- Sample fidelity: for sample/screenshot/HTML-source restoration, shell, module order, control count, hierarchy, card proportions, and first viewport match the source unless an enhancement is labeled.
+- Control surface quality: primary filters use a styled design-system/custom select/dropdown surface; naked native `<select>` controls are not accepted as final visuals.
+- Complex diagram spacing: layer numbers, labels, nodes, and edges in flow/Sankey/graph/tree/decomposition visuals have at least 16px visible separation and do not collide with rail or edge-bend zones.
 - Bad visual proportion: primary KPI, chart, table, or conclusion area is visually underweighted compared with decorative or secondary elements.
 - Broken scroll behavior: page, table, drawer, modal, or chart needs scroll/zoom but no usable control is visible.
 - Low readability: font too small, contrast too weak, dense labels unreadable, or long values not inspectable.

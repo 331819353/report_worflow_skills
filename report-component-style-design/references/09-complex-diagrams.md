@@ -2,6 +2,33 @@
 
 Use for decomposition trees, relation graphs, Sankey, flows, DuPont, attribution paths, process chains, and org/path diagrams.
 
+## Safe Spacing Calculation Gate
+
+Run this gate before drawing or accepting any flow, Sankey, graph, tree, decomposition, DuPont, lineage, attribution, or process-chain diagram.
+
+Required inputs:
+
+- `viewportPadding`: left/right/top/bottom padding inside the diagram body.
+- `leftRailWidth`: width reserved for level numbers, stage labels, axis rail, or side category labels.
+- `nodeHalfWidth` and `nodeHalfHeight`: half of the rendered node box size.
+- `labelReserve`: extra width/height for node labels, value labels, and badges when they render outside the node.
+- `edgeBendReserve`: horizontal/vertical space required for curved links, arrowheads, and link-value labels.
+- `minGutter`: minimum safe spacing; use at least 16px.
+
+Coordinate rules:
+
+- First node column: `firstNodeLeftEdge >= viewportPadding.left + leftRailWidth + minGutter`.
+- Any node near a rail: `nodeX - nodeHalfWidth - labelReserve >= viewportPadding.left + leftRailWidth + minGutter`.
+- Adjacent node columns: `nextNodeLeftEdge - currentNodeRightEdge >= max(minGutter, edgeBendReserve)`.
+- Adjacent rows: `nextNodeTopEdge - currentNodeBottomEdge >= minGutter`; increase when labels or curved edges pass between rows.
+- Edge bend zone: curve control points and arrowheads must stay outside node boxes and label boxes by at least `minGutter`.
+- Right/bottom bounds: `nodeRightEdge + labelReserve + edgeBendReserve + viewportPadding.right <= viewportWidth`; same principle for bottom bounds.
+
+Acceptance:
+
+- Layer numbers, labels, nodes, edges, arrowheads, and edge labels must never overlap, touch, or sit within less than 16px of each other.
+- If the formula cannot pass inside the current block, use zoom/pan, collapse branches, aggregate tails, split the diagram, move to fullscreen, or switch to a hierarchy table/tree list.
+
 ## Viewport First
 
 - Complex diagrams must live inside an explicit viewport with clipping, zoom, pan, reset, and fit-to-screen.

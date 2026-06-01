@@ -60,7 +60,7 @@ Use these rounded values for planning visible block size. Exact implementation m
 
 ### Full-Width 1920 Viewport
 
-Applies to blank pages and `single-page-dashboard-template`.
+Applies to custom pages and `single-page-dashboard-template`.
 
 - `contentWidth = 1920`
 - `gap = 14`
@@ -123,7 +123,7 @@ If a sci-fi page needs 4 visible rows, row height drops to about `233px`; only c
 
 ### Full-Width 1280 Viewport
 
-Applies to small blank pages and small `single-page-dashboard-template` previews.
+Applies to small custom pages and small `single-page-dashboard-template` previews.
 
 - `contentWidth = 1280`
 - `gap = 10`

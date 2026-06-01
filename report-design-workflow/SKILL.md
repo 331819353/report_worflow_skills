@@ -56,7 +56,8 @@ Domain words such as `产业`, `区域`, `国家`, `品牌`, or `渠道` are the
 
 Use this contract whenever the output may become a specification, configuration, code, mock dataset, or runnable prototype.
 
-- Choose exactly one workflow mode and exactly one primary report type. Secondary report types may only support named local blocks.
+- Choose exactly one workflow mode, exactly one primary report type, exactly one `pageStyleSource`, and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. Secondary report types may only support named local blocks.
+- If the shell is custom, choose exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
 - Use `report-info-component-mapping` with its `../report-info-component-mapping/references/06-binding-implementation-contract.md` and `../report-info-component-mapping/references/08-generation-stability.md` references before writing config, data, or code.
 - Generate a binding matrix before visual layout. Do not start implementation from a chart list or page sketch.
 - Use controlled IDs: component IDs in lowerCamelCase, dataset IDs with `dim_`, `fact_`, `agg_`, `ref_`, or `log_` prefixes, filter IDs in lowerCamelCase, action names in lowerCamelCase.
@@ -67,6 +68,18 @@ Use this contract whenever the output may become a specification, configuration,
 - Missing information must become an explicit assumption or placeholder contract, not an invented rule, fake API, unsupported chart, or hidden constant.
 - If any item above is missing, stop before implementation and repair the specification.
 
+## Implementation Preflight Gates
+
+Before writing or changing prototype code, pass these gates:
+
+- Brand asset gate: for Haier/branded pages, find and configure a logo asset in the header, unified title area, sidebar brand area, or template logo slot. Search the existing project assets, selected template `public` path, then `report-visual-layout-design/assets`. If missing, keep a visible logo placeholder and list the gap; do not silently omit the logo.
+- Style source gate: if the user has not specified page style and has not provided HTML/source/sample styling, use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction unless it violates hard gates.
+- Unique visual mode gate: declare one `visualMode`. Use `haierEnterprise` for ordinary business report prototypes, `sampleRestore` for screenshot/display-sample/HTML-source restoration unless the user asks for redesign, and `sciFiCockpit` only for explicit big-screen/cockpit presentation use.
+- Sample fidelity gate: when `visualMode: sampleRestore`, preserve page shell, module order, container hierarchy, main control count, layer structure, and card proportions. Any added filters, summaries, details, matrices, drawers, or jumps must be labeled as enhancements and must not change the first viewport or main body layout unless requested.
+- Custom layout pattern gate: when a custom shell is used, choose one of `symmetricBalance` 对称式, `threePart` 三部式, `masterDetail` 主从式, or `narrativeStack` 分层叙事式; record why it fits the report and how it preserves the `8 * N` grid.
+- Complex diagram spacing gate: for flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, calculate rail, node, label, gutter, and edge-bend spacing before implementation. Layer numbers, labels, nodes, and edges need at least 16px separation.
+- Filter control gate: primary filter areas must use design-system/custom select/dropdown controls. A native `<select>` is only acceptable as a baseline prototype when it is fully styled with `appearance: none`, custom arrow, focus ring, and hover/active/disabled/loading/error states; advanced visual acceptance requires custom popover select behavior.
+
 ## Minimal Workflow
 
 1. Enforce the trigger gate: the request contains `原型` and is about prototype creation, implementation, repair, validation, deployment, or URL return.
@@ -75,11 +88,12 @@ Use this contract whenever the output may become a specification, configuration,
 4. Route to exactly one primary report-type skill and optional secondary skills only for local blocks.
 5. Use `report-info-component-mapping` to produce answer atoms, component bundles, data model, filter/query model, interaction model, and binding matrix.
 6. Apply the hard data/filter/component linkage gate before visual polish or implementation.
-7. Use `report-visual-layout-design` and `report-component-style-design` for page shell, layout, component fit, and visual QA.
-8. For implementation, choose the appropriate bundled template or project-native structure, then implement with TypeScript + Vue 3 + ECharts + AntV S2 unless the existing project requires a different stack.
-9. Run the self-check repair loop, local startup/free-port handling, deployment, and URL return rules from `references/02-self-check-startup-deployment.md` when runnable output is requested.
+7. Apply the implementation preflight gates for style source, visual mode, brand assets, sample fidelity, custom layout pattern, complex diagrams, and filter controls.
+8. Use `report-visual-layout-design` and `report-component-style-design` for page shell, layout, component fit, and visual QA.
+9. For implementation, choose the appropriate bundled template or project-native structure, then implement with TypeScript + Vue 3 + ECharts + AntV S2 unless the existing project requires a different stack.
+10. Run the self-check repair loop, local startup/free-port handling, deployment, and URL return rules from `references/02-self-check-startup-deployment.md` when runnable output is requested.
    For runnable frontend/prototype output, the visual part of the self-check must first capture headless browser screenshots, then use multimodal visual anomaly recognition, then feed `VIS-*` findings into the repair loop.
-10. Use the output and quality rules from `references/03-output-quality-and-avoid.md` before final delivery.
+11. Use the output and quality rules from `references/03-output-quality-and-avoid.md` before final delivery.
 
 ## Required Outputs
 
@@ -95,9 +109,10 @@ For implementation tasks, output:
 
 1. Source files changed or created.
 2. Data/model/filter/interaction contracts implemented.
-3. Self-check report and repair-loop status.
-4. Build/runtime verification evidence, including screenshot paths and multimodal visual findings for runnable output.
-5. Verified local URL or public URL, or a precise external blocker.
+3. `pageStyleSource`, `visualMode`, custom layout pattern if any, brand asset discovery result, logo slot/placeholder status, and any sample-restoration enhancement list.
+4. Self-check report and repair-loop status.
+5. Build/runtime verification evidence, including screenshot paths and multimodal visual findings for runnable output.
+6. Verified local URL or public URL, or a precise external blocker.
 
 When the prototype is expected to feed `technical-solution-workflow`, also output a prototype-to-technical-solution handoff bundle following `../workflow-shared-references/report-delivery-pipeline-contract.md`:
 
@@ -115,10 +130,17 @@ Before final delivery, verify:
 - The primary report type is clear and not confused with a chart type.
 - The core user question is answered in the first meaningful viewport.
 - Components, datasets, filters, and interactions share one explicit binding contract.
+- `pageStyleSource` is declared; missing style/HTML/sample input uses a bundled template by default.
+- Exactly one `visualMode` is declared and matches the selected restoration, enterprise, or cockpit strategy.
+- Any custom shell declares one allowed `customLayoutPattern`.
+- Haier/branded pages have a discovered/configured logo asset or an explicit placeholder with a recorded gap.
+- Sample/source restoration preserves the sample's shell, module order, hierarchy, control count, and first viewport unless a redesign is requested.
 - Mock data, if used, reconciles with KPI cards, charts, tables, drawers, exports, and filters.
 - Filters have stable IDs, defaults, option sources, permission behavior, and affected-component mappings.
 - Interactions preserve period, scope, object, metric, filters, permissions, and return path.
 - Layout follows the 8*N rectangular grid and components do not overlap, clip, or truncate critical text.
+- Flow, Sankey, graph, tree, decomposition, and lineage components pass the 16px safe-spacing gate.
+- Primary filters do not rely on naked native `<select>` controls as their final visual surface.
 - Runnable prototypes are built, started on an available port, verified, and handed off with an exact URL unless blocked.
 - Runnable prototypes have headless browser screenshot evidence and multimodal visual review results before visual QA is marked pass.
 - Deployment, when requested, returns a public URL or explains why only a local preview URL is available.
@@ -128,6 +150,7 @@ Before final delivery, verify:
 
 - Do not use this workflow without the keyword `原型` in the user request.
 - Do not start from visual layout before classifying the report purpose.
+- Do not start implementation before declaring `pageStyleSource`, `visualMode`, custom layout pattern when applicable, and passing brand asset discovery.
 - Do not use every child skill for every task; use the smallest complete path.
 - Do not invent new report categories when one of the eight categories fits.
 - Do not finish implementation without a self-check report, repair-loop status, and verified URL or blocker.

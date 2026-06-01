@@ -15,7 +15,9 @@ Keep the canonical skill name `report-visual-layout-design` for compatibility wi
 
 ## Mandatory Design Direction
 
-- First decide whether the page is a blank report page or a template-based report page.
+- First decide whether the page is a custom report page or a template-based report page.
+- If the user does not specify a page style and does not provide HTML/source/sample styling, use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction.
+- Before implementation, declare exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`.
 - Keep the page simple, elegant, unified, and work-focused.
 - Use Haier blue and white as the primary palette. Avoid redundant information, heavy decoration, and many competing colors.
 - Use the bundled Haier logo correctly: original color logo on light backgrounds, white logo on dark backgrounds.
@@ -35,16 +37,65 @@ Keep the canonical skill name `report-visual-layout-design` for compatibility wi
 If a preferred template asset is missing, cannot be copied, fails dependency installation, conflicts with the existing project stack, or lacks a required capability:
 
 1. Prefer the existing project shell and implement the same `8 * N` grid, logo, filter, toolbar, state, and component-viewport contracts inside that shell.
-2. If no usable shell exists, design a blank custom report page with the same layout contract.
+2. If no usable shell exists, design a custom report page with the same layout contract.
 3. Keep the selected fallback explicit in the output: missing template id, reason, replacement shell, and which template behaviors must be recreated.
 4. Do not block visual design because a template asset is unavailable; block only runnable implementation when no target project or writable output path exists.
 5. Do not silently switch to a richer-looking template. Fallback must preserve the original usage scenario and navigation depth.
+
+## Hard Gates
+
+### Style Source Gate
+
+- Before shell selection, declare `pageStyleSource`: `templateDefault`, `userSpecified`, or `sampleProvided`.
+- Use `templateDefault` when the user has not specified page style and has not provided HTML/source/sample styling; choose the closest bundled template by usage scenario.
+- Use `userSpecified` when the user names a page style, layout style, visual shell, or design direction; follow that direction unless it breaks hard layout, brand, or interaction gates.
+- Use `sampleProvided` when screenshot, HTML source, image, or display sample supplies the visual structure; follow the provided design under `sampleRestore` unless the user asks for optimization or redesign.
+- Do not choose a custom shell merely because the user omitted style requirements. A custom shell needs explicit user direction, provided sample/source, or a documented template limitation.
+
+### Brand Asset Gate
+
+- For any Haier or branded report page, discover logo assets before layout or implementation: check the existing project `public`/`assets` paths, the selected template `public` path, then bundled assets `assets/haier-logo.svg`, `assets/haier-logo-original.svg`, and `assets/haier-logo-white.svg`.
+- Configure the logo in the header, unified title/control area, sidebar brand area, or template logo slot before implementing business components.
+- If no usable logo asset is available, keep the same logo slot and render an explicit placeholder such as `Logo placeholder: asset missing`; record the missing asset as a gap. Do not silently omit the logo.
+- Screenshot acceptance must confirm that the logo or declared placeholder is visible, uses the correct light/dark variant, is not stretched, and is not clipped.
+
+### Unique Visual Mode Gate
+
+- Declare exactly one `visualMode` before page shell or template work:
+  - `haierEnterprise`: default for ordinary business reports, enterprise workbenches, and Haier/brand-unified pages.
+  - `sampleRestore`: default when the input is a display sample, screenshot, image, or HTML source and the user asks to restore, follow, or build from it without explicit redesign.
+  - `sciFiCockpit`: only for explicit big-screen, cockpit, command-center, exhibition, monitoring-wall, or fixed 1920*1080 presentation use.
+- Conflict priority: explicit user instruction wins; otherwise sample/source restoration uses `sampleRestore`; explicit big-screen presentation uses `sciFiCockpit`; all other business report prototypes use `haierEnterprise`.
+- If `sampleRestore` conflicts with Haier enterprise styling, preserve the sample's shell, module order, container hierarchy, main control count, layer structure, and card proportions. Add Haier logo, filters, summaries, tables, matrices, drawers, or jumps only as labeled enhancements that do not change the first viewport or main layout unless the user asks for optimization.
+- If the user asks for enterprise/Haier unification or optimization, use `haierEnterprise`; treat the sample as information architecture and content evidence rather than a visual authority.
+
+### Custom Layout Pattern Gate
+
+- When the page shell is custom rather than a bundled template, declare exactly one `customLayoutPattern`:
+  - `symmetricBalance`: 对称式, left/right or top/bottom balanced modules for comparison, overview, and paired KPI/chart layouts.
+  - `threePart`: 三部式, summary/analysis/detail or header/main/side-action structure for clear hierarchy.
+  - `masterDetail`: 主从式, primary list/map/chart plus detail drawer/panel/table for object exploration.
+  - `narrativeStack`: 分层叙事式, conclusion first then evidence, diagnosis, detail, and action in a vertical reading flow.
+- Choose by business question and content density; do not invent a fifth custom pattern unless the user explicitly requests it.
+- Record why the selected pattern fits the report and how it preserves the `8 * N` grid.
+
+### Complex Diagram Spacing Gate
+
+- For flow, Sankey, graph, tree, decomposition, DuPont, lineage, and process-chain visuals, load `../report-component-style-design/references/09-complex-diagrams.md` and calculate safe spacing before finalizing coordinates.
+- The layout must reserve rail width, node half-width, label reserve, edge bend reserve, viewport padding, and a minimum gutter of 16px.
+- Do not pass QA when layer numbers, labels, nodes, edges, or curve bend areas overlap, touch, or sit within less than 16px of each other.
+
+### Filter Control Implementation Gate
+
+- Main filter areas must not use naked native `<select>` controls as the final visual surface.
+- Use the existing design-system `Select`/`Dropdown`/`TreeSelect`/`DatePicker` or a custom popover select. If a native `<select>` is unavoidable in a lightweight prototype, it must use `appearance: none`, a custom arrow, matching height/radius, and visible hover, focus, active, disabled, loading, and error states.
+- Native OS dropdown menus cannot be fully styled or screenshot-controlled; advanced visual acceptance requires a custom popover select.
 
 ## Reference Map
 
 Load only the reference sections needed for the task:
 
-- `references/page-layout-modes.md`: blank page vs template page, unified header/control area, title/navigation/filter placement.
+- `references/page-layout-modes.md`: template default vs custom page, `pageStyleSource`, custom layout patterns, unified header/control area, title/navigation/filter placement.
 - `references/brand-style.md`: Haier logo rules, Haier blue/white palette, minimalist enterprise visual style.
 - `references/grid-containers.md`: `8 * N` grid, legal spans, block anatomy, ECharts/S2 container and overflow rules.
 - `references/block-size-constraints.md`: calculate block sizes for 1920*1080 and 1280*768 viewports, then decide which spans can safely hold which component combinations without capping total report height.
@@ -61,28 +112,37 @@ Load only the reference sections needed for the task:
 
 ## Workflow
 
-1. Identify context: report type, audience, core question, usage scenario, and whether the implementation is blank-page or template-based.
-2. Choose the shell mode:
-   - Blank page: design one coherent title/navigation/filter control area plus the `8 * N` content display area.
+1. Identify context: report type, audience, core question, usage scenario, and whether the implementation is custom-shell or template-based.
+2. Declare `pageStyleSource`, `visualMode`, and pass the brand asset gate. If the input is a display sample, screenshot, or HTML source, decide whether it is `sampleRestore` or only an information-architecture reference.
+3. Choose the shell mode:
+   - Custom page: design one coherent title/navigation/filter control area plus the `8 * N` content display area.
    - Template page: map requirements into the selected template's existing logo, nav, filter, toolbar, modal, and grid configuration.
-3. If a template is appropriate, read `references/template-routing.md`; then load only the selected template reference and the shared contract/playbook files needed for the edit.
-4. Define the visual hierarchy: core conclusion first, then evidence, breakdown, detail, and actions.
-5. Apply brand style: Haier blue/white primary palette, restrained semantic colors, subtle surfaces, no decorative noise.
-6. Lay out the content grid: assign every top-level block to complete rectangular `8 * N` spans; calculate the actual block size with `references/block-size-constraints.md`; separate visible viewport planning from total report height; when one block contains multiple subcomponents, use `references/block-composition.md`.
-7. Define actions and states: refresh, export, fullscreen, share/subscribe/settings if relevant; loading, empty, error, delayed data, and no-permission states.
-8. Run layout QA with the checklist before finalizing.
+4. If no user-specified/sample style exists, prefer a bundled template. If a custom shell is chosen, declare one `customLayoutPattern`.
+5. If a template is appropriate, read `references/template-routing.md`; then load only the selected template reference and the shared contract/playbook files needed for the edit.
+6. Define the visual hierarchy: core conclusion first, then evidence, breakdown, detail, and actions.
+7. Apply brand style or sample fidelity according to `visualMode`.
+8. Lay out the content grid: assign every top-level block to complete rectangular `8 * N` spans; calculate the actual block size with `references/block-size-constraints.md`; separate visible viewport planning from total report height; when one block contains multiple subcomponents, use `references/block-composition.md`.
+9. Define actions and states: refresh, export, fullscreen, share/subscribe/settings if relevant; loading, empty, error, delayed data, and no-permission states.
+10. Run layout QA with the checklist before finalizing.
 
 ## Quality Gate
 
 Before finalizing a layout, verify:
 
 - The first meaningful viewport answers the primary report question or exposes the correct action entry.
-- The shell choice matches the scenario: single-page, left-nav analytics, sci-fi cockpit, or blank custom page.
+- `pageStyleSource` is declared; absence of style/HTML/sample input routes to a bundled template by default.
+- Exactly one `visualMode` is declared and conflicts with samples, templates, Haier branding, or sci-fi styling are resolved by the hard gate.
+- Any custom shell declares exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
+- Brand asset discovery is complete; the logo slot contains the correct asset or an explicit placeholder and the gap is recorded.
+- For sample/source restoration, page shell, module order, container hierarchy, main control count, layer structure, and card proportions match the sample unless an enhancement is explicitly labeled.
+- The shell choice matches the scenario: single-page, left-nav analytics, sci-fi cockpit, or custom page.
 - Every top-level content block occupies a legal rectangular `8 * N` grid span.
 - Template choice, block IDs, component order, and `columns * rows` spans stay stable across revisions unless the business question, content volume, or display scenario changes.
 - Block height is based on component content capacity, not forced into the first 1080px viewport.
 - Titles, filters, toolbar actions, legends, labels, charts, tables, and empty states do not overlap or clip.
 - Haier logo variant, brand colors, typography, spacing, and density remain consistent.
+- Flow, Sankey, graph, tree, decomposition, and lineage layouts pass the 16px safe-spacing gate.
+- Main filter controls use design-system/custom select patterns, or a fully styled native select only for baseline prototypes.
 - Tables, dense charts, maps, lineage graphs, Gantt views, and complex diagrams have scroll, zoom, pan, drawer, or fullscreen strategy.
 - Loading, empty, error, no-permission, stale, export, refresh, and fullscreen states have visible layout placement.
 
@@ -99,15 +159,16 @@ Before finalizing a layout, verify:
 
 When asked to design a report visual layout, structure the answer as:
 
-1. 页面定位: report type, user, core question, usage scenario, blank-page or template-based.
-2. 页面外壳: unified title/navigation/filter control area, logo placement, actions, and template mapping if applicable.
-3. 品牌风格: Haier logo variant, Haier blue/white palette, typography, spacing, density, surfaces.
-4. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.
-5. 栅格方案: `8 * N` grid, component spans, row height/scroll strategy, chart/table container safety.
-6. 关键组件: KPI cards, charts, tables, text summaries, drawers/popovers, toolbar actions.
-7. 模板路由: chosen template and files/configs to adjust.
-8. 交互与状态: filters, drilldown, drawer/modal, refresh/export/fullscreen, empty/loading/error/no-permission, responsive behavior.
-9. 设计校验: first-viewport value, brand correctness, grid correctness, visual restraint, no clipping/overlap.
+1. 页面定位: report type, user, core question, usage scenario, custom shell or template-based.
+2. 样式来源: `pageStyleSource`, `visualMode`, and `customLayoutPattern` when the shell is custom.
+3. 页面外壳: unified title/navigation/filter control area, logo placement, actions, and template mapping if applicable.
+4. 品牌风格: Haier logo variant, Haier blue/white palette, typography, spacing, density, surfaces.
+5. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.
+6. 栅格方案: `8 * N` grid, component spans, row height/scroll strategy, chart/table container safety.
+7. 关键组件: KPI cards, charts, tables, text summaries, drawers/popovers, toolbar actions.
+8. 模板路由: chosen template and files/configs to adjust.
+9. 交互与状态: filters, drilldown, drawer/modal, refresh/export/fullscreen, empty/loading/error/no-permission, responsive behavior.
+10. 设计校验: first-viewport value, brand correctness, grid correctness, visual restraint, no clipping/overlap.
 ## Execution Completeness Gate
 
 Before finalizing work with this skill, verify the following items explicitly:

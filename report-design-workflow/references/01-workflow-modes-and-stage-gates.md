@@ -6,6 +6,8 @@ Choose the mode before starting.
 
 Before choosing a mode, enforce the trigger gate. Do not let adjacent words such as `报表`, `页面`, `模板`, `部署`, `筛选联动`, `mock 数据`, `自检`, or `返回URL` activate this workflow by themselves; they must appear in a request that also includes `原型`.
 
+Before implementation, also choose exactly one `pageStyleSource` and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. These are blocking decisions, not later polish choices.
+
 ### 1. Prototype-Oriented Design Mode
 
 Use when the user asks for a concrete report prototype plan but has not yet requested code.
@@ -89,6 +91,51 @@ Before moving to design or implementation, write two explicit statements: `User 
 
 Do not block if missing details can be safely assumed.
 
+### Hard Gate: Style Source, Visual Mode, Brand Assets, And Sample Fidelity
+
+Run this gate before Stage 8 visual layout and before Stage 10 implementation.
+
+Style source:
+
+- Declare exactly one `pageStyleSource`: `templateDefault`, `userSpecified`, or `sampleProvided`.
+- Use `templateDefault` when no page style is specified and no HTML/source/sample styling is provided; choose a bundled template by scenario.
+- Use `userSpecified` when the user names a page style, shell, or design direction; follow that direction unless it violates hard gates.
+- Use `sampleProvided` when screenshot, image, HTML source, or display sample supplies the page structure; follow the provided design unless the user asks for optimization or redesign.
+- Do not choose a custom shell merely because style requirements are absent.
+
+Visual mode:
+
+- Declare exactly one `visualMode`.
+- Use `sampleRestore` when the input is a display sample, screenshot, image, or HTML source and the user asks to restore, follow, or build from it without explicit redesign.
+- Use `haierEnterprise` for ordinary business report prototypes, enterprise report pages, and Haier/brand-unified pages.
+- Use `sciFiCockpit` only for explicit big-screen, cockpit, command-center, exhibition, monitoring-wall, or fixed 1920*1080 presentation scenarios.
+- If instructions conflict, explicit user direction wins. Otherwise sample/source restoration wins over generic enterprise styling, sci-fi wins for explicit big-screen display, and all remaining business reports default to `haierEnterprise`.
+
+Brand assets:
+
+- For Haier/branded pages, search for logo assets in the existing project, selected template `public` path, and `report-visual-layout-design/assets`.
+- Configure the logo in the header, unified title area, sidebar brand area, or template logo slot before implementing components.
+- If no usable asset exists, render an explicit logo placeholder in that slot and record the missing asset. Do not silently omit the logo.
+
+Sample fidelity:
+
+- In `sampleRestore`, the source page shell, module order, container hierarchy, main control count, layer structure, and card proportions are acceptance constraints.
+- Any new filter, summary card, detail table, matrix, drawer, jump, or extra toolbar action is an enhancement. Label it as an enhancement and keep it from changing the sample's first viewport and main body layout unless the user asks for optimization or reconstruction.
+- In `haierEnterprise`, a sample/source may inform information architecture, visible metrics, and interaction intent, but it is not allowed to override the chosen Haier enterprise shell unless explicitly requested.
+
+Blocking behavior:
+
+- Stop before implementation if `visualMode` is not declared.
+- Stop before implementation if `pageStyleSource` is not declared.
+- Stop before implementation if a required logo slot has neither asset nor placeholder.
+- Stop before implementation if `sampleRestore` additions would alter the sample's first viewport without an explicit user request.
+
+Custom layout pattern:
+
+- If a custom shell is used, declare exactly one `customLayoutPattern`.
+- Allowed values: `symmetricBalance` 对称式, `threePart` 三部式, `masterDetail` 主从式, and `narrativeStack` 分层叙事式.
+- Record why the selected pattern fits the report and how it preserves the `8 * N` grid.
+
 ### Screenshot Or Image Source Handling
 
 Use this stage when the task asks for 截图还原原型, 图片还原原型, visual repair from screenshot, or screenshot-based prototype completion.
@@ -106,6 +153,9 @@ Hard rules:
 
 - Do not paste a screenshot into the page as the implementation.
 - Do not invent hidden data or interactions from the screenshot without marking assumptions.
+- Default to `visualMode: sampleRestore` for screenshot/image/HTML-source restoration unless the user explicitly asks for enterprise redesign, optimization, or reconstruction.
+- Preserve page shell, module order, container hierarchy, main control count, layer structure, and card proportions in `sampleRestore`.
+- Mark all added filters, summary cards, details, matrices, drawers, jumps, and extra actions as enhancements.
 - If the screenshot conflicts with report-type logic, preserve the business intent and repair the information architecture rather than copying the flawed layout.
 - Convert visible text, metrics, controls, and blocks into the same binding matrix required by `report-info-component-mapping`.
 - Verification must compare the rebuilt page against the screenshot for structure, hierarchy, key text, visible component count, spacing, and no overlap; exact pixel matching is not required unless explicitly requested.
@@ -319,6 +369,9 @@ Use `report-visual-layout-design`.
 
 Output must include:
 
+- `visualMode` and conflict resolution.
+- `pageStyleSource`; if custom, `customLayoutPattern`.
+- Brand asset discovery result, configured logo path, logo variant, or placeholder gap.
 - Page shell choice.
 - Haier logo usage.
 - Header, filter bar, toolbar, sidebar/menu, footer decisions.
@@ -329,6 +382,7 @@ Output must include:
 - Visual style preset.
 - Empty/loading/error states.
 - Block header/body separation and chart/table body viewport rules.
+- Sample fidelity notes when input is a screenshot, display sample, or HTML source.
 - Responsive and overflow rules.
 
 Always respect the bundled Haier logo rule: original color on light backgrounds and white on dark backgrounds.
@@ -401,9 +455,15 @@ Do not choose a template only because it "looks better"; choose by scenario, nav
 Implementation must:
 
 - Keep business data out of config when the template expects data files or data sources.
+- Declare `visualMode` and pass brand asset discovery before changing files.
+- Declare `pageStyleSource`; if no page style and no HTML/source/sample styling is provided, use a bundled template by default.
+- If implementing a custom shell, declare `customLayoutPattern` from the allowed set before changing files.
+- Preserve sample shell/module order/control count/layering/card proportions when `visualMode: sampleRestore`; label any enhancements.
 - Use stable IDs for filters, interactions, and mock records.
 - Implement the data/filter/component linkage contract in the template config or custom runtime before visual polish.
 - Run the template `validate:dashboard` script or equivalent custom checks to block unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
+- Avoid naked native `<select>` in primary filters; use design-system/custom popover select, or a fully styled native select only for baseline prototypes.
+- For flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, reserve rail, node, label, gutter, and edge-bend space before drawing.
 - Use ECharts before custom SVG/canvas for standard charts.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
 - Implement component overflow and responsive behavior from earlier stages.

@@ -40,11 +40,12 @@ Use this structure:
 3. Files/components/data to create or modify.
 4. Mock data and filter state plan.
 5. Interaction state and parameter plan.
-6. Visual layout and component style plan.
-7. Technical architecture: TypeScript, Vue 3, ECharts, AntV S2, and template choice.
-8. Self-check report and repair-loop plan.
-9. Automatic deployment plan and expected URL source.
-10. Verification plan.
+6. Style source, visual mode, and brand asset gate: `pageStyleSource`, `visualMode`, `customLayoutPattern` if any, logo discovery result, logo slot/placeholder, and sample-fidelity decision.
+7. Visual layout and component style plan.
+8. Technical architecture: TypeScript, Vue 3, ECharts, AntV S2, and template choice.
+9. Self-check report and repair-loop plan.
+10. Automatic deployment plan and expected URL source.
+11. Verification plan.
 
 ### Review/Repair Output
 
@@ -69,7 +70,7 @@ Use this structure after implementation and after each repair cycle:
 6. 筛选配置检查.
 7. 交互可用性检查.
 8. 配置完整性检查.
-9. 视觉与运行态检查.
+9. 视觉与运行态检查：include `pageStyleSource`, `visualMode`, custom layout pattern if any, logo/header screenshot acceptance, sample fidelity when applicable, complex diagram spacing, and primary filter control implementation.
 10. 无头浏览器截图证据：screenshot path, viewport, page/state, cycle.
 11. 多模态视觉异常识别：`VIS-*` finding, severity, screenshot, component/region, observation, impact, fix plan, retest criteria.
 12. 问题清单：severity, evidence, affected file/module, fix plan, current status.
@@ -83,6 +84,12 @@ Before final delivery, verify:
 - The primary report type is clear and not confused with a chart type.
 - Secondary report types only appear where they change a block or flow.
 - The core user question is answered in the first meaningful viewport.
+- `pageStyleSource` is declared. If no page style and no HTML/source/sample styling is provided, a bundled template is used by default.
+- Exactly one `visualMode` is declared before implementation and remains consistent in the final self-check.
+- Custom shells declare exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
+- Haier/branded pages have a configured logo asset or a visible placeholder with the missing asset recorded.
+- Screenshot evidence verifies the logo/header area, correct logo variant, aspect ratio, and no clipping.
+- When input is a display sample, screenshot, image, or HTML source and `visualMode: sampleRestore`, page shell, module order, container hierarchy, main control count, layer structure, card proportions, and first viewport are compared against the source.
 - Metrics include baselines, direction, unit, and formulas where needed.
 - Mock data, if used, reconciles with KPI cards, charts, tables, and filters.
 - A self-check report has been produced for the latest implementation cycle.
@@ -102,6 +109,9 @@ Before final delivery, verify:
 - Layout follows the 8*N rectangular grid.
 - Haier logo usage follows light/dark rules.
 - Components do not overlap, clip, truncate critical text, or use low-contrast labels.
+- Flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals reserve rail, node, label, gutter, and edge-bend space; layer numbers, labels, nodes, and edges remain at least 16px apart.
+- Primary filter areas use design-system/custom select/dropdown controls, or a styled native select only for baseline prototype acceptance.
+- Advanced visual acceptance for option menus uses a custom popover select because native OS dropdown menus cannot be fully internet-styled or screenshot-controlled.
 - Dense tables, lineage graphs, diagrams, maps, and Gantt charts have scroll, zoom, pan, drawer, or fullscreen strategy.
 - Export, refresh, download, share, and fullscreen actions respect filters and permissions.
 - Empty, loading, no-permission, error, and stale-selection states are defined.
@@ -113,12 +123,17 @@ Before final delivery, verify:
 ## Avoid
 
 - Do not start from visual layout before classifying the report purpose.
+- Do not choose a custom shell merely because the user did not specify page style.
+- Do not start implementation before declaring `pageStyleSource`, `visualMode`, custom layout pattern when applicable, and passing the logo asset/placeholder gate.
 - Do not use every skill for every task; use the smallest complete path.
 - Do not duplicate detailed rules from child skills; route to them.
 - Do not invent new report categories when one of the eight categories fits.
 - Do not treat mock data as random values.
 - Do not design filters or jumps without permission and state behavior.
 - Do not finish an implementation without checking for overlap, clipping, and broken layout.
+- Do not finish a Haier/branded implementation without visible logo or placeholder screenshot evidence.
+- Do not finish sample/source restoration after changing the first viewport or main body layout unless the user asked for redesign or the change is labeled as an enhancement.
+- Do not use naked native `<select>` as the final visual for primary filters.
 - Do not finish a runnable prototype visual check without headless browser screenshots and multimodal visual review results.
 - Do not finish an implementation without producing the self-check report and completing the repair loop or explicitly reporting the unresolved issues after 3 cycles.
 - Do not replace ECharts or AntV S2 with ad hoc chart/table code for standard report components.
