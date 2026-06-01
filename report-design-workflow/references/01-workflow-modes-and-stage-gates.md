@@ -1,0 +1,411 @@
+# 01 Workflow Modes And Stage Gates
+
+## Workflow Modes
+
+Choose the mode before starting.
+
+Before choosing a mode, enforce the trigger gate. Do not let adjacent words such as `报表`, `页面`, `模板`, `部署`, `筛选联动`, `mock 数据`, `自检`, or `返回URL` activate this workflow by themselves; they must appear in a request that also includes `原型`.
+
+### 1. Prototype-Oriented Design Mode
+
+Use when the user asks for a concrete report prototype plan but has not yet requested code.
+
+Deliver:
+
+- Report type judgment.
+- Design logic.
+- Content blocks.
+- Component mapping.
+- Interactions.
+- Visual/style guidance.
+- Validation checklist.
+
+Mock data, filters, and interaction state should be included at planning level. Code and templates are optional unless requested.
+
+### 2. Prototype Specification Mode
+
+Use when the user wants an implementation-ready report prototype specification.
+
+Deliver:
+
+- Structured requirement.
+- Report type and secondary roles.
+- Page layout.
+- Component list.
+- Mock data plan.
+- Filters and interactions.
+- Visual style and responsive rules.
+- Implementation-ready notes.
+
+### 3. Implementation Mode
+
+Use when the user wants code, a Vue dashboard, or an actual runnable page.
+
+Deliver:
+
+- All prototype design outputs.
+- Technical architecture based on `TypeScript + Vue 3 + ECharts + AntV S2`.
+- Template choice.
+- Data files or mock data.
+- Component implementation.
+- Self-check report and repair loop, repeated up to 3 cycles when unresolved issues remain.
+- Automatic deployment when requested or when a shareable prototype URL is part of the task.
+- Automatic local server startup on an available port when a runnable prototype should be shown.
+- Local verification.
+- Public URL or local preview URL.
+- Screenshot or browser QA when applicable.
+
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-visual-layout-design/assets/templates/`: `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
+
+### 4. Review And Repair Mode
+
+Use when the user provides an existing screenshot or page and asks what is wrong or how to optimize it.
+
+Deliver:
+
+- Visible issues.
+- Requirement/type interpretation.
+- Layout and component diagnosis.
+- Data/filter/interaction gaps.
+- Concrete repair plan.
+- Updated implementation if requested.
+
+## Stage Gate Workflow
+
+### Stage 0: Determine Scope
+
+Clarify or infer:
+
+- Is the user asking for thinking, design proposal, actual prototype, or repair?
+- Is there a specific report page or a report category?
+- Is the expected output text, specification, code, or both?
+- Which standard inputs are present: 需求文档, 指标清单, optional screenshot/image, optional HTML源码?
+- If screenshot/image input is present, is it a full page, first viewport, partial component, modal/drawer, mobile view, export page, or style reference?
+- If HTML源码 is present, is it a layout reference, full static page, partial component, or source of mock/chart configuration?
+- Is the page a single-page top-bar report, standard enterprise sidebar dashboard, or sci-fi/big-screen cockpit?
+- Does the user need automatic deployment, automatic local startup, and a returned URL?
+
+Before moving to design or implementation, write two explicit statements: `User Intent` (what the user is trying to accomplish and decide) and `Design Thinking` (the report logic and layout direction you will use to satisfy that intent). Keep them concise, but do not skip them for prototype work.
+
+Do not block if missing details can be safely assumed.
+
+### Screenshot Or Image Source Handling
+
+Use this stage when the task asks for 截图还原原型, 图片还原原型, visual repair from screenshot, or screenshot-based prototype completion.
+
+Extract before designing:
+
+- Page shell: title, logo, navigation, filters, toolbar actions, tabs, sidebars, drawers, modals, footer, and visible states.
+- Content structure: first-viewport answer, section order, card/table/chart grouping, hierarchy, and repeated blocks.
+- Component inventory: KPI cards, text summaries, charts, tables, lists, task cards, alerts, comparison panels, controls, and legends.
+- Data intent: visible metric names, units, comparison baselines, dimensions, row grain, chart axes, table columns, status labels, and totals.
+- Interaction clues: clickable controls, active filters, selected tabs, highlighted marks, buttons, download/fullscreen/refresh/share actions, and disabled states.
+- Visual style: palette, typography scale, spacing, radius, shadow, density, contrast, and any brand/logo rules.
+
+Hard rules:
+
+- Do not paste a screenshot into the page as the implementation.
+- Do not invent hidden data or interactions from the screenshot without marking assumptions.
+- If the screenshot conflicts with report-type logic, preserve the business intent and repair the information architecture rather than copying the flawed layout.
+- Convert visible text, metrics, controls, and blocks into the same binding matrix required by `report-info-component-mapping`.
+- Verification must compare the rebuilt page against the screenshot for structure, hierarchy, key text, visible component count, spacing, and no overlap; exact pixel matching is not required unless explicitly requested.
+
+### Stage 1: Requirement Extraction
+
+Use `report-requirement-structure-extraction`.
+
+Output must include:
+
+- Report theme.
+- User intent.
+- Design thinking.
+- Primary and secondary report types.
+- Users and scenario.
+- Core questions.
+- Business objects and grain.
+- Metrics, dimensions, baselines.
+- Content blocks.
+- Data, filter, interaction, visual, and component needs.
+- Assumptions and missing information.
+
+Skip only when the user already provides a clean structured brief.
+
+### Stage 2: Report Type Routing
+
+Choose one primary report-type skill:
+
+- `status-overview-report-design`: current status, health, target, variance, risk entry.
+- `analysis-diagnostic-report-design`: why a metric changed, driver, cause, attribution.
+- `detail-query-report-design`: records, fields, filters, sorting, export, row detail.
+- `performance-evaluation-report-design`: target completion, scoring, ranking, fairness, improvement.
+- `review-recap-report-design`: period story, conclusion, evidence, risk, action, meeting output.
+- `anomaly-monitoring-report-design`: anomaly rules, severity, owner, SLA, handling.
+- `operational-execution-report-design`: task, owner, progress, evidence, acceptance, closure.
+- `reconciliation-traceability-report-design`: data correctness, differences, source, lineage, version, audit.
+
+Use secondary report-type skills only for local blocks or follow-up flows. Do not invent extra report types for maps, funnels, tables, or charts.
+
+Do not route by domain keyword alone. If the request says `产业`, `区域`, `国家`, `品牌`, `渠道`, or similar domain words, first identify the user's decision question:
+
+- Use `status-overview-report-design` when the question is "整体是否健康、是否达标、风险在哪里".
+- Use `analysis-diagnostic-report-design` when the question is "为什么变化、问题来自哪里、哪些因素驱动".
+- Use `performance-evaluation-report-design` when the question is "谁表现更好、如何排名/评分/评价".
+- Use `detail-query-report-design` when the question is "查哪些记录、字段、明细、导出".
+- Use `review-recap-report-design` when the question is "周期内发生了什么、如何汇报复盘".
+- Use `anomaly-monitoring-report-design` when the question is "哪些对象异常、严重程度与处理状态".
+- Use `operational-execution-report-design` when the question is "任务如何推进、责任与闭环如何跟踪".
+- Use `reconciliation-traceability-report-design` when the question is "数据是否一致、差异如何追溯".
+
+Domain words then become dimensions, filters, decomposition paths, table fields, hierarchy levels, or narrative context in later stages.
+
+### Stage 3: Business Design
+
+Apply the primary report-type skill.
+
+Output must include:
+
+- Design positioning.
+- Business logic.
+- Metric and dimension logic.
+- Layout layers.
+- Chart/component rationale.
+- Interactions.
+- Conclusion pattern.
+- Type-specific checklist.
+
+This stage owns business purpose. It does not finalize mock data, filters, visual shell, or component style.
+
+### Stage 4: Information To Component Mapping
+
+Use `report-info-component-mapping`.
+
+Output must include:
+
+- Information inventory.
+- Semantic roles.
+- Content block mapping.
+- Component/chart/table/card mapping.
+- Interaction entry points.
+- Mock data needs.
+- Filter data needs.
+- Layout and style constraints.
+
+This is the bridge from business thinking to implementable page structure.
+
+### Stage 5: Data Design
+
+Use `report-info-component-mapping` reference `03-mock-data-modeling.md` when prototype data, demo data, or chart-ready data is needed.
+
+Output must include:
+
+- Data story.
+- Dataset list.
+- Row grain.
+- Dimension schema.
+- Fact schema.
+- Derived formulas.
+- Rollup rules.
+- Edge cases.
+- Validation checks.
+
+Skip only for pure methodology answers where no prototype or example data is needed.
+
+### Stage 6: Filter Design
+
+Use `report-info-component-mapping` reference `04-filter-scope-query.md` when report scope can change by time, organization, status, object, owner, source, or keyword.
+
+Output must include:
+
+- Main filter bar.
+- Advanced filters.
+- Defaults.
+- Option schema.
+- Cascades.
+- Query parameters.
+- Permission rules.
+- Reset/export/shared-link behavior.
+
+Almost all operational reports need this stage.
+
+### Stage 7: Data Interaction Design
+
+Use `report-info-component-mapping` reference `05-interaction-state-flow.md` when any data object is clickable or navigable.
+
+Output must include:
+
+- Clickable and non-clickable objects.
+- Drilldown paths.
+- Popover/drawer/modal contents.
+- Cross-filtering rules.
+- Jump targets.
+- Parameter passing.
+- State preservation.
+- Permission and failure states.
+- Back/return behavior.
+
+Skip only for static export-only reports with no interaction.
+
+### Hard Gate: Data, Filter, And Component Linkage Accuracy
+
+Apply this gate for every prototype or implementation, including pages that do not use the bundled templates.
+
+Before visual polish or final delivery, require an explicit linkage contract:
+
+- Every component declares its data source, row grain, required fields, formulas, filter dependencies, refresh trigger, and empty state.
+- Every filter maps to a real data field, resolver parameter, or permission scope. If names differ, define an explicit filter-to-field mapping.
+- Filter changes update KPI cards, charts, tables, drawers, exports, downloads, fullscreen views, and jump parameters consistently.
+- Summary counts, table row counts, chart totals, and drawer records reconcile under the same active filters.
+- Selected chart marks, rows, drawers, and drill paths reset or show stale-selection state when the selected object leaves the filtered scope.
+- Cross-filtering, drilldown, jumps, shared links, and returns pass the same period, organization, object, metric, permission, and filter context.
+- No component may show stale data after a filter, refresh, drilldown, permission, or mock-data update.
+
+For custom implementations without a template, define the equivalent adapter contract in code or specification:
+
+- `dataSource`: where each component reads data.
+- `filterMap`: how each filter maps to data fields or query parameters.
+- `componentBindings`: which components subscribe to which filters and interaction state.
+- `updateTriggers`: when components recompute, refetch, resize, reset, or clear selection.
+
+For bundled template implementations, use the template contracts instead of ad hoc wiring:
+
+- Widget data must use `widget.data.id`, `params`, `filterFields`, `requiredFilters`, `requiredParams`, and `ignoredFilters` rather than hidden filtering inside the visual component.
+- Every configured widget must either declare `data` or explicitly declare `dataPolicy: 'static' | 'external'`; unbound first-screen cards are not allowed.
+- Dynamic filters should return stable `id`/`label` options and may return `disabled`, `reason`, `count`, `parentId`, `level`, `sortOrder`, `permissionScope`, and `meta` for cascades, permissions, and result counts.
+- Widget code should render from the `data` prop and `context`; it should not maintain a separate copy of active filters unless that state is explicitly reset on filter changes.
+- Widget interactions should emit `dashboard-action`; modal, setFilters, navigation, refresh, fullscreen, and URL jumps stay in the shell/action layer.
+- If a component intentionally ignores a global filter, configure `ignoredFilters` and make the scope difference visible in title, subtitle, or helper text.
+- Run `npm run validate:dashboard` before `npm run build`; the bundled templates also run this check automatically inside `build`.
+
+For custom implementations without a bundled template, build the same runtime contract explicitly:
+
+- A single source of truth for `activeFilters`, selected object, drill path, modal/drawer state, permission scope, and refresh timestamp.
+- A deterministic data resolver layer that accepts `(filters, params, permissionScope)` and returns normalized rows.
+- A component registry or binding table that declares each component's dataset, fields, formulas, affected filters, ignored filters, required filters, interaction outputs, and stale behavior.
+- A shared action dispatcher for drilldown, cross-filtering, drawer, modal, jump, export, refresh, and fullscreen so components do not invent incompatible state.
+
+Template and custom implementations must both pass the same audit:
+
+- Mock data audit: default state, filtered state, empty state, and permission-limited state all have matching component outputs.
+- Filter audit: every primary filter has at least one visible affected component and at least one validation case.
+- Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
+- Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
+- Layout-body audit: every visual block separates title/header from component body; charts, tables, icons, empty states, and custom canvases render only inside the body viewport.
+- Component viewport audit: every rendered widget has a full-size viewport layer between block body and business component; the viewport owns background, clipping, scroll, and resize bounds.
+- Span audit: every component declares `visualType` and uses one of the legal `columns * rows` spans from `report-visual-layout-design`.
+- Block-height audit: for scrollable page templates, every resolved content block is at least 220px tall; when the total grid height exceeds 1080px, the page or content region scrolls vertically instead of shrinking blocks. Fixed sci-fi/big-screen templates are exempt.
+- Table viewport audit: every native table, AntV S2 table, wide matrix, and comparison grid declares `visualType: 'table'`, mounts inside the block body, and scrolls internally instead of expanding or clipping the block.
+- Download/print audit: scrollable pages taller than 1080px export or print their full resolved height across multiple 1920x1080 pages; no print/download path may clip to only the first viewport.
+- Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
+
+Minimum smoke tests before delivery:
+
+- `npm run validate:dashboard` passes for bundled templates, or an equivalent custom validation checklist is completed.
+- Default filters load and all visible components show data from the same scope.
+- Each primary filter changes at least one KPI/chart/table/list and reconciles the related counts or totals.
+- A filter combination with no data shows empty states without stale numbers.
+- A disabled or unauthorized filter option cannot be selected and does not leak counts.
+- Opening a drawer/modal, then changing a filter, either synchronizes or shows a stale-selection state.
+- Export/download/jump/fullscreen receives the same filter context as the source component.
+- Download/print of a page taller than 1080px includes the lower content on later PDF/print pages.
+- Block body QA passes: titles remain readable, and charts/tables/empty states do not overlap the header after default and filtered data changes.
+- Component viewport QA passes: charts, tables, KPI cards, text blocks, canvases, SVGs, and empty states do not paint outside the component-area background.
+- Table body QA passes: each table shows either all columns within the block or a visible internal horizontal scroll path; no table content is silently clipped at the right or bottom edge.
+- Radar/chart label QA passes: category labels, dimension labels, legends, and graphics do not overlap after default and filtered data changes.
+- Component span QA passes: line/bar/K-line/heatmap, pie/radar/path/sunburst/gauge, scatter/box/parallel, map/graph/tree/treemap/sankey/funnel, metric cards, tables, and other components all use their legal span sets.
+
+### Stage 8: Visual Layout Design
+
+Use `report-visual-layout-design`.
+
+Output must include:
+
+- Page shell choice.
+- Haier logo usage.
+- Header, filter bar, toolbar, sidebar/menu, footer decisions.
+- 8*N rectangular grid structure.
+- Legal component span matrix and each component's selected `columns * rows` span.
+- Block-height and overflow rule: for scrollable page templates, all resolved blocks are at least 220px tall, and grids taller than 1080px use vertical scrolling. Fixed sci-fi/big-screen templates are exempt.
+- Content pattern: 总分总, 总分, 分总, 明细优先, 告警处理, 执行闭环, or recap narrative.
+- Visual style preset.
+- Empty/loading/error states.
+- Block header/body separation and chart/table body viewport rules.
+- Responsive and overflow rules.
+
+Always respect the bundled Haier logo rule: original color on light backgrounds and white on dark backgrounds.
+
+### Stage 9: Component Style Design
+
+Use `report-component-style-design`.
+
+Output must include:
+
+- Component title style.
+- Background, typography, color, border, shadow.
+- Alignment and centering.
+- Label and legend rules.
+- Header/body fit rules for every component viewport.
+- Overflow/clipping strategy.
+- Complex diagram viewport behavior.
+- Table/card/chart/drawer style rules.
+- Visual QA checklist.
+
+This stage prevents overlap, truncation, low contrast, and component sizing failures.
+
+### Stage 10: Template Or Implementation
+
+Use this stage only when the user asks for runnable files, page implementation, or a prototype.
+
+Default technical architecture:
+
+- Language and framework: TypeScript + Vue 3 single-file components with Composition API.
+- Build tool: Vite.
+- Charting: ECharts for KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and most dashboard charts.
+- Analytical tables: AntV S2 through `@antv/s2` and `@antv/s2-vue` for pivot tables, cross tables, wide metric matrices, frozen headers, dense comparison grids, and analysis-style tables.
+- Icons and controls: use the template's existing icon/control system; keep business widgets typed and scoped.
+- Data: keep mock/static data in data files or data-source resolvers, not inside visual components.
+- Interactions: emit typed dashboard actions from widgets and keep navigation, drilldown, modal, filter mutation, fullscreen, and URL navigation in the framework layer.
+- Linkage accuracy: implement explicit data-source, filter-map, component-binding, and update-trigger contracts even when not using a bundled template.
+
+Template choice:
+
+- The three bundled templates now live under `report-visual-layout-design/assets/templates/`; use `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, and `sci-fi-dashboard-template` as template asset ids, not as separate skills.
+
+- Report is a content form, not a template decision. A "报告/报表/复盘/诊断" request can use any template after judging content volume and usage.
+- Use `single-page-dashboard-template` for a compact focused report, and use it by default for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and one 8*N content grid that may grow beyond 1080px.
+- Use `left-nav-analytics-dashboard-template` for enterprise analytics reports, multi-chapter reports, report suites, or workbenches with multiple pages/modules, sidebar navigation, filters, 8*N cards, business widgets, and standard repeated-use behavior.
+- Use `sci-fi-dashboard-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
+- If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
+
+Template selection rules:
+
+| Situation | Choose | Why |
+| --- | --- | --- |
+| Primary type is analysis/diagnostic and the user does not explicitly ask for sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit | `single-page-dashboard-template` | Analysis pages should default to one focused reading flow; let the single-page content height exceed 1080px with vertical scrolling rather than forcing a sidebar. |
+| Compact report: one decision question, usually 1-3 sections, roughly 4-12 components, no persistent page navigation, and users need a direct first-screen answer | `single-page-dashboard-template` | It keeps the frame light and lets one 8*N content grid carry the report. |
+| Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-dashboard-template` | Sidebar navigation can represent report chapters as well as different report modules. |
+| Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-dashboard-template` | It is optimized for enterprise work rather than showpiece display. |
+| Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `sci-fi-dashboard-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact. |
+| The user explicitly asks for 单页 / 顶部栏 / 无侧边栏 | `single-page-dashboard-template` | Respect the requested shell unless existing code forces another pattern. |
+| The user explicitly asks for 大屏 / 驾驶舱 / 指挥中心 / 科技风 | `sci-fi-dashboard-template` | These terms indicate presentation or monitoring display. |
+
+Selection priority:
+
+1. Existing project framework and user-stated shell.
+2. Display scenario: big-screen/presentation uses `sci-fi-dashboard-template`.
+3. Analysis/diagnostic default: if the primary report type is analysis/diagnostic and the user has not explicitly requested another shell, use `single-page-dashboard-template` even when the page needs to scroll beyond 1080px.
+4. Content volume and information architecture: explicit multi-chapter or dense workbench reports use `left-nav-analytics-dashboard-template` even if the user calls it one report.
+5. Standalone compact report uses `single-page-dashboard-template`.
+
+Do not choose a template only because it "looks better"; choose by scenario, navigation depth, interaction density, and display environment.
+
+Implementation must:
+
+- Keep business data out of config when the template expects data files or data sources.
+- Use stable IDs for filters, interactions, and mock records.
+- Implement the data/filter/component linkage contract in the template config or custom runtime before visual polish.
+- Run the template `validate:dashboard` script or equivalent custom checks to block unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
+- Use ECharts before custom SVG/canvas for standard charts.
+- Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
+- Implement component overflow and responsive behavior from earlier stages.
+- Run the self-check report and repair loop in Stage 10.4 before deployment or final handoff; start or preview the page inside the loop when runtime visual checks are needed.
+- Run and verify the page when a dev server is required. Do not finish by asking the user to start the project manually.

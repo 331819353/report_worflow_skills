@@ -1,4 +1,0 @@
-interface:
-  display_name: "前后端集成测试验证"
-  short_description: "以已运行的前端 URL 和后端 URL 为入口，验证 SSO、接口展示一致性、过滤完整性和页面数据可见性"
-  default_prompt: "Use $frontend-backend-integration-test-validation with running frontend and backend URLs to run report integration testing for SSO, API/display consistency, and complete filter behavior before delivery."

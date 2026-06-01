@@ -1,4 +1,0 @@
-interface:
-  display_name: "科幻大屏模板"
-  short_description: "用于指挥中心、监控墙、领导驾驶舱和展示场景的 Vue3 科幻大屏模板。"
-  default_prompt: "Use $sci-fi-dashboard-template for a fixed 1920x1080 TypeScript Vue 3 sci-fi cockpit or command-center big-screen dashboard with ECharts, AntV S2, and filter/data/action linkage."

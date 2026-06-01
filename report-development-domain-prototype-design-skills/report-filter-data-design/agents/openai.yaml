@@ -1,4 +1,0 @@
-interface:
-  display_name: "报表过滤数据设计"
-  short_description: "沉淀报表筛选组件、字段映射、默认值、级联关系、权限范围、查询与组件联动设计规则"
-  default_prompt: "Use $report-filter-data-design to design report filters, filter data, field mappings, affected components, defaults, cascades, and query behavior."

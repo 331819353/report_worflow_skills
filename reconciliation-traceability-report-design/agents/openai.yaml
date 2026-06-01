@@ -1,0 +1,4 @@
+interface:
+  display_name: "核对追溯报表设计"
+  short_description: "沉淀核对追溯类报表的通用思路逻辑与落地路径，覆盖匹配规则、差异、来源、血缘、版本与闭环"
+  default_prompt: "Use $reconciliation-traceability-report-design to design the generic logic and implementation path for a reconciliation traceability report."

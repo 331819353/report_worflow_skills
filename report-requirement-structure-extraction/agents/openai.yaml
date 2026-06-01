@@ -1,0 +1,4 @@
+interface:
+  display_name: "通用需求转化分析"
+  short_description: "把模糊需求转成可开发需求，覆盖原型、技术方案、数据服务、可视化、测试联调、权限、数据源、接口、模型与验收标准"
+  default_prompt: "Use $report-requirement-structure-extraction to transform vague needs into scenario-specific development requirements, including scope, users, problems, data, APIs, permissions, interactions, tests, risks, and next workflow routing."

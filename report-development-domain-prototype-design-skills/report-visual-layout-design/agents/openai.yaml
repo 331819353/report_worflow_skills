@@ -1,4 +1,0 @@
-interface:
-  display_name: "报表视觉布局设计"
-  short_description: "沉淀报表视觉布局方法论，覆盖Haier Logo、8*N栅格、导航、页眉、工具栏与 ECharts/S2 容器布局"
-  default_prompt: "Use $report-visual-layout-design to design the visual layout, 8*N grid, and ECharts/S2 container layout for a business report page."

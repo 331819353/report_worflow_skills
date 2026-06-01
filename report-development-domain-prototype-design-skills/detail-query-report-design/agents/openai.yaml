@@ -1,4 +1,0 @@
-interface:
-  display_name: "明细查询报表设计"
-  short_description: "沉淀明细查询类报表的通用设计方法论，覆盖筛选、表格、详情、导出与权限"
-  default_prompt: "Use $detail-query-report-design to explain how to design a detail query report category."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "绩效评估报表设计"
+  short_description: "沉淀绩效评估型报表的通用思路逻辑与落地路径，覆盖目标、评分、公平校正、排名、差距与改进"
+  default_prompt: "Use $performance-evaluation-report-design to design the generic logic and implementation path for a performance evaluation report."

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Frontend Development Workflow"
-  short_description: "连接前端 mock 到接口并校验契约、响应适配、运行时 QA 与部署环境"
-  default_prompt: "Use $frontend-development-workflow to replace prototype mock data with HTTP APIs, call frontend contract/adapter/runtime/env specialty skills when needed, check functional and copy issues, and verify the frontend runs successfully."

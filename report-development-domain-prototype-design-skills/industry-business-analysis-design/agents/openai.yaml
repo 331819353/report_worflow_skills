@@ -1,4 +1,0 @@
-interface:
-  display_name: "产业经营分析"
-  short_description: "沉淀产业经营分析原型方法，覆盖行业/对手/自身、国内海外经营问题、机会风险与指标预警"
-  default_prompt: "Use $industry-business-analysis-design when a prototype or report request mentions 产业 to design an industry business analysis report."

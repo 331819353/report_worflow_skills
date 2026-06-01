@@ -1,4 +1,0 @@
-interface:
-  display_name: "分析诊断报表设计"
-  short_description: "沉淀分析诊断类报表的通用设计方法论，覆盖归因拆解、证据链与交互路径"
-  default_prompt: "Use $analysis-diagnostic-report-design to explain how to design an analysis diagnostic report category."

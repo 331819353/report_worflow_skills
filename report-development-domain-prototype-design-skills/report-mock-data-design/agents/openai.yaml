@@ -1,4 +1,0 @@
-interface:
-  display_name: "报表 Mock 数据设计"
-  short_description: "沉淀报表原型与演示用 mock 数据的口径、结构、自洽性、联动验证和边界场景设计规则"
-  default_prompt: "Use $report-mock-data-design to design realistic mock data and validate filter/component linkage for report prototypes."

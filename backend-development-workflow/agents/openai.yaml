@@ -1,0 +1,4 @@
+interface:
+  display_name: "后端开发 Workflow"
+  short_description: "从API清单和数据模型生成API文档，或按需实现后端服务"
+  default_prompt: "当用户提出数据服务、后端开发、接口文档、API文档、接口实现、接口开发、后端接口、数据接口、接口契约、启动后端、后端服务、SSO后端接入或Access-Token校验时，使用 $backend-development-workflow；默认从API清单和数据模型文件生成API文档，只有明确要求写代码/启动服务时才进入后端实现。"

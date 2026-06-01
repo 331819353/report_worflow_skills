@@ -1,0 +1,24 @@
+# Data, Interaction, And State Checks
+
+## Provider Checks
+
+- REST/BFF/GraphQL requests use expected base URLs, params, headers, and response shapes.
+- SDK calls initialize with expected app/client values and return the documented shape.
+- Static/local file loads use expected paths and do not depend on unavailable local absolute paths.
+- Realtime feeds connect, update, stop, retry, and show stale data policy correctly.
+- CORS/proxy/auth failures are classified separately from UI rendering bugs.
+- Rapid filter/search/page changes do not let old responses overwrite newer UI state.
+- Cache reuse, manual refresh, logout, permission changes, and provider errors invalidate or preserve data according to the documented policy.
+
+## Interaction Checks
+
+- Filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, chart clicks, table row actions, exports/downloads, refresh, reset, retry, fullscreen, and close/back flows.
+- Verify affected components update and unaffected components remain stable.
+- Check stale selection behavior after filters, page changes, or data refresh.
+- For export/download, verify the generated file name, file type, applied filters, row count or visible content sample, and empty/error export behavior when feasible.
+
+## State Checks
+
+- Loading, empty, error, partial, no-permission, token-invalid, offline, retry, and not-configured states.
+- Visible copy should not contain stale `原型`, `mock`, `demo`, `示例`, placeholder titles, wrong metric names, malformed units, or irrelevant explanatory text unless intentionally part of the product.
+- Long text, dense chart labels, empty charts, very small totals, zero values, and null values should remain readable and not collapse the layout.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表组件风格设计"
+  short_description: "规范报表组件视觉与响应式行为，覆盖防重叠、标签密度、胶囊切换、下拉控件、ECharts resize、S2 容器和统一风格"
+  default_prompt: "Use $report-component-style-design to design consistent responsive report components, including ECharts charts, AntV S2 tables, capsule switches, and dropdown controls."

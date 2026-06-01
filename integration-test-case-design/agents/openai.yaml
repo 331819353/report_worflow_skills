@@ -1,0 +1,4 @@
+interface:
+  display_name: "联调测试用例设计"
+  short_description: "依据 API 文档和前端功能说明生成测试样例矩阵"
+  default_prompt: "Use $integration-test-case-design to design integration test cases from API documentation and frontend feature descriptions."

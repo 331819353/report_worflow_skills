@@ -1,4 +1,0 @@
-interface:
-  display_name: "状态总览报表设计"
-  short_description: "沉淀状态总览型报表的通用设计方法论，覆盖指标、布局、交互与结论"
-  default_prompt: "Use $status-overview-report-design to explain how to design a status overview report category."

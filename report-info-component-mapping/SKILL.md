@@ -1,0 +1,145 @@
+---
+name: report-info-component-mapping
+description: "Run the complete report component-data-filter-interaction design flow for business report design. Use after extracting a report's theme, core business question, metrics, dimensions, objects, conclusions, risks, tasks, evidence, source, or permissions, especially when deciding how each business question becomes answer atoms, content blocks, component bundles, charts, tables, datasets, filter option data, query behavior, interaction state, binding matrices, and applicable report-design skills."
+---
+
+# Report Info Component Mapping
+
+## Core Positioning
+
+Use this as the integrated design flow between business meaning and runnable report implementation.
+
+This skill turns:
+
+`business question -> answer atoms -> component bundle -> mock data model -> filter/query model -> interaction state -> implementation contract`
+
+It does not define a new report type. It decides how information should become real report components, then makes the component, data, filter, and interaction design mutually verifiable.
+
+## Core Principle
+
+A business question does not equal one chart, and a chart is not complete until its data, filters, and interactions are defined.
+
+Example: `人员流失情况` should not default to one pie chart. It may need KPI cards, trend chart, organization/job/rank distribution, reason contribution, employee detail table, and retention task block. The same design must also define employee-level mock rows, time/org/job filters, row drawer, stale-selection behavior, and KPI-to-detail reconciliation. Use a funnel only when there is a real ordered HR process stage.
+
+Choose the smallest component bundle that answers the decision question. Do not add multiple charts for the same message.
+
+## Low-Freedom Stability Contract
+
+Use this contract for implementation-ready specs, mock data, widget config, or generated files.
+
+- Select one generation mode from `references/08-generation-stability.md`: `concept-map`, `spec-contract`, or `prototype-config`.
+- For `spec-contract` and `prototype-config`, always load `references/06-binding-implementation-contract.md` and `references/08-generation-stability.md`.
+- Use only the controlled vocabularies in `08-generation-stability.md` for `answerAtom`, `semanticRole`, `priority`, `componentType`, `visualType`, `actionType`, `filterValueType`, and `dataPolicy`.
+- Preserve generated IDs across revisions unless the business meaning changes.
+- Keep quantities within the default bounds in `08-generation-stability.md` unless the user explicitly requests a dense suite.
+- If a required field, dataset, filter, action payload, permission scope, or layout span is unknown, create a named assumption or placeholder contract and include a validation case.
+- Do not output a final implementation mapping without the binding matrix columns defined in `06-binding-implementation-contract.md`.
+- Do not use a chart or interaction whose fallback rule in `08-generation-stability.md` says it is unsupported by the available data.
+
+## Integrated Workflow
+
+For every report requirement or extracted information set:
+
+1. Normalize the input: theme, audience, scenario, primary question, decision, time scope, organization scope, object, metrics, dimensions, baseline, process stage, rules, risks, tasks, evidence, source, permissions.
+2. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
+3. Map answer atoms to content blocks and component bundles with priority: must-have, should-have, optional.
+4. Define the mock/data model: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, and time coverage.
+5. Define the filter/query model: main filters, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components.
+6. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, and stale-state behavior.
+7. Produce the binding matrix: component -> dataset -> fields -> formulas -> filters -> interactions -> update triggers -> validation cases.
+8. Route to primary and secondary report-type skills for business logic.
+9. Apply layout and visual constraints through `report-visual-layout-design` and `report-component-style-design`.
+10. Validate that KPI totals, chart totals, table rows, drawers, exports, filters, and jumps share the same context.
+
+## Reference Map
+
+Read only the reference files needed for the current task. The files are numbered in workflow order.
+
+| Need | Read |
+| --- | --- |
+| Decide answer atoms, content blocks, charts, tables, and component constraints | `references/01-question-component-flow.md` |
+| Use typical component bundles such as personnel attrition, target completion, variance diagnosis, anomaly monitoring, reconciliation, execution follow-up | `references/02-business-bundle-patterns.md` |
+| Design realistic mock data, dimensions, facts, formulas, time coverage, scenarios, rollups, and data consistency | `references/03-mock-data-modeling.md` |
+| Design filters, option data, defaults, cascades, query behavior, permissions, and filter-to-component linkage | `references/04-filter-scope-query.md` |
+| Design drilldowns, cross-filtering, hover/value reveal, drawers, modals, jumps, state preservation, and failure states | `references/05-interaction-state-flow.md` |
+| Produce implementation-ready component contracts, unified binding matrix, template config rules, and prototype technology choices | `references/06-binding-implementation-contract.md` |
+| Route to report-type skills, define layout/style constraints, output format, quality checklist, and avoid list | `references/07-routing-layout-quality.md` |
+| Make generation repeatable with controlled vocabularies, naming rules, quantity bounds, fallback rules, and acceptance gates | `references/08-generation-stability.md` |
+
+Loading guidance:
+
+- For a quick conceptual mapping, use this `SKILL.md` plus `01-question-component-flow.md`.
+- For a concrete business scenario, also read `02-business-bundle-patterns.md` if a pattern matches.
+- For prototype/data tasks, read `03-mock-data-modeling.md`, `04-filter-scope-query.md`, and `06-binding-implementation-contract.md`.
+- For interaction-heavy tasks, read `05-interaction-state-flow.md` and `06-binding-implementation-contract.md`.
+- For final report design/spec output, always read `06-binding-implementation-contract.md`, `07-routing-layout-quality.md`, and `08-generation-stability.md`.
+- For any task that will generate files, widget config, mock data, API-facing contracts, or reusable specifications, `08-generation-stability.md` is mandatory.
+
+## Hard Constraints
+
+- A component is valid only when it answers a named business question.
+- A component without a data source is decorative unless it is explicitly static narrative.
+- First-screen cards and large panels cannot remain unbound "暂无数据" placeholders.
+- Mock data must make KPI totals, chart totals, table rows, drawers, and exports reconcile under the same active filters.
+- Multi-period filters, trends, MoM, YoY, quarter, or rolling-period views require complete matching time rows.
+- A filter without affected components is dead UI unless it controls navigation or permissions.
+- Data-bearing filter options must derive from dimension data, fact data, or a resolver unless they are stable enums.
+- Filter IDs must map explicitly to dataset fields or query params.
+- Clickable visual elements must define emitted event, target action, parameters, permission behavior, and stale-state behavior.
+- Drawers, exports, jumps, refresh, and fullscreen views must reuse the same filtered context as the source component.
+- Funnel charts require ordered stages and a shared population or documented cohort logic.
+- Waterfall charts require additive contribution logic.
+- Maps are valid only when geography itself matters.
+- Pie/donut charts are not the default for ranking, trend, or precise comparison.
+- Dense analytical tables, pivot tables, cross tables, and wide metric matrices should use AntV S2.
+- Every implementation mapping must declare data source, grain, required fields, formulas, filter mapping, interaction state, update triggers, and validation cases.
+- Every layout must fit the `8 * N` rectangular grid and legal span rules from `report-visual-layout-design`.
+- Generated IDs, dataset names, filter IDs, `visualType`, action types, and matrix columns must follow the controlled vocabulary and naming rules in `08-generation-stability.md`.
+- When information is missing, use the documented fallback rule and mark the assumption; do not invent unsupported component types, visual types, filters, or actions.
+
+## Minimal Output
+
+When this skill is used, produce at least:
+
+1. Report theme, primary question, business decision, and user scenario.
+2. Answer atom decomposition.
+3. Component bundle mapping with priority.
+4. Mock/data model: datasets, grain, fields, formulas, signals, edge cases.
+5. Filter/query model: filters, option sources, defaults, cascades, permissions, query params.
+6. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.
+7. Unified data/filter/component/interaction binding matrix.
+8. Report type routing.
+9. Layout and style constraints.
+10. Missing information, assumptions, and removed decorative components.
+
+For implementation tasks, items 3-7 are mandatory.
+
+## Quick Quality Gate
+
+Before finalizing, verify:
+
+- Every key business concern maps to at least one visible block or interaction.
+- There is one primary answer area, not a flat wall of equal-weight charts.
+- Every component has a distinct semantic role, dimension, grain, or workflow purpose.
+- Exact-value tasks have table/card support.
+- Cause-analysis tasks have decomposition support.
+- Process/conversion tasks prove ordered stage logic before using funnel.
+- Action tasks have owner, deadline, status, operation entry, and closure evidence.
+- Data-trust tasks have source, version, difference, and audit evidence.
+- Mock data includes enough time, hierarchy, contrast, and edge cases to prove the story.
+- Each primary filter has a real data-field, resolver-param, permission-scope, and affected-component binding.
+- Hovering or clicking dense chart marks reveals exact values or meaningful detail.
+- Filtered KPI totals, chart totals, table rows, drawer records, exports, jumps, and refresh share context.
+- Selected objects reset or show stale-selection state when filters remove them from scope.
+- Dense components have overflow, zoom, drawer, or fullscreen strategy.
+- Stable generation constraints pass: same input should produce the same primary report type, component IDs, dataset IDs, filter IDs, action names, and binding matrix structure unless the business question changes.
+## Execution Completeness Gate
+
+Before finalizing work with this skill, verify the following items explicitly:
+
+1. Scope and trigger reliability: confirm the request truly matches this skill. General report-design skills must stay independent of workflow function words such as `原型设计`, `技术方案`, `前端开发`, `后端开发`, or `测试`; workflow-specific skills may use those words only when they are part of the actual phase intent.
+2. Input condition handling: classify inputs as complete, partial, missing, conflicting, or runtime-only. Continue with a minimal useful artifact when safe, but mark assumptions, blockers, owners, and confirmation questions instead of inventing source fields, formulas, permissions, URLs, credentials, or business rules.
+3. Flow completeness and feasibility: execute the workflow in order, split broad requests into smaller stages, and validate that each stage has the artifacts needed by the next stage before producing final output.
+4. Constraint enforcement: apply the hard constraints, reference-loading rules, technology boundaries, security rules, and avoid-lists in this skill and its referenced files.
+5. Output completeness: include the core deliverable, key decisions, data/source or evidence trace, missing-information list, self-check result, and next-step handoff details required by the user scenario.
+6. Self-check before response: review process completeness, logical feasibility, missing-input coverage, decomposition, constraints, output integrity, generality, and trigger hygiene; repair any gap found before delivering.

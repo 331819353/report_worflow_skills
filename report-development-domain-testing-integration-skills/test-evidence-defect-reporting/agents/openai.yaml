@@ -1,4 +1,0 @@
-interface:
-  display_name: "测试证据与缺陷报告"
-  short_description: "输出可交付的测试报告、缺陷分类、复现步骤、预期/实际、证据、归属方、阻塞和缺失信息"
-  default_prompt: "Use $test-evidence-defect-reporting to produce evidence-backed QA reports and defect records for report integration testing."

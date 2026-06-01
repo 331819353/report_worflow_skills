@@ -1,4 +1,0 @@
-interface:
-  display_name: "前端接口契约校验"
-  short_description: "校验接口是否能替换前端 mock，覆盖字段、参数、空态、错误、分页、筛选、鉴权和样例响应"
-  default_prompt: "Use $frontend-api-contract-validation to compare frontend mock/display contracts with backend API docs or responses before replacing mock data."

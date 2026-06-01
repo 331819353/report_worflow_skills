@@ -1,4 +1,0 @@
-interface:
-  display_name: "运营执行报表设计"
-  short_description: "沉淀运营执行类报表的通用设计方法论，覆盖任务、进度、责任、闭环与效果验证"
-  default_prompt: "Use $operational-execution-report-design to explain how to design an operational execution report category."

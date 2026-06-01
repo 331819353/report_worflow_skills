@@ -1,0 +1,4 @@
+interface:
+  display_name: "测试证据与缺陷报告"
+  short_description: "输出含截图、多模态视觉发现、复现步骤和归属方的测试/缺陷报告"
+  default_prompt: "使用 $test-evidence-defect-reporting 输出可交付测试报告和缺陷记录，包含无头浏览器截图、多模态视觉异常发现、网络/API证据、复现步骤、预期/实际、归属方、阻塞项和回归标准。"

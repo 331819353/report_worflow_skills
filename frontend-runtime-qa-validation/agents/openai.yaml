@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端运行时 QA"
+  short_description: "用浏览器截图和多模态识别检查运行时、交互、布局和可运行URL"
+  default_prompt: "使用 $frontend-runtime-qa-validation 对前端/原型页面做运行时QA：先通过无头浏览器截图，再用多模态模型识别布局偏移、空白过大、文字/图形重叠、图表过小、裁剪和空白渲染等异常，并把发现回流到修复或QA报告。"

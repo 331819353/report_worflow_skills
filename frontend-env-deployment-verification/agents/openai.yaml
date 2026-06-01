@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端环境与部署验证"
+  short_description: "验证 env、数据源配置、proxy、base path、路由、静态资源、build、preview 和最终 URL"
+  default_prompt: "Use $frontend-env-deployment-verification to configure and verify frontend runtime provider settings, proxies, build/preview behavior, deployment paths, and final URLs."
