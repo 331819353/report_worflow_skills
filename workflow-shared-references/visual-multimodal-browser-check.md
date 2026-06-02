@@ -48,7 +48,7 @@ Ask the multimodal model to inspect screenshots for:
 - Component too small: chart/table/KPI/detail content is compressed, unreadable, or occupies too little of its block.
 - Clipping or truncation: important text, values, legends, axes, controls, drawers, modals, or table content is cropped.
 - Nonblank rendering: charts, canvases, maps, icons, logos, images, and tables render with visible content.
-- Brand/logo acceptance: required logo or declared placeholder is visible, uses the correct light/dark variant, keeps aspect ratio, and is not clipped.
+- Brand/logo acceptance: required logo or declared placeholder is visible, uses the correct light/dark variant, keeps aspect ratio, and is not clipped. For custom `htmlReplica` or `freeDesign` pages, a real bundled Haier logo is required; placeholder is a blocker.
 - Sample fidelity: for sample/screenshot/HTML-source restoration, shell, module order, control count, hierarchy, card proportions, and first viewport match the source unless an enhancement is labeled.
 - Control surface quality: primary filters use a styled design-system/custom select/dropdown surface; naked native `<select>` controls are not accepted as final visuals.
 - Complex diagram spacing: layer numbers, labels, nodes, and edges in flow/Sankey/graph/tree/decomposition visuals have at least 16px visible separation and do not collide with rail or edge-bend zones.

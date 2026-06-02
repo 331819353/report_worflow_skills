@@ -15,8 +15,9 @@ Keep the canonical skill name `report-visual-layout-design` for compatibility wi
 
 ## Mandatory Design Direction
 
-- First decide whether the page is a custom report page or a template-based report page.
+- First decide `pageShellPath`: `template` or `custom`.
 - If the user does not specify a page style and does not provide HTML/source/sample styling, use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction.
+- If `pageShellPath: custom`, declare exactly one `customDesignPath`: `htmlReplica` or `freeDesign`.
 - Before implementation, declare exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`.
 - Keep the page simple, elegant, unified, and work-focused.
 - Use Haier blue and white as the primary palette. Avoid redundant information, heavy decoration, and many competing colors.
@@ -46,17 +47,23 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 
 ### Style Source Gate
 
+- Before shell selection, declare `pageShellPath`: `template` or `custom`.
 - Before shell selection, declare `pageStyleSource`: `templateDefault`, `userSpecified`, or `sampleProvided`.
 - Use `templateDefault` when the user has not specified page style and has not provided HTML/source/sample styling; choose the closest bundled template by usage scenario.
 - Use `userSpecified` when the user names a page style, layout style, visual shell, or design direction; follow that direction unless it breaks hard layout, brand, or interaction gates.
 - Use `sampleProvided` when screenshot, HTML source, image, or display sample supplies the visual structure; follow the provided design under `sampleRestore` unless the user asks for optimization or redesign.
-- Do not choose a custom shell merely because the user omitted style requirements. A custom shell needs explicit user direction, provided sample/source, or a documented template limitation.
+- Do not choose `pageShellPath: custom` merely because the user omitted style requirements. A custom shell needs explicit user direction, provided sample/source, or a documented template limitation.
+- If `pageShellPath: custom`, declare `customDesignPath`:
+  - `htmlReplica`: replicate provided HTML/source/sample structure.
+  - `freeDesign`: create a custom shell from requirements without HTML/source/sample visual authority.
+- Both `htmlReplica` and `freeDesign` must configure a real bundled Haier logo. A placeholder is a blocker, not an accepted custom-page final state.
 
 ### Brand Asset Gate
 
 - For any Haier or branded report page, discover logo assets before layout or implementation: check the existing project `public`/`assets` paths, the selected template `public` path, then bundled assets `assets/haier-logo.svg`, `assets/haier-logo-original.svg`, and `assets/haier-logo-white.svg`.
 - Configure the logo in the header, unified title/control area, sidebar brand area, or template logo slot before implementing business components.
 - If no usable logo asset is available, keep the same logo slot and render an explicit placeholder such as `Logo placeholder: asset missing`; record the missing asset as a gap. Do not silently omit the logo.
+- For `pageShellPath: custom`, placeholder does not pass acceptance. Copy or reference a real bundled Haier logo before final delivery.
 - Screenshot acceptance must confirm that the logo or declared placeholder is visible, uses the correct light/dark variant, is not stretched, and is not clipped.
 
 ### Unique Visual Mode Gate
@@ -95,7 +102,7 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 
 Load only the reference sections needed for the task:
 
-- `references/page-layout-modes.md`: template default vs custom page, `pageStyleSource`, custom layout patterns, unified header/control area, title/navigation/filter placement.
+- `references/page-layout-modes.md`: `pageShellPath` template vs custom, custom `htmlReplica` vs `freeDesign`, `pageStyleSource`, custom layout patterns, unified header/control area, title/navigation/filter placement.
 - `references/brand-style.md`: Haier logo rules, Haier blue/white palette, minimalist enterprise visual style.
 - `references/grid-containers.md`: `8 * N` grid, legal spans, block anatomy, ECharts/S2 container and overflow rules.
 - `references/block-size-constraints.md`: calculate block sizes for 1920*1080 and 1280*768 viewports, then decide which spans can safely hold which component combinations without capping total report height.
@@ -112,12 +119,12 @@ Load only the reference sections needed for the task:
 
 ## Workflow
 
-1. Identify context: report type, audience, core question, usage scenario, and whether the implementation is custom-shell or template-based.
-2. Declare `pageStyleSource`, `visualMode`, and pass the brand asset gate. If the input is a display sample, screenshot, or HTML source, decide whether it is `sampleRestore` or only an information-architecture reference.
+1. Identify context: report type, audience, core question, usage scenario, and whether the implementation uses `pageShellPath: template` or `pageShellPath: custom`.
+2. Declare `pageStyleSource`, `pageShellPath`, `visualMode`, and pass the brand asset gate. If the input is a display sample, screenshot, or HTML source, decide whether it is `sampleRestore` or only an information-architecture reference.
 3. Choose the shell mode:
    - Custom page: design one coherent title/navigation/filter control area plus the `8 * N` content display area.
    - Template page: map requirements into the selected template's existing logo, nav, filter, toolbar, modal, and grid configuration.
-4. If no user-specified/sample style exists, prefer a bundled template. If a custom shell is chosen, declare one `customLayoutPattern`.
+4. If no user-specified/sample style exists, prefer a bundled template. If a custom shell is chosen, declare one `customDesignPath` and one `customLayoutPattern`.
 5. If a template is appropriate, read `references/template-routing.md`; then load only the selected template reference and the shared contract/playbook files needed for the edit.
 6. Define the visual hierarchy: core conclusion first, then evidence, breakdown, detail, and actions.
 7. Apply brand style or sample fidelity according to `visualMode`.
@@ -130,10 +137,13 @@ Load only the reference sections needed for the task:
 Before finalizing a layout, verify:
 
 - The first meaningful viewport answers the primary report question or exposes the correct action entry.
+- `pageShellPath` is declared as `template` or `custom`.
 - `pageStyleSource` is declared; absence of style/HTML/sample input routes to a bundled template by default.
 - Exactly one `visualMode` is declared and conflicts with samples, templates, Haier branding, or sci-fi styling are resolved by the hard gate.
+- If `pageShellPath: custom`, exactly one `customDesignPath` is declared: `htmlReplica` or `freeDesign`.
 - Any custom shell declares exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
 - Brand asset discovery is complete; the logo slot contains the correct asset or an explicit placeholder and the gap is recorded.
+- Custom pages use a real bundled Haier logo; placeholder state is treated as blocked rather than pass.
 - For sample/source restoration, page shell, module order, container hierarchy, main control count, layer structure, and card proportions match the sample unless an enhancement is explicitly labeled.
 - The shell choice matches the scenario: single-page, left-nav analytics, sci-fi cockpit, or custom page.
 - Every top-level content block occupies a legal rectangular `8 * N` grid span.

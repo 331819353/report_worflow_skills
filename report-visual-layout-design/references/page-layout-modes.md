@@ -4,8 +4,8 @@
 
 Before designing a report page, decide which mode controls the page shell:
 
-- Template-based report page: default when the user has not specified a page style and has not provided HTML/source/sample styling. Use the selected implementation asset under `assets/templates/`: `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, `sci-fi-dashboard-template`, or another existing project template.
-- Custom report page: use only when the user asks for a custom shell/style, provides a sample/HTML/source style to follow, or a documented template limitation makes a bundled template unsuitable.
+- `pageShellPath: template`: default when the user has not specified a page style and has not provided HTML/source/sample styling. Use the selected implementation asset under `assets/templates/`: `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, `sci-fi-dashboard-template`, or another existing project template.
+- `pageShellPath: custom`: use only when the user asks for a custom shell/style, provides a sample/HTML/source style to follow, or a documented template limitation makes a bundled template unsuitable.
 
 This decision comes before choosing cards, charts, filters, or navigation.
 
@@ -16,6 +16,18 @@ Declare `pageStyleSource` before implementation:
 - `sampleProvided`: screenshot, HTML source, image, or display sample supplies style; follow the sample unless optimization/redesign is requested.
 
 ## 2. Custom Report Page
+
+When `pageShellPath: custom`, choose exactly one `customDesignPath`:
+
+- `htmlReplica`: replicate provided HTML/source/sample structure. Preserve the source shell, module order, container hierarchy, main control count, layer structure, and card proportions unless the user explicitly asks for redesign.
+- `freeDesign`: create a custom shell from requirements without an HTML/source/sample visual authority. Use this only when the user asks for custom/free design or a template limitation is documented.
+
+Hard logo rule for both custom paths:
+
+- `htmlReplica` and `freeDesign` must use the bundled Haier logo in the unified title/control area, header, or sidebar brand area.
+- Prefer `haier-logo.svg` / original color on light backgrounds and `haier-logo-white.svg` on dark backgrounds.
+- If the provided HTML/sample lacks a logo, add Haier logo as a required brand element while preserving the sample's main layout.
+- A logo placeholder is a blocking gap for custom pages, not an accepted final state. Do not mark a custom page complete until a real Haier logo asset is configured.
 
 Custom pages need these capabilities, but they do not need to be three separate visual regions:
 

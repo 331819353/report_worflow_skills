@@ -6,7 +6,7 @@ Choose the mode before starting.
 
 Before choosing a mode, enforce the trigger gate. Do not let adjacent words such as `报表`, `页面`, `模板`, `部署`, `筛选联动`, `mock 数据`, `自检`, or `返回URL` activate this workflow by themselves; they must appear in a request that also includes `原型`.
 
-Before implementation, also choose exactly one `pageStyleSource` and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. These are blocking decisions, not later polish choices.
+Before implementation, also choose exactly one `pageShellPath`, exactly one `pageStyleSource`, and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. These are blocking decisions, not later polish choices.
 
 ### 1. Prototype-Oriented Design Mode
 
@@ -91,9 +91,19 @@ Before moving to design or implementation, write two explicit statements: `User 
 
 Do not block if missing details can be safely assumed.
 
-### Hard Gate: Style Source, Visual Mode, Brand Assets, And Sample Fidelity
+### Hard Gate: Shell Path, Style Source, Visual Mode, Brand Assets, And Sample Fidelity
 
 Run this gate before Stage 8 visual layout and before Stage 10 implementation.
+
+Shell path:
+
+- Declare exactly one `pageShellPath`: `template` or `custom`.
+- Use `pageShellPath: template` when no page style is specified and no HTML/source/sample styling is provided.
+- Use `pageShellPath: custom` only when the user requests custom/free design, provides HTML/source/sample styling, or a template limitation is documented.
+- If `pageShellPath: custom`, declare exactly one `customDesignPath`: `htmlReplica` or `freeDesign`.
+- Use `customDesignPath: htmlReplica` when replicating provided HTML/source/sample structure.
+- Use `customDesignPath: freeDesign` when creating a custom shell from requirements without source visual authority.
+- Both custom paths must configure a real bundled Haier logo before final delivery.
 
 Style source:
 
@@ -116,6 +126,7 @@ Brand assets:
 - For Haier/branded pages, search for logo assets in the existing project, selected template `public` path, and `report-visual-layout-design/assets`.
 - Configure the logo in the header, unified title area, sidebar brand area, or template logo slot before implementing components.
 - If no usable asset exists, render an explicit logo placeholder in that slot and record the missing asset. Do not silently omit the logo.
+- For `pageShellPath: custom`, placeholder state is a blocker. Do not pass visual QA until `haier-logo.svg`, `haier-logo-original.svg`, or `haier-logo-white.svg` is actually configured.
 
 Sample fidelity:
 
@@ -126,7 +137,10 @@ Sample fidelity:
 Blocking behavior:
 
 - Stop before implementation if `visualMode` is not declared.
+- Stop before implementation if `pageShellPath` is not declared.
 - Stop before implementation if `pageStyleSource` is not declared.
+- Stop before implementation if `pageShellPath: custom` and `customDesignPath` is not declared.
+- Stop before implementation if `pageShellPath: custom` and the page has no real Haier logo asset configured.
 - Stop before implementation if a required logo slot has neither asset nor placeholder.
 - Stop before implementation if `sampleRestore` additions would alter the sample's first viewport without an explicit user request.
 
@@ -370,7 +384,7 @@ Use `report-visual-layout-design`.
 Output must include:
 
 - `visualMode` and conflict resolution.
-- `pageStyleSource`; if custom, `customLayoutPattern`.
+- `pageShellPath`, `pageStyleSource`; if custom, `customDesignPath` and `customLayoutPattern`.
 - Brand asset discovery result, configured logo path, logo variant, or placeholder gap.
 - Page shell choice.
 - Haier logo usage.
@@ -456,7 +470,9 @@ Implementation must:
 
 - Keep business data out of config when the template expects data files or data sources.
 - Declare `visualMode` and pass brand asset discovery before changing files.
+- Declare `pageShellPath`; if custom, declare `customDesignPath`.
 - Declare `pageStyleSource`; if no page style and no HTML/source/sample styling is provided, use a bundled template by default.
+- If implementing a custom shell, configure a real bundled Haier logo before final delivery. For HTML replication, add the Haier logo even if the source HTML lacks it.
 - If implementing a custom shell, declare `customLayoutPattern` from the allowed set before changing files.
 - Preserve sample shell/module order/control count/layering/card proportions when `visualMode: sampleRestore`; label any enhancements.
 - Use stable IDs for filters, interactions, and mock records.

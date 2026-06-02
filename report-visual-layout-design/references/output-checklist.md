@@ -5,7 +5,7 @@
 When asked to design a report visual layout, use this structure:
 
 1. 页面定位: report type, user, core question, usage scenario, custom shell or template-based.
-2. 样式来源与视觉模式: declare `pageStyleSource` and exactly one `visualMode`; when custom, declare exactly one `customLayoutPattern`.
+2. 页面路径、样式来源与视觉模式: declare `pageShellPath`, `pageStyleSource`, and exactly one `visualMode`; when custom, declare `customDesignPath` and exactly one `customLayoutPattern`.
 3. 页面外壳: unified title/navigation/filter control area, logo placement, actions, and template mapping if applicable.
 4. 品牌风格: Haier logo asset discovery result, logo variant or placeholder, Haier blue/white palette, typography, spacing, density, surfaces.
 5. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.
@@ -20,10 +20,13 @@ When asked to design a report visual layout, use this structure:
 Before finalizing, verify:
 
 - The entry mode is clear: custom report page or template-based page.
-- `pageStyleSource` is declared. If no page style and no HTML/source/sample styling is provided, a bundled template is selected by default.
+- `pageShellPath` is declared as `template` or `custom`.
+- `pageStyleSource` is declared. If no page style and no HTML/source/sample styling is provided, `pageShellPath: template` and a bundled template are selected by default.
 - User-specified design style or provided sample/HTML source is followed unless it violates hard gates or the user asks for optimization.
 - Exactly one `visualMode` is declared before implementation.
+- If `pageShellPath: custom`, exactly one `customDesignPath` is declared: `htmlReplica` or `freeDesign`.
 - Custom page shells declare exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
+- Custom `htmlReplica` and `freeDesign` pages use a real bundled Haier logo in the header, unified title/control area, or sidebar brand area; placeholder does not pass final acceptance.
 - `sampleRestore` preserves the source page shell, module order, container hierarchy, main control count, layer structure, and card proportions unless the user explicitly asks for redesign.
 - Any added filter, summary card, detail table, matrix, drawer, or jump in `sampleRestore` is labeled as an enhancement and does not change the first viewport or main body layout.
 - Custom pages use one coherent title/navigation/filter control area when possible, instead of mechanically splitting three independent strips.
@@ -64,6 +67,7 @@ Before finalizing, verify:
 
 - Do not treat custom pages and template-based pages as the same layout problem.
 - Do not choose a custom shell merely because the user did not specify page style.
+- Do not mark a custom page complete with only a logo placeholder.
 - Do not redesign a selected template's shell unless the task explicitly asks for template-level changes.
 - Do not choose a template without explaining why it fits the report scope and usage scenario.
 - Do not force title, navigation, and filters into three separate areas when a unified control area is cleaner.

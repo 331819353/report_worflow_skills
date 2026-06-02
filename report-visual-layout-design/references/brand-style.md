@@ -48,6 +48,7 @@ Passing rules:
 - A Haier or branded page must configure one logo source in the header, unified title/control area, sidebar brand area, or template logo slot.
 - Light shell uses original color logo; dark shell uses white logo.
 - Missing asset does not justify removing the logo slot. Render a visible placeholder in the intended logo location and record `logo asset missing` as a gap.
+- For custom pages, both `htmlReplica` and `freeDesign` must use a real bundled Haier logo asset. A placeholder records a blocker and cannot pass final acceptance.
 - Screenshot QA must verify visibility, variant, aspect ratio, clipping, and placeholder text when applicable.
 
 ## 3. Minimal Enterprise Style

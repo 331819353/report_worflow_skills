@@ -40,7 +40,7 @@ Use this structure:
 3. Files/components/data to create or modify.
 4. Mock data and filter state plan.
 5. Interaction state and parameter plan.
-6. Style source, visual mode, and brand asset gate: `pageStyleSource`, `visualMode`, `customLayoutPattern` if any, logo discovery result, logo slot/placeholder, and sample-fidelity decision.
+6. Shell path, style source, visual mode, and brand asset gate: `pageShellPath`, `pageStyleSource`, `visualMode`, `customDesignPath` and `customLayoutPattern` if any, logo discovery result, logo slot/placeholder, and sample-fidelity decision.
 7. Visual layout and component style plan.
 8. Technical architecture: TypeScript, Vue 3, ECharts, AntV S2, and template choice.
 9. Self-check report and repair-loop plan.
@@ -70,7 +70,7 @@ Use this structure after implementation and after each repair cycle:
 6. 筛选配置检查.
 7. 交互可用性检查.
 8. 配置完整性检查.
-9. 视觉与运行态检查：include `pageStyleSource`, `visualMode`, custom layout pattern if any, logo/header screenshot acceptance, sample fidelity when applicable, complex diagram spacing, and primary filter control implementation.
+9. 视觉与运行态检查：include `pageShellPath`, `pageStyleSource`, `visualMode`, custom design/layout path if any, logo/header screenshot acceptance, sample fidelity when applicable, complex diagram spacing, and primary filter control implementation.
 10. 无头浏览器截图证据：screenshot path, viewport, page/state, cycle.
 11. 多模态视觉异常识别：`VIS-*` finding, severity, screenshot, component/region, observation, impact, fix plan, retest criteria.
 12. 问题清单：severity, evidence, affected file/module, fix plan, current status.
@@ -84,9 +84,12 @@ Before final delivery, verify:
 - The primary report type is clear and not confused with a chart type.
 - Secondary report types only appear where they change a block or flow.
 - The core user question is answered in the first meaningful viewport.
+- `pageShellPath` is declared as `template` or `custom`.
 - `pageStyleSource` is declared. If no page style and no HTML/source/sample styling is provided, a bundled template is used by default.
 - Exactly one `visualMode` is declared before implementation and remains consistent in the final self-check.
+- If `pageShellPath: custom`, `customDesignPath` is declared as `htmlReplica` or `freeDesign`.
 - Custom shells declare exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
+- Custom `htmlReplica` and `freeDesign` pages use a real bundled Haier logo; placeholder state is reported as blocked.
 - Haier/branded pages have a configured logo asset or a visible placeholder with the missing asset recorded.
 - Screenshot evidence verifies the logo/header area, correct logo variant, aspect ratio, and no clipping.
 - When input is a display sample, screenshot, image, or HTML source and `visualMode: sampleRestore`, page shell, module order, container hierarchy, main control count, layer structure, card proportions, and first viewport are compared against the source.
@@ -124,7 +127,8 @@ Before final delivery, verify:
 
 - Do not start from visual layout before classifying the report purpose.
 - Do not choose a custom shell merely because the user did not specify page style.
-- Do not start implementation before declaring `pageStyleSource`, `visualMode`, custom layout pattern when applicable, and passing the logo asset/placeholder gate.
+- Do not mark a custom shell complete when it has only a logo placeholder instead of a real bundled Haier logo.
+- Do not start implementation before declaring `pageShellPath`, `pageStyleSource`, `visualMode`, custom design/layout paths when applicable, and passing the logo asset gate.
 - Do not use every skill for every task; use the smallest complete path.
 - Do not duplicate detailed rules from child skills; route to them.
 - Do not invent new report categories when one of the eight categories fits.

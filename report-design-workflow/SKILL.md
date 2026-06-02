@@ -56,7 +56,8 @@ Domain words such as `产业`, `区域`, `国家`, `品牌`, or `渠道` are the
 
 Use this contract whenever the output may become a specification, configuration, code, mock dataset, or runnable prototype.
 
-- Choose exactly one workflow mode, exactly one primary report type, exactly one `pageStyleSource`, and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. Secondary report types may only support named local blocks.
+- Choose exactly one workflow mode, exactly one primary report type, exactly one `pageShellPath`, exactly one `pageStyleSource`, and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. Secondary report types may only support named local blocks.
+- If `pageShellPath: custom`, choose exactly one `customDesignPath`: `htmlReplica` or `freeDesign`.
 - If the shell is custom, choose exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
 - Use `report-info-component-mapping` with its `../report-info-component-mapping/references/06-binding-implementation-contract.md` and `../report-info-component-mapping/references/08-generation-stability.md` references before writing config, data, or code.
 - Generate a binding matrix before visual layout. Do not start implementation from a chart list or page sketch.
@@ -73,7 +74,8 @@ Use this contract whenever the output may become a specification, configuration,
 Before writing or changing prototype code, pass these gates:
 
 - Brand asset gate: for Haier/branded pages, find and configure a logo asset in the header, unified title area, sidebar brand area, or template logo slot. Search the existing project assets, selected template `public` path, then `report-visual-layout-design/assets`. If missing, keep a visible logo placeholder and list the gap; do not silently omit the logo.
-- Style source gate: if the user has not specified page style and has not provided HTML/source/sample styling, use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction unless it violates hard gates.
+- Shell and style source gate: if the user has not specified page style and has not provided HTML/source/sample styling, set `pageShellPath: template` and use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction unless it violates hard gates.
+- Custom path gate: if `pageShellPath: custom`, set `customDesignPath: htmlReplica` for provided HTML/source/sample replication, or `customDesignPath: freeDesign` for custom design without source visual authority. Both custom paths must configure a real bundled Haier logo before final delivery.
 - Unique visual mode gate: declare one `visualMode`. Use `haierEnterprise` for ordinary business report prototypes, `sampleRestore` for screenshot/display-sample/HTML-source restoration unless the user asks for redesign, and `sciFiCockpit` only for explicit big-screen/cockpit presentation use.
 - Sample fidelity gate: when `visualMode: sampleRestore`, preserve page shell, module order, container hierarchy, main control count, layer structure, and card proportions. Any added filters, summaries, details, matrices, drawers, or jumps must be labeled as enhancements and must not change the first viewport or main body layout unless requested.
 - Custom layout pattern gate: when a custom shell is used, choose one of `symmetricBalance` 对称式, `threePart` 三部式, `masterDetail` 主从式, or `narrativeStack` 分层叙事式; record why it fits the report and how it preserves the `8 * N` grid.
@@ -88,7 +90,7 @@ Before writing or changing prototype code, pass these gates:
 4. Route to exactly one primary report-type skill and optional secondary skills only for local blocks.
 5. Use `report-info-component-mapping` to produce answer atoms, component bundles, data model, filter/query model, interaction model, and binding matrix.
 6. Apply the hard data/filter/component linkage gate before visual polish or implementation.
-7. Apply the implementation preflight gates for style source, visual mode, brand assets, sample fidelity, custom layout pattern, complex diagrams, and filter controls.
+7. Apply the implementation preflight gates for shell path, style source, visual mode, brand assets, sample fidelity, custom design path, custom layout pattern, complex diagrams, and filter controls.
 8. Use `report-visual-layout-design` and `report-component-style-design` for page shell, layout, component fit, and visual QA.
 9. For implementation, choose the appropriate bundled template or project-native structure, then implement with TypeScript + Vue 3 + ECharts + AntV S2 unless the existing project requires a different stack.
 10. Run the self-check repair loop, local startup/free-port handling, deployment, and URL return rules from `references/02-self-check-startup-deployment.md` when runnable output is requested.
@@ -109,7 +111,7 @@ For implementation tasks, output:
 
 1. Source files changed or created.
 2. Data/model/filter/interaction contracts implemented.
-3. `pageStyleSource`, `visualMode`, custom layout pattern if any, brand asset discovery result, logo slot/placeholder status, and any sample-restoration enhancement list.
+3. `pageShellPath`, `pageStyleSource`, `visualMode`, custom design path and custom layout pattern if any, brand asset discovery result, logo slot/placeholder status, and any sample-restoration enhancement list.
 4. Self-check report and repair-loop status.
 5. Build/runtime verification evidence, including screenshot paths and multimodal visual findings for runnable output.
 6. Verified local URL or public URL, or a precise external blocker.
@@ -130,8 +132,10 @@ Before final delivery, verify:
 - The primary report type is clear and not confused with a chart type.
 - The core user question is answered in the first meaningful viewport.
 - Components, datasets, filters, and interactions share one explicit binding contract.
+- `pageShellPath` is declared as `template` or `custom`.
 - `pageStyleSource` is declared; missing style/HTML/sample input uses a bundled template by default.
 - Exactly one `visualMode` is declared and matches the selected restoration, enterprise, or cockpit strategy.
+- If `pageShellPath: custom`, exactly one `customDesignPath` is declared and a real bundled Haier logo is configured.
 - Any custom shell declares one allowed `customLayoutPattern`.
 - Haier/branded pages have a discovered/configured logo asset or an explicit placeholder with a recorded gap.
 - Sample/source restoration preserves the sample's shell, module order, hierarchy, control count, and first viewport unless a redesign is requested.
@@ -150,7 +154,7 @@ Before final delivery, verify:
 
 - Do not use this workflow without the keyword `原型` in the user request.
 - Do not start from visual layout before classifying the report purpose.
-- Do not start implementation before declaring `pageStyleSource`, `visualMode`, custom layout pattern when applicable, and passing brand asset discovery.
+- Do not start implementation before declaring `pageShellPath`, `pageStyleSource`, `visualMode`, custom design/layout paths when applicable, and passing brand asset discovery.
 - Do not use every child skill for every task; use the smallest complete path.
 - Do not invent new report categories when one of the eight categories fits.
 - Do not finish implementation without a self-check report, repair-loop status, and verified URL or blocker.
