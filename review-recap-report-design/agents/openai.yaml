@@ -1,4 +1,4 @@
 interface:
   display_name: "汇报复盘报表设计"
-  short_description: "沉淀汇报复盘类报表的通用思路逻辑与落地路径，覆盖结论叙事、证据、行动闭环与材料输出"
-  default_prompt: "Use $review-recap-report-design to design the generic logic and implementation path for a review recap report."
+  short_description: "沉淀汇报复盘类报表的子类型、管理叙事、结论证据、经验教训、行动闭环、材料输出与版本留存"
+  default_prompt: "Use $review-recap-report-design to select a review-recap subtype and design the narrative, conclusions, evidence, lessons, risks, actions, drilldowns, output carrier, and versioned recap flow."

@@ -1,4 +1,4 @@
 interface:
   display_name: "异常监控报表设计"
-  short_description: "沉淀异常监控类报表的通用思路逻辑与落地路径，覆盖规则、等级、定位、处理闭环与降噪"
-  default_prompt: "Use $anomaly-monitoring-report-design to design the generic logic and implementation path for an anomaly monitoring report."
+  short_description: "沉淀异常监控类报表的子类型、触发规则、严重等级、影响定位、通知派发、处理闭环、降噪与规则治理"
+  default_prompt: "Use $anomaly-monitoring-report-design to select an anomaly-monitoring subtype and design normal definitions, trigger rules, severity, impact, notification, treatment lifecycle, noise control, drilldowns, and rule governance."

@@ -154,13 +154,3 @@ When a check fails, classify it before fixing or reporting:
 - Layout defect: block size too small, component compression, clipped data, table ellipsis hiding required values, missing scroll behavior, wrong `%`/trend styling, or copied one-off visual tokens overriding the page UI.
 
 Every unresolved failure must include reproduction steps, expected result, actual result, evidence source, owner side if identifiable, and missing information if the owner side cannot be determined.
-## Execution Completeness Gate
-
-Before finalizing work with this skill, verify the following items explicitly:
-
-1. Scope and trigger reliability: confirm the request truly matches this skill. General report-design skills must stay independent of workflow function words such as `原型设计`, `技术方案`, `前端开发`, `后端开发`, or `测试`; workflow-specific skills may use those words only when they are part of the actual phase intent.
-2. Input condition handling: classify inputs as complete, partial, missing, conflicting, or runtime-only. Continue with a minimal useful artifact when safe, but mark assumptions, blockers, owners, and confirmation questions instead of inventing source fields, formulas, permissions, URLs, credentials, or business rules.
-3. Flow completeness and feasibility: execute the workflow in order, split broad requests into smaller stages, and validate that each stage has the artifacts needed by the next stage before producing final output.
-4. Constraint enforcement: apply the hard constraints, reference-loading rules, technology boundaries, security rules, and avoid-lists in this skill and its referenced files.
-5. Output completeness: include the core deliverable, key decisions, data/source or evidence trace, missing-information list, self-check result, and next-step handoff details required by the user scenario.
-6. Self-check before response: review process completeness, logical feasibility, missing-input coverage, decomposition, constraints, output integrity, generality, and trigger hygiene; repair any gap found before delivering.

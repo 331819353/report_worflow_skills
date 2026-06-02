@@ -8,7 +8,7 @@ Template assets live under:
 
 `report-visual-layout-design/assets/templates/<template-id>/`
 
-The old standalone template skill folders are intentionally not used. Copy the selected asset directory into the target project, or merge its `src/`, `public/`, scripts, and config files into an existing Vue 3 + Vite app.
+Copy the selected asset directory into the target project, or merge its `src/`, `public/`, scripts, and config files into an existing Vue 3 + Vite app.
 
 ## Routing Matrix
 

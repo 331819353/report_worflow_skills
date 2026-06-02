@@ -144,7 +144,7 @@ description: "设计、评审或提炼核对追溯类报表的通用思路逻辑
 
 ## 独立调用最低落地门禁
 
-当本 skill 未经 `report-design-workflow` 直接使用时，不要停留在方法论。最终输出至少补齐：
+最终输出至少补齐：
 
 - 数据契约：指标字段、行粒度、基准/阈值、公式、更新时间、数据源或接口依赖。
 - 筛选与交互：主筛选、影响组件、下钻/抽屉/跳转参数、返回和重置行为。
@@ -184,13 +184,3 @@ description: "设计、评审或提炼核对追溯类报表的通用思路逻辑
 - 不要省略匹配规则、容差、口径和版本。
 - 不要隐藏源系统、更新时间和血缘。
 - 不要允许差异无原因、无证据、无日志关闭。
-## Execution Completeness Gate
-
-Before finalizing work with this skill, verify the following items explicitly:
-
-1. Scope and trigger reliability: confirm the request truly matches this skill. General report-design skills must stay independent of workflow function words such as `原型设计`, `技术方案`, `前端开发`, `后端开发`, or `测试`; workflow-specific skills may use those words only when they are part of the actual phase intent.
-2. Input condition handling: classify inputs as complete, partial, missing, conflicting, or runtime-only. Continue with a minimal useful artifact when safe, but mark assumptions, blockers, owners, and confirmation questions instead of inventing source fields, formulas, permissions, URLs, credentials, or business rules.
-3. Flow completeness and feasibility: execute the workflow in order, split broad requests into smaller stages, and validate that each stage has the artifacts needed by the next stage before producing final output.
-4. Constraint enforcement: apply the hard constraints, reference-loading rules, technology boundaries, security rules, and avoid-lists in this skill and its referenced files.
-5. Output completeness: include the core deliverable, key decisions, data/source or evidence trace, missing-information list, self-check result, and next-step handoff details required by the user scenario.
-6. Self-check before response: review process completeness, logical feasibility, missing-input coverage, decomposition, constraints, output integrity, generality, and trigger hygiene; repair any gap found before delivering.

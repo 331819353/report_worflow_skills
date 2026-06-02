@@ -1,6 +1,6 @@
 ---
 name: analysis-diagnostic-report-design
-description: "设计、评审或提炼分析诊断类报表的通用思路逻辑和落地路径。适用于原因分析、指标波动诊断、归因分析、驱动因素拆解、目标偏差诊断、经营问题定位、流程瓶颈分析等场景，但不要局限于某个行业、指标或固定诊断页面。重点沉淀问题定义、分解模型、归因路径、维度下钻、过程诊断、证据链、交互联动、数据落地、诊断结论和行动建议。"
+description: "设计、评审或提炼分析诊断类报表的通用思路逻辑和落地路径。适用于原因分析、指标波动诊断、归因分析、驱动因素拆解、目标偏差诊断、预实差诊断、经营问题定位、流程瓶颈分析等场景，并支持指标异动、目标差距、结构贡献、漏斗转化、流程瓶颈、成本利润、质量体验、生命周期、资源供需、区域组织差异、风险异常、策略活动效果、关联驱动因素等诊断子类型。重点沉淀问题定义、预实差开头、分解模型、归因路径、维度下钻、过程诊断、证据链、交互联动、数据落地、诊断结论和行动建议。"
 ---
 
 # 分析诊断报表设计
@@ -11,11 +11,15 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 
 适用对象可以是收入、利润、费用、毛利、库存、项目进度、客户流失、回款、质量、服务、供应链、流程转化或任何可解释变化的业务指标。
 
+分析诊断类报表可以由多个设计部分共同支撑，但必须先用“预实差”开头：明确预期/目标/预算/基准、实际结果、差异额、差异率、影响量和严重度。后续所有拆解、维度定位、证据和行动都要围绕这个“差”展开。
+
 ## 通用输入
 
 设计前先明确这些输入，缺失时要先提出假设：
 
 - 诊断问题：哪个指标在什么周期、什么范围内发生了什么变化。
+- 诊断子类型：指标异动、目标差距、结构贡献、漏斗转化、流程瓶颈、成本利润、质量体验、生命周期、资源供需、区域组织差异、风险异常、策略活动效果、关联驱动因素之一；复杂页面可再声明辅助子类型。
+- 预实差口径：预期/目标/预算/基准、实际值、差异额、差异率、影响量、严重度。
 - 比较基准：目标、预算、计划、上期、同期、历史均值、标杆、阈值。
 - 指标口径：公式、分子分母、聚合规则、过滤条件、数据版本。
 - 可拆维度：组织、区域、产品、客户、渠道、项目、合同、门店、流程节点、责任人。
@@ -27,12 +31,14 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 从“如何解释变化”出发，而不是从“如何摆更多图”出发。
 
 1. 定义现象：说明变化对象、变化幅度、比较基准和影响程度。
-2. 选择分解模型：用公式、财务结构、流程漏斗、账户树、贡献模型或业务规则解释指标。
-3. 识别驱动因素：区分结果驱动、结构驱动、流程驱动、对象贡献、异常事件和数据口径影响。
-4. 量化归因：尽量给出贡献金额、贡献率、偏差额、影响比例或排序。
-5. 定位对象：下钻到可行动的组织、区域、产品、客户、项目、渠道、流程节点或责任人。
-6. 建立证据链：用趋势、明细、样本、事件、单据或异常记录支撑诊断。
-7. 给出结论：按“现象 -> 原因 -> 影响对象 -> 建议动作”表达。
+2. 建立预实差：用“预期/目标/预算/基准 vs 实际 -> 差异”作为页面和推理开头。
+3. 选择一个主 `analysisDiagnosticSubtype`，必要时声明辅助子类型。
+4. 选择分解模型：用公式、财务结构、流程漏斗、账户树、贡献模型或业务规则解释指标。
+5. 识别驱动因素：区分结果驱动、结构驱动、流程驱动、对象贡献、异常事件和数据口径影响。
+6. 量化归因：尽量给出贡献金额、贡献率、偏差额、影响比例或排序。
+7. 定位对象：下钻到可行动的组织、区域、产品、客户、项目、渠道、流程节点或责任人。
+8. 建立证据链：用趋势、明细、样本、事件、单据或异常记录支撑诊断。
+9. 给出结论：按“预实差 -> 差异来源 -> 原因证据 -> 影响对象 -> 建议动作”表达。
 
 ## 落地路径
 
@@ -41,25 +47,28 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 1. 抽象诊断问题
    将需求改写成“为什么 X 在 Y 范围内相对 Z 变化了 N”。没有明确变化对象时，不进入组件设计。
 
-2. 选择诊断模型
-   根据指标性质选择公式分解、财务分解、差异分解、流程分解、结构分解、贡献分解、异常事件诊断或组合模型。
+2. 预实差开头
+   先定义目标/预算/计划/历史/同类/阈值等预期基准，再定义实际结果、差异额、差异率、影响量和严重度。缺少基准时，用明确假设或标记缺口，不要直接归因。
 
-3. 定义归因规则
+3. 选择诊断子类型和模型
+   先声明一个主 `analysisDiagnosticSubtype`，再根据指标性质选择公式分解、财务分解、差异分解、流程分解、结构分解、贡献分解、异常事件诊断或组合模型。
+
+4. 定义归因规则
    明确每个驱动因素如何计算影响，哪些因素可以相加，哪些只能作为解释线索，哪些需要人工确认。
 
-4. 设计信息架构
-   常用层级是“问题定义 -> 核心分解 -> 贡献排序 -> 维度定位 -> 过程/事件解释 -> 证据抽屉 -> 诊断结论”。
+5. 设计信息架构
+   常用层级是“预实差定义 -> 差异确认 -> 差异来源拆解 -> 贡献排序 -> 维度定位 -> 过程/事件解释 -> 证据抽屉 -> 诊断结论”。
 
-5. 映射组件
+6. 映射组件
    用瀑布图、指标树、分解树、帕累托、Top N、对比柱、矩阵、漏斗、趋势线、散点、明细表承载不同推理任务。
 
-6. 设计交互
+7. 设计交互
    支持指标树下钻、维度下钻、贡献项点击、流程节点定位、证据抽屉、口径弹层和跨报表跳转。
 
-7. 明确数据契约
+8. 明确数据契约
    为每个诊断节点定义字段、公式、贡献算法、维度、过滤参数、证据列表、样本数量、更新时间和跳转参数。
 
-8. 验收表达
+9. 验收表达
    验收时检查用户是否能说清：发生了什么、为什么发生、谁贡献最大、证据在哪里、下一步做什么。
 
 ## 常用诊断模型
@@ -93,9 +102,10 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 - 需要证明数据口径是否一致时，用 `reconciliation-traceability-report-design`。
 - 需要会议叙事时，用 `review-recap-report-design`。
 
-## 参考样例
+## 参考资料
 
 - 当需要具体样例、验收口径或反例时，读取 `references/01-pattern-examples-and-acceptance.md`；纯通用设计问题不必加载。
+- 当需求涉及分析诊断子类型、多部分诊断思路、预实差开头、围绕差展开、问题类型到图表映射或诊断画布时，读取 `references/02-subtype-selection-and-variance-first.md`。
 
 ## 协同技能
 
@@ -105,7 +115,7 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 
 ## 独立调用最低落地门禁
 
-当本 skill 未经 `report-design-workflow` 直接使用时，不要停留在方法论。最终输出至少补齐：
+最终输出至少补齐：
 
 - 数据契约：指标字段、行粒度、基准/阈值、公式、更新时间、数据源或接口依赖。
 - 筛选与交互：主筛选、影响组件、下钻/抽屉/跳转参数、返回和重置行为。
@@ -118,18 +128,22 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 当用户要求设计分析诊断类报表时，按这个结构输出：
 
 1. 设计定位：说明诊断对象、受众、周期、范围、基准和变化幅度。
-2. 思路逻辑：说明从现象到原因、对象、证据、动作的推理路径。
-3. 分解模型：给出公式、指标树、流程链、科目树或贡献模型。
-4. 布局框架：说明问题定义、核心分解、维度定位、证据、结论层级。
-5. 组件映射：说明每个图表或表格承担哪一步诊断。
-6. 交互路径：说明指标下钻、维度联动、证据抽屉、口径弹层和跳转。
-7. 数据落地：说明字段、算法、口径、维度、样本、证据和数据源依赖。
-8. 诊断结论：按“现象 -> 原因 -> 影响对象 -> 建议动作”输出。
-9. 校验清单：列出假设、归因限制、样本风险和需要业务确认的规则。
+2. 预实差开头：说明预期/目标/预算/基准、实际值、差异额、差异率、影响量和严重度。
+3. 子类型判断：声明主 `analysisDiagnosticSubtype`、辅助子类型和选择理由。
+4. 思路逻辑：说明从差异确认到原因、对象、证据、动作的推理路径。
+5. 分解模型：给出公式、指标树、流程链、科目树或贡献模型。
+6. 布局框架：说明预实差、差异来源、核心分解、维度定位、证据、结论层级。
+7. 组件映射：说明每个图表或表格承担哪一步诊断。
+8. 交互路径：说明指标下钻、维度联动、证据抽屉、口径弹层和跳转。
+9. 数据落地：说明字段、算法、口径、维度、样本、证据和数据源依赖。
+10. 诊断结论：按“预实差 -> 差异来源 -> 原因证据 -> 影响对象 -> 建议动作”输出。
+11. 校验清单：列出假设、归因限制、样本风险和需要业务确认的规则。
 
 ## 质量清单
 
 - 是否明确了诊断问题、周期、范围、基准和变化幅度。
+- 是否以预实差开头，并且后续模块都围绕差异来源、差异原因、差异影响展开。
+- 是否声明一个主诊断子类型，并把其他子类型限制为辅助模块或下钻入口。
 - 是否有可解释的分解模型或驱动路径。
 - 贡献或影响是否尽量量化。
 - 维度下钻是否能定位到可行动对象。
@@ -144,14 +158,6 @@ description: "设计、评审或提炼分析诊断类报表的通用思路逻辑
 - 不要把相关性当成因果。
 - 不要硬套某个行业公式作为通用模型。
 - 不要在没有基准和变化幅度时直接归因。
+- 不要跳过预实差，直接从维度分布、现状 KPI 或原因结论开始。
+- 不要让多个诊断子类型并列竞争首屏主线。
 - 不要把证据藏到多级跳转之后。
-## Execution Completeness Gate
-
-Before finalizing work with this skill, verify the following items explicitly:
-
-1. Scope and trigger reliability: confirm the request truly matches this skill. General report-design skills must stay independent of workflow function words such as `原型设计`, `技术方案`, `前端开发`, `后端开发`, or `测试`; workflow-specific skills may use those words only when they are part of the actual phase intent.
-2. Input condition handling: classify inputs as complete, partial, missing, conflicting, or runtime-only. Continue with a minimal useful artifact when safe, but mark assumptions, blockers, owners, and confirmation questions instead of inventing source fields, formulas, permissions, URLs, credentials, or business rules.
-3. Flow completeness and feasibility: execute the workflow in order, split broad requests into smaller stages, and validate that each stage has the artifacts needed by the next stage before producing final output.
-4. Constraint enforcement: apply the hard constraints, reference-loading rules, technology boundaries, security rules, and avoid-lists in this skill and its referenced files.
-5. Output completeness: include the core deliverable, key decisions, data/source or evidence trace, missing-information list, self-check result, and next-step handoff details required by the user scenario.
-6. Self-check before response: review process completeness, logical feasibility, missing-input coverage, decomposition, constraints, output integrity, generality, and trigger hygiene; repair any gap found before delivering.

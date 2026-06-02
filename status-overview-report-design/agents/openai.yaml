@@ -1,4 +1,4 @@
 interface:
   display_name: "状态总览报表设计"
-  short_description: "沉淀状态总览型报表的通用思路逻辑与落地路径，覆盖判断基准、指标、布局、交互与结论"
-  default_prompt: "Use $status-overview-report-design to design the generic logic and implementation path for a status overview report."
+  short_description: "沉淀状态总览和大屏驾驶舱的子类型、判断基准、指标、布局、交互与结论"
+  default_prompt: "Use $status-overview-report-design to choose the status overview subtype and design the generic logic, layout, metrics, interactions, and acceptance path for a status overview report or cockpit."

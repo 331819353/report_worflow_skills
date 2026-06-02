@@ -11,7 +11,7 @@ This is a universal report visual layout skill. It owns how a report page is org
 
 It does not own report-type logic, mock data design, API contracts, or detailed filter/data interaction rules. Use the relevant report-type skill and `report-info-component-mapping` when component, metric, data, filter, or interaction mapping is still unclear.
 
-Keep the canonical skill name `report-visual-layout-design` for compatibility with existing report-type skills, but treat its scope as general report layout and template selection rather than prototype-only visual advice.
+Treat this skill as general report layout and template selection rather than prototype-only visual advice.
 
 ## Mandatory Design Direction
 
@@ -202,13 +202,3 @@ When asked to design a report visual layout, structure the answer as:
 8. 模板路由: chosen template and files/configs to adjust.
 9. 交互与状态: filters, drilldown, drawer/modal, refresh/export/fullscreen, empty/loading/error/no-permission, responsive behavior.
 10. 设计校验: first-viewport value, brand correctness, grid correctness, visual restraint, no clipping/overlap.
-## Execution Completeness Gate
-
-Before finalizing work with this skill, verify the following items explicitly:
-
-1. Scope and trigger reliability: confirm the request truly matches this skill. General report-design skills must stay independent of workflow function words such as `原型设计`, `技术方案`, `前端开发`, `后端开发`, or `测试`; workflow-specific skills may use those words only when they are part of the actual phase intent.
-2. Input condition handling: classify inputs as complete, partial, missing, conflicting, or runtime-only. Continue with a minimal useful artifact when safe, but mark assumptions, blockers, owners, and confirmation questions instead of inventing source fields, formulas, permissions, URLs, credentials, or business rules.
-3. Flow completeness and feasibility: execute the workflow in order, split broad requests into smaller stages, and validate that each stage has the artifacts needed by the next stage before producing final output.
-4. Constraint enforcement: apply the hard constraints, reference-loading rules, technology boundaries, security rules, and avoid-lists in this skill and its referenced files.
-5. Output completeness: include the core deliverable, key decisions, data/source or evidence trace, missing-information list, self-check result, and next-step handoff details required by the user scenario.
-6. Self-check before response: review process completeness, logical feasibility, missing-input coverage, decomposition, constraints, output integrity, generality, and trigger hygiene; repair any gap found before delivering.
