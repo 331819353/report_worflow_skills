@@ -1,6 +1,6 @@
 ---
 name: sso-auth-flow-test
-description: "Test SSO authentication flows for running frontend/backend report systems. Use for 单点登录, SSO测试, clientId/token storage, Application-Key/Access-Token headers, 401 invalid token handling, 403 no-permission handling, refresh/deep-link access, logout, re-login, backend token validation, and auth request evidence."
+description: "Test SSO authentication flows for running frontend/backend report systems. Use for 鍗曠偣鐧诲綍, SSO娴嬭瘯, clientId/token storage, Application-Key/Access-Token headers, 401 invalid token handling, 403 no-permission handling, refresh/deep-link access, logout, re-login, backend token validation, and auth request evidence."
 ---
 
 # SSO Auth Flow Test
@@ -14,6 +14,7 @@ Use this skill to validate that frontend SSO behavior and backend auth enforceme
 - Read `references/01-sso-case-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
 - Read `references/02-sso-breakpoint-closure.md` when the task is to find, explain, or repair breakpoints between frontend SDK login, backend token exchange, protected API validation, 401 recovery, 403 permission handling, or logout.
 - Read `references/03-sso-test-process-and-standards.md` when the task needs concrete SSO test procedure, acceptance criteria, fail/blocker standards, evidence rules, or test-report structure.
+- Read `references/standalone-quality-gates.md#production-closed-loop-readiness` when SSO results are used for production acceptance, release readiness, or defect retest closure.
 
 ## Required Inputs
 
@@ -50,6 +51,9 @@ Optional inputs: SSO documentation, role/permission expectations, token invalida
 8. Test logout when available.
    Trigger logout and verify browser storage/cookies are cleared, backend session is invalidated if applicable, and revisiting the page requires login.
 
+9. Record production/retest context when applicable.
+   For production-bound SSO validation, record environment/version/account/role, SSO domain, frontend/backend URLs, auth contract version, protected API sample, evidence paths, defect ID when retesting, and closure criteria. Do not mark SSO `pass` when required token/header contract, test account, protected API, or 401/403 evidence is unavailable.
+
 ## Required Output
 
 - SSO environment:
@@ -62,6 +66,7 @@ Optional inputs: SSO documentation, role/permission expectations, token invalida
 - No-permission result:
 - Refresh/deep-link result:
 - Logout result:
+- Production/retest context:
 - Defects/blockers:
 
 ## Pass Criteria
@@ -72,3 +77,4 @@ Optional inputs: SSO documentation, role/permission expectations, token invalida
 - Invalid auth is rejected by backend and recovered by frontend without request loops.
 - No-permission scenarios are distinguishable from unauthenticated scenarios.
 - The run satisfies the pass standards in `references/03-sso-test-process-and-standards.md`, or any unmet standard is explicitly reported as fail or blocked with evidence.
+- Production-bound pass includes environment/version/account/role context, auth contract evidence, protected API evidence, and retest closure when applicable.

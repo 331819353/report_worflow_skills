@@ -1,6 +1,6 @@
 # Detailed Style Rules Migrated From SKILL.md
 
-Use this file only when the focused component references are insufficient or when preserving legacy detailed behavior matters. Prefer `00-component-reference-index.md` first.
+Use this file only when the focused component references are insufficient or when preserving legacy detailed behavior matters. Prefer `00-component-reference-index.md` in this directory first.
 
 ## Universal Component Principles
 
@@ -849,7 +849,7 @@ Start with `引用规则`: list the reference files applied and any stricter com
 
 Before finalizing, verify:
 
-- The needed files from `references/` were loaded according to `references/00-component-reference-index.md`.
+- The needed files from this directory were loaded according to `00-component-reference-index.md`.
 - Component-specific display rules from the relevant reference files are reflected in the design or implementation.
 - Each component has measured or explicitly estimated usable width and height before its content layout is chosen.
 - The selected component form, grid span, font hierarchy, chart/table density, legend position, and metadata count match the measured body viewport.

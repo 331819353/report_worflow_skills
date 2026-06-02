@@ -8,9 +8,10 @@ Use this reference to classify missing or assumed backend/API information.
 - Data model gaps: missing fields, unknown types, nullable rules, IDs, primary keys, enum dictionaries, units, precision, uniqueness, relationship cardinality, and retention rules.
 - Transformation gaps: date/period conversion, aggregation grain, formulas, denominator rules, unit conversion, rounding, default fill, sorting/grouping, Top/Bottom logic, and reconciliation.
 - API contract gaps: endpoints, params, pagination, sorting, filters, response examples, error behavior, upload/download, idempotency, compatibility, and consumer expectations.
-- Auth/config/deployment gaps: auth headers, token rules, SSO values, environment variables, ports, CORS/proxy, credentials, network access, secrets, and deployment target values.
+- Auth/config/deployment gaps: auth headers, token rules, SSO values, environment variables, ports, CORS/proxy, credentials, network access, secrets, deployment target values, startup commands, health/readiness endpoints, and rollback/restore paths.
+- Observability/reliability gaps: log format, request ID, trace/metric availability, alert owner, timeout/retry behavior, upstream failure handling, health check coverage, and SLA/SLO expectations.
 - Integration/upstream gaps: upstream availability, request limits, timeout/retry, response variability, versioning, ownership, fallback rules, and SLA.
-- Testing/evidence gaps: unavailable test data, missing fixtures, untested branches, no runtime URL, missing auth token, skipped tests, or flaky evidence.
+- Testing/evidence gaps: unavailable test data, missing fixtures, untested branches, no runtime URL, missing auth token, skipped tests, flaky evidence, missing retest criteria, or absent retest evidence.
 - Performance gaps: page limits, export limits, cache/precompute, timeout, retry, large-data handling, expensive filters, and concurrency expectations.
 - Business definition gaps: metric definitions, formulas, ownership, permission scope, status rules, process state, approval rules, and acceptance criteria.
 

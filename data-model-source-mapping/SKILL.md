@@ -30,6 +30,8 @@ Read only the reference files needed for the current task:
 | Map physical sources into logical models and response/view models | `references/02-source-logical-response-mapping.md` |
 | Define metric formulas, transformations, permissions, and data-quality rules | `references/03-metrics-transformations-quality.md` |
 | Run model traceability, no-invention, and pending-item routing checks | `references/04-model-stability-gate.md` |
+| Resolve authority conflicts when requirements, metric lists, prototype code, API contracts, source documents, or tests disagree | `references/standalone-quality-gates.md#entry-input-consistency-gate` |
+| Audit whether source/logical/response model design reasonably supports the business question, API inventory, frontend contract, permissions, and tests | `references/standalone-quality-gates.md#design-reasonableness-gate` |
 
 Loading guidance:
 
@@ -38,6 +40,9 @@ Loading guidance:
 - For metric-heavy work, `03-metrics-transformations-quality.md` is mandatory.
 
 ## Workflow
+
+0. Check source authority.
+   When multiple artifacts define the model, identify which source owns physical fields, metric formula, grain, response/view needs, permission, freshness, and sample evidence. If they conflict on source field, join, formula, enum, grain, permission, or response shape, record `ENTRY-*` findings before creating a model assumption.
 
 1. Identify source systems.
    List every source table/view/file/API, owner, business domain, refresh cadence, access method, permission need, expected volume, and known quality issue.
@@ -58,15 +63,20 @@ Loading guidance:
    Capture date conversion, period aggregation, unit conversion, enum mapping, rounding, default fill, hierarchy rollup, deduplication, and permission filtering.
 
 7. Mark gaps.
-   Send unresolved source, field, formula, enum, join, sample, owner, refresh, or permission gaps to `$missing-model-management`.
+   Record unresolved source, field, formula, enum, join, sample, owner, refresh, or permission gaps in this skill's pending model items with stable `GAP-*` IDs, impact, owner question, current assumption, and downstream blocking status.
+
+8. Run the design reasonableness gate.
+   Check whether the model grain, joins, response/view models, metric formulas, transformation strategy, permissions, freshness, and quality rules reasonably support the consuming APIs, UI components, filters, and tests. Record unreasonable model structures as `DESIGN-*` findings.
 
 ## Hard Constraints
 
 - Every response/view field must trace to a source field, formula, static enum, or `GAP-*` item.
+- Do not resolve contradictory source/model/API/frontend evidence by preference or convenience; unresolved `P0`/`P1` conflicts keep affected models `partial` or `blocked`.
 - Every metric must have formula, grain, dimensions, period logic, source dependency, and precision, or a `GAP-*` item.
 - Source ownership, refresh cadence, and permission must be explicit, assumed, or blocked.
 - Joins and hierarchy rollups must be documented before API documentation starts.
 - Prototype mock fields must be reconciled with real source fields instead of copied blindly.
+- Do not keep a model structure that is technically traceable but unreasonable for the consuming API/UI/test workflow. Use `DESIGN-*` findings when grain, joins, response shape, metric formula, transformation, permission, or freshness design would distort the business answer.
 - Do not use a field in a response model if its type, unit, enum, or null behavior is unknown and undocumented.
 - Sensitive fields must declare sensitivity level, masking rule, and field-level permission behavior, or link to `GAP-*`.
 - Do not leave required table cells blank. Use `none` when intentionally not applicable, or `TBD(GAP-*)` when unknown.
@@ -85,11 +95,13 @@ Use this structure for the 数据模型文件:
 8. Security rules: sensitivity, masking, field-level permission, no-permission behavior.
 9. Data-quality rules: uniqueness, completeness, enum validation, range checks, freshness.
 10. Pending model items: linked `GAP-*` IDs or summary.
+11. Design reasonableness status: linked `DESIGN-*` IDs, repairs, or accepted limitations.
 
 ## Quick Quality Gate
 
 - Every response/view field traces to a source field, formula, or pending item.
 - Every metric in the indicator list has formula, grain, dimensions, and source dependency.
 - Source ownership, refresh cadence, and permission are explicit.
-- Model IDs and API response model names are stable and reusable by `$api-inventory-design`.
-- All unresolved model issues are visible through `$missing-model-management`.
+- Model IDs and API response model names are stable for downstream API inventory, documentation, frontend integration, and testing artifacts.
+- Model design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected models `partial` or `blocked`.
+- All unresolved model issues are visible in the pending model items section with `GAP-*` IDs.

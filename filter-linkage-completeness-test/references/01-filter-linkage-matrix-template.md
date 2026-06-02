@@ -4,8 +4,8 @@ Use this template to prove every filter has options, request mapping, affected c
 
 ## Filter Matrix Columns
 
-| Filter | Option source | Default | Request field/param | Affected components | Reset behavior | Edge cases | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Filter | Option source | Default | Request field/param | Affected components | Reset behavior | Edge cases | Env/version/role context | Retest defect ID | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Interaction Matrix Columns
 
@@ -21,3 +21,4 @@ Use this template to prove every filter has options, request mapping, affected c
 - Cascade parent change clears invalid child values.
 - Permission-limited options.
 - Export, drawer, pagination, sorting, jump, and refresh inherit active filters when required.
+- Production/retest context when applicable: environment, version/build, account/role, data seed/source mode, defect ID, and closure criteria.

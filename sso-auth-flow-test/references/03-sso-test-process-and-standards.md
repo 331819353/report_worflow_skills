@@ -142,6 +142,7 @@ Collect evidence for each run:
 - UI: screenshot or visible state for login success, no-permission, error, and logout when applicable.
 - Backend: sanitized response samples or logs if available.
 - Reproduction: precondition, steps, expected result, actual result.
+- Production/retest context when applicable: environment/version, account/role, protected API sample, auth contract version, defect ID, retest criteria, and closure evidence.
 
 Redaction rules:
 
@@ -166,8 +167,8 @@ Pass:
 Fail:
 Blocked:
 Key evidence:
+Production/retest context:
 Defects:
 Blockers / missing info:
 Conclusion: pass / partial pass / fail / blocked
 ```
-

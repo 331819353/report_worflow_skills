@@ -15,6 +15,11 @@ Use a compact note. Keep it close to implementation and testing needs.
 - Adapter needed:
 - State behavior:
 - Auth/client setup:
+- Production handoff:
+- Provider/source mode:
+- Runtime evidence:
+- Retained mock/offline/demo status:
+- Testing handoff:
 - Contract status: pass / partial / blocked
 - Missing information:
 - Verification evidence:

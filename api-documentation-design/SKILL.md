@@ -16,6 +16,10 @@ Do not implement backend code merely because this skill is triggered. Produce do
 1. Collect inputs and select the documentation mode.
    Use inventory-to-document, route-to-document, requirement-to-contract, contract-refresh, async-job, webhook/callback, streaming, or file-transfer mode based on the available artifacts.
 
+   When multiple input authorities exist, run `references/standalone-quality-gates.md#entry-input-consistency-gate` before documenting endpoint behavior. API inventories, requirements, frontend contracts, source/data models, OpenAPI snippets, implemented routes, and runtime samples must not be merged silently when they conflict; unresolved `P0`/`P1` `ENTRY-*` findings keep the affected endpoint `partial` or `blocked` and require user confirmation only before the affected API document is repaired.
+
+   When the API document will drive frontend, backend, or tests, run `references/standalone-quality-gates.md#design-reasonableness-gate`. Check that endpoint boundaries, response models, pagination/sorting/filter rules, auth, errors, examples, and performance limits reasonably support the consuming business flow.
+
 2. Establish shared conventions.
    Define base URL, version, auth, headers, response envelope, errors, pagination, sorting, filters, date/time format, enum format, and file behavior before documenting endpoint details.
 
@@ -31,9 +35,15 @@ Do not implement backend code merely because this skill is triggered. Produce do
 6. Prepare handoff.
    Include enough examples and edge states for frontend contract validation, backend implementation, integration tests, runtime QA, and delivery review.
 
+7. Mark production readiness when the API document is production-bound.
+   Apply `references/standalone-quality-gates.md#production-closed-loop-readiness` before calling the API document production-ready. API documentation is only `partial` when authoritative source, auth/permission, environment/base URL, health/runtime evidence, observability, performance/export limits, version compatibility, or testing handoff is missing.
+
 ## References
 
 - Read [references/01-inputs-and-traceability.md](references/01-inputs-and-traceability.md) when identifying source artifacts, authority, dependency trace, or unresolved model/API items.
+- Read [references/standalone-quality-gates.md#entry-input-consistency-gate](references/standalone-quality-gates.md#entry-input-consistency-gate) when API docs are built from conflicting requirements, API inventories, model docs, frontend contracts, route code, OpenAPI snippets, or runtime samples.
+- Read [references/standalone-quality-gates.md#design-reasonableness-gate](references/standalone-quality-gates.md#design-reasonableness-gate) when API design choices affect business fit, data/API feasibility, frontend usability, or testability.
+- Read [references/standalone-quality-gates.md#production-closed-loop-readiness](references/standalone-quality-gates.md#production-closed-loop-readiness) when API docs feed production delivery or release acceptance.
 - Read [references/02-document-structure.md](references/02-document-structure.md) when creating the document skeleton, common conventions, overview tables, and appendix.
 - Read [references/03-endpoint-detail-rules.md](references/03-endpoint-detail-rules.md) when writing endpoint-level request, response, example, auth, error, performance, and compatibility sections.
 - Read [references/04-handoff-quality-gate.md](references/04-handoff-quality-gate.md) before final delivery or when preparing frontend/backend/testing handoff.
@@ -43,12 +53,17 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - API documentation grouped by module, domain, page, resource, or service boundary.
 - Common conventions plus endpoint details.
 - Dependency trace from endpoint response to the relevant implementation/model/source/contract artifacts.
+- Design reasonableness status with `DESIGN-*` findings when endpoint design affects downstream usability.
+- Production closed-loop readiness when the API document is production-bound.
 - Unresolved item list with endpoint impact and owner/confirmation question.
 
 ## Quality Checklist
 
 - Every expected endpoint appears in the API document or is explicitly removed with a reason.
+- Entry conflicts across requirements, API inventories, data/source models, frontend contracts, route code, OpenAPI snippets, and runtime samples are resolved or listed as `ENTRY-*`; unresolved `P0`/`P1` findings keep affected endpoints `partial` or `blocked`.
+- API design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected endpoints `partial` or `blocked`.
 - Request params cover required filters, drilldowns, pagination, sorting, exports, defaults, and invalid-param behavior.
 - Response schemas include field names, types, nullability, units, precision, enums, nesting, empty states, and examples.
 - Auth, permission, no-data, invalid-param, unauthorized, no-permission, and upstream/backend failure behavior are documented when relevant.
+- Production-bound API documents include source authority, runtime/environment notes, auth/permission behavior, observability/performance constraints, version compatibility, and testing handoff before `ready`.
 - Pending items remain visible and do not masquerade as confirmed API behavior.

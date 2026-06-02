@@ -43,6 +43,9 @@ Read only the reference files needed for the current task:
 | Need | Read |
 | --- | --- |
 | Cross-workflow stage routing, readiness values, and handoff requirements | `../workflow-shared-references/report-delivery-pipeline-contract.md` |
+| Entry-material conflict detection across requirements, data docs, metric lists, prototype data code, API plans, and source evidence | `../workflow-shared-references/entry-input-consistency-gate.md` |
+| Design reasonableness checks for API/model feasibility, page/data fit, metric support, filters, interactions, permissions, and testability | `../workflow-shared-references/design-reasonableness-gate.md` |
+| Production closed-loop readiness for architecture, data service handoff, environment/auth/observability/performance/testability | `../workflow-shared-references/production-closed-loop-readiness.md` |
 | Define stage boundaries, input inventory, artifact ownership, and handoff meaning | `references/01-stage-contract-and-artifacts.md` |
 | Run cross-artifact traceability and consistency checks before final output | `references/02-consistency-gate.md` |
 | Make output stable for weaker models: exact names, IDs, status values, fallback behavior, and no-invention rules | `references/03-generation-stability.md` |
@@ -57,6 +60,8 @@ Loading guidance:
 
 0. Route rough or incomplete inputs.
    If the input is not already a structured requirement/data/metric/prototype contract, first use `$report-requirement-structure-extraction` to normalize business scenario, users, pages, metrics, dimensions, permissions, and missing information. Do not create final API or model artifacts directly from vague notes.
+
+   When more than one entry artifact exists, run `../workflow-shared-references/entry-input-consistency-gate.md` before creating API清单 or 数据模型文件. If requirements, metric lists, data docs, prototype data code, HTML/source-derived contracts, or API plans conflict on source authority, metric口径, grain, filter scope, permission, response shape, or workflow scope, keep affected API/model artifacts `partial` or `blocked`, continue unaffected mapping, and ask for confirmation only on the exact `P0`/`P1` `ENTRY-*` decision.
 
 1. Inventory inputs.
    List every received file/path and classify it as requirement, data document, metric list, prototype data code, or supporting material. Record version, owner, and uncertainty.
@@ -82,9 +87,18 @@ Loading guidance:
 8. Run the consistency gate.
    Verify every API item maps to at least one frontend need and one response model. Verify every response model traces to logical/source models or appears in the pending list. Verify every metric in the indicator list appears in an API, model, or pending item.
 
+9. Run the design reasonableness gate.
+   Check whether the API清单 and 数据模型文件 reasonably support the report question, component binding, metric口径, filters, interactions, permissions, exports, and tests. Record unreasonable API/model structures as `DESIGN-*` findings, not only as traceability gaps.
+
+10. Run production closed-loop readiness when the output is expected to support real delivery.
+   Use `../workflow-shared-references/production-closed-loop-readiness.md` to check architecture decisions, service boundaries, data flow, source authority, environment/auth, observability, performance, deployment/rollback, testability, and backend handoff completeness. Mark the technical solution `partial` or `blocked` when those production controls are missing.
+
 ## Hard Constraints
 
 - Do not invent endpoints, fields, formulas, enum values, joins, permissions, or source ownership. If uncertain, mark a pending item.
+- Do not turn contradictory entry artifacts into API/model assumptions. Use `ENTRY-*` IDs for conflicts and require confirmation for `P0`/`P1` findings before repairing the affected contract.
+- Do not produce technically traceable but unreasonable API/model artifacts. Use `DESIGN-*` IDs when an endpoint boundary, response model, grain, source strategy, filter model, or permission design cannot reasonably support the consuming report.
+- Do not call a technical architecture production-ready if it only contains API清单 and 数据模型文件. Production-bound architecture also needs runtime topology, service/data-flow boundaries, environment/auth/security, observability, performance, deployment/rollback, and testing readiness notes.
 - Do not copy prototype mock fields as final source fields unless a source mapping confirms them.
 - Every API must trace to a page/module need and a response model.
 - Every response/view field must trace to a source field, formula, static enum, or pending item.
@@ -99,6 +113,9 @@ Produce or update these artifacts:
 - `API清单`: endpoint inventory table, grouped by page/module/domain, including performance/cache/SLA and linked gap IDs.
 - `数据模型文件`: complete model definitions with data-source metadata, field tables, relationships, metrics, source-to-response mapping, security rules, examples, and quality rules. If the full artifact is written to a file, include the file path and a concise summary.
 - `待补充数据模型清单`: missing requirement/model/source/field/formula/enum/join/sample/permission/performance/security items with status and owner questions.
+- Entry consistency result with `ENTRY-*` conflicts, confirmation decisions, and affected API/model artifacts when mixed input materials were checked.
+- Design reasonableness result with `DESIGN-*` findings, repairs, accepted limitations, and affected API/model artifacts.
+- Production closed-loop readiness: architecture overview, nonfunctional controls, environment/deployment/observability/performance/testability notes, readiness status, and blockers.
 - Stage handoff summary following `../workflow-shared-references/report-delivery-pipeline-contract.md`: readiness, next stage, usable artifacts, blockers, and owner questions.
 
 ## Default Output Structure
@@ -109,12 +126,16 @@ Produce or update these artifacts:
 4. API清单.
 5. 数据模型文件完整内容或文件路径 + 摘要.
 6. 待补充数据模型清单.
-7. 一致性校验结果.
-8. 下一阶段交接说明: what the data-service stage can consume directly and what remains blocked.
+7. 入口一致性审计、设计合理性审计与一致性校验结果.
+8. 生产闭环准备度: architecture/data-service/testing readiness, production blockers, accepted partial scope.
+9. 下一阶段交接说明: what the data-service stage can consume directly and what remains blocked.
 
 ## Quick Quality Gate
 
 - API清单、数据模型文件、待补充数据模型清单 are mutually traceable.
+- Entry-material conflicts are resolved, or unresolved `P0`/`P1` `ENTRY-*` findings keep affected artifacts `partial` or `blocked`.
+- Design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected API/model artifacts `partial` or `blocked`.
+- Production closed-loop readiness is checked for production-bound outputs; missing auth/source/env/observability/performance/deployment/testability controls keep the handoff `partial` or `blocked`.
 - Prototype mock/view-model/filter/interaction contracts are not ignored.
 - API items are not invented without a page/module/business need.
 - Data models include source metadata, not only frontend response fields.

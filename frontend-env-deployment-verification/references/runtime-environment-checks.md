@@ -16,6 +16,7 @@
 - Realtime host, polling interval, timeout, and retry values.
 - Auth-related runtime values only when the project owns frontend auth config.
 - Provider mode flags such as online/offline/demo, mock fallback, proxy-on/off, and feature toggles that change data sources.
+- Production readiness values: deployment target, backend/API base URL, route/base path, rollback or restore path, health/readiness or representative backend check, and observability/log access when available.
 - Public vs private values: do not commit tokens, secrets, private captured cookies, or personal account data.
 
 Keep environment values in project-native config files or request/client setup, not scattered through business components.

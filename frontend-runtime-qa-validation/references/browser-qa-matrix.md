@@ -13,14 +13,16 @@
 - Static assets, chunks, fonts, images, workers, and downloaded templates resolve under the intended base path.
 - Layout appears at target viewport sizes without obvious clipping or overlap.
 
-## Headless Screenshot And Multimodal Visual Review
+## Headless Screenshot, Baseline Diff, And Multimodal Review
 
 - Use a headless browser or browser automation tool to capture screenshots before declaring layout status.
 - Capture first viewport and full page for the primary route.
 - Capture additional screenshots after representative filter changes, tab switches, drawer/modal opening, drilldown, fullscreen, export preview, and relevant empty/error/auth states.
-- Send screenshots to a multimodal model using `../../workflow-shared-references/visual-multimodal-browser-check.md`.
+- Run deterministic baseline image diff when approved baselines exist. Record baseline path, current screenshot path, diff path, thresholds, masked regions, and `VDIFF-*` findings.
+- If no baseline exists, save baseline candidates and record deterministic regression as `baseline missing`, not pass.
+- Send screenshots to a multimodal model using `../references/standalone-quality-gates.md#visual-browser-and-multimodal-check` when the model/service is available and explanatory visual review is in scope.
 - Record `VIS-*` findings for layout offset, excessive blank area, text overlap, graphic overlap, chart/table/card too small, clipping, unreadable labels, nonblank rendering failures, broken proportions, stale prototype residue, and broken scroll behavior.
-- Re-capture and re-review affected screenshots after repairing `blocker` or `major` findings.
+- Re-capture, re-diff, and re-review affected screenshots after repairing `blocker` or `major` `VDIFF-*` or `VIS-*` findings.
 
 ## Route And Surface Checks
 

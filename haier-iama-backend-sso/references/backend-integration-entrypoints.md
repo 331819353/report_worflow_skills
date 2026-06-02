@@ -159,4 +159,3 @@ Use this when multiple frontend client IDs or tenants call the same backend.
 4. Never let arbitrary browser-provided client IDs select credentials dynamically.
 5. Bind client ID to tenant, redirect/origin allowlist, and permission scope when needed.
 6. Test known client, unknown client, mismatched token/client ID, and disabled client scenarios.
-

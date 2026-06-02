@@ -4,8 +4,8 @@ Use this template when comparing backend API responses with frontend display val
 
 ## Component Comparison Columns
 
-| Component | API endpoint | Request params | Response fields | Adapter/formula | Display fields | Expected value | Actual value | Evidence | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Component | API endpoint | Request params | Response fields | Adapter/formula | Display fields | Expected value | Actual value | Evidence | Env/version/data context | Retest defect ID | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Required Checks
 
@@ -13,6 +13,7 @@ Use this template when comparing backend API responses with frontend display val
 - Units, precision, date/period format, sorting, Top N, totals/subtotals, null/empty values.
 - Backend response -> adapter output -> rendered UI value trace.
 - Active filters and permissions used by the request.
+- Production/retest context when applicable: environment, version/build, account/role, data seed/source mode, defect ID, and closure criteria.
 
 ## Mismatch Classification
 

@@ -23,7 +23,10 @@ Optional execution inputs:
 ## Reference Map
 
 - Read `../workflow-shared-references/report-delivery-pipeline-contract.md` for cross-workflow routing, readiness values, defect feedback, and handoff requirements.
-- Read `../workflow-shared-references/visual-multimodal-browser-check.md` when executing frontend visual/layout testing from a runnable URL.
+- Read `../workflow-shared-references/entry-input-consistency-gate.md` when API文档、前端功能说明、runtime URLs, test data, env/auth notes, or source evidence may conflict before test design or repair routing.
+- Read `../workflow-shared-references/design-reasonableness-gate.md` when API文档、前端功能说明、test cases, runtime behavior, or defect routing may reveal an unreasonable design rather than a simple implementation bug.
+- Read `../workflow-shared-references/visual-multimodal-browser-check.md` when executing frontend visual/layout testing from a runnable URL; use deterministic screenshot/baseline diff for repeatable regression and multimodal review for explanatory findings.
+- Read `../workflow-shared-references/production-closed-loop-readiness.md` when testing is used as production acceptance or when defects must be repaired and retested before closure.
 
 ## Specialty Skills
 
@@ -54,6 +57,10 @@ Optional execution inputs:
 1. Validate input documents.
    Confirm API文档 and 前端功能说明 are present, versioned, and aligned. If either is missing, produce a blocker and list the exact missing document.
 
+   Run the entry consistency gate when API文档, 前端功能说明, runtime URLs, test data, env/auth notes, screenshots, or source evidence disagree. Do not finalize pass/fail cases around one disputed behavior or route a repair to the wrong owner while `P0`/`P1` `ENTRY-*` conflicts remain unresolved; mark affected cases `partial` or `blocked`, continue unaffected cases, and ask for the exact confirmation needed.
+
+   Run the design reasonableness gate when the test basis appears complete but the workflow, API/UI contract, filter behavior, interaction, permission, layout, or acceptance rule is unreasonable. Route `DESIGN-*` findings back to the owning design/API/frontend/backend workflow instead of treating them as ordinary test-data gaps.
+
 2. Build the feature/API matrix.
    Map pages/modules/features to endpoint contracts, request params, response fields, filters, interactions, exports, auth, and edge states.
 
@@ -66,8 +73,8 @@ Optional execution inputs:
 5. Execute runtime readiness checks.
    Use `$runtime-url-smoke-test` to verify frontend/backend reachability, environment alignment, assets, console, network, proxy/CORS, and API base URL.
 
-6. Capture screenshots and run multimodal visual checks.
-   When a runnable frontend URL is available, use a headless browser or browser automation tool to capture screenshots before judging visual/layout results. Apply `../workflow-shared-references/visual-multimodal-browser-check.md` or `$frontend-runtime-qa-validation` to detect layout offset, excessive blank area, text overlap, graphic overlap, clipping, tiny charts/tables/cards, unreadable labels, blank rendering, broken proportions, stale prototype residue, and scroll issues. Record all `VIS-*` findings as test evidence or defects.
+6. Capture screenshots, run deterministic diff, and run multimodal visual checks.
+   When a runnable frontend URL is available, use a headless browser or browser automation tool to capture screenshots before judging visual/layout results. Apply `../workflow-shared-references/visual-multimodal-browser-check.md` or `$frontend-runtime-qa-validation` to run deterministic baseline diff when baselines exist, and to detect layout offset, excessive blank area, text overlap, graphic overlap, clipping, tiny charts/tables/cards, unreadable labels, blank rendering, broken proportions, stale prototype residue, and scroll issues through multimodal review when available. Record all `VDIFF-*` and `VIS-*` findings as test evidence or defects.
 
 7. Execute auth, data, and filter tests.
    Use `$sso-auth-flow-test`, `$frontend-backend-data-consistency-test`, and `$filter-linkage-completeness-test` as applicable. Capture screenshots, network payloads, API samples, visible values, storage/header evidence, and reproduction steps.
@@ -81,19 +88,26 @@ Optional execution inputs:
 10. Route defects back to owner workflows.
    For every failure or blocker, assign likely owner workflow from `report-design-workflow`, `technical-solution-workflow`, `backend-development-workflow`, `frontend-development-workflow`, SSO/security, data, or environment. Include retest criteria following `../workflow-shared-references/report-delivery-pipeline-contract.md`.
 
+11. Maintain defect repair and retest closure.
+   Apply `../workflow-shared-references/production-closed-loop-readiness.md` for production-bound testing. Track each blocker/major/high defect as `open -> fixed -> retest -> closed` or `blocked`, and do not mark acceptance `ready` until retest evidence confirms the defect no longer reproduces in the stated environment/version. If retest cannot run, the result is `partial` or `blocked`, not passed.
+
 ## Required Output
 
 - 测试样例: case matrix with category, priority, feature, API, preconditions, steps, expected frontend/API result, evidence, and status.
-- 测试结果: execution environment, executed cases, pass/fail/blocker counts, screenshot evidence, multimodal visual findings, evidence summary, defects, missing information, and conclusion.
+- 测试结果: execution environment, entry consistency status, design reasonableness status, executed cases, pass/fail/blocker counts, screenshot evidence, deterministic baseline diff artifacts, multimodal visual findings, evidence summary, defects, missing information, and conclusion.
 - Defect feedback bundle: defect ID, severity, likely owner workflow, evidence, reproduction steps, retest criteria, and blocker owner question.
+- Production acceptance / retest closure matrix when applicable: environment, frontend/backend versions, open/fixed/retest/closed/blocked defect counts, retest evidence, remaining risks, and readiness value.
 
 ## Quality Checklist
 
 - Test cases are derived from both API文档 and 前端功能说明.
+- Entry conflicts between API文档、前端功能说明、runtime URLs, test data, env/auth notes, screenshots, or source evidence are resolved or listed with `ENTRY-*` IDs before pass/fail conclusions are finalized.
+- Design reasonableness issues are listed with `DESIGN-*` IDs and routed to the owner workflow before final acceptance.
 - Runtime results never claim pass for cases that were not executable.
 - Every failure has expected result, actual result, evidence, and likely owner side.
-- Runnable frontend visual/layout testing captures screenshots first and runs multimodal visual recognition before claiming pass.
-- `blocker` and `major` visual findings become defects with screenshot path, component/region, owner, and retest criteria.
+- Runnable frontend visual/layout testing captures screenshots first and runs deterministic baseline diff when baselines exist before claiming deterministic visual regression pass; multimodal visual recognition is recorded as pass or not run.
+- `blocker` and `major` `VDIFF-*` or `VIS-*` findings become defects with screenshot path, diff path when available, component/region, owner, and retest criteria.
 - SSO/auth, data consistency, filter linkage, interactions, edge states, and export/download are covered when in scope.
 - Blockers name the missing URL, account, data, permission, document, or environment dependency.
 - Runtime results never claim `ready` when required execution is `not run`; use `partial` or `blocked` with missing inputs.
+- Production acceptance never claims `ready` while blocker/major/high defects are still `open`, `fixed` without retest evidence, or `blocked` by missing environment/account/data.

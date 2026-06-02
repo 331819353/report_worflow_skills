@@ -30,6 +30,7 @@ Prefer `docs/missing-info.md`. If no docs folder exists, use `MISSING_INFO.md`. 
 - Impact:
 - Current handling:
 - Safety for local/demo/release:
+- Production readiness impact:
 - Owner or confirmation question:
 - Due date or review date:
 - Escalation path:
@@ -42,9 +43,9 @@ Prefer `docs/missing-info.md`. If no docs folder exists, use `MISSING_INFO.md`. 
 Use a table when there are many small items:
 
 ```markdown
-| ID | Category | Severity | Status | Item | Impact | Current handling | Owner/question | Due/review |
-|---|---|---|---|---|---|---|---|---|
-| MI-001 | API contract | P1 risky | assumed | Unknown max page size | Large queries may timeout | Uses 100 max | Backend owner: confirm max page size | 2026-06-08 |
+| ID | Category | Severity | Status | Item | Impact | Current handling | Production readiness impact | Owner/question | Due/review |
+|---|---|---|---|---|---|---|---|---|---|
+| MI-001 | API contract | P1 risky | assumed | Unknown max page size | Large queries may timeout | Uses 100 max | Release remains partial until limit is confirmed | Backend owner: confirm max page size | 2026-06-08 |
 ```
 
 ## Empty State

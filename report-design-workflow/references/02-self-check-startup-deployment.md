@@ -8,7 +8,7 @@ Core rule:
 
 - Produce a written self-check report for each cycle.
 - Fix issues found by the report before handoff.
-- For runnable prototypes, capture headless browser screenshots before judging visual quality, run multimodal visual anomaly recognition on those screenshots, and add `VIS-*` findings to the self-check report.
+- For runnable prototypes, capture headless browser screenshots before judging visual quality, run deterministic baseline image diff when baselines exist, run multimodal visual anomaly recognition when available, and add `VDIFF-*` / `VIS-*` findings to the self-check report.
 - Repeat the cycle until the report has no unresolved issues, or stop after 3 cycles.
 - If unresolved blocker or major issues remain after 3 cycles, do not claim the project is complete; report the remaining issues, evidence, and blocker clearly.
 
@@ -63,10 +63,12 @@ Self-check dimensions:
    - Run the build command, usually `npm run build`, for runnable Vue projects.
    - Start or preview the page when required, then use a headless browser or browser automation tool to capture screenshots before visual judgment.
    - Capture at least the first viewport. Also capture full-page, representative filtered state, tab/drawer/modal/drilldown/fullscreen state, and responsive viewport screenshots when in scope.
-   - Run multimodal visual anomaly recognition using `../../workflow-shared-references/visual-multimodal-browser-check.md`.
+   - Run deterministic baseline image diff using Playwright/Cypress or the project visual regression setup when baselines exist; if no baseline exists, save baseline candidates and record `baseline missing`.
+   - Run multimodal visual anomaly recognition using `../../workflow-shared-references/visual-multimodal-browser-check.md` when available.
    - Verify there is no layout offset, excessive blank area, text overlap, graphic overlap, critical truncation, low contrast, unreadable chart/table/KPI content, component overflow outside the component body, blank chart/canvas/table, or broken visual proportion.
    - Verify `brandMode`, logo/header placement, sample conclusion placement, global UI token consistency, Chinese `%` metric display, and positive-red-up / negative-green-down change-rate indicators.
-   - Record each anomaly as a `VIS-*` finding with screenshot path, viewport/state, severity, component/region, impact, fix direction, and retest criteria.
+   - Record deterministic image-diff failures as `VDIFF-*` findings with baseline/current/diff paths, threshold, viewport/state, severity, component/region, impact, fix direction, and retest criteria.
+   - Record multimodal anomalies as `VIS-*` findings with screenshot path, viewport/state, severity, component/region, impact, fix direction, and retest criteria.
    - Check at least one representative filter change and one representative interaction in the running page when browser tooling or local verification is available.
    - If the page is taller than 1080px, verify download/print includes the full scrollable content across multiple pages rather than only the first viewport.
 
@@ -80,7 +82,7 @@ Loop procedure:
 
 1. Run Cycle 1 self-check and write the report.
 2. If the report contains any unresolved issue or user-acceptance failure, repair it unless it is explicitly non-actionable and documented.
-3. For any repaired visual issue, re-capture the affected screenshot state and rerun multimodal visual anomaly recognition before writing Cycle 2.
+3. For any repaired visual issue, re-capture the affected screenshot state, rerun deterministic baseline diff, and rerun multimodal visual anomaly recognition when available before writing Cycle 2.
 4. Repeat once more if needed for Cycle 3.
 5. Stop early only when the latest report has zero unresolved issues.
 6. After Cycle 3, unresolved issues must be listed in the final response with severity, evidence, and why they remain.

@@ -49,4 +49,3 @@ Avoid framework edits unless intentionally changing the template itself:
 - validation/start scripts
 
 Template assets intentionally exclude `node_modules` and `dist`.
-

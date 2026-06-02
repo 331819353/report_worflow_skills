@@ -16,6 +16,10 @@ Typical inputs are API documentation, frontend clients, mock/display contracts, 
 1. Collect contracts to compare.
    Identify all available contracts and choose or record the authoritative source.
 
+   When API docs, frontend clients, mock/display contracts, JSON fixtures, OpenAPI schemas, route code, upstream samples, database responses, runtime samples, or env/auth notes contradict each other, run `references/standalone-quality-gates.md#entry-input-consistency-gate`. Do not mark pass or repair affected contracts/code while unresolved `P0`/`P1` `ENTRY-*` findings need user confirmation.
+
+   When contracts agree but the API shape, transformation, error behavior, auth rule, pagination/export model, or source strategy would be unreasonable for the consumer workflow, run `references/standalone-quality-gates.md#design-reasonableness-gate` and record `DESIGN-*` findings.
+
 2. Compare response shape field by field.
    Check fields, nesting, types, units, precision, enums, date/period formats, ordering, nullability, and empty-state shape.
 
@@ -23,7 +27,7 @@ Typical inputs are API documentation, frontend clients, mock/display contracts, 
    Check query/path/body params, filters, defaults, pagination, sorting, search, date ranges, permission scope, and invalid-param errors.
 
 4. Validate transformation samples.
-   For source-to-response rules from `$backend-data-transformation-design`, confirm representative sample inputs produce expected response values.
+   For documented source-to-response transformation rules, confirm representative sample inputs produce expected response values.
 
 5. Validate runtime/source alignment.
    Compare documented contracts, local fixtures, implemented responses, upstream responses, and database-backed responses according to the project source strategy.
@@ -34,9 +38,15 @@ Typical inputs are API documentation, frontend clients, mock/display contracts, 
 7. Validate performance and scale.
    Check default page size, maximum page size, export limit, timeout behavior, cache/precompute strategy, retry behavior, and large result handling.
 
+8. Validate production-readiness evidence when applicable.
+   Apply `references/standalone-quality-gates.md#production-closed-loop-readiness` for production-bound contracts. Check runtime URL/health, source mode, API version alignment, auth/permission, environment/config, observability/log evidence, performance/export limits, and testing handoff before marking contract validation as production-ready.
+
 ## References
 
 - Read [references/01-contract-sources-and-authority.md](references/01-contract-sources-and-authority.md) when gathering artifacts, resolving conflicts, or deciding authoritative behavior.
+- Read [references/standalone-quality-gates.md#entry-input-consistency-gate](references/standalone-quality-gates.md#entry-input-consistency-gate) when contract sources contradict each other and a user-confirmed authority decision is needed.
+- Read [references/standalone-quality-gates.md#design-reasonableness-gate](references/standalone-quality-gates.md#design-reasonableness-gate) when API contract shape affects consumer usability, data correctness, permission behavior, or testability.
+- Read [references/standalone-quality-gates.md#production-closed-loop-readiness](references/standalone-quality-gates.md#production-closed-loop-readiness) when validation evidence is used for production acceptance.
 - Read [references/02-response-and-request-validation.md](references/02-response-and-request-validation.md) for field-level, request, filter, error, auth, and performance checks.
 - Read [references/03-runtime-source-validation.md](references/03-runtime-source-validation.md) when comparing mocks, fixtures, upstream services, database responses, and live runtime responses.
 - Read [references/04-validation-note-template.md](references/04-validation-note-template.md) when producing the validation note.
@@ -48,9 +58,12 @@ Produce a compact validation note in the API document, PR, issue, test report, o
 ## Verification Checklist
 
 - Every endpoint or operation in scope has a status: pass, partial, fail, or not tested.
+- Entry conflicts across docs, clients, mocks, fixtures, schemas, route code, upstream/database/runtime samples, and env/auth notes are resolved or marked with `ENTRY-*`; unresolved `P0`/`P1` findings block pass status.
+- Design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings block pass status or keep the operation `partial`.
 - No consumer-required field is missing or renamed without a documented adapter/contract decision.
 - Empty, no-data, invalid-param, unauthenticated, token-invalid, no-permission, and upstream-failure responses match the expected handling.
 - Pagination, sorting, filters, exports, and defaults use documented names and behavior.
 - Runtime/source comparisons are performed when sample or live responses are available.
 - Runtime pass/partial/fail statuses include enough evidence to reproduce or review the result.
-- Contract failures are fixed or captured in missing-information documentation, using `$backend-missing-info-management` when available.
+- Production-bound pass status includes runtime URL/health, source mode, API version alignment, auth/env behavior, observability/performance evidence, and testing handoff; otherwise use `partial` or `not tested`.
+- Contract failures are fixed or captured in backend missing-information documentation with owner, impact, current assumption, and retest criteria.

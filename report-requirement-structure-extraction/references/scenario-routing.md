@@ -39,7 +39,7 @@ Recommend the smallest complete path.
 - Use `technical-solution-workflow` when the deliverable is API inventory, data model files, data source mapping, or pending model gaps.
 - Use `api-inventory-design` for endpoint inventory and request/response contracts.
 - Use `data-model-source-mapping` for table/model/source relationships and transformations.
-- Use `references/data-model-requirement-playbook.md` before `data-model-source-mapping` when vague business/data needs must first become a clear model requirement.
+- Use `data-model-requirement-playbook.md` in this directory before `data-model-source-mapping` when vague business/data needs must first become a clear model requirement.
 - Use `missing-model-management` when required source tables, fields,口径, or model metadata are missing.
 - Use `backend-development-workflow` when implementing a backend/data service.
 - Use `api-documentation-design`, `backend-api-contract-validation`, `backend-data-transformation-design`, and `backend-missing-info-management` for backend subproblems.

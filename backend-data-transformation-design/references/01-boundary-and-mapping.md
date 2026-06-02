@@ -46,4 +46,4 @@ Before finalizing field rules, check:
 - Mark a field blocked when no source, formula, default, or explicit constant can produce it.
 - Mark a field partial when a temporary default or assumption is used.
 - Do not invent a business formula only to satisfy the target contract.
-- Record missing source fields, enum dictionaries, units, IDs, nullable rules, and precision in `$backend-missing-info-management` when available.
+- Record missing source fields, enum dictionaries, units, IDs, nullable rules, and precision in a local transformation gap ledger with stable `GAP-*` IDs, owner, impact, assumption, and blocking status.

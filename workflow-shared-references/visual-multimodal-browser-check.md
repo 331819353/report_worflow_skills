@@ -1,6 +1,13 @@
-# Visual Multimodal Browser Check
+# Visual Browser Regression And Multimodal Check
 
 Use this shared reference whenever a runnable frontend page, report page, dashboard, big-screen, or prototype must be self-checked or tested visually.
+
+Visual QA has two complementary tracks:
+
+- Deterministic visual regression: Playwright/Cypress/headless browser screenshots plus baseline image diff for repeatable layout-regression detection.
+- Multimodal explanatory review: screenshot inspection by a multimodal model to explain visual anomalies, usability impact, and likely repair direction.
+
+Do not treat multimodal review as the only visual regression mechanism. Use deterministic evidence for repeatability and multimodal evidence for interpretation.
 
 ## Mandatory Sequence
 
@@ -8,14 +15,18 @@ For runnable pages, do the visual check in this order:
 
 1. Open the target URL with a headless browser or browser automation tool.
 2. Wait until the main page shell, charts, tables, fonts, and async data are stable.
-3. Capture screenshots before judging visual quality.
-4. Send the screenshots to a multimodal model for visual anomaly recognition.
-5. Convert every recognized anomaly into a structured finding.
-6. Feed findings back to the main workflow:
-   - In frontend/prototype self-check, repair actionable issues and rerun screenshot validation.
+3. Capture deterministic screenshots before judging visual quality.
+4. Run deterministic checks:
+   - Confirm nonblank rendering, stable viewport size, expected screenshot count, and key screenshot file paths.
+   - If approved baselines exist, run image diff and record threshold, diff count/ratio, ignored or masked dynamic regions, and diff output paths.
+   - If no approved baseline exists, mark deterministic regression as `baseline missing` and save the current screenshots as baseline candidates rather than claiming regression pass.
+5. Run multimodal explanatory review on the screenshots when the model/service is available and visual acceptance is in scope.
+6. Convert deterministic image-diff failures and multimodal anomalies into structured findings.
+7. Feed findings back to the main workflow:
+   - In frontend/prototype self-check, repair actionable issues and rerun deterministic diff plus multimodal review when available.
    - In testing workflow, write findings into the test result and defect feedback bundle.
 
-Do not mark a runnable frontend/prototype visual check as passed without screenshot evidence and a multimodal visual review result. If the page cannot be opened, record a blocker instead of skipping visual QA.
+Do not mark deterministic visual regression as passed without screenshot evidence and a passing baseline diff when a baseline is available. Do not mark explanatory visual review as passed without a multimodal review result. If the multimodal model is unavailable, record `multimodal: not run` with the service/tool blocker; deterministic regression may still pass, but overall visual QA should be `partial` unless the task explicitly only requires deterministic regression. If the page cannot be opened, record a blocker instead of skipping visual QA.
 
 ## Screenshot Coverage
 
@@ -36,6 +47,35 @@ Use stable screenshot file names that include page, viewport, state, and cycle, 
 ```text
 visual-check/<page>-<viewport>-<state>-cycle-<n>.png
 ```
+
+## Deterministic Baseline Diff
+
+Use Playwright, Cypress, or an equivalent headless-browser screenshot diff path when a repeatable visual regression decision is needed.
+
+Baseline rules:
+
+- Store baselines in a stable path such as `visual-baseline/<page>/<viewport>/<state>.png` or the project's existing screenshot baseline folder.
+- Store current screenshots and diff images separately, for example `visual-check/current/` and `visual-check/diff/`.
+- Baselines must be reviewed or accepted intentionally. First-run screenshots are baseline candidates, not proof that no regression exists.
+- Keep viewport, device scale factor, color scheme, locale, timezone, route, seed data, auth role, and feature flags stable between baseline and current screenshots.
+- Mask or ignore only documented dynamic regions such as timestamps, random IDs, animated counters, maps/tiles, realtime values, ad hoc loading shimmer, or user avatar images.
+- Use thresholds deliberately. Record pixel count/ratio and threshold values. Small antialiasing/font differences may be tolerated only when layout, text, charts, and controls remain readable.
+- Any diff affecting core content, controls, chart/table geometry, logo placement, or first-viewport answer should be treated as a finding even if the raw pixel ratio is small.
+
+Deterministic finding schema:
+
+- `Finding ID`: `VDIFF-*`.
+- `Screenshot`: current screenshot path.
+- `Baseline`: baseline screenshot path or `missing`.
+- `Diff`: diff image path when available.
+- `Viewport/state`: desktop/mobile/full-page/filter/drawer/modal/etc.
+- `Metric`: diff pixels, diff ratio, threshold, masked regions.
+- `Severity`: `blocker`, `major`, or `minor`.
+- `Location`: page, module, component, chart/table/card/control, or approximate screen region.
+- `Impact`: why the repeated layout regression affects usability, data interpretation, or acceptance.
+- `Likely owner`: `prototype`, `frontend`, `style/layout`, `data`, `environment`, or `unclear`.
+- `Suggested fix`: concrete repair direction.
+- `Retest criteria`: baseline diff and screenshot state that must pass after repair.
 
 ## Multimodal Anomaly Categories
 
@@ -75,23 +115,25 @@ Every visual anomaly must be recorded as:
 
 ## Severity Standard
 
-- `blocker`: the page is blank, core conclusion cannot be read, critical data is hidden, main interaction is unusable, or the screenshot cannot support acceptance.
-- `major`: a key component is readable only with difficulty, a chart/table/card is visibly distorted, layout is clearly broken, or a normal user may misread the result.
-- `minor`: polish issue, secondary spacing issue, non-critical alignment problem, or low-risk text/visual density issue.
+- `blocker`: the page is blank, core conclusion cannot be read, critical data is hidden, main interaction is unusable, deterministic diff breaks a key acceptance area, or the screenshot cannot support acceptance.
+- `major`: a key component is readable only with difficulty, a chart/table/card is visibly distorted, layout is clearly broken, deterministic diff changes important geometry/content, or a normal user may misread the result.
+- `minor`: polish issue, secondary spacing issue, non-critical alignment/diff problem, or low-risk text/visual density issue.
 
 ## Feedback Loop
 
 For self-check and repair workflows:
 
 1. Add visual findings to the current self-check report.
-2. Repair all `blocker` and `major` findings unless blocked by missing product/design input.
+2. Repair all `blocker` and `major` `VDIFF-*` and `VIS-*` findings unless blocked by missing product/design input.
 3. Re-capture the affected screenshot states.
-4. Re-run multimodal inspection on the new screenshots.
-5. Stop only when findings are resolved, downgraded with evidence, or the configured repair-cycle limit is reached.
+4. Re-run deterministic baseline diff.
+5. Re-run multimodal inspection on the new screenshots when available.
+6. Stop only when findings are resolved, downgraded with evidence, accepted as partial with owner decision, or the configured repair-cycle limit is reached.
 
 For testing workflows:
 
-1. Attach screenshot paths and visual findings to test evidence.
-2. Convert every `blocker` or `major` visual finding into a defect item.
+1. Attach screenshot paths, baseline diff artifacts, and multimodal findings to test evidence.
+2. Convert every `blocker` or `major` `VDIFF-*` or `VIS-*` finding into a defect item.
 3. Assign likely owner and retest criteria.
-4. Do not report visual testing as pass when required screenshots were not captured or not reviewed.
+4. Do not report deterministic visual regression as pass when required screenshots or baseline diffs were not captured.
+5. Do not report multimodal explanatory review as pass when required screenshots were not reviewed by the model.

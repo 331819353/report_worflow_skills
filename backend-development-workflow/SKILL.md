@@ -69,6 +69,9 @@ Deliver:
 
 ## API Documentation Mode Flow
 
+0. Run entry input consistency when needed.
+   If API清单, 数据模型文件, API文档, frontend/prototype contracts, source samples, or implemented routes are all present, read `../workflow-shared-references/entry-input-consistency-gate.md`. Do not write or repair API docs/code while unresolved `P0` or `P1` `ENTRY-*` conflicts affect endpoint scope, response models, source authority, formulas, permissions, auth, or runtime source behavior.
+
 1. Read API清单.
    Confirm endpoint id, page/module, method/path, purpose, trigger, request params, response model, source model dependency, auth need, priority, and status.
 
@@ -77,6 +80,8 @@ Deliver:
 
 3. Check traceability.
    Every endpoint must reference a response model. Every response model must trace to logical/source models or a pending model item.
+
+   Run `../workflow-shared-references/design-reasonableness-gate.md` when endpoint boundaries, response models, transformations, auth, permissions, pagination, sorting, filters, exports, or error behavior may be unreasonable for the consuming report/frontend/testing workflow. Record `DESIGN-*` findings before writing final API docs.
 
 4. Create API文档.
    Use `$api-documentation-design`. Include common conventions, endpoint overview, endpoint details, request/response examples, errors, auth, performance constraints, and model traceability.
@@ -87,10 +92,15 @@ Deliver:
 6. Handoff.
    State whether the API document is ready for data-visualization integration and testing, or which exact data model gaps block downstream work.
 
+7. Check production closed-loop readiness when the target is real delivery.
+   Apply `../workflow-shared-references/production-closed-loop-readiness.md` before marking the data-service stage production-ready. API docs alone are `partial` unless source authority, auth/permission, environment/config, error behavior, observability, performance/export constraints, versioning/backward compatibility, and testing handoff are explicit or intentionally out of scope.
+
 ## Backend Implementation Mode Flow
 
 1. Discover project context.
    Inspect backend stack, package files, environment config, route structure, existing auth, data access, docs, tests, and provided inputs. Prefer the existing stack and conventions.
+
+   Run the entry consistency gate when API docs, source/env/auth notes, mock/display contracts, data models, implemented routes, or runtime traces disagree. Ask for user confirmation before editing affected backend contracts or code for unresolved `P0`/`P1` findings.
 
 2. Analyze data sources and models.
    Identify file/database/upstream sources, raw models, response models, ownership, freshness, joins, sample rows, permissions, and data quality. Record missing or assumed items through `$backend-missing-info-management`.
@@ -100,6 +110,8 @@ Deliver:
 
 4. Design and validate API contracts.
    Generate or update endpoint contracts from the API文档. Use `$backend-api-contract-validation` to compare routes against consumer/mock/API expectations, including fields, filters, empty states, errors, pagination, sorting, auth, and performance.
+
+   Use the design reasonableness gate before implementation when a route shape, DTO, transformation, source strategy, auth rule, or error behavior technically works but would not reasonably serve the consumer workflow.
 
 5. Execute mock-to-fixture-to-authoritative-source flow when mock data exists.
    First validate the mock/display contract, then generate canonical JSON fixtures for examples/tests/local fallback, then replace the mock/fixture source with the authoritative runtime source such as database repository/query, upstream API, file service, event-derived store, or existing service client. Database-backed responses are only mandatory when the database is the confirmed authoritative source.
@@ -115,6 +127,9 @@ Deliver:
 
 9. Verify and start.
    Run focused tests/smoke checks, validate response contracts, confirm the authoritative runtime source mode when relevant, start the backend on an available port, and return the URL. If blocked, state the exact external blocker.
+
+10. Check production closed-loop readiness.
+   Apply `../workflow-shared-references/production-closed-loop-readiness.md` before calling implementation work production-ready. Include backend URL/health evidence, source mode proof, contract validation, auth behavior, config/env handling, observability, performance/capacity limits, deployment/rollback notes, missing-info status, and testing handoff. Local/demo-only services remain `partial` unless the user explicitly accepts them as the target.
 
 ## Mandatory Mock To Fixture To Authoritative Source Flow
 
@@ -141,6 +156,9 @@ Hard rules:
 ## References
 
 - Read [../workflow-shared-references/report-delivery-pipeline-contract.md](../workflow-shared-references/report-delivery-pipeline-contract.md) for cross-workflow routing, readiness values, and handoff requirements.
+- Read [../workflow-shared-references/entry-input-consistency-gate.md](../workflow-shared-references/entry-input-consistency-gate.md) when API清单、数据模型文件、API文档、source/env/auth notes、mock/display contracts、implemented routes, or runtime traces may conflict.
+- Read [../workflow-shared-references/design-reasonableness-gate.md](../workflow-shared-references/design-reasonableness-gate.md) when backend/API design choices affect consumer usability, data correctness, permissions, runtime behavior, or testability.
+- Read [../workflow-shared-references/production-closed-loop-readiness.md](../workflow-shared-references/production-closed-loop-readiness.md) before marking API docs or backend implementation production-ready.
 - Read [references/api-document-template.md](references/api-document-template.md) when implementation mode needs an in-repo API document template.
 - Read [references/missing-info-template.md](references/missing-info-template.md) when implementation mode needs a missing-information document template.
 
@@ -149,7 +167,10 @@ Hard rules:
 For API documentation mode:
 
 - API文档.
+- Entry consistency status, unresolved `ENTRY-*` findings, and user-confirmed decisions when mixed input artifacts were checked.
+- Design reasonableness status, unresolved `DESIGN-*` findings, and repairs or accepted limitations.
 - API/model traceability summary.
+- Production closed-loop readiness when the API document is intended for real delivery.
 - Pending/blocker list if any.
 - Stage handoff summary: readiness, frontend/testing consumability, blockers, and next-stage owner questions.
 
@@ -157,17 +178,23 @@ For backend implementation mode:
 
 - Implemented backend changes.
 - Updated API文档.
+- Entry consistency status and decisions that affected routes, DTOs, auth, data sources, or examples.
+- Design reasonableness status and decisions that affected routes, DTOs, transformations, auth, data sources, or examples.
 - Missing-information document.
 - Contract validation notes.
 - Verification commands and runnable URL or exact blocker.
+- Production closed-loop readiness: health/smoke evidence, source-mode proof, auth/config notes, observability/performance limits, deployment/rollback notes, test handoff, and open blocker status.
 - Stage handoff summary: backend URL, API doc version, auth/SSO contract, known partial endpoints, and testing blockers.
 
 ## Quality Checklist
 
 - In data-service mode, API文档 is produced from API清单 and 数据模型文件 without silently inventing endpoints or models.
+- Contradictions across API清单、数据模型文件、API文档、mock/display contracts, source/env/auth notes, implemented routes, and runtime traces use `ENTRY-*` findings; unresolved `P0`/`P1` findings block affected API docs/code.
+- Backend/API design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings block affected API docs/code or keep them `partial`.
 - Every endpoint response traces to a response model and source/logical model or a pending item.
 - Request params cover filters, drilldowns, pagination, sorting, exports, and defaults.
 - Error, empty, auth, and no-permission behavior are documented.
 - Implementation mode is only used when backend code/startup is requested.
 - Mock-derived backend work completes mock-to-fixture-to-authoritative-source replacement or clearly reports the source blocker.
+- Production-bound data services include health/smoke evidence, source-mode proof, auth/config notes, observability/performance limits, deployment/rollback notes, and testing handoff before `ready`.
 - The final output uses shared readiness values `ready`, `partial`, or `blocked`, and states whether frontend development and testing can consume the backend artifacts.

@@ -72,10 +72,11 @@ Use this structure after implementation and after each repair cycle:
 8. 配置完整性检查.
 9. 视觉与运行态检查：include `pageShellPath`, `pageStyleSource`, `brandMode`, `visualMode`, custom design/layout path if any, logo/header screenshot acceptance, sample fidelity and sample module classification when applicable, conclusion placement, global UI token consistency, Chinese metric display, complex diagram spacing, and primary filter control implementation.
 10. 无头浏览器截图证据：screenshot path, viewport, page/state, cycle.
-11. 多模态视觉异常识别：`VIS-*` finding, severity, screenshot, component/region, observation, impact, fix plan, retest criteria.
-12. 问题清单：severity, evidence, affected file/module, fix plan, current status.
-13. 本轮修复动作.
-14. 剩余风险与是否进入下一轮.
+11. 确定性视觉回归：baseline/current/diff path, threshold, masked regions, `VDIFF-*` findings, baseline missing/not run status.
+12. 多模态视觉异常识别：`VIS-*` finding, severity, screenshot, component/region, observation, impact, fix plan, retest criteria, or multimodal not-run blocker.
+13. 问题清单：severity, evidence, affected file/module, fix plan, current status.
+14. 本轮修复动作.
+15. 剩余风险与是否进入下一轮.
 
 ## End-To-End Quality Checklist
 
@@ -102,11 +103,12 @@ Before final delivery, verify:
 - Mock data, if used, reconciles with KPI cards, charts, tables, and filters.
 - A self-check report has been produced for the latest implementation cycle.
 - The self-check report covers Z-shaped component audit, data completeness, filter configuration, interaction usability, configuration completeness, and visual/runtime state.
-- Runnable self-check captures browser screenshots before visual pass/fail judgment and runs multimodal visual anomaly recognition on those screenshots.
+- Runnable self-check captures browser screenshots before visual pass/fail judgment, runs deterministic baseline image diff when baselines exist, and runs multimodal visual anomaly recognition on those screenshots when available.
+- Deterministic visual regression records baseline/current/diff paths, thresholds, masked regions, and `VDIFF-*` findings; first-run screenshots without approved baselines are baseline candidates, not regression pass evidence.
 - Multimodal visual findings cover layout offset, excessive blank area, text overlap, graphic overlap, clipping/truncation, unreadable chart/table/card content, nonblank rendering, visual proportion, scroll behavior, and stale prototype residue.
 - Z-shaped component audit starts from the first rendered component and checks each component's filters, filter setup, mock coverage, component data binding, filter binding, interaction binding, layout capacity, and block-size/clipping status.
 - Self-check issues were repaired and rechecked, up to 3 cycles when needed.
-- `blocker` and `major` `VIS-*` findings are repaired and rechecked with fresh screenshots, or explicitly remain blocked with evidence and owner question.
+- `blocker` and `major` `VDIFF-*` / `VIS-*` findings are repaired and rechecked with fresh screenshots and diff/review evidence, or explicitly remain blocked with evidence and owner question.
 - The latest self-check report has zero unresolved issues; otherwise the final response states the remaining issues and why they remain after the third cycle.
 - Filters have defaults, stable IDs, cascades, permission rules, and visible active state.
 - Every filter has an explicit field/query mapping, and every component declares whether it is affected by that filter.
@@ -148,7 +150,8 @@ Before final delivery, verify:
 - Do not reverse the required change-rate semantics: positive is red/up and negative is green/down.
 - Do not let copied HTML inline colors or one-off custom surfaces override global UI tokens.
 - Do not use naked native `<select>` as the final visual for primary filters; use Element Plus or the project design-system equivalent.
-- Do not finish a runnable prototype visual check without headless browser screenshots and multimodal visual review results.
+- Do not finish deterministic visual regression without headless browser screenshots and baseline diff status when baselines exist.
+- Do not claim multimodal explanatory visual review passed without multimodal review results; if the model is unavailable, record `multimodal: not run` and keep overall visual QA `partial` when explanatory review is required.
 - Do not finish an implementation without producing the self-check report and completing the repair loop or explicitly reporting the unresolved issues after 3 cycles.
 - Do not replace ECharts or AntV S2 with ad hoc chart/table code for standard report components.
 - Do not hand-roll filters, forms, dialogs, drawers, popovers, tags, pagination, or simple tables when Element Plus can provide the needed control.

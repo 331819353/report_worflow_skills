@@ -16,7 +16,7 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
 - Read `references/browser-qa-matrix.md` for browser, console, route, asset, and layout checks.
 - Read `references/data-interaction-state-checks.md` for provider, filter, interaction, and edge-state checks.
 - Read `references/qa-note-template.md` when producing the QA result.
-- Read `../workflow-shared-references/visual-multimodal-browser-check.md` before visual pass/fail judgment for any runnable page.
+- Read `references/standalone-quality-gates.md#visual-browser-and-multimodal-check` before visual pass/fail judgment for any runnable page.
 
 ## Workflow
 
@@ -30,7 +30,7 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
    After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. Store screenshot paths as QA evidence.
 
 4. Run multimodal visual anomaly recognition.
-   Use `../workflow-shared-references/visual-multimodal-browser-check.md` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, text overlap, graphic overlap, clipping, tiny charts/tables/cards, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
+   Use `references/standalone-quality-gates.md#visual-browser-and-multimodal-check` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, text overlap, graphic overlap, clipping, tiny charts/tables/cards, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
 
 5. Check browser console and network.
    Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses.

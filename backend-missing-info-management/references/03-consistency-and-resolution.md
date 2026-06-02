@@ -6,8 +6,8 @@ Use this reference when maintaining missing-information items across code, docs,
 
 - Every temporary default in code must appear in the missing-information document with the same value and fallback behavior.
 - Every documented assumption must match API docs, fixtures, tests, examples, and runtime behavior.
-- Every contract mismatch found by `$backend-api-contract-validation` should either be fixed or linked to a missing-information item.
-- Every unknown transformation rule found by `$backend-data-transformation-design` should either be resolved or linked to a missing-information item.
+- Every contract mismatch found during backend contract validation should either be fixed or linked to a missing-information item.
+- Every unknown transformation rule found during transformation design should either be resolved or linked to a missing-information item.
 - Do not close an item only because it is mentioned in final prose; close it after the affected artifacts are updated.
 
 ## Resolution Workflow

@@ -115,4 +115,3 @@ Use this when login already works but business APIs still show SSO breakpoints.
 5. Separate 403 permission behavior from 401 auth behavior.
 6. Confirm logout clears all local state.
 7. Verify clean first access, refresh, deep link, invalid token, no permission, and logout.
-

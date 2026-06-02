@@ -128,7 +128,7 @@ Visual mode:
 - Use `sampleRestore` when the input is a display sample, screenshot, image, or HTML source and the user asks to restore, follow, or build from it without explicit redesign.
 - Use `haierEnterprise` for ordinary business report prototypes, enterprise report pages, and Haier/brand-unified pages.
 - Use `sciFiCockpit` only for explicit big-screen, cockpit, command-center, exhibition, monitoring-wall, or fixed 1920*1080 presentation scenarios.
-- If instructions conflict, explicit user direction wins. Otherwise sample/source restoration wins over generic enterprise styling, sci-fi wins for explicit big-screen display, and all remaining business reports default to `haierEnterprise`.
+- If instructions conflict, first apply `../../workflow-shared-references/entry-input-consistency-gate.md`. Explicit user direction wins when it resolves the conflict; unresolved `P0`/`P1` entry conflicts require confirmation before implementation. Otherwise sample/source restoration wins over generic enterprise styling, sci-fi wins for explicit big-screen display, and all remaining business reports default to `haierEnterprise`.
 
 Brand assets:
 
@@ -188,7 +188,7 @@ Hard rules:
 - Default to `visualMode: sampleRestore` for screenshot/image/HTML-source restoration unless the user explicitly asks for enterprise redesign, optimization, or reconstruction.
 - Preserve page shell, module order, container hierarchy, main control count, layer structure, and card proportions in `sampleRestore`.
 - Mark all added filters, summary cards, details, matrices, drawers, jumps, and extra actions as enhancements.
-- If the screenshot conflicts with report-type logic, preserve the business intent and repair the information architecture rather than copying the flawed layout.
+- If the screenshot conflicts with report-type logic, classify the conflict with `ENTRY-*`. For `P0`/`P1`, confirm the intended authority before repair; for lower-severity conflicts, preserve the business intent and repair the information architecture rather than copying the flawed layout.
 - Convert visible text, metrics, controls, and blocks into the same binding matrix required by `report-info-component-mapping`.
 - Verification must compare the rebuilt page against the screenshot for structure, hierarchy, key text, visible component count, spacing, and no overlap; exact pixel matching is not required unless explicitly requested.
 
@@ -276,7 +276,7 @@ This is the bridge from business thinking to implementable page structure.
 
 ### Stage 5: Data Design
 
-Use `report-info-component-mapping` reference `03-mock-data-modeling.md` when prototype data, demo data, or chart-ready data is needed.
+Use `$report-info-component-mapping` when prototype data, demo data, or chart-ready data is needed. Let the child skill decide which internal data-modeling reference to load.
 
 Output must include:
 
@@ -294,7 +294,7 @@ Skip only for pure methodology answers where no prototype or example data is nee
 
 ### Stage 6: Filter Design
 
-Use `report-info-component-mapping` reference `04-filter-scope-query.md` when report scope can change by time, organization, status, object, owner, source, or keyword.
+Use `$report-info-component-mapping` when report scope can change by time, organization, status, object, owner, source, or keyword. Let the child skill decide which internal filter reference to load.
 
 Output must include:
 
@@ -311,7 +311,7 @@ Almost all operational reports need this stage.
 
 ### Stage 7: Data Interaction Design
 
-Use `report-info-component-mapping` reference `05-interaction-state-flow.md` when any data object is clickable or navigable.
+Use `$report-info-component-mapping` when any data object is clickable or navigable. Let the child skill decide which internal interaction reference to load.
 
 Output must include:
 

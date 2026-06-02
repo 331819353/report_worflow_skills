@@ -28,20 +28,23 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 | Trees, Sankey, attribution, DuPont, flows, complex diagrams | `references/09-complex-diagrams.md` |
 | Capsule switches, segmented controls, dropdowns inside components | `references/10-in-component-controls.md` |
 | Legacy detailed rules not yet covered by focused references | `references/11-detailed-style-rules.md` |
+| Cross-stage design reasonableness when component style choices affect business comprehension, density, exact values, or interaction closure | `references/standalone-quality-gates.md#design-reasonableness-gate` |
 
 ## Workflow
 
 1. Identify every component type, its data density, viewport size, interaction needs, and business priority.
-2. Load `00-component-reference-index.md` plus the smallest matching reference set.
+2. Load `references/00-component-reference-index.md` plus the smallest matching reference set.
 3. Reserve stable component dimensions before styling: header, actions, legend, body viewport, footer, pagination, and state messages.
 4. Apply shared fit rules first, then component-specific rules. If rules conflict, use the stricter no-overlap/no-truncation/no-hidden-critical-data rule.
-5. Define overflow and exact-value disclosure: tooltip, drawer, fullscreen, zoom/pan, scroll, table fallback, or label sampling.
-6. Specify visual tokens: typography, color semantics, borders, shadows, spacing, states, hover/focus, and responsive behavior.
-7. Verify the component inside its real container after filters, tab switches, data updates, drawer/fullscreen changes, and window resize.
+5. Run design reasonableness checks when a component choice may weaken the business answer, hide exact values, duplicate another component, overload the container, or block the next action.
+6. Define overflow and exact-value disclosure: tooltip, drawer, fullscreen, zoom/pan, scroll, table fallback, or label sampling.
+7. Specify visual tokens: typography, color semantics, borders, shadows, spacing, states, hover/focus, and responsive behavior.
+8. Verify the component inside its real container after filters, tab switches, data updates, drawer/fullscreen changes, and window resize.
 
 ## Hard Constraints
 
 - Do not style a component until its business purpose, data grain, key fields, filter scope, and interaction state are known.
+- Do not accept a polished component that is unreasonable for the task. Use `DESIGN-*` findings when a chart should be a table, a dense component needs drilldown/fullscreen, a component duplicates another message, or the style hides the user's decision-critical value.
 - Do not hide decision-critical labels, units, warnings, or values without a hover/focus/click disclosure path.
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable container.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
@@ -62,12 +65,14 @@ When using this skill, provide:
 2. Viewport and size assumptions for each component.
 3. Style decisions: typography, spacing, color, border/shadow, state, and interaction feedback.
 4. Fit decisions: label density, overflow, exact-value disclosure, scroll/zoom/fullscreen/drawer/table fallback.
-5. Implementation notes for ECharts/S2/DOM/CSS behavior where relevant.
-6. Self-check result: overlap, clipping, truncation, contrast, resize, hover/focus/touch, loading/empty/error states.
+5. Design reasonableness status and any `DESIGN-*` findings that affected component choice or fit.
+6. Implementation notes for ECharts/S2/DOM/CSS behavior where relevant.
+7. Self-check result: overlap, clipping, truncation, contrast, resize, hover/focus/touch, loading/empty/error states.
 
 ## Quality Checklist
 
 - Each component has a stable body viewport and explicit overflow policy.
+- Component choice is reasonable for the business task and data shape; unresolved `P0`/`P1` `DESIGN-*` findings are not styled over.
 - Titles, units, labels, legends, controls, pagination, and states fit without overlapping data marks.
 - Hidden or abbreviated values are inspectable.
 - Dense charts use label budgets and tooltips; dense tables use S2 or horizontal scroll.

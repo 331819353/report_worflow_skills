@@ -70,4 +70,3 @@ Use this guide when an SSO flow works in isolated steps but still has breaks bet
 - No-permission state is not treated as expired login.
 - Logout clears SDK state, browser storage, frontend store/cache, and local backend session when applicable.
 - Test and production values cannot be mixed accidentally through hard-coded config.
-

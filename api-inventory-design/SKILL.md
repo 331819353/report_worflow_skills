@@ -29,6 +29,8 @@ Read only the reference files needed for the current task:
 | Decide endpoint boundaries, common endpoint patterns, and when to split or merge APIs | `references/02-endpoint-patterns-and-splitting.md` |
 | Define inventory-level request params, response model references, auth, pagination, sorting, filters, exports, and actions | `references/03-request-response-auth-rules.md` |
 | Run API traceability, status, no-invention, and gap-linking checks | `references/04-api-stability-gate.md` |
+| Resolve authority conflicts when requirements, prototype data code, existing APIs, source metadata, or testing evidence disagree | `references/standalone-quality-gates.md#entry-input-consistency-gate` |
+| Audit whether endpoint boundaries and API inventory design reasonably support the business question, UI contract, data model, permissions, and tests | `references/standalone-quality-gates.md#design-reasonableness-gate` |
 
 Loading guidance:
 
@@ -37,6 +39,9 @@ Loading guidance:
 - For export, action, permission, pagination, or dynamic filter APIs, `03-request-response-auth-rules.md` is mandatory.
 
 ## Workflow
+
+0. Check source authority.
+   When multiple artifacts influence the inventory, identify which source owns business scope, visible UI needs, existing API behavior, source model facts, and testing evidence. If artifacts conflict on endpoint scope, request params, response fields, metric grain, permission, or API availability, record `ENTRY-*` findings instead of silently choosing one.
 
 1. Build page and module coverage.
    List every page, tab, card, chart, table, drawer, export, drilldown, filter option, and action that needs data.
@@ -54,16 +59,21 @@ Loading guidance:
    Reference a response model name and summarize required field groups, grain, list/envelope shape, empty state, and error behavior. Do not duplicate the full API document here.
 
 6. Mark gaps.
-   If an endpoint depends on unknown data models, formulas, enums, filter options, permission rules, or owner decisions, record the gap with `$missing-model-management` or in a pending column.
+   If an endpoint depends on unknown data models, formulas, enums, filter options, permission rules, or owner decisions, record the gap in the pending column with a stable `GAP-*` ID, impact, owner question, and blocking status.
+
+7. Run the design reasonableness gate.
+   Check whether endpoint boundaries, split/merge choices, response model references, request params, dynamic options, exports, actions, auth, and performance notes reasonably support the consuming page and tests. Record unreasonable API inventory choices as `DESIGN-*` findings.
 
 ## Hard Constraints
 
 - Each API must trace to a visible page need, interaction, export, dynamic option, or system action.
+- Do not turn conflicting artifacts into endpoint assumptions; unresolved `P0`/`P1` authority conflicts keep affected APIs `partial` or `blocked`.
 - Each API must trace to one response model and at least one source/logical model unless explicitly pending.
 - Filter option APIs are first-class APIs when options are dynamic, permission-limited, cascaded, or source-driven.
 - Export APIs must state whether they reuse list filters and whether they return file streams, task IDs, or async download links.
 - Mutation/action APIs must define idempotency, permission, success state, failure state, and audit need.
 - Do not create "万能接口" that mixes unrelated grains, permission scopes, or refresh cadences.
+- Do not keep an API inventory shape that is traceable but unreasonable. Use `DESIGN-*` findings for endpoint grouping, grain, filter, permission, export, action, or performance choices that would make downstream implementation or frontend integration awkward or incorrect.
 - Do not mark an API `ready` when its response model, formula, permission, or source dependency is missing.
 - Do not mark a P0 API `ready` when performance/cache/SLA, expected volume, or export limit is unknown and undocumented.
 - Do not leave required table cells blank. Use `none` when intentionally not applicable, or `TBD(GAP-*)` when unknown.
@@ -86,11 +96,13 @@ Use a table with these columns:
 - Priority.
 - Status.
 - Pending questions.
+- Design reasonableness status and linked `DESIGN-*` findings when applicable.
 
 ## Quick Quality Gate
 
 - All prototype/mock data consumers are represented by an API or documented as static/offline.
 - API names and paths are stable enough for downstream API documentation, implementation, or validation.
+- API inventory design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected APIs `partial` or `blocked`.
 - Request params cover all required filters, drilldowns, pagination, sorting, exports, and actions.
 - Response model names match the 数据模型文件.
 - Missing model/source/formula/enum/permission items are visible instead of hidden in notes.

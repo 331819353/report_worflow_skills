@@ -2,6 +2,12 @@
 
 Use this shared contract from every top-level workflow. It keeps the report delivery pipeline consistent across prototype design, technical solution, backend/data service, frontend integration, and testing.
 
+Before a top-level workflow builds, repairs, documents, or hands off artifacts from mixed entry materials, run `entry-input-consistency-gate.md`. User requirements, HTML/source samples, screenshots, API docs, data models, mock data, frontend/backend code, env/auth notes, and runtime traces may contradict each other; unresolved `P0` and `P1` entry conflicts keep the affected scope `partial` or `blocked` and require user confirmation only before the affected repair or implementation proceeds.
+
+Before a workflow finalizes design, API/model contracts, frontend/backend wiring, visual repair, test cases, or handoff readiness, run `design-reasonableness-gate.md` when design decisions are in scope. A design can be input-consistent but still unreasonable if it fails the business question, report type, component necessity, data/API feasibility, interaction closure, layout, or testability checks.
+
+Before a workflow marks technical architecture, data service/backend, frontend integration, or testing acceptance as production-ready, run `production-closed-loop-readiness.md`. A stage can be document-complete or locally runnable while still only `partial` if source authority, environment, auth, deployment, observability, performance, testability, or defect retest closure is missing.
+
 ## Stage Routing Matrix
 
 All expected user inputs are Chinese. Prefer the Chinese trigger words below when deciding the top-level workflow.
@@ -20,6 +26,9 @@ Every stage output must include:
 
 - `Stage`: workflow name.
 - `Artifact version/source`: file paths, source URLs, commit, or user-provided document names when known.
+- `Entry consistency`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `ENTRY-*` IDs when applicable.
+- `Design reasonableness`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `DESIGN-*` IDs when applicable.
+- `Production closed loop`: `ready`, `partial`, `blocked`, or `not needed`, with missing production controls or open retest items when applicable.
 - `Readiness`: one of `ready`, `partial`, or `blocked`.
 - `Assumptions`: accepted temporary assumptions with affected artifacts.
 - `Blockers`: missing item, impact, owner/source needed, and next question.
@@ -36,6 +45,12 @@ Use these values consistently:
 - `not run`: Runtime validation was applicable but could not be executed. Use only in testing/verification sections, not as an artifact readiness value.
 
 Do not mark an artifact `ready` when a P0 metric, API, data source, permission rule, SSO contract, or runtime URL required by the next stage is unknown.
+
+Do not mark an artifact `ready` when an unresolved `P0` or `P1` `ENTRY-*` conflict affects the next stage's scope, source authority, metric口径, API contract, permission/auth behavior, environment, or runtime data path.
+
+Do not mark an artifact `ready` when an unresolved `P0` `DESIGN-*` finding exists, or when an unresolved `P1` `DESIGN-*` finding would affect user-visible behavior, data correctness, API/model feasibility, permissions, layout comprehension, or testability in the next stage.
+
+Do not mark a production-bound artifact `ready` when required source authority, runtime URL/health, auth/permission, deployment/config, observability, performance/capacity, testing evidence, or blocker/major/high defect retest closure is missing.
 
 ## Cross-Stage Artifact Contract
 
@@ -59,6 +74,7 @@ Required handoff bundle:
 - `数据模型文件` with source/logical/response models, fields, formulas, joins, ownership, freshness, permission and quality rules.
 - `待补充数据模型清单` with `GAP-*` IDs, impact, owner questions, assumptions, and blocked/partial status.
 - Consistency result: every API maps to a response model, and every response field maps to a source/formula/enum/gap.
+- Production architecture readiness when intended for real delivery: runtime topology, frontend/backend/data boundaries, source authority, environment/auth/security assumptions, observability/performance/deployment concerns, testing handoff, and open blockers.
 
 ### Backend Development To Frontend Development
 
@@ -67,6 +83,8 @@ Required handoff bundle:
 - `API文档` with base URL, auth headers, endpoint details, request/response examples, errors, empty/no-permission behavior, pagination/sorting/filter rules, and pending items.
 - Runtime backend URL when implementation exists.
 - Auth/SSO contract: header names, token rules, 401/token-invalid response, 403 response, public allowlist.
+- Backend health/smoke evidence, source-mode proof, environment/config notes, version/API-doc alignment, and deployment/rollback notes when implementation exists.
+- Observability and performance constraints: log/error identifiers, timeout/export limits, expected volume, pagination/aggregation constraints, and known capacity risks.
 - Known partial/blocked endpoints and accepted assumptions.
 - Sample responses or fixtures for frontend adapter validation.
 
@@ -78,7 +96,7 @@ Required handoff bundle:
 - Frontend URL when runnable.
 - Backend/API base URL used by the frontend.
 - Environment/auth/proxy/deployment notes.
-- Headless browser screenshot evidence and multimodal `VIS-*` visual findings from runtime QA when visual behavior was verified.
+- Headless browser screenshot evidence, deterministic baseline diff artifacts / `VDIFF-*` findings, and multimodal `VIS-*` visual findings from runtime QA when visual behavior was verified.
 - Known gaps, retained offline/demo sources, and not-yet-verified behaviors.
 
 ### Testing Integration To Repair Workflows
@@ -87,9 +105,21 @@ Required feedback bundle for every defect:
 
 - Defect ID, severity, likely owner workflow: report design, technical solution, backend, frontend, SSO/security, data, environment, or unclear.
 - Expected result, actual result, evidence, reproduction steps, and affected artifact/API/page/component.
-- Screenshot path and multimodal visual finding when the defect is visual/layout related.
+- Screenshot path, baseline/current/diff path when available, deterministic `VDIFF-*` finding, and multimodal `VIS-*` finding when the defect is visual/layout related.
 - Retest criteria and required input to unblock.
-- Status: `open`, `fixed`, `retest`, `blocked`, or `accepted`.
+- Status: `open`, `fixed`, `retest`, `closed`, `blocked`, or `accepted`.
+- Retest evidence and environment/version for every closed blocker/major/high defect.
+
+### Production Closed-Loop Handoff
+
+Required when the delivery target is real production use, release acceptance, or a production-like pilot:
+
+- Technical architecture: confirmed runtime boundaries, source authority, security/auth assumptions, deployment/config approach, observability, performance/capacity risks, and testing strategy.
+- Data service/backend: API doc version, runtime backend URL or deployment target, health/readiness evidence, authoritative source mode, auth/permission behavior, config/env handling, error/log behavior, performance/export limits, and rollback notes.
+- Frontend integration: frontend URL/build, backend base URL, provider mode, SSO/auth behavior, retained mock/demo sources if any, browser/runtime QA evidence, and known gaps.
+- Testing integration: environment/version/account/data used, executed case counts, evidence paths, defect statuses, retest closure matrix, remaining risks, and final readiness.
+
+If any required production handoff item is unknown, mark production closed loop `partial` or `blocked` and name the owner/source needed.
 
 ## Missing Input Handling
 
@@ -100,6 +130,10 @@ When information is missing:
 3. Record the exact assumption only when safe.
 4. Ask one owner/source question for each blocker.
 5. Keep the same gap ID and wording across all affected artifacts.
+
+When information is contradictory rather than merely missing, use `entry-input-consistency-gate.md` and `ENTRY-*` IDs. Do not downgrade a real contradiction into a silent assumption.
+
+When the information is available but the proposed structure is unreasonable, use `design-reasonableness-gate.md` and `DESIGN-*` IDs. Do not downgrade a design flaw into a vague missing-input item.
 
 ## Child Skill Call Checklist
 

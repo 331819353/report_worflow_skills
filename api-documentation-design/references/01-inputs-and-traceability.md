@@ -16,7 +16,8 @@ Use this reference when deciding what the API document is based on and how endpo
 - Prefer implemented behavior only when the task is documenting current implementation.
 - Prefer API inventory or explicit product/backend contract when the task is designing future APIs.
 - Prefer frontend display/mock contracts when the task is integration handoff and no backend contract has been finalized.
-- Treat conflicts between artifacts as missing information unless the user or repository clearly marks one artifact authoritative.
+- Treat absent details as pending information. Treat contradictory details as `ENTRY-*` conflicts using `../references/standalone-quality-gates.md#entry-input-consistency-gate`; unresolved `P0`/`P1` conflicts keep affected endpoint behavior `partial` or `blocked` and require user confirmation only before the affected endpoint behavior is repaired or documented as final.
+- Treat complete but unreasonable endpoint design as a `DESIGN-*` finding using `../references/standalone-quality-gates.md#design-reasonableness-gate`. Examples include response grain that cannot support the component, filters that cannot drive data, endpoint grouping that mixes incompatible permissions/freshness, or examples that cannot prove the business flow.
 
 ## Traceability Rules
 
@@ -34,4 +35,8 @@ Record a pending item when any of these are unclear:
 - Field name, type, nullability, unit, precision, enum dictionary, ID semantics, or date format.
 - Formula, denominator, aggregation grain, sorting, Top/Bottom rule, fiscal calendar, or rounding rule.
 - Required request param, default filter, pagination limit, export behavior, upload/download shape, or error code.
-- Auth header, token validation path, role/permission rule, environment value, CORS/proxy rule, timeout, retry, or cache behavior.
+- Auth header, token validation path, role/permission rule, environment value, CORS/proxy rule, health/readiness behavior, logging/request ID/observability expectation, timeout, retry, cache behavior, rollback path, or testing handoff evidence.
+
+Use `ENTRY-*` instead of a pending item when two artifacts provide incompatible confirmed-looking claims, such as different formulas, grains, field names, auth rules, endpoint ownership, or runtime behavior.
+
+Use `DESIGN-*` instead of a pending item when facts are present but the proposed API/document structure is unreasonable for downstream implementation, frontend integration, or testing.

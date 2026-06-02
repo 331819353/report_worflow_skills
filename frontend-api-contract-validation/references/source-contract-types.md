@@ -25,3 +25,7 @@ Prefer runtime evidence when verifying implemented behavior, but prefer document
 ## Data-Service Rule
 
 When the provider is 数据服务, use API文档, API清单, backend health checks, and auth rules as provider evidence. Do not require 数据服务 evidence for static, SDK, GraphQL, or local-only frontend work.
+
+## Production Evidence Rule
+
+When the frontend contract note is used for production acceptance, record the actual provider/source mode, runtime locator, auth/env behavior, retained mock/offline/demo status, runtime evidence, and testing handoff. Static, SDK, GraphQL, realtime, and local-file providers can still be valid production providers only when that provider mode is explicit and accepted for the delivery scope.

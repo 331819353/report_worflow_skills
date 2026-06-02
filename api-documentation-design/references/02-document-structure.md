@@ -14,7 +14,9 @@ Use this reference when creating the API document skeleton.
    - Full detail for each endpoint. Use `03-endpoint-detail-rules.md`.
 5. Model and dependency trace
    - Response models, source models, upstream systems, transformation notes, formulas, refresh cadence, data quality assumptions, and permission dependencies.
-6. Appendix
+6. Production closed-loop readiness
+   - Source authority, runtime/base URL, auth/permission behavior, environment/config notes, health/runtime evidence, observability, performance/export constraints, compatibility/versioning, testing handoff, readiness, and blockers.
+7. Appendix
    - Enums, error codes, common examples, unresolved items, glossary, and compatibility notes.
 
 ## Grouping Options
@@ -38,3 +40,4 @@ Use this reference when creating the API document skeleton.
 - File upload/download content type, filename, streaming, and export size limits.
 - Async job, callback, webhook, streaming, or batch-processing conventions when relevant.
 - Backward compatibility and deprecation notes.
+- Production-bound docs include environment/base URL, health/runtime evidence, source authority, auth/permission, observability, performance/export limits, testing handoff, and blockers.

@@ -13,6 +13,12 @@
 - Build output:
 - Preview/deploy URL:
 - Commands verified:
+- Production readiness:
+- Backend/API base URL:
+- Provider/auth/env mode:
+- Deployment target:
+- Rollback or restore path:
+- Observability/log access:
 - Remaining blocker:
 ```
 

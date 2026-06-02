@@ -173,3 +173,17 @@ Error examples:
 - Example curl:
 - Data-source mode checked:
 - Authoritative-source endpoint checked:
+
+## 11. Production Closed-Loop Readiness
+
+- Runtime backend URL or deployment target:
+- Health/readiness evidence:
+- API document version aligned with implementation:
+- Auth/permission behavior verified:
+- Source mode and authoritative source evidence:
+- Config/environment notes:
+- Observability notes: logs, request ID, metrics/traces, alert owner:
+- Performance/export limits:
+- Rollback or restore path:
+- Testing handoff: test account/data, smoke cases, contract cases, known blockers:
+- Readiness: ready / partial / blocked:

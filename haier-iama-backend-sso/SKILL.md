@@ -11,7 +11,7 @@ Use this skill to implement the backend half of Haier IAMA SSO. Treat SSO as ena
 
 The default flow is: after the frontend obtains an authorization code, the backend first calls `{baseUrl}/api/oauth/code/get/v2` to obtain token-related information and account info. In later business flows such as page jumps, route transitions, and page refreshes, the backend calls `{baseUrl}/api/oauth/token/check` to verify the user token.
 
-Before coding against the remote API, read [references/iama-sso-api.md](references/iama-sso-api.md) for the exact endpoints, parameters, headers, and response shape extracted from the official IAMA documentation. For entrypoint selection and complete backend flows, read [references/backend-integration-entrypoints.md](references/backend-integration-entrypoints.md). When the user reports SSO "breakpoints" or cross-end flow gaps, also read [../sso-auth-flow-test/references/02-sso-breakpoint-closure.md](../sso-auth-flow-test/references/02-sso-breakpoint-closure.md).
+Before coding against the remote API, read [references/iama-sso-api.md](references/iama-sso-api.md) for the exact endpoints, parameters, headers, and response shape extracted from the official IAMA documentation. For entrypoint selection and complete backend flows, read [references/backend-integration-entrypoints.md](references/backend-integration-entrypoints.md). When the user reports SSO "breakpoints" or cross-end flow gaps, include a standalone SSO breakpoint handoff with failing step, expected/actual result, frontend storage state, request headers, backend status, and retest criteria.
 
 ## Integration Entrypoints
 

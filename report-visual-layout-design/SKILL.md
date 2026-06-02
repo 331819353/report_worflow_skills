@@ -9,7 +9,7 @@ description: "Design, critique, or refine visual layout and page structure for b
 
 This is a universal report visual layout skill. It owns how a report page is organized, branded, filtered, navigated, displayed, implemented through the three bundled dashboard templates when appropriate, and checked visually after the report type and business content are known.
 
-It does not own report-type logic, mock data design, API contracts, or detailed filter/data interaction rules. Use the relevant report-type skill and `report-info-component-mapping` when component, metric, data, filter, or interaction mapping is still unclear.
+It does not own report-type logic, mock data design, API contracts, or detailed filter/data interaction rules. When component, metric, data, filter, or interaction mapping is unclear, record the missing contract as a layout-blocking gap or handoff note instead of requiring another skill before this skill can produce layout guidance.
 
 Treat this skill as general report layout and template selection rather than prototype-only visual advice.
 
@@ -107,7 +107,7 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 
 ### Complex Diagram Spacing Gate
 
-- For flow, Sankey, graph, tree, decomposition, DuPont, lineage, and process-chain visuals, load `../report-component-style-design/references/09-complex-diagrams.md` and calculate safe spacing before finalizing coordinates.
+- For flow, Sankey, graph, tree, decomposition, DuPont, lineage, and process-chain visuals, apply the complex-diagram spacing rules below before finalizing coordinates. If deeper component styling is out of scope, produce a handoff note instead of requiring another skill.
 - The layout must reserve rail width, node half-width, label reserve, edge bend reserve, viewport padding, and a minimum gutter of 16px.
 - Do not pass QA when layer numbers, labels, nodes, edges, or curve bend areas overlap, touch, or sit within less than 16px of each other.
 

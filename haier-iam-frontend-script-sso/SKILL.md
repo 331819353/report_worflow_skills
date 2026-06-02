@@ -9,7 +9,7 @@ description: "Implement, review, or standardize Haier account-center @haier/iam 
 
 Use this skill to add or review Haier 账号中心 browser SDK access through a `<script>` tag. Prefer this path for non-React or non-NPM projects; if the target project already uses package-based `@haier/iam`, keep using the npm workflow unless the user explicitly asks for script access.
 
-For entrypoint selection and complete frontend flows, read [references/frontend-integration-entrypoints.md](references/frontend-integration-entrypoints.md). For script-tag snippets, API notes, and request-interceptor examples, read [references/script-integration.md](references/script-integration.md). When the user reports SSO "breakpoints" or cross-end flow gaps, also read [../sso-auth-flow-test/references/02-sso-breakpoint-closure.md](../sso-auth-flow-test/references/02-sso-breakpoint-closure.md).
+For entrypoint selection and complete frontend flows, read [references/frontend-integration-entrypoints.md](references/frontend-integration-entrypoints.md). For script-tag snippets, API notes, and request-interceptor examples, read [references/script-integration.md](references/script-integration.md). When the user reports SSO "breakpoints" or cross-end flow gaps, include a standalone SSO breakpoint handoff with failing step, expected/actual result, frontend storage state, request headers, backend status, and retest criteria.
 
 ## Integration Entrypoints
 

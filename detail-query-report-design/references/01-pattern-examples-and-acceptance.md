@@ -1,6 +1,6 @@
 # 明细查询 Pattern Examples And Acceptance
 
-Use this file only when a concrete example, acceptance sample, or anti-pattern is needed. Keep `SKILL.md` as the main generic logic.
+Use this file only when a concrete example, acceptance sample, or anti-pattern is needed. Keep the entry skill as the main generic logic.
 
 ## Typical Scenario
 

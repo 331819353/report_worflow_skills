@@ -9,4 +9,5 @@
 - Runtime lifecycle behavior covers stale responses, cache invalidation, refresh, and realtime cleanup when applicable.
 - Mock-only, offline-only, deferred, blocked, and not-tested behavior is clearly marked.
 - Verification evidence includes commands, URL, browser checks, and known blockers.
+- Production-bound handoff includes backend base URL, provider/source mode, auth/env behavior, retained mock status, runtime QA evidence, testing handoff, readiness, and blockers.
 - Stale prototype copy such as `mock`, `demo`, `示例`, or placeholder metric names is not presented as delivered behavior.

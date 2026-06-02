@@ -48,7 +48,7 @@ For every report requirement or extracted information set:
 6. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, and stale-state behavior.
 7. Produce the binding matrix: component -> dataset -> fields -> formulas -> filters -> interactions -> update triggers -> validation cases.
 8. Route to primary and secondary report-type skills for business logic.
-9. Apply layout and visual constraints through `report-visual-layout-design` and `report-component-style-design`.
+9. Apply local layout and visual constraints from `references/07-routing-layout-quality.md`, including grid fit, component density, exact-value access, and visual QA notes.
 10. Validate that KPI totals, chart totals, table rows, drawers, exports, filters, and jumps share the same context.
 
 ## Reference Map
@@ -96,7 +96,7 @@ Loading guidance:
 - Vue report prototypes should use Element Plus for standard UI controls: filters, inputs, selects, cascaders, date pickers, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables/lists when S2 analytical behavior is unnecessary.
 - Dense analytical tables, pivot tables, cross tables, and wide metric matrices should use AntV S2.
 - Every implementation mapping must declare data source, grain, required fields, formulas, filter mapping, interaction state, update triggers, and validation cases.
-- Every layout must fit the `8 * N` rectangular grid and legal span rules from `report-visual-layout-design`.
+- Every layout must fit the local `8 * N` rectangular grid and legal span rules documented in `references/07-routing-layout-quality.md`.
 - Generated IDs, dataset names, filter IDs, `visualType`, action types, and matrix columns must follow the controlled vocabulary and naming rules in `08-generation-stability.md`.
 - When information is missing, use the documented fallback rule and mark the assumption; do not invent unsupported component types, visual types, filters, or actions.
 

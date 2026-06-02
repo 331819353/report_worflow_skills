@@ -12,9 +12,9 @@ Use this structure when backend work must output unresolved or assumed informati
 
 ## 2. Missing Information Summary
 
-| ID | Area | Missing Or Assumed Item | Impact | Current Handling | Owner/Question | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| MI-001 | Data transformation | Confirm whether source `YYYYMMDD` should become response `YYYYMM` by truncation or calendar aggregation. | Monthly trend may be inaccurate if aggregation rule is wrong. | Temporarily aggregate by first six characters and sum numeric measures. | Confirm with data owner. | Open |
+| ID | Area | Missing Or Assumed Item | Impact | Current Handling | Production Readiness Impact | Owner/Question | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| MI-001 | Data transformation | Confirm whether source `YYYYMMDD` should become response `YYYYMM` by truncation or calendar aggregation. | Monthly trend may be inaccurate if aggregation rule is wrong. | Temporarily aggregate by first six characters and sum numeric measures. | Production readiness remains partial until aggregation rule is confirmed. | Confirm with data owner. | Open |
 
 ## 3. Data Source Gaps
 
@@ -78,6 +78,16 @@ Document unknown or unconfirmed performance limits:
 ## 8. Auth, Config, And Deployment Gaps
 
 Document missing SSO values, token/header contracts, environment variables, proxy/CORS decisions, ports, database credentials, deployment targets, or network dependencies.
+
+Also document production-readiness gaps:
+
+- Missing health/readiness endpoint:
+- Missing runtime URL or deployment target:
+- Missing startup command or config profile:
+- Missing log/request ID/trace/metric behavior:
+- Missing alert owner or failure escalation path:
+- Missing rollback or restore path:
+- Missing retest criteria or retest evidence for blocker/major defects:
 
 ## 9. Resolution Log
 

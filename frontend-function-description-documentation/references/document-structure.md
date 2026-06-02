@@ -50,5 +50,17 @@ Use this structure for 前端功能说明. Omit sections only when they truly do
 - Network/provider evidence:
 - Screenshots/logs when available:
 
+## Production Handoff
+
+- Backend/API base URL:
+- Provider/source mode:
+- Auth/env behavior:
+- Retained mock/offline/demo source:
+- Runtime QA evidence:
+- Testing handoff:
+- Defect retest notes:
+- Readiness: ready / partial / blocked / not needed
+- Blockers:
+
 ## Testing Notes
 ```

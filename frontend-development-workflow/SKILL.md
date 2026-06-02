@@ -18,7 +18,10 @@ Standard stage contract:
 ## Reference Map
 
 - Read `../workflow-shared-references/report-delivery-pipeline-contract.md` for cross-workflow routing, readiness values, and handoff requirements.
-- Read `../workflow-shared-references/visual-multimodal-browser-check.md` before visual QA pass/fail judgment for any runnable frontend/prototype.
+- Read `../workflow-shared-references/entry-input-consistency-gate.md` when frontend/prototype source, requirements, HTML/source samples, API docs, provider samples, env/auth notes, or runtime traces may conflict.
+- Read `../workflow-shared-references/design-reasonableness-gate.md` when UI/data/provider/interaction/layout decisions may be internally consistent but unreasonable for the business question or handoff.
+- Read `../workflow-shared-references/visual-multimodal-browser-check.md` before visual QA pass/fail judgment for any runnable frontend/prototype; use deterministic screenshot/baseline diff for repeatable regression and multimodal review for explanatory findings.
+- Read `../workflow-shared-references/production-closed-loop-readiness.md` when frontend integration is part of production acceptance or a production-like pilot.
 - Read `references/mock-to-provider-integration.md` for generic mock/static-to-provider integration.
 - Read `references/mock-to-http-integration.md` only when the chosen provider is REST/BFF HTTP.
 - Read `references/provider-gap-ledger.md` whenever provider, field, env, auth, permission, or test evidence is missing.
@@ -48,6 +51,10 @@ Use the frontend specialty skills as guardrails inside this workflow:
 1. Discover the project context.
    Inspect source files, package files, lockfiles, env files, build config, router, state management, request/client utilities, data-source registries, mock/static data, and component data usage. Prefer `rg` and targeted reads. Follow the existing stack and structure before introducing new patterns.
 
+   Run the entry input consistency gate when source code, HTML/sample-derived UI, API docs/provider evidence, env/auth notes, mock/static data, or requirements disagree. Unresolved `P0`/`P1` `ENTRY-*` findings must be confirmed by the user before replacing mock data, changing adapters, changing auth/env behavior, or repairing affected UI logic.
+
+   Run the design reasonableness gate when a source-to-provider replacement, adapter, filter behavior, interaction, retained mock, or visual repair could make the page less useful even if it compiles. Repair or record `DESIGN-*` findings before wiring affected behavior.
+
 2. Run a baseline check before large edits.
    Detect the package manager from lockfiles and package scripts, install dependencies if needed, then run available typecheck, lint, test, and build commands. Start the dev server when feasible. Record baseline failures so later work does not hide pre-existing project problems.
 
@@ -73,7 +80,7 @@ Use the frontend specialty skills as guardrails inside this workflow:
    Ensure filters, search, date ranges, organization selectors, pagination, sorting, tabs, drilldowns, refresh, export/download, and linked charts pass correct inputs. Handle loading, empty, failed, retry, partial, no-permission, token-invalid, stale selection, rapid filter changes, request cancellation or sequence guards, cache invalidation, and realtime unsubscribe/cleanup when applicable.
 
 10. Audit functions, copy, and visual behavior.
-    Traverse the updated app page by page and component by component. Check controls, route jumps, tabs, drawers, modals, table operations, chart clicks, export, refresh, and edge states. Clean user-facing copy left from the prototype, including titles, menus, breadcrumbs, labels, button text, placeholders, tooltips, document title, download names, and error messages containing `原型`, `mock`, `demo`, `示例`, placeholder names, or stale descriptions. Use `$frontend-runtime-qa-validation` for the structured browser pass. For visual QA, first capture headless browser screenshots, then run multimodal visual anomaly recognition, then route `VIS-*` findings back into frontend repair or final QA notes.
+    Traverse the updated app page by page and component by component. Check controls, route jumps, tabs, drawers, modals, table operations, chart clicks, export, refresh, and edge states. Clean user-facing copy left from the prototype, including titles, menus, breadcrumbs, labels, button text, placeholders, tooltips, document title, download names, and error messages containing `原型`, `mock`, `demo`, `示例`, placeholder names, or stale descriptions. Use `$frontend-runtime-qa-validation` for the structured browser pass. For visual QA, first capture headless browser screenshots, run deterministic baseline diff when a baseline exists, then run multimodal visual anomaly recognition when available. Route `VDIFF-*` and `VIS-*` findings back into frontend repair or final QA notes.
 
 11. Verify build, preview, and deployment behavior.
     Run validation commands, build, start dev or preview server, and open the target page in a browser when visual frontend behavior is involved. Repair compile errors, runtime exceptions, provider failures, proxy mistakes, CORS symptoms, malformed adapters, missing fields, broken interactions, stale copy, and UI regressions until runnable or blocked by a concrete external dependency.
@@ -83,6 +90,9 @@ Use the frontend specialty skills as guardrails inside this workflow:
 
 13. Return a verified URL.
     For local handoff, start the frontend on an available port and return the verified local URL. If startup is blocked, state the exact command, error, attempted fixes, and remaining external blocker.
+
+14. Check production closed-loop readiness when applicable.
+    For production-bound frontend integration, apply `../workflow-shared-references/production-closed-loop-readiness.md`. Record frontend URL/build, backend base URL, provider/source mode, auth behavior, env/config, runtime QA evidence, retained offline/demo sources, testing handoff, and open blockers. Do not mark the frontend handoff `ready` when production paths still depend on unapproved mocks or unverified provider/auth/runtime behavior.
 
 ## Implementation Defaults
 
@@ -103,6 +113,8 @@ Use the frontend specialty skills as guardrails inside this workflow:
 Maintain these notes in the task response or project docs when useful:
 
 - `Input Files`: frontend/prototype files, provider docs/samples, env/auth/config files, and their roles.
+- `Entry Consistency Audit`: status, checked artifacts, `ENTRY-*` conflicts, user-confirmed decisions, and affected frontend/API/auth/data contracts when mixed inputs were checked.
+- `Design Reasonableness Audit`: status, checked dimensions, `DESIGN-*` findings, repairs, accepted limitations, and affected frontend/API/auth/data contracts.
 - `Current Data Inventory`: mock/static/runtime source, consumers, fields, and affected interactions.
 - `Provider Classification`: REST/BFF, GraphQL, SDK, static file, generated data, realtime, data-source registry, retained offline mode, or blocker.
 - `Frontend Missing Info`: unresolved provider, field, enum, formula, env, auth, permission, deployment, or testing gaps.
@@ -110,14 +122,17 @@ Maintain these notes in the task response or project docs when useful:
 - `Provider Mapping`: source to provider call/query/file/subscription, input params, adapter, auth/client setup, and verification case.
 - `Response Adapters`: provider payload to UI view model mapping, enum/unit/date/null/default behavior, lifecycle behavior, and sample verification.
 - `Changed Data Flow`: files changed and how UI state now reaches providers.
-- `Runtime QA`: route/page/component checks, interaction cases, provider evidence, headless screenshot paths, multimodal visual findings, visual/layout checks, stale copy removed, and remaining questions.
+- `Runtime QA`: route/page/component checks, interaction cases, provider evidence, headless screenshot paths, deterministic baseline diff status/artifacts, multimodal visual findings, visual/layout checks, stale copy removed, and remaining questions.
 - `Frontend Function Description`: pages, modules, provider mapping, filters, interactions, states, permissions, exports, verification scope, and limitations.
 - `Environment And Deployment`: env variables, provider config, proxy, base path, build/preview/deploy URL, and external blockers.
+- `Production Closed Loop`: frontend URL/build, backend base URL, provider/source mode, auth behavior, runtime QA evidence, retained offline/demo source status, testing handoff, readiness, and blockers when applicable.
 - `Stage Handoff`: readiness, frontend URL, backend/API base used, auth/SSO contract, retained offline/demo sources, testing blockers, and next-stage owner questions.
 
 ## Verification Checklist
 
 - Every target mock/static source is either replaced by the intended provider or intentionally retained for offline/demo mode.
+- Entry-material contradictions across requirements, HTML/sample UI, frontend source, API docs/provider samples, env/auth notes, mocks, or runtime traces are resolved or keep affected work `partial`/`blocked`; no `P0`/`P1` conflict is silently repaired.
+- Frontend design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings do not get hidden behind adapter code, retained mocks, or visual polish.
 - Every implemented runtime provider is traceable to docs, source code, schema, SDK types, sample files, runtime traces, or a documented assumption.
 - Every replaced source has field-level contract validation against the UI/display shape.
 - Missing provider, field, auth, env, permission, and deployment information is captured in a visible gap ledger.
@@ -134,6 +149,7 @@ Maintain these notes in the task response or project docs when useful:
 - Typecheck, lint, test, and build are run when available, or skipped with a clear reason.
 - The frontend starts locally on an available port when local startup is part of the request.
 - Browser/runtime verification reaches the target page and confirms there are no blocking console/runtime failures.
-- Runnable visual verification includes headless browser screenshots and multimodal review results before claiming visual pass.
+- Runnable visual verification includes headless browser screenshots and deterministic baseline diff status before claiming deterministic visual regression pass. Multimodal review is recorded when available; if unavailable and visual explanation is required, overall visual QA is `partial`.
+- Production-bound frontend handoff includes provider/source mode, backend base URL, auth/env behavior, runtime QA evidence, retained mock status, and testing handoff before `ready`.
 - The final answer includes the verified local URL or a precise external blocker.
 - The final output uses shared readiness values `ready`, `partial`, or `blocked`, and states whether testing integration can consume the frontend artifacts.

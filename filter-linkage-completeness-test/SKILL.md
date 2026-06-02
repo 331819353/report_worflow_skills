@@ -1,6 +1,6 @@
 ---
 name: filter-linkage-completeness-test
-description: "Test report filter completeness and linkage. Use for 过滤功能测试, 筛选项完整性, filter option data, defaults, reset, cascades, query params, filter-to-component binding, mock option coverage, backend-supported values, pagination/sorting/drilldown/export filter inheritance, and filter interaction evidence."
+description: "Test report filter completeness and linkage. Use for 杩囨护鍔熻兘娴嬭瘯, 绛涢€夐」瀹屾暣鎬? filter option data, defaults, reset, cascades, query params, filter-to-component binding, mock option coverage, backend-supported values, pagination/sorting/drilldown/export filter inheritance, and filter interaction evidence."
 ---
 
 # Filter Linkage Completeness Test
@@ -12,6 +12,7 @@ Use this skill to verify that report filters are complete, valid, and correctly 
 ## References
 
 - Read `references/01-filter-linkage-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
+- Read `references/standalone-quality-gates.md#production-closed-loop-readiness` when filter linkage results are used for production acceptance or defect retest closure.
 
 ## Required Inputs
 
@@ -46,6 +47,9 @@ Optional inputs: filter design documentation, API documentation, permission rule
 8. Verify display after filtering.
    Confirm loading, empty, error, no-permission, and stale-selection states render correctly and do not show mixed old/new data.
 
+9. Record production/retest context when applicable.
+   For production-bound validation, record environment/version/account/data seed, permission role, backend/API source mode, evidence paths, defect ID when retesting, and closure criteria. Do not mark filter linkage `pass` when required filter options, backend-supported values, account permissions, or runtime evidence are missing.
+
 ## Required Output
 
 - Filter inventory:
@@ -56,6 +60,7 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Filter-to-component matrix:
 - Combined filter cases:
 - Persistence behavior:
+- Production/retest context:
 - Defects/blockers:
 
 ## Pass Criteria
@@ -65,3 +70,4 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Changing filters changes the expected backend request and affected components.
 - Cascades clear or refresh dependent values correctly.
 - Active filters are preserved or reset consistently across interactions.
+- Production-bound pass includes environment/version/account/permission context, provider/source mode, reproducible evidence, and retest closure when applicable.
