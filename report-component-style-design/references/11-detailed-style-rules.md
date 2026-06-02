@@ -68,11 +68,14 @@ Use this contract as the default for any generated frontend component unless an 
 ### Semantic Color System
 
 - Define one global palette per page. Do not let every chart choose unrelated colors.
+- HTML/source/custom layouts may preserve structure and module rhythm, but colors, typography, spacing, radius, shadows, semantic states, and controls should still come from the selected global UI tokens unless exact restoration is explicitly requested.
 - Current/actual/completed values use the brand primary color.
 - Target, baseline, plan, and reference values use neutral gray or a pale brand tint.
 - Negative/risk/unreached/warning states use one red family; positive/healthy/reached/growth states use one green family.
 - The red/green business semantics must be globally unique on the page. If the company uses red for growth, apply that consistently and document it in the style output.
 - Color is never the only signal: pair semantic color with text, icon, sign, badge, or shape.
+- In Chinese report UI, rate/completion/change labels use `%` rather than `pt`, `p.p.`, or `percentage point` unless explicitly requested.
+- Change-rate and variance-rate indicators follow positive-red-up / negative-green-down semantics: positive value uses red text plus upward SVG/icon, negative value uses green text plus downward SVG/icon, and zero uses neutral styling.
 
 ### Visualization Clarity
 

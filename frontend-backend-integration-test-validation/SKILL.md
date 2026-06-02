@@ -139,6 +139,9 @@ Produce a concise test report:
 - Every filter has valid options, defaults, reset behavior, backend parameter mapping, and component binding.
 - Active filters are preserved across drilldowns, pagination, sorting, refresh, export/download, and page jumps when required.
 - Tables, cards, charts, and drawers do not clip or hide required business data.
+- Vue report pages using Element Plus have loaded component CSS, usable select/date/cascader poppers, and unblocked dialog/drawer overlays after API-driven data updates.
+- API-backed rate/change/completion fields display Chinese `%` units and change-rate indicators follow positive-red-up / negative-green-down SVG/icon semantics after response adaptation.
+- HTML-replica or custom pages keep global UI token consistency after API-driven data updates; backend data length or sign changes do not expose one-off copied styles.
 
 ## Failure Handling
 
@@ -148,7 +151,7 @@ When a check fails, classify it before fixing or reporting:
 - API contract defect: missing field, wrong type, wrong enum, wrong unit, wrong date format, wrong error shape, or undocumented transformation.
 - Frontend binding defect: wrong endpoint, wrong params, stale mock data, wrong adapter, wrong rounding, wrong component state, or missed interaction binding.
 - Filter defect: missing option, wrong default, wrong param name, cascade mismatch, incomplete component coverage, reset failure, or export/drilldown not inheriting filters.
-- Layout defect: block size too small, component compression, clipped data, table ellipsis hiding required values, or missing scroll behavior.
+- Layout defect: block size too small, component compression, clipped data, table ellipsis hiding required values, missing scroll behavior, wrong `%`/trend styling, or copied one-off visual tokens overriding the page UI.
 
 Every unresolved failure must include reproduction steps, expected result, actual result, evidence source, owner side if identifiable, and missing information if the owner side cannot be determined.
 ## Execution Completeness Gate

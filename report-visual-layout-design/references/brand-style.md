@@ -14,6 +14,8 @@ Primary visual language:
 
 Avoid multi-color interference. A report can have semantic color, but it should not look like every module is using a different palette.
 
+When HTML/source/sample or custom design controls layout, keep the source structure but still apply global UI tokens for palette, typography, spacing, radius, semantic colors, and control states unless the user explicitly asks for exact color restoration. Do not let one-off inline sample colors override the unified page UI.
+
 ## 2. Logo Rules
 
 Use only bundled Haier logo assets:
@@ -48,8 +50,12 @@ Passing rules:
 - A Haier or branded page must configure one logo source in the header, unified title/control area, sidebar brand area, or template logo slot.
 - Light shell uses original color logo; dark shell uses white logo.
 - Missing asset does not justify removing the logo slot. Render a visible placeholder in the intended logo location and record `logo asset missing` as a gap.
-- For custom pages, both `htmlReplica` and `freeDesign` must use a real bundled Haier logo asset. A placeholder records a blocker and cannot pass final acceptance.
+- For custom pages with `brandMode: haierBranded`, both `htmlReplica` and `freeDesign` must use a real bundled Haier logo asset. A placeholder records a blocker and cannot pass final acceptance.
 - Screenshot QA must verify visibility, variant, aspect ratio, clipping, and placeholder text when applicable.
+
+Brand-mode exception:
+
+- If `brandMode: sampleNative` or `neutral` is explicitly declared, do not inject Haier logo only because the page is custom; record the non-Haier decision. This exception is not available for Haier/branded pages.
 
 ## 3. Minimal Enterprise Style
 
@@ -90,6 +96,11 @@ Semantic colors should be restrained and consistent:
 - Warning: one orange/yellow family.
 - Healthy/positive: one green family.
 - Info/selected/current: Haier blue family.
+
+Chinese trend indicators:
+
+- Rate, completion, variance-rate, YoY, MoM, and change labels use `%` in visible Chinese UI; avoid `pt`, `p.p.`, and `percentage point` labels unless explicitly requested.
+- For change-rate and variance-rate indicators, positive values use red text plus an upward SVG/icon, negative values use green text plus a downward SVG/icon, and zero values use neutral treatment.
 
 ## 5. Density
 

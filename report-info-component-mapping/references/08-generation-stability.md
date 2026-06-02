@@ -8,6 +8,7 @@ The same business input should produce the same:
 
 - Primary report type and secondary report-type routing.
 - Answer atoms and component priorities.
+- Sample/source module roles when restoration input exists.
 - Component IDs, dataset IDs, filter IDs, and action names.
 - `visualType`, layout span category, row grain, and required fields.
 - Binding matrix columns and validation cases.
@@ -37,6 +38,7 @@ Use these values unless the target project explicitly defines a different vocabu
 - `actionType`: `openModal`, `closeModal`, `setFilters`, `resetFilters`, `navigateUrl`, `print`, `fullscreen`, `refresh`, or a named custom action registered in the project.
 - `filterValueType`: `single`, `multiple`, `range`, `keyword`, `date`, `treePath`, `enum`, `toggle`.
 - `dataPolicy`: `bound`, `static`, `external`. Prefer `bound`.
+- `sampleModuleRole`: `businessRequired`, `sampleStructure`, `optionalEnhancement`.
 
 Do not create near-synonyms such as `trendLine`, `line-chart`, `metricCard`, or `dataTable` in contract fields. Put display labels in titles, not enum fields.
 
@@ -94,6 +96,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 - Missing permission model: include `permission_scope` placeholder and no-permission validation case.
 - Missing API contract: produce mock dataset contract and mark data source as mock/resolver candidate.
 - Unknown template support: use `other` only with a named custom widget and explicit reason; otherwise choose from known `visualType` values.
+- Sample/source module visibility: do not mark as `must-have` unless it directly answers the user's stated report question; otherwise preserve as `sampleStructure` or label as `optionalEnhancement`.
 
 ## Output Stability Rules
 

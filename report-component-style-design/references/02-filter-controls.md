@@ -5,9 +5,10 @@ Use for filter bars, query panels, filter popovers, chips, and saved views.
 ## Final Visual Control Gate
 
 - Main filter areas must not use naked native `<select>` controls as the final visual surface.
-- Prefer the existing design-system `Select`, `Dropdown`, `TreeSelect`, `DatePicker`, cascader, or menu component. If no design system exists, build a custom popover select with a styled trigger, controlled menu/listbox, keyboard focus, outside-click close, disabled options, loading/no-option rows, and selected-state feedback.
+- Prefer Element Plus controls in Vue report prototypes: `ElSelect`, `ElTreeSelect`, `ElCascader`, `ElDatePicker`, `ElInput`, `ElButton`, `ElPopover`, `ElDropdown`, `ElTag`, and `ElForm`. If an existing project design system supersedes Element Plus, use its equivalent controls.
+- If no Element Plus or design-system control exists for a special case, build a custom popover select with a styled trigger, controlled menu/listbox, keyboard focus, outside-click close, disabled options, loading/no-option rows, and selected-state feedback.
 - A native `<select>` is acceptable only as a baseline prototype fallback when it is wrapped and styled with `appearance: none`, custom arrow, consistent height/radius/border, focus ring, hover/active/disabled/loading/error states, and full-value disclosure.
-- Native operating-system dropdown menus cannot be fully internet-styled or screenshot-controlled. Advanced visual acceptance requires a custom popover select instead of relying on the native dropdown menu.
+- Native operating-system dropdown menus cannot be fully internet-styled or screenshot-controlled. Advanced visual acceptance requires Element Plus or a custom popover select instead of relying on the native dropdown menu.
 - Screenshot QA must include the closed trigger, open menu/popover, selected state, focus state, disabled state, loading/no-options state when applicable, and active filter chips.
 
 ## Layout

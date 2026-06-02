@@ -2,6 +2,8 @@
 
 Use for row detail, object profile, evidence drawer, source trace, log panel, attachment panel, and modal detail.
 
+In Vue report prototypes, use Element Plus `ElDrawer`, `ElDialog`, `ElTabs`, `ElDescriptions`, `ElForm`, `ElButton`, `ElTag`, `ElTable`, `ElTooltip`, and `ElPopover` for standard drawer, modal, evidence, and detail interactions unless an existing project design system supersedes Element Plus. Keep custom DOM only for unsupported visualizations or highly specialized content.
+
 ## Structure
 
 - Header includes object title, status, key metadata, and primary action.

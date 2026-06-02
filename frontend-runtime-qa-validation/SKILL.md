@@ -61,6 +61,8 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Filters and interactions update the correct data without stale values.
 - Empty/error/loading/auth states are visible and stable.
 - No stale prototype-only wording remains unless explicitly required.
+- Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
+- HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.
 - Final answer includes the verified URL when startup succeeds.
 ## Execution Completeness Gate
 

@@ -2,6 +2,8 @@
 
 Use for capsule switches, segmented controls, dropdown selects, mini menus, and component-level view controls inside cards, charts, tables, KPI groups, task lists, and drawers.
 
+In Vue report prototypes, prefer Element Plus `ElSegmented`, `ElRadioGroup`, `ElSelect`, `ElDropdown`, `ElButton`, `ElTooltip`, `ElPopover`, `ElSwitch`, `ElTag`, and `ElTabs` before custom DOM controls. Use custom controls only when Element Plus or the project design system cannot express the interaction.
+
 ## When To Use
 
 - Use capsule switches for 2-5 mutually exclusive modes that users compare frequently, such as `金额 / 数量`, `日 / 月 / 年`, `图表 / 表格`, `销售 / 利润 / 费用`.

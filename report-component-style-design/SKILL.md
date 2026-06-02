@@ -1,13 +1,13 @@
 ---
 name: report-component-style-design
-description: "Design, critique, or refine visual style and responsive behavior of business report components across dashboards and pages. Use when deciding how filters, text summaries, KPI cards, ECharts charts, AntV S2 analytical tables, legends, labels, titles, drawers, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, trees, funnels, flows, component-level switches, segmented controls, dropdown selects, and compact control bars should look, align, resize, avoid overlap, preserve readability, support zoom/pan, animate, show hover values, and stay visually consistent."
+description: "Design, critique, or refine visual style and responsive behavior of business report components across dashboards and pages. Use when deciding how Element Plus filters/forms/buttons/tabs/tags/popovers/dialogs/drawers, text summaries, KPI cards, ECharts charts, AntV S2 analytical tables, legends, labels, titles, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, trees, funnels, flows, component-level switches, segmented controls, dropdown selects, and compact control bars should look, align, resize, avoid overlap, preserve readability, support zoom/pan, animate, show hover values, and stay visually consistent."
 ---
 
 # Report Component Style Design
 
 ## Core Positioning
 
-Use this skill to design, critique, or repair the visual style and responsive behavior of business report components. It covers filters, summaries, KPI cards, ECharts charts, AntV S2 analytical tables, cards/lists/tasks, drawers, complex diagrams, and in-component controls.
+Use this skill to design, critique, or repair the visual style and responsive behavior of business report components. It covers Element Plus filters/forms/buttons/tabs/tags/popovers/dialogs/drawers, summaries, KPI cards, ECharts charts, AntV S2 analytical tables, cards/lists/tasks, complex diagrams, and in-component controls.
 
 Keep `SKILL.md` as the routing and quality gate. Load detailed references only for the component types actually present in the task.
 
@@ -46,7 +46,12 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable container.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
 - Do not create one-off component styles that conflict with the page shell, Haier branding, or existing design system.
+- Text summaries, conclusions, and insight blocks must inherit the surrounding page shell tokens for surface, spacing, typography, radius, and semantic colors. Do not introduce a new standalone visual surface, grid rhythm, or density that conflicts with adjacent sections.
+- In `sampleRestore`, added conclusions must sit inside an existing sample-equivalent region and reuse its spacing, border, typography, and surface tokens; a new standalone horizontal band fails style QA unless the sample already has one.
+- Rate/change indicators in Chinese report UI display `%`, not `pt`, `p.p.`, or `percentage point`, unless the user explicitly requests that term.
+- Change-rate and variance-rate indicators use positive-red-up / negative-green-down semantics with icon+text pairing: positive value = red text plus upward SVG/icon; negative value = green text plus downward SVG/icon; zero = neutral.
 - Do not use naked native `<select>` controls as the final visual surface for primary filters.
+- Do not hand-roll Vue controls that Element Plus already provides unless the existing project design system explicitly supersedes Element Plus or the interaction is unsupported.
 - Do not accept flow, Sankey, graph, tree, decomposition, lineage, DuPont, or process-chain diagrams until rail, node, label, gutter, and edge-bend spacing has been calculated.
 
 ## Output Format
@@ -68,8 +73,10 @@ When using this skill, provide:
 - Dense charts use label budgets and tooltips; dense tables use S2 or horizontal scroll.
 - Complex diagrams use zoom/pan, minimap, drawer, or fullscreen instead of overflowing.
 - Complex diagrams keep layer numbers, labels, nodes, and edges at least 16px apart and reserve rail/edge-bend space.
-- Primary filters use design-system/custom select/dropdown controls, or a fully styled native select only for baseline prototype acceptance.
+- Primary filters use Element Plus or project design-system select/dropdown/date/cascader controls, or a fully styled native select only for baseline prototype acceptance.
 - Controls inside components have clear selected/hover/disabled/loading states and do not resize the block.
+- Text summaries and conclusions inherit the surrounding layout tokens and do not look like unrelated inserted bands.
+- Change-rate indicators pass positive-red-up / negative-green-down semantics and use `%` in Chinese UI.
 - Loading, empty, error, no-permission, and stale states preserve geometry.
 - Runtime resize or visual verification is performed when the component is implemented.
 

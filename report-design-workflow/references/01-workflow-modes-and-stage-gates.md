@@ -6,7 +6,7 @@ Choose the mode before starting.
 
 Before choosing a mode, enforce the trigger gate. Do not let adjacent words such as `报表`, `页面`, `模板`, `部署`, `筛选联动`, `mock 数据`, `自检`, or `返回URL` activate this workflow by themselves; they must appear in a request that also includes `原型`.
 
-Before implementation, also choose exactly one `pageShellPath`, exactly one `pageStyleSource`, and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. These are blocking decisions, not later polish choices.
+Before implementation, also choose exactly one `pageShellPath`, exactly one `pageStyleSource`, exactly one `brandMode`, and exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`. These are blocking decisions, not later polish choices.
 
 ### 1. Prototype-Oriented Design Mode
 
@@ -46,7 +46,7 @@ Use when the user wants code, a Vue dashboard, or an actual runnable page.
 Deliver:
 
 - All prototype design outputs.
-- Technical architecture based on `TypeScript + Vue 3 + ECharts + AntV S2`.
+- Technical architecture based on `TypeScript + Vue 3 + Element Plus + ECharts + AntV S2`.
 - Template choice.
 - Data files or mock data.
 - Component implementation.
@@ -57,7 +57,7 @@ Deliver:
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-visual-layout-design/assets/templates/`: `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + ECharts + AntV S2`.
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-visual-layout-design/assets/templates/`: `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts + AntV S2`.
 
 ### 4. Review And Repair Mode
 
@@ -91,7 +91,7 @@ Before moving to design or implementation, write two explicit statements: `User 
 
 Do not block if missing details can be safely assumed.
 
-### Hard Gate: Shell Path, Style Source, Visual Mode, Brand Assets, And Sample Fidelity
+### Hard Gate: Shell Path, Style Source, Brand Mode, Visual Mode, Brand Assets, And Sample Fidelity
 
 Run this gate before Stage 8 visual layout and before Stage 10 implementation.
 
@@ -103,7 +103,7 @@ Shell path:
 - If `pageShellPath: custom`, declare exactly one `customDesignPath`: `htmlReplica` or `freeDesign`.
 - Use `customDesignPath: htmlReplica` when replicating provided HTML/source/sample structure.
 - Use `customDesignPath: freeDesign` when creating a custom shell from requirements without source visual authority.
-- Both custom paths must configure a real bundled Haier logo before final delivery.
+- Custom Haier pages default to `brandMode: haierBranded` and must configure a real bundled Haier logo before final delivery; explicit `sampleNative` or `neutral` pages must record why Haier branding is not required.
 
 Style source:
 
@@ -112,6 +112,15 @@ Style source:
 - Use `userSpecified` when the user names a page style, shell, or design direction; follow that direction unless it violates hard gates.
 - Use `sampleProvided` when screenshot, image, HTML source, or display sample supplies the page structure; follow the provided design unless the user asks for optimization or redesign.
 - Do not choose a custom shell merely because style requirements are absent.
+
+Brand mode:
+
+- Before `visualMode`, declare exactly one `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
+- Use `haierBranded` for Haier enterprise pages, Haier-branded report prototypes, and custom report pages unless the user clearly asks for non-Haier/native sample branding.
+- Use `sampleNative` only when a provided sample/HTML/source is explicitly non-Haier and the user asks to keep the source-native brand/style.
+- Use `neutral` only when the user explicitly asks for a generic non-branded report.
+- If `brandMode: haierBranded`, configure the Haier logo and global UI tokens without changing the sample's main hierarchy.
+- If `brandMode: sampleNative` or `neutral`, do not inject a Haier logo only because `pageShellPath: custom`; record "no Haier brand required by input".
 
 Visual mode:
 
@@ -126,21 +135,30 @@ Brand assets:
 - For Haier/branded pages, search for logo assets in the existing project, selected template `public` path, and `report-visual-layout-design/assets`.
 - Configure the logo in the header, unified title area, sidebar brand area, or template logo slot before implementing components.
 - If no usable asset exists, render an explicit logo placeholder in that slot and record the missing asset. Do not silently omit the logo.
-- For `pageShellPath: custom`, placeholder state is a blocker. Do not pass visual QA until `haier-logo.svg`, `haier-logo-original.svg`, or `haier-logo-white.svg` is actually configured.
+- For `pageShellPath: custom` with `brandMode: haierBranded`, placeholder state is a blocker. Do not pass visual QA until `haier-logo.svg`, `haier-logo-original.svg`, or `haier-logo-white.svg` is actually configured.
 
 Sample fidelity:
 
 - In `sampleRestore`, the source page shell, module order, container hierarchy, main control count, layer structure, and card proportions are acceptance constraints.
 - Any new filter, summary card, detail table, matrix, drawer, jump, or extra toolbar action is an enhancement. Label it as an enhancement and keep it from changing the sample's first viewport and main body layout unless the user asks for optimization or reconstruction.
+- Classify each visible sample/source module as `businessRequired`, `sampleStructure`, or `optionalEnhancement`. Source visibility alone is not enough to make a component `must-have`.
+- Added conclusions, insights, and status summaries must be embedded into an existing sample-equivalent region such as the header/control area, panorama header, section head, or summary card. Do not add a new standalone horizontal band unless the source has an equivalent band.
 - In `haierEnterprise`, a sample/source may inform information architecture, visible metrics, and interaction intent, but it is not allowed to override the chosen Haier enterprise shell unless explicitly requested.
+
+Global UI and Chinese metric display:
+
+- When layout/style follows HTML, screenshot, or custom design, palette, typography, spacing, radius, shadows, semantic states, and Element Plus/control styling must still come from global UI tokens unless exact visual restoration is explicitly requested.
+- For rate/change/completion fields, display values with `%` in Chinese UI. Do not show `pt`, `p.p.`, or `percentage point` labels on the visible page unless the user explicitly requires that term.
+- For change-rate and variance-rate indicators, positive values use red text plus an upward SVG/icon; negative values use green text plus a downward SVG/icon; zero values use neutral text/icon treatment.
 
 Blocking behavior:
 
 - Stop before implementation if `visualMode` is not declared.
+- Stop before implementation if `brandMode` is not declared.
 - Stop before implementation if `pageShellPath` is not declared.
 - Stop before implementation if `pageStyleSource` is not declared.
 - Stop before implementation if `pageShellPath: custom` and `customDesignPath` is not declared.
-- Stop before implementation if `pageShellPath: custom` and the page has no real Haier logo asset configured.
+- Stop before implementation if `pageShellPath: custom`, `brandMode: haierBranded`, and the page has no real Haier logo asset configured.
 - Stop before implementation if a required logo slot has neither asset nor placeholder.
 - Stop before implementation if `sampleRestore` additions would alter the sample's first viewport without an explicit user request.
 
@@ -427,6 +445,7 @@ Default technical architecture:
 
 - Language and framework: TypeScript + Vue 3 single-file components with Composition API.
 - Build tool: Vite.
+- UI component framework: Element Plus for page controls, filters, form fields, buttons, tabs, tags, popovers, dropdowns, dialogs, drawers, tooltips, pagination, and simple data tables unless an existing project design system explicitly supersedes it.
 - Charting: ECharts for KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and most dashboard charts.
 - Analytical tables: AntV S2 through `@antv/s2` and `@antv/s2-vue` for pivot tables, cross tables, wide metric matrices, frozen headers, dense comparison grids, and analysis-style tables.
 - Icons and controls: use the template's existing icon/control system; keep business widgets typed and scoped.
@@ -469,19 +488,25 @@ Do not choose a template only because it "looks better"; choose by scenario, nav
 Implementation must:
 
 - Keep business data out of config when the template expects data files or data sources.
-- Declare `visualMode` and pass brand asset discovery before changing files.
+- Declare `brandMode`, `visualMode`, and pass brand asset discovery before changing files.
 - Declare `pageShellPath`; if custom, declare `customDesignPath`.
 - Declare `pageStyleSource`; if no page style and no HTML/source/sample styling is provided, use a bundled template by default.
-- If implementing a custom shell, configure a real bundled Haier logo before final delivery. For HTML replication, add the Haier logo even if the source HTML lacks it.
+- If implementing a `brandMode: haierBranded` custom shell, configure a real bundled Haier logo before final delivery. For HTML replication, add the Haier logo even if the source HTML lacks it while preserving the source hierarchy.
+- If implementing `brandMode: sampleNative` or `neutral`, record why Haier branding is not required rather than silently omitting the logo.
 - If implementing a custom shell, declare `customLayoutPattern` from the allowed set before changing files.
 - Preserve sample shell/module order/control count/layering/card proportions when `visualMode: sampleRestore`; label any enhancements.
+- Classify sample/source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`; do not make a component `must-have` only because it appears visually.
+- Embed added conclusions into existing sample-equivalent regions; do not add standalone horizontal bands unless the source has an equivalent band.
+- Keep HTML-replica and custom layouts on global UI tokens for palette, typography, spacing, radius, shadows, semantic colors, and controls unless exact restoration is explicitly requested.
+- Render rate/change/completion labels with `%` in Chinese UI, and use positive-red-up / negative-green-down SVG/icon semantics for change-rate indicators.
 - Use stable IDs for filters, interactions, and mock records.
 - Implement the data/filter/component linkage contract in the template config or custom runtime before visual polish.
 - Run the template `validate:dashboard` script or equivalent custom checks to block unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
-- Avoid naked native `<select>` in primary filters; use design-system/custom popover select, or a fully styled native select only for baseline prototypes.
+- Avoid naked native `<select>` in primary filters; use Element Plus `ElSelect`/`ElTreeSelect`/`ElCascader`/`ElDatePicker` or project design-system equivalents. Fully styled native select is allowed only for baseline non-final prototypes.
 - For flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, reserve rail, node, label, gutter, and edge-bend space before drawing.
 - Use ECharts before custom SVG/canvas for standard charts.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
+- Use Element Plus before hand-rolled DOM for filters, forms, buttons, tabs, tags, tooltips, popovers, dialogs, drawers, pagination, and simple operation/detail tables.
 - Implement component overflow and responsive behavior from earlier stages.
 - Run the self-check report and repair loop in Stage 10.4 before deployment or final handoff; start or preview the page inside the loop when runtime visual checks are needed.
 - Run and verify the page when a dev server is required. Do not finish by asking the user to start the project manually.

@@ -21,6 +21,7 @@ Self-check dimensions:
    - Check whether every used filter is configured successfully: stable `id`, label, default, option source, scope, reset behavior, visible active state, same-name field mapping or explicit `filterFields`.
    - Check mock data completeness for the component: mock rows include all selectable values for every bound filter, including default value, non-default options, cascade children, empty-state combinations, abnormal/risk cases, and permission-limited cases.
    - Check component configuration and binding: the widget mounts to an existing block, declares `visualType`, uses an existing `data.id` or explicit `dataPolicy`, receives the resolved mock/data prop, declares required fields/formulas/units, and binds to its filter component through the data-source/filter-map contract.
+   - For sample/source restoration, check `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`. A visible source module must not be treated as `must-have` unless it directly answers the stated report question.
    - Check interaction configuration and binding: clickable marks, rows, cards, buttons, drawers, modals, jumps, filter mutations, export/download/fullscreen, and close/back flows emit expected actions and target existing configured handlers.
    - Check layout capacity for the component: the page layout can carry all displayed indicators, labels, legends, tables, controls, warnings, and actions. If the component cannot carry the content, expand the layout, increase block span, split the component, move secondary details to drawer/fullscreen, or enable internal scroll/zoom.
    - Check block size and clipping: the assigned block and component body viewport are large enough after title/action/padding are reserved; no content is compressed, cropped, hidden behind overflow, or made unreadable.
@@ -55,6 +56,7 @@ Self-check dimensions:
    - Widget registry, widget props/types, data-source registry, filter sources, modals, assets, logo, theme, toolbar, and route/download configs are complete.
    - Component spans obey the legal component span matrix; oversized diagrams use viewport zoom/pan rather than overflowing their block.
    - Custom implementations define equivalent `dataSource`, `filterMap`, `componentBindings`, and `updateTriggers` contracts.
+   - Custom and HTML-replica implementations preserve global UI tokens for palette, typography, spacing, radius, shadows, semantic states, and controls unless exact restoration was explicitly requested.
 
 6. Visual and runtime verification.
    - Run `npm run validate:dashboard` when the project uses a bundled template or has the script.
@@ -63,6 +65,7 @@ Self-check dimensions:
    - Capture at least the first viewport. Also capture full-page, representative filtered state, tab/drawer/modal/drilldown/fullscreen state, and responsive viewport screenshots when in scope.
    - Run multimodal visual anomaly recognition using `../../workflow-shared-references/visual-multimodal-browser-check.md`.
    - Verify there is no layout offset, excessive blank area, text overlap, graphic overlap, critical truncation, low contrast, unreadable chart/table/KPI content, component overflow outside the component body, blank chart/canvas/table, or broken visual proportion.
+   - Verify `brandMode`, logo/header placement, sample conclusion placement, global UI token consistency, Chinese `%` metric display, and positive-red-up / negative-green-down change-rate indicators.
    - Record each anomaly as a `VIS-*` finding with screenshot path, viewport/state, severity, component/region, impact, fix direction, and retest criteria.
    - Check at least one representative filter change and one representative interaction in the running page when browser tooling or local verification is available.
    - If the page is taller than 1080px, verify download/print includes the full scrollable content across multiple pages rather than only the first viewport.

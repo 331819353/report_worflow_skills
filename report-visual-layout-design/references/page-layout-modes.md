@@ -15,6 +15,14 @@ Declare `pageStyleSource` before implementation:
 - `userSpecified`: user names the design style or shell; follow that design.
 - `sampleProvided`: screenshot, HTML source, image, or display sample supplies style; follow the sample unless optimization/redesign is requested.
 
+Declare `brandMode` before `visualMode`:
+
+- `haierBranded`: default for Haier enterprise pages, Haier-branded prototypes, and custom report pages unless the user clearly asks otherwise.
+- `sampleNative`: only when a provided HTML/source/sample is explicitly non-Haier and the user asks to keep source-native branding.
+- `neutral`: only when the user explicitly asks for a generic non-branded page.
+- If `brandMode: haierBranded`, configure the Haier logo and global UI tokens while preserving the selected shell's main hierarchy.
+- If `brandMode: sampleNative` or `neutral`, record why Haier branding is not required instead of silently omitting the decision.
+
 ## 2. Custom Report Page
 
 When `pageShellPath: custom`, choose exactly one `customDesignPath`:
@@ -22,12 +30,20 @@ When `pageShellPath: custom`, choose exactly one `customDesignPath`:
 - `htmlReplica`: replicate provided HTML/source/sample structure. Preserve the source shell, module order, container hierarchy, main control count, layer structure, and card proportions unless the user explicitly asks for redesign.
 - `freeDesign`: create a custom shell from requirements without an HTML/source/sample visual authority. Use this only when the user asks for custom/free design or a template limitation is documented.
 
-Hard logo rule for both custom paths:
+Hard logo rule for both custom paths when `brandMode: haierBranded`:
 
 - `htmlReplica` and `freeDesign` must use the bundled Haier logo in the unified title/control area, header, or sidebar brand area.
 - Prefer `haier-logo.svg` / original color on light backgrounds and `haier-logo-white.svg` on dark backgrounds.
 - If the provided HTML/sample lacks a logo, add Haier logo as a required brand element while preserving the sample's main layout.
-- A logo placeholder is a blocking gap for custom pages, not an accepted final state. Do not mark a custom page complete until a real Haier logo asset is configured.
+- A logo placeholder is a blocking gap for `brandMode: haierBranded` custom pages, not an accepted final state. Do not mark that custom page complete until a real Haier logo asset is configured.
+- If `brandMode: sampleNative` or `neutral`, do not add Haier logo only because the page is custom; keep the source/native identity and record the brand decision.
+
+Global UI rule for custom paths:
+
+- `htmlReplica` preserves the source shell, module order, container hierarchy, main control count, layer structure, and card proportions.
+- `freeDesign` follows the selected custom layout pattern.
+- Both paths must use the project/global UI tokens for palette, typography, spacing, radius, shadows, semantic states, and Element Plus/control styling unless the user explicitly asks for exact color restoration.
+- Do not let copied HTML inline colors, one-off card surfaces, or ad hoc control styles override the global UI system.
 
 Custom pages need these capabilities, but they do not need to be three separate visual regions:
 

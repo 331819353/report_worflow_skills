@@ -42,7 +42,7 @@ For every report requirement or extracted information set:
 
 1. Normalize the input: theme, audience, scenario, primary question, decision, time scope, organization scope, object, metrics, dimensions, baseline, process stage, rules, risks, tasks, evidence, source, permissions.
 2. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
-3. Map answer atoms to content blocks and component bundles with priority: must-have, should-have, optional.
+3. Map answer atoms to content blocks and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
 4. Define the mock/data model: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, and time coverage.
 5. Define the filter/query model: main filters, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components.
 6. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, and stale-state behavior.
@@ -78,6 +78,8 @@ Loading guidance:
 ## Hard Constraints
 
 - A component is valid only when it answers a named business question.
+- For sample/source restoration, do not promote a visible sample module to `must-have` only because it exists in the source. Mark it as `businessRequired` only when it directly answers the user's stated report question; otherwise use `sampleStructure` or `optionalEnhancement`.
+- For status-overview reports, process/path/flow diagrams are secondary unless the core question explicitly asks for value chain, dependency, lineage, transmission, process conversion, or flow attribution.
 - A component without a data source is decorative unless it is explicitly static narrative.
 - First-screen cards and large panels cannot remain unbound "暂无数据" placeholders.
 - Mock data must make KPI totals, chart totals, table rows, drawers, and exports reconcile under the same active filters.
@@ -91,6 +93,7 @@ Loading guidance:
 - Waterfall charts require additive contribution logic.
 - Maps are valid only when geography itself matters.
 - Pie/donut charts are not the default for ranking, trend, or precise comparison.
+- Vue report prototypes should use Element Plus for standard UI controls: filters, inputs, selects, cascaders, date pickers, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables/lists when S2 analytical behavior is unnecessary.
 - Dense analytical tables, pivot tables, cross tables, and wide metric matrices should use AntV S2.
 - Every implementation mapping must declare data source, grain, required fields, formulas, filter mapping, interaction state, update triggers, and validation cases.
 - Every layout must fit the `8 * N` rectangular grid and legal span rules from `report-visual-layout-design`.
@@ -104,6 +107,7 @@ When this skill is used, produce at least:
 1. Report theme, primary question, business decision, and user scenario.
 2. Answer atom decomposition.
 3. Component bundle mapping with priority.
+   For sample/source restoration, include `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
 4. Mock/data model: datasets, grain, fields, formulas, signals, edge cases.
 5. Filter/query model: filters, option sources, defaults, cascades, permissions, query params.
 6. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.

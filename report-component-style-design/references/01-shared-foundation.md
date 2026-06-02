@@ -20,6 +20,13 @@ Apply these rules to every component before applying component-specific rules.
 - Core KPI value: 24-36px depending on block importance and available space.
 - Use tabular numerals for values that need comparison.
 
+## Global UI And Metric Semantics
+
+- Components inherit the page/global UI tokens for palette, typography, spacing, radius, shadows, semantic states, and control styles. HTML/source/custom layouts may control structure, but they must not introduce one-off local colors or surfaces that conflict with the global UI.
+- Rate, completion, variance-rate, YoY, MoM, and change labels use `%` in visible Chinese UI. Do not show `pt`, `p.p.`, or `percentage point` labels unless explicitly requested.
+- Change-rate and variance-rate indicators use positive-red-up and negative-green-down semantics: positive value = red text plus upward SVG/icon; negative value = green text plus downward SVG/icon; zero = neutral.
+- Color is not enough for rate/change state; pair color with sign, icon, text, badge, or shape.
+
 ## Non-Overflow Rules
 
 - Core labels, KPI values, warning text, action text, and decision-critical fields must not overflow their containers.

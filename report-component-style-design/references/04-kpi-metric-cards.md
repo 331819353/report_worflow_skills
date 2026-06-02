@@ -45,8 +45,10 @@ Fit and overflow rules:
 Semantic rules:
 
 - `同比` and `环比` describe movement. Use up/down icon plus signed value.
+- In Chinese report UI, rate/change/completion labels use `%`; do not render `pt`, `p.p.`, or `percentage point` labels unless explicitly requested.
+- For change-rate and variance-rate indicators, positive values use red text plus an upward SVG/icon, negative values use green text plus a downward SVG/icon, and zero values use neutral styling.
 - `目标` describes attainment. Use progress wording, target gap, or attainment rate; do not force it into up/down semantics unless the business defines it that way.
-- Up is not always good. Color must follow business meaning, not arrow direction alone. For ordinary operating health, default positive/improved is green and negative/risk is red. For finance/stock-style reports where red means rising, document the inverse rule.
+- Up is not always good. For non-change status such as health, risk, completion, and target attainment, color follows business meaning. For change-rate and variance-rate values, use the required positive-red-up / negative-green-down convention unless the user explicitly supplies another company standard.
 
 ## Trend Icon SVG Assets
 
@@ -66,8 +68,8 @@ Suggested CSS tokens:
 
 ```css
 :root {
-  --kpi-trend-positive: #16a34a;
-  --kpi-trend-negative: #dc2626;
+  --kpi-trend-positive: #dc2626;
+  --kpi-trend-negative: #16a34a;
   --kpi-trend-neutral: #64748b;
   --kpi-target-good-bg: #ecfdf3;
   --kpi-target-risk-bg: #fef2f2;
@@ -120,6 +122,7 @@ Suggested CSS tokens:
 ## Comparison And Status
 
 - Use consistent positive/negative semantics across all KPI cards.
+- For change-rate and variance-rate values, consistency means positive-red-up and negative-green-down, with `%` display in Chinese UI.
 - Do not use color alone. Pair color with sign, icon, label, or badge.
 - Baseline and target text move below the value or into tooltip when the card is narrow.
 - For pyramid KPI cards, comparison cells must use one consistent order across the page, normally `同比`, `环比`, `目标`.

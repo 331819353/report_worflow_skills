@@ -8,6 +8,8 @@ Use for executive conclusions, diagnostic findings, risk explanations, abstracts
 - Keep short summaries vertically centered. Top-align multi-line narratives.
 - Highlight only key numbers, status words, or action verbs.
 - Avoid paragraph-length content in small grid blocks.
+- In `sampleRestore`, added conclusions, insights, or status summaries must be embedded into an existing sample-equivalent region such as the header/control area, panorama header, section head, or summary card. Do not create a new standalone horizontal band unless the source sample already has an equivalent band.
+- Added summary components must be labeled as enhancements when they are not present in the sample and must not change the first viewport or main body layout.
 
 ## Fit
 
@@ -22,6 +24,8 @@ Use for executive conclusions, diagnostic findings, risk explanations, abstracts
 - Conclusion text: 14-16px, weight 500-600 when it is the main answer.
 - Supporting explanation: 12-14px, regular weight.
 - Numbers inside summaries should use the same precision and semantic colors as related KPI/chart components.
+- Text summaries must inherit the surrounding page shell tokens: surface, spacing, border/radius, typography, density, and semantic colors. Do not introduce a new visual surface or rhythm that conflicts with adjacent report sections.
+- Rate/change numbers inside summaries use `%` for Chinese UI labels. Positive change rates use red text with an upward SVG/icon, negative change rates use green text with a downward SVG/icon, and zero values use neutral styling.
 
 ## Overflow
 

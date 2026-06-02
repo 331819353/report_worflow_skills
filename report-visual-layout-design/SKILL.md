@@ -18,6 +18,7 @@ Keep the canonical skill name `report-visual-layout-design` for compatibility wi
 - First decide `pageShellPath`: `template` or `custom`.
 - If the user does not specify a page style and does not provide HTML/source/sample styling, use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction.
 - If `pageShellPath: custom`, declare exactly one `customDesignPath`: `htmlReplica` or `freeDesign`.
+- Before `visualMode`, declare exactly one `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
 - Before implementation, declare exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`.
 - Keep the page simple, elegant, unified, and work-focused.
 - Use Haier blue and white as the primary palette. Avoid redundant information, heavy decoration, and many competing colors.
@@ -56,14 +57,21 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 - If `pageShellPath: custom`, declare `customDesignPath`:
   - `htmlReplica`: replicate provided HTML/source/sample structure.
   - `freeDesign`: create a custom shell from requirements without HTML/source/sample visual authority.
-- Both `htmlReplica` and `freeDesign` must configure a real bundled Haier logo. A placeholder is a blocker, not an accepted custom-page final state.
+- Custom Haier pages default to `brandMode: haierBranded`; both `htmlReplica` and `freeDesign` then must configure a real bundled Haier logo. A placeholder is a blocker, not an accepted custom-page final state. Explicit `sampleNative` or `neutral` pages must record why Haier branding is not required.
+
+### Brand Mode Gate
+
+- Declare exactly one `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
+- Use `haierBranded` for Haier enterprise pages, Haier-branded report prototypes, and custom report pages unless the user clearly asks for non-Haier/native sample branding.
+- If `brandMode: haierBranded`, the Haier logo and global UI token gates override generic sample fidelity while preserving the sample's main hierarchy.
+- If `brandMode: sampleNative` or `neutral`, do not inject Haier logo only because the shell is custom; record the non-Haier decision in the output.
 
 ### Brand Asset Gate
 
-- For any Haier or branded report page, discover logo assets before layout or implementation: check the existing project `public`/`assets` paths, the selected template `public` path, then bundled assets `assets/haier-logo.svg`, `assets/haier-logo-original.svg`, and `assets/haier-logo-white.svg`.
+- For `brandMode: haierBranded` report pages, discover logo assets before layout or implementation: check the existing project `public`/`assets` paths, the selected template `public` path, then bundled assets `assets/haier-logo.svg`, `assets/haier-logo-original.svg`, and `assets/haier-logo-white.svg`.
 - Configure the logo in the header, unified title/control area, sidebar brand area, or template logo slot before implementing business components.
 - If no usable logo asset is available, keep the same logo slot and render an explicit placeholder such as `Logo placeholder: asset missing`; record the missing asset as a gap. Do not silently omit the logo.
-- For `pageShellPath: custom`, placeholder does not pass acceptance. Copy or reference a real bundled Haier logo before final delivery.
+- For `pageShellPath: custom` with `brandMode: haierBranded`, placeholder does not pass acceptance. Copy or reference a real bundled Haier logo before final delivery.
 - Screenshot acceptance must confirm that the logo or declared placeholder is visible, uses the correct light/dark variant, is not stretched, and is not clipped.
 
 ### Unique Visual Mode Gate
@@ -74,7 +82,18 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
   - `sciFiCockpit`: only for explicit big-screen, cockpit, command-center, exhibition, monitoring-wall, or fixed 1920*1080 presentation use.
 - Conflict priority: explicit user instruction wins; otherwise sample/source restoration uses `sampleRestore`; explicit big-screen presentation uses `sciFiCockpit`; all other business report prototypes use `haierEnterprise`.
 - If `sampleRestore` conflicts with Haier enterprise styling, preserve the sample's shell, module order, container hierarchy, main control count, layer structure, and card proportions. Add Haier logo, filters, summaries, tables, matrices, drawers, or jumps only as labeled enhancements that do not change the first viewport or main layout unless the user asks for optimization.
+- In `sampleRestore`, added conclusions, insights, or status summaries must be embedded into an existing sample-equivalent region such as the header/control area, panorama header, section head, or summary card. Do not insert a new standalone horizontal band unless the source has an equivalent band.
 - If the user asks for enterprise/Haier unification or optimization, use `haierEnterprise`; treat the sample as information architecture and content evidence rather than a visual authority.
+
+### Global UI Token Gate
+
+- When layout/style follows HTML, screenshot, or custom design, preserve the user/source shell and module hierarchy, but use global UI tokens for palette, typography, spacing, radius, shadows, semantic colors, and control states unless the user explicitly requires exact color restoration.
+- A custom or HTML-replica page must not introduce one-off local colors, densities, shadows, or component surfaces that conflict with the selected template/project/global UI.
+
+### Chinese Metric Display Gate
+
+- Rate, completion, variance-rate, YoY, MoM, and change fields use `%` in visible Chinese UI. Do not render `pt`, `p.p.`, or `percentage point` in page labels unless the user explicitly requests that technical term.
+- Change-rate and variance-rate indicators use positive-red-up and negative-green-down semantics: positive value = red text plus upward SVG/icon; negative value = green text plus downward SVG/icon; zero = neutral.
 
 ### Custom Layout Pattern Gate
 
@@ -95,7 +114,7 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 ### Filter Control Implementation Gate
 
 - Main filter areas must not use naked native `<select>` controls as the final visual surface.
-- Use the existing design-system `Select`/`Dropdown`/`TreeSelect`/`DatePicker` or a custom popover select. If a native `<select>` is unavoidable in a lightweight prototype, it must use `appearance: none`, a custom arrow, matching height/radius, and visible hover, focus, active, disabled, loading, and error states.
+- Use Element Plus controls (`ElSelect`, `ElDropdown`, `ElTreeSelect`, `ElCascader`, `ElDatePicker`, `ElInput`, `ElButton`, `ElPopover`) or an existing project design system equivalent. If a native `<select>` is unavoidable in a lightweight prototype, it must use `appearance: none`, a custom arrow, matching height/radius, and visible hover, focus, active, disabled, loading, and error states.
 - Native OS dropdown menus cannot be fully styled or screenshot-controlled; advanced visual acceptance requires a custom popover select.
 
 ## Reference Map
@@ -120,7 +139,7 @@ Load only the reference sections needed for the task:
 ## Workflow
 
 1. Identify context: report type, audience, core question, usage scenario, and whether the implementation uses `pageShellPath: template` or `pageShellPath: custom`.
-2. Declare `pageStyleSource`, `pageShellPath`, `visualMode`, and pass the brand asset gate. If the input is a display sample, screenshot, or HTML source, decide whether it is `sampleRestore` or only an information-architecture reference.
+2. Declare `pageStyleSource`, `pageShellPath`, `brandMode`, `visualMode`, and pass the brand asset gate. If the input is a display sample, screenshot, or HTML source, decide whether it is `sampleRestore` or only an information-architecture reference.
 3. Choose the shell mode:
    - Custom page: design one coherent title/navigation/filter control area plus the `8 * N` content display area.
    - Template page: map requirements into the selected template's existing logo, nav, filter, toolbar, modal, and grid configuration.
@@ -139,12 +158,16 @@ Before finalizing a layout, verify:
 - The first meaningful viewport answers the primary report question or exposes the correct action entry.
 - `pageShellPath` is declared as `template` or `custom`.
 - `pageStyleSource` is declared; absence of style/HTML/sample input routes to a bundled template by default.
+- Exactly one `brandMode` is declared and its logo/global-token implications are followed.
 - Exactly one `visualMode` is declared and conflicts with samples, templates, Haier branding, or sci-fi styling are resolved by the hard gate.
 - If `pageShellPath: custom`, exactly one `customDesignPath` is declared: `htmlReplica` or `freeDesign`.
 - Any custom shell declares exactly one `customLayoutPattern`: `symmetricBalance`, `threePart`, `masterDetail`, or `narrativeStack`.
 - Brand asset discovery is complete; the logo slot contains the correct asset or an explicit placeholder and the gap is recorded.
-- Custom pages use a real bundled Haier logo; placeholder state is treated as blocked rather than pass.
+- Custom pages with `brandMode: haierBranded` use a real bundled Haier logo; placeholder state is treated as blocked rather than pass.
 - For sample/source restoration, page shell, module order, container hierarchy, main control count, layer structure, and card proportions match the sample unless an enhancement is explicitly labeled.
+- For sample/source restoration, added conclusions, insights, or status summaries are embedded into existing sample-equivalent regions rather than standalone bands.
+- Custom and HTML-replica pages use global UI tokens for palette, typography, spacing, radius, semantic colors, and control states unless exact restoration is explicitly required.
+- Rate/change labels use Chinese `%` display and trend indicators follow positive-red-up / negative-green-down icon semantics.
 - The shell choice matches the scenario: single-page, left-nav analytics, sci-fi cockpit, or custom page.
 - Every top-level content block occupies a legal rectangular `8 * N` grid span.
 - Template choice, block IDs, component order, and `columns * rows` spans stay stable across revisions unless the business question, content volume, or display scenario changes.
@@ -152,7 +175,7 @@ Before finalizing a layout, verify:
 - Titles, filters, toolbar actions, legends, labels, charts, tables, and empty states do not overlap or clip.
 - Haier logo variant, brand colors, typography, spacing, and density remain consistent.
 - Flow, Sankey, graph, tree, decomposition, and lineage layouts pass the 16px safe-spacing gate.
-- Main filter controls use design-system/custom select patterns, or a fully styled native select only for baseline prototypes.
+- Main filter controls use Element Plus or project design-system select/dropdown/date/cascader patterns, or a fully styled native select only for baseline prototypes.
 - Tables, dense charts, maps, lineage graphs, Gantt views, and complex diagrams have scroll, zoom, pan, drawer, or fullscreen strategy.
 - Loading, empty, error, no-permission, stale, export, refresh, and fullscreen states have visible layout placement.
 
@@ -170,7 +193,7 @@ Before finalizing a layout, verify:
 When asked to design a report visual layout, structure the answer as:
 
 1. 页面定位: report type, user, core question, usage scenario, custom shell or template-based.
-2. 样式来源: `pageStyleSource`, `visualMode`, and `customLayoutPattern` when the shell is custom.
+2. 样式来源: `pageStyleSource`, `brandMode`, `visualMode`, and `customLayoutPattern` when the shell is custom.
 3. 页面外壳: unified title/navigation/filter control area, logo placement, actions, and template mapping if applicable.
 4. 品牌风格: Haier logo variant, Haier blue/white palette, typography, spacing, density, surfaces.
 5. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.

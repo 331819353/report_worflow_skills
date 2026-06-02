@@ -21,6 +21,7 @@ Do not create a separate domain overlay. Domain words such as 产业, 区域, �
 ## Layout Coordination
 
 - Put high-level judgment before detailed evidence unless the report type is detail query or reconciliation-first.
+- In sample/source restoration, distinguish business necessity from visual restoration. A visible module should be `businessRequired` only when it directly answers the stated report question; otherwise classify it as `sampleStructure` or `optionalEnhancement`.
 - Use the `8 * N` grid from `report-visual-layout-design`; every component must occupy a rectangular group of blocks.
 - Choose each component's span from the legal component span matrix in `report-visual-layout-design`.
 - Preserve the scrollable template block-height rule: every resolved block must be at least 220px tall, and layouts taller than 1080px must scroll vertically instead of compressing rows. Fixed sci-fi/big-screen templates are exempt.
@@ -43,6 +44,7 @@ Apply `report-component-style-design`:
 - Components on the same page should share card base, radius, shadow, typography, status colors, and interaction states.
 - Light enterprise components default to white cards with 8px radius, 24px padding, `0 2px 10px rgba(0, 0, 0, 0.05)` shadow, and no hard default border.
 - Status fields, risk labels, SLA states, and trend judgments should map to badge/pill or icon+text components rather than plain text.
+- Rate/change indicators in Chinese UI use `%`, and change-rate semantics are positive-red-up and negative-green-down with icon+text rather than color alone.
 - Multi-series chart mappings must include a visible legend zone.
 
 ## Output Format
@@ -71,6 +73,7 @@ For implementation tasks, component bundle, data model, filter model, interactio
 - Every component has a clear business question and semantic role.
 - There is one primary answer area, not a flat wall of equal-weight charts.
 - There is no chart chosen only for decoration.
+- No source/sample module is marked `must-have` only because it exists visually.
 - Exact-value tasks have table/card support.
 - Cause-analysis tasks have decomposition support.
 - Process/conversion tasks have ordered stage logic before using funnel.

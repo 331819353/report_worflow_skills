@@ -4,6 +4,8 @@
 
 Choose one dominant structure based on the report goal.
 
+When `visualMode: sampleRestore`, any added conclusion, insight, or status summary must reuse an existing sample-equivalent region in the chosen structure: header/control area, panorama header, section head, or summary card. Do not insert a standalone horizontal band between the toolbar and body unless the source sample already has an equivalent band.
+
 ### Executive Narrative
 
 Use for status overview, review recap, performance evaluation, and leadership pages.
@@ -73,6 +75,8 @@ Use:
 - Drawer for record details, evidence, decomposition, task processing, anomaly handling, or source trace.
 - Modal for focused confirmations or short forms.
 - Full detail page when the object has many modules or a long handling process.
+
+In Vue report prototypes, use Element Plus `ElPopover`, `ElTooltip`, `ElDrawer`, `ElDialog`, `ElTabs`, `ElForm`, `ElButton`, and `ElTag` for standard overlay and action surfaces unless an existing project design system supersedes Element Plus.
 
 Prefer right drawers for report work because they preserve page context.
 

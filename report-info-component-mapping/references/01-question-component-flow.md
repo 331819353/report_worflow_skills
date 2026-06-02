@@ -60,6 +60,10 @@ Use this reference when deciding how a business question becomes answer atoms, c
 ## Component Selection Constraints
 
 - A component is valid only when it answers a named business question.
+- In sample/source restoration, a visible source module is not automatically `must-have`. Classify each source module as:
+  - `businessRequired`: directly answers the user's stated report question.
+  - `sampleStructure`: needed to preserve the sample's shell, hierarchy, or module rhythm, but not a business-required component.
+  - `optionalEnhancement`: useful extra capability that should be labeled and must not alter the sample's first viewport or main body layout.
 - Two components may show the same metric only when they answer different tasks, such as current value and trend.
 - KPI cards must include actual value, unit, period, comparison baseline, direction, and status rule when judgment is implied.
 - Trend charts require consistent time grain.
@@ -70,8 +74,9 @@ Use this reference when deciding how a business question becomes answer atoms, c
 - Maps are valid only when geography itself matters.
 - Gauges are valid only for a single bounded progress/status metric.
 - Dense analytical tables, pivot tables, cross tables, and wide metric matrices should use AntV S2.
-- Simple operation lists, alerts, task lists, and short forms may use Vue/HTML tables.
+- Simple operation lists, alerts, task lists, short forms, pagination, tags, popovers, dialogs, drawers, and basic data tables should use Element Plus in Vue report prototypes unless the existing project design system supersedes it.
 - Large graphs such as lineage, decomposition, process network, DuPont, Gantt, or map need a viewport with zoom, pan, reset, and fullscreen.
+- For status-overview reports, process/path/flow diagrams are secondary. Use them only when the core question explicitly asks for value chain, dependency, lineage, transmission, process conversion, or flow attribution; otherwise prefer KPI, target/variance, trend, structure, ranking, or risk-entry components.
 
 ## Multi-Component Constraints
 

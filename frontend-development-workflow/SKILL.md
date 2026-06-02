@@ -88,6 +88,9 @@ Use the frontend specialty skills as guardrails inside this workflow:
 
 - Use the repository's package manager and framework conventions. Do not convert stacks.
 - Keep provider contracts typed where the project uses TypeScript.
+- For Vue report/prototype pages, preserve or introduce Element Plus as the default UI control layer for filters, forms, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables unless the existing project design system explicitly supersedes it.
+- For Chinese report UI, render rate/change/completion fields with `%` instead of `pt`, `p.p.`, or `percentage point` labels unless explicitly required; change-rate and variance-rate indicators use positive-red-up and negative-green-down icon+text semantics.
+- Preserve global UI tokens when implementing HTML-replica or custom layouts: copied structure may remain, but palette, typography, spacing, radius, shadows, semantic colors, and control states should not become one-off local styles.
 - Prefer service/composable/store/client/data-source integration over provider calls scattered inside templates.
 - Keep mock fallback only when the user requests offline/demo mode or when a documented external blocker prevents runtime integration.
 - Normalize provider payload fields into the existing UI data shape instead of rewriting the whole page around provider naming.
@@ -124,6 +127,8 @@ Maintain these notes in the task response or project docs when useful:
 - Each page/component has been checked for broken controls, dead routes, invalid interactions, and edge states that stopped working after provider integration.
 - User-facing text no longer exposes prototype-only wording unless the requirement explicitly keeps it.
 - Loading, empty, error, partial, no-permission, token-invalid, and retry states behave without layout breakage.
+- Rate/change indicators use `%` in visible Chinese UI and follow positive-red-up / negative-green-down SVG/icon semantics.
+- HTML-replica and custom pages preserve global UI token consistency instead of leaking copied inline colors or one-off component surfaces.
 - Env, proxy, provider config, auth, base path, static assets, route mode, build output, and preview/deploy URL behavior are verified or have a precise external blocker.
 - 前端功能说明 exists or the final response includes the same page/module/provider/filter/interaction/testing-handoff content.
 - Typecheck, lint, test, and build are run when available, or skipped with a clear reason.
