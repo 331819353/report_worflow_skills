@@ -30,7 +30,7 @@ Only the sci-fi cockpit template is normally fixed to one `1920 * 1080` screen. 
 
 ## 2. Size Formula
 
-Compute the actual top-level block size before choosing the component:
+Compute the actual top-level block size before choosing or accepting the component span. Defaults are recommendations only; a span is final only after type and pixel validation.
 
 ```text
 columnWidth = (contentWidth - (8 - 1) * gap) / 8
@@ -48,13 +48,358 @@ totalGridHeight = rowCount * rowHeight + (rowCount - 1) * gap
 
 If `totalGridHeight` is taller than the available viewport height, keep the block sizes and let the report scroll vertically.
 
+Do not calculate `rowHeight` by dividing the viewport height by `N`. `rowHeight` is a configured minimum. When content needs more vertical space, add rows, split the content, allow scrolling, or paginate.
+
 Default report cards:
 
 - 1920 viewport baseline: `horizontalPadding = 20-24`, `headerHeight = 44-56`.
 - 1280 viewport baseline: `horizontalPadding = 16-20`, `headerHeight = 40-48`.
 - Dense sci-fi blocks: padding may be smaller, but title, legend, and chart viewport must still have fixed space.
 
-## 3. Practical Presets
+## 3. Preferred Span To Final Span
+
+Every component has a preferred span, a type minimum span, and a pixel-validated required span:
+
+```text
+final_span = max(
+  preferred_span,
+  type_min_span,
+  pixel_validated_required_span
+)
+```
+
+The preferred span is only a starting point. A layout is invalid if it keeps the preferred span while the computed body viewport is smaller than the component's minimum requirement.
+
+Final required size must not be determined by component type alone. Calculate it as:
+
+```text
+final_required_width_px =
+base_min_outer_width_px + complexity_width_addition_px
+
+final_required_height_px =
+base_min_outer_height_px + complexity_height_addition_px
+```
+
+Then choose the smallest valid grid span that satisfies:
+
+```text
+computed_outer_width_px >= final_required_width_px
+computed_outer_height_px >= final_required_height_px
+```
+
+If no span can satisfy the requirement within the current row, move the component to a new row. If no span can satisfy the requirement within 8 columns, use full-width layout, split the component, paginate, drill down, aggregate, or render summary first.
+
+Validation sequence:
+
+1. Pick the preferred span from the component plan.
+2. Apply the component type minimum span.
+3. Apply complexity expansion by content count, label length, node/edge count, depth, rows, columns, markers, or tasks.
+4. Calculate `columnWidth`, `blockWidth`, and `blockHeight`.
+5. Subtract component padding, title/header, footer, legend, axis reserve, table header, and other fixed vertical costs.
+6. Compare the remaining body/plot/table/text viewport with the final required minimum.
+7. If width fails, increase columns first.
+8. If height fails, increase rows first.
+9. If both fail, increase both.
+10. If the upgraded block cannot fit at the current position, move it or append rows.
+11. If it still cannot fit, split, paginate, or move dense details to drawer/fullscreen.
+
+Breakpoints provide hints only. Pixel validation is the final authority, so `1279px` and `1281px` should not create contradictory layouts when the computed body size is effectively the same.
+
+## 4. Pixel Calculation Details
+
+For an 8-column page:
+
+```text
+availableWidth = pageWidth - 2 * pagePadding
+columnWidth = (availableWidth - 7 * gridGap) / 8
+outerWidth = colSpan * columnWidth + (colSpan - 1) * gridGap
+outerHeight = rowSpan * rowHeight + (rowSpan - 1) * gridGap
+contentWidth = outerWidth - 2 * componentPadding
+contentHeight = outerHeight - 2 * componentPadding - reservedVerticalSpace
+```
+
+Common reserved vertical space:
+
+```text
+simpleKpiReserve = titleHeight + subtitleHeight
+richKpiReserve = titleHeight + subtitleHeight + innerGap
+chartReserve = titleHeight + legendHeight + axisReservedHeight
+tableReserve = titleHeight + tableHeaderHeight
+textReserve = titleHeight
+```
+
+Default calculation constants when the selected template does not provide more specific tokens:
+
+| Token | Default | Compact below 1280px | Minimum |
+| --- | ---: | ---: | ---: |
+| `gridColumns` | 8 | 8 | 8 |
+| `pagePadding` | 32px | 24px | 24px |
+| `gridGap` | 16px | 12px | 12px |
+| `componentPadding` | 16px | 14px | 12px |
+| `innerGap` | 8px | 8px | 8px |
+| `rowHeight` | template value | template value | 96px; 220px for scrollable templates |
+| `titleHeight` | 24px | 24px | 20px |
+| `subtitleHeight` | 20px | 20px | 18px |
+| `legendHeight` | 28px | 28px | 24px |
+| `axisReservedHeight` | 32px | 32px | 28px |
+| `tableHeaderHeight` | 36px | 36px | 32px |
+| `tableRowHeight` | 36px | 36px | 32px |
+
+Do not reduce padding, gap, row height, or line height below the minimums to force a failed block to pass.
+
+## 5. Extended Component Size Requirements
+
+Classify every component into one of the following component types. `min_outer_width_px` and `min_outer_height_px` are hard base constraints. `recommended_min_span` is only the starting recommendation for an 8-column grid with `rowHeight ~= 96px` and `gap ~= 12-16px`; final span still requires pixel validation.
+
+| component_type | min_outer_width_px | min_outer_height_px | recommended_min_span | notes |
+| --- | ---: | ---: | --- | --- |
+| `title` | 600 | 56 | `8x1` | Page main title |
+| `section_header` | 360 | 48 | `8x1` | Section or chapter title |
+| `filter_bar` | 600 | 64 | `8x1` | Filter and query controls |
+| `tab_bar` | 500 | 56 | `8x1` | Tabs or dimension switch |
+| `simple_kpi` | 220 | 120 | `2x1_or_2x2` | Single metric card |
+| `rich_kpi` | 300 | 160 | `3x2` | Multi-line KPI with comparison |
+| `mini_chart_kpi` | 320 | 180 | `3x2` | KPI with sparkline or mini chart |
+| `progress_kpi` | 260 | 140 | `2x2_or_3x2` | KPI with progress bar |
+| `gauge_kpi` | 300 | 220 | `3x3` | Gauge-style KPI |
+| `kpi_group` | 600 | 180 | `8x2` | Group of KPI cards |
+| `line_chart` | 420 | 280 | `4x3` | Line chart |
+| `area_chart` | 420 | 300 | `4x3` | Area or stacked area chart |
+| `bar_chart` | 420 | 300 | `4x3` | Vertical bar chart |
+| `horizontal_bar_chart` | 460 | 300 | `4x3_or_5x3` | Horizontal bar chart; left labels need room |
+| `stacked_bar_chart` | 480 | 320 | `4x4` | Stacked or percentage bar chart |
+| `combo_chart` | 520 | 340 | `5x4` | Bar-line combo or dual-axis chart |
+| `scatter_chart` | 460 | 320 | `4x4` | Scatter plot |
+| `bubble_chart` | 480 | 340 | `4x4` | Bubble chart |
+| `pie_chart` | 320 | 320 | `3x3_or_4x3` | Pie chart needs near-square plot |
+| `donut_chart` | 360 | 320 | `3x3_or_4x3` | Donut chart, often with center metric |
+| `funnel_chart` | 360 | 300 | `4x3` | Funnel chart or conversion path |
+| `waterfall_chart` | 520 | 320 | `5x4` | Waterfall or attribution chart |
+| `radar_chart` | 360 | 340 | `4x4` | Radar chart |
+| `treemap_chart` | 420 | 320 | `4x3` | Treemap chart |
+| `sunburst_chart` | 420 | 360 | `4x4` | Multi-level sunburst hierarchy |
+| `heatmap_chart` | 480 | 340 | `5x4` | Matrix heatmap |
+| `calendar_heatmap` | 640 | 280 | `6x3_or_8x3` | Calendar heatmap |
+| `boxplot_chart` | 480 | 320 | `4x4` | Boxplot |
+| `histogram_chart` | 420 | 280 | `4x3` | Histogram or distribution chart |
+| `table` | 720 | 320 | `8x4` | Standard data table |
+| `pivot_table` | 760 | 360 | `8x4_or_8x5` | Pivot or cross-summary table |
+| `ranking_table` | 420 | 300 | `4x3` | Ranking list or Top N table |
+| `matrix_table` | 520 | 360 | `5x4_or_6x4` | Matrix, score, or 2D metric table |
+| `detail_list` | 360 | 240 | `4x3` | Detail, event, or log summary list |
+| `text_block` | 360 | 180 | `4x2` | Analysis text |
+| `insight_block` | 420 | 200 | `4x2` | Insight card |
+| `conclusion_block` | 600 | 180 | `8x2` | Conclusion section |
+| `recommendation_block` | 600 | 220 | `8x3` | Recommendations, actions, next steps |
+| `relationship_graph` | 560 | 420 | `6x5_or_8x5` | Entity relationship graph |
+| `dependency_graph` | 560 | 420 | `6x5_or_8x5` | Dependency graph or impact chain |
+| `sankey_chart` | 640 | 360 | `6x4_or_8x4` | Sankey flow chart |
+| `flow_chart` | 560 | 360 | `6x4` | Business process flow |
+| `org_chart` | 640 | 420 | `8x5` | Organization chart |
+| `tree_diagram` | 600 | 420 | `6x5_or_8x5` | Tree diagram |
+| `topology_graph` | 640 | 460 | `8x5` | System topology or architecture graph |
+| `timeline` | 640 | 220 | `8x3` | Timeline or milestones |
+| `gantt_chart` | 760 | 360 | `8x4_or_8x5` | Gantt chart |
+| `duPont_chart` | 720 | 420 | `8x5` | DuPont financial decomposition chart |
+| `map` | 480 | 360 | `4x4_or_8x4` | Map visualization |
+| `geo_heatmap` | 560 | 420 | `6x5_or_8x5` | Geographic heatmap |
+
+## 6. Complexity-Based Size Expansion Rules
+
+After applying the component type's base minimum size, expand the required size according to content complexity. The planner must follow this sequence:
+
+```text
+component_type
+  -> base_min_size
+  -> complexity_expansion
+  -> pixel_validation
+  -> final_span
+```
+
+### KPI Rules
+
+If a KPI contains any of the following, it is not `simple_kpi`:
+
+- more than one secondary metric;
+- sparkline;
+- progress bar;
+- gauge;
+- multiline explanation;
+- more than two comparison values.
+
+Reclassify it as `rich_kpi`, `mini_chart_kpi`, `progress_kpi`, or `gauge_kpi`.
+
+### Chart Rules
+
+For charts:
+
+```text
+if legend_item_count > 4:
+  min_outer_height_px += 40
+
+if legend_item_count > 8:
+  min_outer_width_px += 80
+  min_outer_height_px += 60
+
+if x_axis_label_count > 6:
+  min_outer_height_px += 32
+
+if x_axis_label_count > 12:
+  min_outer_width_px += 80
+  min_outer_height_px += 48
+
+if y_axis_label_max_length > 8 Chinese characters:
+  min_outer_width_px += 48
+```
+
+Never solve chart overcrowding only by reducing font size. Increase span, reduce label density with a reversible interaction, split, or paginate.
+
+### Table Rules
+
+For tables:
+
+```text
+if column_count > 6:
+  min_outer_width_px = max(min_outer_width_px, 760)
+
+if column_count > 10:
+  min_outer_width_px = max(min_outer_width_px, 900)
+  use horizontal scroll, column hiding, or pagination
+
+if row_count > 20:
+  min_outer_height_px += 96
+  prefer pagination or virtual scrolling
+
+if visible_rows < 5:
+  increase row_span or paginate
+```
+
+### Relationship Graph Rules
+
+For `relationship_graph`, `dependency_graph`, `topology_graph`, and similar graph components:
+
+```text
+if node_count <= 8:
+  use base minimum size
+
+if node_count > 8:
+  min_outer_width_px += 120
+  min_outer_height_px += 80
+
+if node_count > 20:
+  min_outer_width_px = max(min_outer_width_px, 760)
+  min_outer_height_px = max(min_outer_height_px, 520)
+  prefer 8-column full-width layout
+
+if edge_count > node_count * 2:
+  min_outer_width_px += 120
+  min_outer_height_px += 80
+
+if node_count > 40 or edge_count > 80:
+  do not render as a dense single graph
+  split by cluster, paginate, collapse nodes, or provide a summary table
+```
+
+### Sankey Rules
+
+For `sankey_chart`:
+
+```text
+if node_count > 10:
+  min_outer_height_px += 80
+
+if link_count > 15:
+  min_outer_width_px += 120
+
+if stages_count > 4:
+  min_outer_width_px = max(min_outer_width_px, 760)
+  use 8-column full-width layout
+```
+
+### Flow Chart Rules
+
+For `flow_chart`:
+
+```text
+if step_count <= 5:
+  use base minimum size
+
+if step_count > 5:
+  min_outer_width_px += 120
+  min_outer_height_px += 80
+
+if step_count > 10:
+  use full-width layout or split into phases
+```
+
+### Org Chart / Tree Diagram Rules
+
+For `org_chart`, `tree_diagram`, and `duPont_chart`:
+
+```text
+if tree_depth > 3:
+  min_outer_height_px += 96
+
+if max_nodes_per_level > 4:
+  min_outer_width_px += 160
+
+if tree_depth > 5 or total_node_count > 25:
+  use full-width layout, collapse levels, or paginate
+```
+
+### Gantt Chart Rules
+
+For `gantt_chart`:
+
+```text
+if task_count > 8:
+  min_outer_height_px += 96
+
+if task_count > 16:
+  use pagination or vertical scrolling
+
+if time_bucket_count > 8:
+  min_outer_width_px = max(min_outer_width_px, 900)
+  use full-width layout
+```
+
+### Map Rules
+
+For `map` and `geo_heatmap`:
+
+```text
+if region_label_count > 8:
+  min_outer_width_px += 80
+  min_outer_height_px += 60
+
+if marker_count > 50:
+  use clustering
+
+if marker_count > 200:
+  do not render all markers directly
+  use aggregation, clustering, or heatmap
+```
+
+### Text Capacity Rule
+
+Estimate text height before rendering:
+
+```text
+average_char_width_px =
+font_size_px * 0.9 for Chinese text
+font_size_px * 0.55 for English text
+font_size_px * 0.75 for mixed text
+
+estimated_lines =
+ceil(text_character_count * average_char_width_px / component_content_width_px)
+
+estimated_text_height_px =
+estimated_lines * line_height_px
+```
+
+If estimated text height exceeds content height, increase span, shorten text, split, collapse secondary text, or move details to drawer.
+
+## 7. Practical Presets
 
 Use these rounded values for planning visible block size. Exact implementation may use CSS variables from the selected template, but the layout decision must remain consistent with these limits. These presets do not cap total report height.
 
@@ -163,133 +508,46 @@ At `1280 * 768`, prefer collapsed or low-intrusion navigation. With a collapsed 
 
 Do not keep a wide 256px sidebar permanently open on a 1280-wide work surface unless the report is navigation-first and content density is intentionally reduced.
 
-## 4. Component Capacity By Span
+## 8. Composite Block Sanity Checks
 
-Use the table below to decide what a top-level block can safely carry. Larger spans may hold simpler components, but smaller spans must not inherit dense components from larger spans.
+When one block contains multiple subcomponents, classify each visible subcomponent with the 50-type table, then validate the outer block against the most demanding component plus added internal spacing, headers, dividers, controls, and legends.
 
-| Top-level span | Safe component content | Avoid |
-| --- | --- | --- |
-| `1*1` | One KPI, status tile, icon/value/delta, tiny sparkline. | Standard charts, tables, multiple metrics with labels, long titles. |
-| `2*1` | KPI plus sparkline, two small metrics, compact progress/gauge, mini status list. | Axis-heavy charts, wide legends, tables, more than two subcomponents. |
-| `3*1` | KPI trio, short conclusion text, compact horizontal bar, small status distribution. | Dense chart labels, table columns, chart plus ranking. |
-| `4*1` | Summary strip, 3-4 KPIs, concise conclusion with 1 small visual, compact timeline. | Full analytical table, two independent charts. |
-| `8*1` | Full-width KPI strip with 4-8 compact items, headline conclusion, period/status strip. | Dense table or complex chart unless it is intentionally shallow. |
-| `2*2` | Small pie/gauge/radar, Top 5 bar, 2-4 KPI group, text plus mini chart. | Standard table, long axis labels, chart plus table. |
-| `3*2` | Small/medium chart, 3-5 column small table, chart plus small tags, diagnostic text plus evidence. | More than one primary chart, 6+ table columns. |
-| `4*2` | Standard chart, pie plus legend, chart plus ranking, small table, 2-3 subcomponents. | Dense S2 table, complex map/tree, 4+ equal subcomponents. |
-| `5*2` / `6*2` | Primary chart plus side insight, medium table, chart plus short evidence list, map plus legend. | 6+ internal panels, very dense dimensions. |
-| `8*2` | Full-width primary chart, chart plus table, table with 6-8 columns, 4-subcomponent composite. | Complex multi-level S2 analysis that needs vertical depth. |
-| `4*3` / `4*4` | Tall chart, flow/funnel/tree, table with scroll, decomposition panel. | More than one dense table. |
-| `6*3` / `8*3` | Main table, complex chart, map plus detail panel, decomposition tree, diagnostic workspace. | Forcing everything into one block when separate questions exist. |
-| `8*4+` | Full analysis workspace, detailed table, traceability view, multi-step drilldown area. | First-viewport-only design; use vertical scroll deliberately. |
+Split into separate grid blocks, tabs, drawer, fullscreen, or drilldown when:
 
-## 5. Internal Component Count Limits
+- subcomponents answer different business questions;
+- each subcomponent needs an independent title, filter, action, or drilldown path;
+- any subcomponent's final validated span cannot be safely represented inside the outer block;
+- there are more than four analytical subcomponents visible at once;
+- internal scrolling becomes the main way to understand the block.
 
-When one block contains multiple subcomponents, the count includes visible KPI tiles, charts, lists, tables, and text panels inside the block body.
+KPI/status peers may use balanced internal layouts such as `2 * 2`, `3 * 2`, or `4 * 2`, but every tile still needs pixel validation.
 
-### Two Subcomponents
-
-Minimum practical spans:
-
-- 1920: `3*2` for text plus chart, KPI plus chart, chart plus small ranking.
-- 1280: prefer `4*2` for the same combinations.
-- KPI-only pairs may use `2*1` or `2*2`.
-
-Allowed combinations:
-
-- KPI + sparkline.
-- Conclusion + evidence chart.
-- Chart + Top N ranking.
-- Table + small summary strip.
-- Map + legend/status explanation.
-
-### Four Subcomponents
-
-Minimum practical spans:
-
-- KPI/status-only: `4*1` or `8*1`.
-- Mixed chart/list/text: `4*2` at 1920, `6*2` or `8*2` at 1280.
-- Table plus three helpers: `8*2` minimum; prefer `8*3`.
-- When four peer tiles are shown simultaneously, prefer a balanced `2 * 2` internal distribution unless the content is explicitly a shallow KPI strip.
-
-Allowed combinations:
-
-- Four KPI cards in one summary strip.
-- Chart + ranking + two key insights.
-- Table + summary strip with 2-3 metrics.
-- Four compact status buckets.
-
-Do not place four equal analytical charts inside one `4*2` block. Use tabs, a drawer, or split into separate grid blocks.
-
-### Six Subcomponents
-
-Minimum practical spans:
-
-- KPI/status-only: `8*1` if each item is very compact; `8*2` is safer.
-- Mixed components: `8*2` minimum at 1920, `8*3` at 1280.
-- Any table/chart-heavy composition: `8*3` or split.
-- When six peer tiles are shown simultaneously, prefer `3 * 2`; avoid `6 * 1` except for compact KPI/status strips.
-
-Allowed combinations:
-
-- Six KPI/status tiles.
-- One primary chart + five compact reason/status tags.
-- One table + five summary indicators only when the table body keeps enough height.
-
-Do not use six subcomponents when each needs a separate title or interaction. Split the business questions.
-
-### Eight Subcomponents
-
-Minimum practical spans:
-
-- KPI-only strip: `8*1`.
-- Compact card grid: `8*2`.
-- Mixed chart/list/table: usually split; if kept together, use `8*3` or larger with one primary component and subordinate helpers.
-- When eight peer tiles are shown simultaneously, prefer `4 * 2`; avoid narrow columns or dense `8 * 1` analytical strips.
-
-Allowed combinations:
-
-- Eight compact KPI/status tiles.
-- Four KPIs + four small status tags.
-- One main chart + seven tiny legend/reason chips only when labels remain readable.
-
-Avoid eight visible analytical panels in one block. That is usually a section, not a block.
-
-### Nine Subcomponents
-
-Minimum practical spans:
-
-- KPI/status-only: `8*3` or split by section.
-- Mixed chart/list/table: split into multiple blocks, tabs, or drawers.
-
-When nine peer tiles are shown simultaneously, use `3 * 3` only if each tile remains readable at the active viewport. Do not force nine analytical charts into one crowded block.
-
-## 6. Hard Layout Constraints
+## 9. Hard Layout Constraints
 
 - The page-grid span belongs to the top-level block; internal subcomponents must not create nested page grids.
 - Do not treat `1920 * 1080` or `1280 * 768` as the report's maximum height.
 - Do not reduce `N`, row height, title space, chart body height, or table body height to force the full report into one viewport.
+- Do not divide available viewport height by `N` to create smaller rows.
+- Do not treat preferred/default spans as final spans.
+- Do not render any component whose computed outer size or content viewport is smaller than its final required size.
 - Do not duplicate block titles inside chart/table/KPI bodies.
 - Do not make peer components too narrow, tiny, crowded, or unreadable; use balanced `M * N` layouts, split sections, or move details to drawer/fullscreen.
-- Do not put a normal table into `1*1`, `2*1`, `2*2`, or `3*1`.
-- Do not place axis-heavy charts into `1*1` or `2*1`.
-- Do not place chart plus table into anything smaller than `8*2`.
-- Do not place more than one primary chart in a block smaller than `4*2`.
+- Do not bypass the 50-type table by using a generic `chart`, `table`, `map`, or `other` rule when a precise component type exists.
 - Do not use more than one internal scroll area in one block.
 - If a title, legend, axis label, table column, toolbar, or status tag does not fit, increase the span or simplify the component.
 - On `1280 * 768`, promote mixed components by at least one span tier compared with 1920 planning.
 - If a block needs long explanations, detailed table review, or multiple independent actions, use a drawer/detail page instead of expanding the card forever.
 
-## 7. Selection Workflow
+## 10. Selection Workflow
 
 1. Choose the business question for the block.
 2. Decide whether the block is single-component or composite.
-3. Count visible internal subcomponents.
-4. Pick a legal span from `grid-containers.md`.
-5. Check the practical size table for the active viewport.
-6. Verify the component capacity table and internal component count limits.
-7. If total report height exceeds the first viewport, keep the grid and enable vertical scrolling.
-8. If the block fails any constraint, either:
+3. Classify the component with the 50-type table.
+4. Apply base minimum size and complexity expansion.
+5. Pick a preferred span and compute actual outer/body pixel size.
+6. Upgrade to the smallest final span that satisfies the computed requirement.
+7. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
+8. If the block still fails any constraint, either:
    - increase the span,
    - switch simultaneous subcomponents to tabs/segmented views,
    - move details to a drawer/modal,

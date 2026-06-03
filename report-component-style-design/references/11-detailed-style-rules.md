@@ -63,7 +63,7 @@ Use this contract as the default for any generated frontend component unless an 
 - Core KPI value: 28-32px, numeric font or clean sans-serif, color brand primary or near-black.
 - Unit, helper label, YoY/MoM label, source, and metadata: 12-14px, lighter neutral such as `#888888`.
 - Text summaries are left-aligned. KPI numbers inside comparison tables/lists are right-aligned so magnitudes compare vertically.
-- Do not shrink text below readability to force a crowded layout; choose a larger legal span or move details to drawer/tooltip.
+- Do not shrink text below readability to force a crowded layout; choose a larger final span or move details to drawer/tooltip.
 
 ### Semantic Color System
 
@@ -90,7 +90,7 @@ Use this contract as the default for any generated frontend component unless an 
 - Remove repeated words inside one component. If several metrics share "完成率", "同比", "万元", or "%", promote the common label to a header, axis, unit label, or column title.
 - Use grid/table layout for repeated metric groups instead of repeating labels beside every number.
 - Diagnostic summary, executive conclusion, abstract, and insight text components should be visually stronger than ordinary lists: prefer full-width spans or a very pale brand-tint background inside the card.
-- When a component becomes crowded, grow its legal span, split it, or move details to drawer. Do not patch the symptom with random colors, tiny type, or overlapping labels.
+- When a component becomes crowded, grow its final span, split it, or move details to drawer. Do not patch the symptom with random colors, tiny type, or overlapping labels.
 
 ## Fit And Alignment Rules
 
@@ -350,22 +350,19 @@ If the minimum viable size is larger than the assigned block:
 
 Do not solve fit problems by simply shrinking typography below readability.
 
-### Legal Span Rules
+### Preferred And Final Span Rules
 
-When the page uses an `8 * N` grid, component body fit must start from the legal span matrix in `report-visual-layout-design`.
+When the page uses an `8 * N` grid, component size is owned by `report-visual-layout-design/references/block-size-constraints.md`: classify with the 50-type table, apply complexity expansion, then validate pixels. Component style work should only verify that the assigned body viewport remains readable after padding, title, legend, axes, controls, table headers, and footer are reserved.
 
 Hard rules:
 
-- 折线图、柱状图、K 线图、热力图 only use `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3`.
-- 饼图、雷达图、路径图、旭日图、仪表盘 only use `1*1`, `2*2`, `3*2`, `2*3`, `3*3`, `4*4`.
-- 散点图、盒须图、平行坐标系 only use `3*1`, `2*2`, `3*2`, `2*3`, `3*3`, `2*4`, `4*4`, `4*2`, `4*3`, `3*4`.
-- 地图、关系图、树图、矩形树图、桑基图、漏斗图 only use `2*2`, `3*2`, `3*3`, `4*3`, `4*4`.
-- 指标卡 only use `1*1`, `2*1`.
-- 表格 only use `3*2`, `4*2`, `5*2`, `3*3`, `4*3`, `5*3`, `6*3`, `7*3`, `8*3`, `4*4`, `5*4`, `6*4`, `7*4`, `8*4`.
-- 其他组件 only use `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3`.
-- For scrollable page templates, legal spans are valid only after the row-height rule is satisfied: every resulting block must be at least 220px tall.
+- Do not define a second component size table here.
+- Do not force distinct table, graph, map, KPI, or text types into one generic span rule.
+- If the assigned viewport fails fit, grow span, split, paginate, collapse, aggregate, or move details to drilldown.
+- For scrollable page templates, final spans are valid only after the row-height rule is satisfied: every resulting block must be at least 220px tall.
+- Do not calculate row height by dividing the viewport height by `N`; increase `N`, scroll, split, or paginate.
 
-If the selected span is legal but still visually cramped, choose a larger legal span. Do not invent an unsupported span during implementation.
+If the selected preferred span still feels cramped after validation, choose a larger final span. Do not continue to rendering with an invalid preferred span.
 
 ## Complex Diagram Viewport Rules
 
@@ -656,8 +653,8 @@ Design:
 
 Fit rules:
 
-- In an 8*N grid, text explanation, abstract, and conclusion components must use `visualType: 'text-summary'` and one of these spans: `4*1`, `5*1`, `6*1`, `7*1`, `8*1`, or `3*2`.
-- A one-row text summary must be at least 4 columns wide. A two-row compact text summary must be exactly 3 columns wide. Use a drawer or wider section for longer narrative.
+- In an 8*N grid, text explanation, abstract, and conclusion components must use `visualType: 'text-summary'` and a final span of at least `4*2`.
+- One-row text is allowed only for title, filter, status, or KPI-strip surfaces with their own validated type; narrative text summaries should use `4*2`, `5*2`, `6*2`, `8*2`, or larger. Use a drawer or wider section for longer narrative.
 - Short conclusions may use 2-3 lines; longer explanation should move to drawer, expandable area, or lower full-width section.
 - If the component is in a narrow right column, use concise sentence fragments and avoid long unbroken text.
 - Use line clamp only for supporting explanation, never for the main conclusion.

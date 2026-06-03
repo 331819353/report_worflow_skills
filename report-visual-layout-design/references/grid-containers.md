@@ -16,7 +16,7 @@ All report content display areas must use an `8 * N` rectangular block grid:
 
 Do not use masonry, staggered, diagonal, floating, or irregular component shapes.
 
-After choosing a span, calculate its actual pixel size with `block-size-constraints.md`, especially for `1920 * 1080` and `1280 * 768` viewports.
+After choosing a preferred span, calculate its actual pixel size with `block-size-constraints.md`, especially for `1920 * 1080` and `1280 * 768` viewports. The preferred span is not final until it satisfies the component type minimum and pixel/content validation.
 
 ## 2. Scroll And Row Height
 
@@ -27,19 +27,20 @@ For scrollable page templates and blank scrollable report pages:
 - If `N * rowHeight + gaps + vertical offsets` exceeds the current viewport height, keep row/block heights and enable vertical scrolling.
 - Do not shrink blocks below usable size to force everything into the first viewport.
 - Page design may focus on the visible content display area, but implementation must allow the report's total height to grow with `N`.
+- Do not calculate row height as `availableViewportHeight / N`. Increase `N`, scroll, split, or paginate instead of compressing rows.
 
 Fixed sci-fi/big-screen cockpit layouts are exempt from the 220px rule because they must fit the fixed 1920*1080 canvas.
 
 ## 3. Recommended Spans
 
-Use these common spans:
+Use these common preferred spans, then validate and upgrade them before finalizing:
 
 - Hero summary or main chart: 8 columns.
-- KPI strip: four cards at 2 columns each, or eight compact cards at 1 column each.
+- KPI strip: four cards at 2 columns each; eight KPIs should use two rows, a full-width internal strip that passes pixel validation, tabs, or pagination.
 - Primary chart + side insight: 5+3 or 6+2 columns.
 - Two balanced panels: 4+4 columns.
 - Three panels: 3+3+2 or 2+3+3 when visual weight remains balanced.
-- Table or task list: usually 8 columns.
+- Table or task list: usually 8 columns and at least 4 rows.
 - Secondary cards: 2 or 4 columns.
 
 Use `block-size-constraints.md` before finalizing dense blocks, composite widgets, tables, or any block containing 2/4/6/8 visible subcomponents.
@@ -53,29 +54,21 @@ For peer component groups, prefer a balanced `M * N` distribution where `M` mean
 - Prefer `M > N` when possible; square layouts are acceptable when the count naturally fits.
 - Avoid one long strip or one narrow column unless the component is explicitly a timeline, KPI strip, or navigation.
 
-## 4. Legal Span Matrix
+## 4. Preferred And Final Span Matrix
 
-Use legal top-level block spans unless the user explicitly extends the matrix for a special component. When one block contains multiple subcomponents, choose the span and `visualType` by the dominant or most layout-demanding subcomponent.
+Use `block-size-constraints.md` as the source of truth for component type, base minimum outer size, complexity expansion, and recommended minimum span. When one block contains multiple subcomponents, choose the component class by the dominant or most layout-demanding subcomponent.
 
-| Component type | Allowed spans |
-| --- | --- |
-| Line / bar / K-line / heatmap | `2*1`, `2*2`, `3*2`, `3*3`, `4*2`, `4*3`, `4*4` |
-| Pie / radar / path / gauge / dashboard | `1*1`, `2*2`, `2*3`, `3*2`, `3*3`, `4*4` |
-| Scatter / boxplot / parallel coordinates | `3*1`, `2*2`, `3*2`, `2*3`, `3*3`, `2*4`, `3*4`, `4*2`, `4*3`, `4*4` |
-| Map / relationship / tree / treemap / sankey / funnel | `2*2`, `3*2`, `3*3`, `4*3`, `4*4` |
-| KPI card | `1*1`, `2*1` |
-| Table | `3*2`, `4*2`, `5*2`, `3*3`, `4*3`, `5*3`, `6*3`, `7*3`, `8*3`, `4*4`, `5*4`, `6*4`, `7*4`, `8*4` |
-| Text summary / abstract / conclusion | `4*1`, `5*1`, `6*1`, `7*1`, `8*1`, `3*2` |
-| Other component | `2*1`, `2*2`, `3*2`, `3*3`, `4*2`, `4*3`, `4*4` |
+A recommended span in the component table is still invalid if it fails computed pixel/content-size validation after complexity expansion.
 
 Rules:
 
-- Treat spans as a legal placement set, not loose inspiration.
-- Text-led components should use `text-summary` as runnable `visualType`.
-- If a title, legend, axis, toolbar, or data density cannot fit, move to a larger legal span or switch component type.
+- Treat candidate spans as starting points, not proof of fit.
+- Classify by the 50-type table before mapping to any runnable `visualType`.
+- If title, legend, axes, toolbar, or data density cannot fit, grow the span, split the component, or change component type.
 - Do not shrink text, hide overflow, or overlap legends to force a too-small span.
-- For runnable templates, declare `visualType` so validation can check `layoutRows` span legality.
 - Composite widgets with multiple subcomponents must still declare one `visualType`; use the dominant visual type, or `other` only when no supported visual type dominates.
+- Do not render any business component as `1*1`. A `1*1` cell may be an empty placeholder or icon-only status marker only when no widget is mounted.
+- `2*1` is only valid for simple KPI cards that pass pixel validation.
 
 ## 5. Block Internal Anatomy
 

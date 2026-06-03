@@ -27,7 +27,9 @@ Treat this skill as general report layout and template selection rather than pro
 - Title, navigation, and filters do not have to be three separate zones. They may be merged into one unified header/control area when that better fits the page style.
 - Page, section, and block titles are owned by the page layout layer. Data components render inside the body viewport and must not add duplicate visible titles inside charts, tables, KPI groups, or custom component bodies unless no layout title exists for that standalone surface.
 - The content display area must use an `8 * N` rectangular grid. `N` may grow with content, and scrollable report pages should support vertical scrolling rather than compressing content.
+- Component default spans are only preferred spans. Final spans must come from component type, complexity expansion, and pixel validation in `references/block-size-constraints.md`.
 - Treat `1920 * 1080` and `1280 * 768` as visible viewport baselines, not report size limits. Actual report height may exceed the first viewport.
+- Do not calculate row height by dividing viewport height by `N`; increase `N`, split content, scroll, or paginate instead.
 - If a dashboard template is selected, follow the template's own shell, logo slot, navigation, filter pattern, grid mechanics, and sizing model.
 
 ## Integrated Template Routing
@@ -141,8 +143,8 @@ Load only the reference sections needed for the task:
 
 - `references/page-layout-modes.md`: `pageShellPath` template vs custom, custom `htmlReplica` vs `freeDesign`, `pageStyleSource`, custom layout patterns, unified header/control area, title/navigation/filter placement.
 - `references/brand-style.md`: Haier logo rules, Haier blue/white palette, minimalist enterprise visual style.
-- `references/grid-containers.md`: `8 * N` grid, legal spans, block anatomy, ECharts/S2 container and overflow rules.
-- `references/block-size-constraints.md`: calculate block sizes for 1920*1080 and 1280*768 viewports, then decide which spans can safely hold which component combinations without capping total report height.
+- `references/grid-containers.md`: `8 * N` grid, preferred/final spans, block anatomy, ECharts/S2 container and overflow rules.
+- `references/block-size-constraints.md`: calculate block sizes for 1920*1080 and 1280*768 viewports, apply the 50 component type minimum size table plus complexity-based expansion rules, then decide final spans without capping total report height.
 - `references/block-composition.md`: design a single grid block that contains multiple subcomponents.
 - `references/components-interactions.md`: report structure patterns, toolbar actions, drawers/popovers/modals, states, responsive behavior.
 - `references/template-routing.md`: choose among the four bundled template assets.
@@ -166,7 +168,7 @@ Load only the reference sections needed for the task:
 5. If a template is appropriate, read `references/template-routing.md`; then load only the selected template reference and the shared contract/playbook files needed for the edit.
 6. Define the visual hierarchy: core conclusion first, then evidence, breakdown, detail, and actions.
 7. Apply brand style or sample fidelity according to `visualMode`.
-8. Lay out the content grid: assign every top-level block to complete rectangular `8 * N` spans; calculate the actual block size with `references/block-size-constraints.md`; separate visible viewport planning from total report height; when one block contains multiple subcomponents, use `references/block-composition.md`.
+8. Lay out the content grid: assign every top-level block a preferred rectangular `8 * N` span, calculate the actual block size with `references/block-size-constraints.md`, upgrade it to a validated final span, then write only the final span to template `layoutRows`; separate visible viewport planning from total report height; when one block contains multiple subcomponents, use `references/block-composition.md`.
 9. Define actions and states: refresh, export, fullscreen, share/subscribe/settings if relevant; loading, empty, error, delayed data, and no-permission states.
 10. Run layout QA with the checklist before finalizing.
 
@@ -189,11 +191,12 @@ Before finalizing a layout, verify:
 - Rate/change labels use Chinese `%` display and trend indicators follow positive-red-up / negative-green-down icon semantics.
 - The shell choice matches the scenario: single-page, left-nav analytics, sci-fi cockpit, or custom page.
 - Every top-level content block occupies a legal rectangular `8 * N` grid span.
+- Every block can explain its component type, complexity expansion, computed pixel size, final span, and upgrade reason when upgraded.
+- Final CSS or template `layoutRows` use validated final spans, never raw preferred/default spans.
 - Every titled block has exactly one visible layout-owned title. Components inside the block do not render a duplicate title in their body viewport.
 - Template choice, block IDs, component order, and `columns * rows` spans stay stable across revisions unless the business question, content volume, or display scenario changes.
-- Block height is based on component content capacity, not forced into the first 1080px viewport.
-- Peer component groups use balanced `M * N` distribution where `M` is columns and `N` is rows, with `M > N` when possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
-- Components are not too narrow, too small, or crowded; if labels, values, legends, axes, controls, or states cannot fit, the block is enlarged or the content is split before final acceptance.
+- Block height follows component capacity and fixed row-height rules; the page grows, scrolls, or paginates instead of compressing rows.
+- Repeated cards, charts, tables, and peer groups pass balanced-distribution and pixel-fit checks before final acceptance.
 - Titles, filters, toolbar actions, legends, labels, charts, tables, and empty states do not overlap or clip.
 - Business-question text, conclusion text, titles, labels, legends, chart marks, diagrams, tables, and cards do not overlap, touch, or visually stack on top of each other.
 - Section headers, level labels, lane titles, stage titles, and group captions reserve their own title band and do not overlap, touch, or visually attach to cards, node boxes, connector lines, badges, or child labels. Keep at least 16px safe spacing; if this cannot pass, enlarge the block, move the title outside the diagram, or use fullscreen/zoom/pan.
