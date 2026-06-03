@@ -1,16 +1,20 @@
-# Single Page Dashboard Template
+# Topbar Scroll Dashboard Templates
 
-Use `assets/templates/single-page-dashboard-template` for a standalone, compact, single-theme report.
+Use these assets for standalone, compact, single-theme reports:
+
+- `assets/templates/topbar-dark-scroll-dashboard-template`: dark topbar, Haier-branded overview/diagnostic cockpit feel, one scrollable `8 * N` content grid.
+- `assets/templates/topbar-light-scroll-dashboard-template`: light topbar, office-readable enterprise report feel, one scrollable `8 * N` content grid.
 
 ## Shell
 
 - Top bar only; no sidebar.
 - Center title from `screen.title`.
 - Top-left Haier logo from `assets.logoSrc`.
-- Right controls: theme, refresh, filter, download.
+- Right controls: refresh, filter, download.
 - One page layout: `page.layoutRows`.
 - One widget map: `page.widgets`.
 - Page height may exceed the first viewport and must scroll vertically.
+- This template family is not fixed to 1920*1080; 1920*1080 is only a planning viewport baseline.
 - Default 1920 planning uses the full-width 1920 preset in `block-size-constraints.md`; 1280 previews use the full-width 1280 preset.
 
 ## Core Config
@@ -29,14 +33,13 @@ page: {
   widgets: {},
 },
 filters: [],
-modals: {},
 ```
 
 ## Adjustments
 
 - Change `screen.title` for title.
 - Change `assets.logoSrc` for logo.
-- Keep original color logo on light theme and white logo on dark theme.
+- Keep original color logo on the light template and white/light logo on the dark template.
 - Keep filter access through the right-side filter drawer.
 - Do not add tabs, side menus, breadcrumbs, or page switching unless explicitly extending the shell.
 - Edit `page.layoutRows`; widget keys in `page.widgets` must match block characters.
@@ -50,3 +53,5 @@ modals: {},
 - One focused diagnostic page.
 - One detail/query dashboard without chapters.
 - Meeting preview or shareable standalone report.
+
+Choose the light template for long reading, operational handoff, detail queries, and table-heavy but single-page reports. Choose the dark template for executive summaries, overview cockpits, anomaly/status pages, and stronger visual atmosphere without fixed big-screen constraints.

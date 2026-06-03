@@ -34,8 +34,8 @@ Before finalizing, verify:
 - HTML-replica and custom layouts use global UI tokens for palette, typography, spacing, radius, semantic colors, shadows, and control states unless exact color restoration is explicitly requested.
 - Custom pages use one coherent title/navigation/filter control area when possible, instead of mechanically splitting three independent strips.
 - Template-based pages follow the selected template's shell, logo slot, navigation, filter pattern, and grid mechanics.
-- If a template is used, the chosen template is justified: single-page, left-nav, or sci-fi.
-- Template adjustment points are named: `dashboard.config.ts`, `dashboard.data.ts`, `dataSources/registry.ts`, widget files, registry/types, actions, styles, and assets as relevant.
+- If a template is used, the chosen template is justified: topbar dark scroll, topbar light scroll, left-nav workbench, or frozen-title sci-fi cockpit.
+- Template adjustment points are named: `dashboard.config.ts`, `dashboard.dataset.json`, `dashboard.loader.ts`, `dataSources/registry.ts`, `demo/config-templates.ts`, widget files, registry/types, actions, styles, and assets as relevant.
 - The first viewport reaches the report's core question.
 - Logo asset discovery has been completed before implementation.
 - The Haier logo is present in the custom-page title/control area or the template logo slot.

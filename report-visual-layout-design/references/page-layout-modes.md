@@ -4,16 +4,16 @@
 
 Before designing a report page, decide which mode controls the page shell:
 
-- `pageShellPath: template`: default when the user has not specified a page style and has not provided HTML/source/sample styling. Use the selected implementation asset under `assets/templates/`: `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, `sci-fi-dashboard-template`, or another existing project template.
-- `pageShellPath: custom`: use only when the user asks for a custom shell/style, provides a sample/HTML/source style to follow, or a documented template limitation makes a bundled template unsuitable.
+- `pageShellPath: template`: default for report layout work. Use the selected implementation asset under `assets/templates/`: `topbar-dark-scroll-dashboard-template`, `topbar-light-scroll-dashboard-template`, `left-nav-analytics-workbench-template`, `frozen-title-sci-fi-cockpit-template`, or another existing project template.
+- `pageShellPath: custom`: use only when the user explicitly asks for 自行设计开发 / 自由设计 / custom development, explicitly asks to 百分百复刻 / exactly restore a provided sample/HTML/source, or a documented template limitation makes all bundled templates unsuitable.
 
 This decision comes before choosing cards, charts, filters, or navigation.
 
 Declare `pageStyleSource` before implementation:
 
 - `templateDefault`: no style specified and no HTML/source/sample styling provided; use a bundled template.
-- `userSpecified`: user names the design style or shell; follow that design.
-- `sampleProvided`: screenshot, HTML source, image, or display sample supplies style; follow the sample unless optimization/redesign is requested.
+- `userSpecified`: user names the design style or shell; choose the bundled template that best satisfies that direction unless the user explicitly asks for custom development.
+- `sampleProvided`: screenshot, HTML source, image, or display sample supplies style; use custom `htmlReplica` only for explicit exact restoration, otherwise choose the closest bundled template and use the sample as evidence.
 
 Declare `brandMode` before `visualMode`:
 
@@ -83,8 +83,8 @@ When a template is selected, the template owns the shell.
 
 Rules:
 
-- Follow the selected template's layout zones, logo slot, navigation style, filter mechanism, toolbar, modal/drawer model, sizing model, and grid mechanics.
-- Configure the template through its intended fields: title, assets/logo, nav, filters, toolbar actions, `layoutRows`, widgets, modals, theme, and data source bindings.
+- Follow the selected template's layout zones, logo slot, navigation style, filter mechanism, toolbar, action hook boundary, sizing model, and grid mechanics.
+- Configure the template through its intended fields: title, assets/logo, nav/page, filters, toolbar actions, `layoutRows`, widgets, theme, and data source bindings.
 - Do not redesign the template's global frame unless the task explicitly asks to modify the template.
 - If the template exposes `public/haier-logo.svg`, keep that asset for the light/default logo slot unless a dark theme requires the white logo variant.
 - If the template defines invoked filters, keep that pattern. If it defines persistent filters, keep them compact and aligned with the template's own controls.

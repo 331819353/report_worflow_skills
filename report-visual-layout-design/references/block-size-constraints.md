@@ -60,7 +60,7 @@ Use these rounded values for planning visible block size. Exact implementation m
 
 ### Full-Width 1920 Viewport
 
-Applies to custom pages and `single-page-dashboard-template`.
+Applies to custom pages, `topbar-dark-scroll-dashboard-template`, and `topbar-light-scroll-dashboard-template`.
 
 - `contentWidth = 1920`
 - `gap = 14`
@@ -80,7 +80,7 @@ Applies to custom pages and `single-page-dashboard-template`.
 
 ### Left-Nav 1920 Viewport
 
-Applies to `left-nav-analytics-dashboard-template` with expanded sidebar.
+Applies to `left-nav-analytics-workbench-template` with expanded sidebar.
 
 - `contentWidth = 1664`
 - `gap = 16`
@@ -100,7 +100,7 @@ Applies to `left-nav-analytics-dashboard-template` with expanded sidebar.
 
 ### Sci-Fi 1920 Cockpit
 
-Applies to `sci-fi-dashboard-template` when the content area starts near `Y = 118` and uses 3 visible grid rows.
+Applies to `frozen-title-sci-fi-cockpit-template` when the content area starts near `Y = 118` and uses 3 visible grid rows.
 
 - `contentWidth = 1920`
 - `gap = 10`
@@ -123,7 +123,7 @@ If a sci-fi page needs 4 visible rows, row height drops to about `233px`; only c
 
 ### Full-Width 1280 Viewport
 
-Applies to small custom pages and small `single-page-dashboard-template` previews.
+Applies to small custom pages and small topbar scroll template previews.
 
 - `contentWidth = 1280`
 - `gap = 10`

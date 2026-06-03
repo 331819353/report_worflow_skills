@@ -1,15 +1,16 @@
 # Left Nav Analytics Dashboard Template
 
-Use `assets/templates/left-nav-analytics-dashboard-template` for multi-page enterprise analytics and dense daily workbenches.
+Use `assets/templates/left-nav-analytics-workbench-template` for multi-page enterprise analytics and dense daily workbenches.
 
 ## Shell
 
-- 1920*1080 design viewport and stable shell width.
+- 1920*1080 is a planning viewport baseline, not a fixed page size.
 - Chinese collapsible left navigation.
 - Right-side content display area.
 - Sidebar-anchored filter popover.
 - Multiple pages through `nav`.
 - Each nav page has its own `layoutRows` and `widgets`.
+- Each nav page uses a scrollable `8 * N` content grid.
 - Right content area scrolls vertically when grid height exceeds the active viewport.
 - Expanded 1920 pages use about `1664px` of content width; 1280 pages should prefer collapsed navigation and the left-nav 1280 preset in `block-size-constraints.md`.
 
@@ -28,7 +29,6 @@ nav: [
   },
 ],
 filters: [],
-modals: {},
 ```
 
 ## Add A Page
@@ -38,7 +38,7 @@ modals: {},
 3. Define `layoutRows` with 8 columns per row.
 4. Mount widgets under that nav item's `widgets`.
 5. Add page-specific filters through `scope` / `filterScope`.
-6. Use `switchNav` actions only when a widget intentionally jumps to another page.
+6. Let components own page jump, popup, drilldown, and detail behavior. Use `actions/registry.ts` only when the shell or host product needs to observe a component event.
 
 ## Adjustments
 

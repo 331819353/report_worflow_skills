@@ -1,6 +1,6 @@
 # Sci-Fi Dashboard Template
 
-Use `assets/templates/sci-fi-dashboard-template` only for fixed 1920*1080 big-screen/cockpit presentations.
+Use `assets/templates/frozen-title-sci-fi-cockpit-template` only for fixed 1920*1080 big-screen/cockpit presentations with frozen title/background assets.
 
 ## Shell
 
@@ -16,9 +16,9 @@ Use `assets/templates/sci-fi-dashboard-template` only for fixed 1920*1080 big-sc
 
 ```ts
 assets: {
-  logoSrc: '/haier-logo-white.svg',
-  titleBg: '/title-bg.png',
-  pageBg: '/page-bg.png',
+  logoSrc: '/haier-logo.svg',
+  titleBackgroundSrc: '/title-bg.png',
+  backgroundSrc: '/cockpit-bg.jpg',
 },
 nav: [
   {
@@ -29,7 +29,6 @@ nav: [
   },
 ],
 filters: [],
-modals: {},
 ```
 
 ## Adjustments

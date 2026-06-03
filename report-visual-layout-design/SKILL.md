@@ -7,7 +7,7 @@ description: "用于报表页面整体布局、页面壳、导航和内容区域
 
 ## Core Positioning
 
-This is a universal report visual layout skill. It owns how a report page is organized, branded, filtered, navigated, displayed, implemented through the three bundled dashboard templates when appropriate, and checked visually after the report type and business content are known.
+This is a universal report visual layout skill. It owns how a report page is organized, branded, filtered, navigated, displayed, implemented through the four bundled dashboard templates when appropriate, and checked visually after the report type and business content are known.
 
 It does not own report-type logic, mock data design, API contracts, or detailed filter/data interaction rules. When component, metric, data, filter, or interaction mapping is unclear, record the missing contract as a layout-blocking gap or handoff note instead of requiring another skill before this skill can produce layout guidance.
 
@@ -16,7 +16,8 @@ Treat this skill as general report layout and template selection rather than pro
 ## Mandatory Design Direction
 
 - First decide `pageShellPath`: `template` or `custom`.
-- If the user does not specify a page style and does not provide HTML/source/sample styling, use a bundled template by default. If the user specifies a design style or provides a sample/HTML source, follow that user-specified design direction.
+- Use a bundled template by default. Only choose a custom shell when the user explicitly says they want to 自行设计开发 / 自由设计 / custom development, or when the user provides a sample/source and explicitly asks for 百分百复刻 / exact pixel-level restoration.
+- If the user provides a sample but asks for optimization, template conversion, or does not require exact restoration, treat the sample as information architecture and visual preference evidence, then choose the closest bundled template by usage scenario.
 - If `pageShellPath: custom`, declare exactly one `customDesignPath`: `htmlReplica` or `freeDesign`.
 - Before `visualMode`, declare exactly one `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
 - Before implementation, declare exactly one `visualMode`: `haierEnterprise`, `sampleRestore`, or `sciFiCockpit`.
@@ -31,9 +32,12 @@ Treat this skill as general report layout and template selection rather than pro
 
 ## Integrated Template Routing
 
-- `assets/templates/single-page-dashboard-template`: use for compact single-topic dashboards with a top bar and one scrollable `8 * N` content grid.
-- `assets/templates/left-nav-analytics-dashboard-template`: use for multi-page, multi-chapter, dense enterprise analytics workbenches with left navigation.
-- `assets/templates/sci-fi-dashboard-template`: use for fixed 1920*1080 big-screen/cockpit pages for exhibition, monitoring walls, and leadership cockpits.
+- Only `assets/templates/frozen-title-sci-fi-cockpit-template` is fixed to a full 1920*1080 screen.
+- All other bundled templates use scrollable `8 * N` content grids and a business overview/cockpit report atmosphere without a fixed big-screen frame.
+- `assets/templates/topbar-dark-scroll-dashboard-template`: use for compact single-topic dashboards with a dark Haier-branded top bar and one scrollable `8 * N` content grid.
+- `assets/templates/topbar-light-scroll-dashboard-template`: use for compact single-topic dashboards with a light enterprise top bar and one scrollable `8 * N` content grid.
+- `assets/templates/left-nav-analytics-workbench-template`: use for multi-page, multi-chapter, dense enterprise analytics workbenches with left navigation; each nav page uses its own scrollable `8 * N` content grid.
+- `assets/templates/frozen-title-sci-fi-cockpit-template`: use for fixed 1920*1080 big-screen/cockpit pages with frozen visual title/background assets for exhibition, monitoring walls, and leadership cockpits.
 
 ## Template Fallback
 
@@ -52,9 +56,9 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 - Before shell selection, declare `pageShellPath`: `template` or `custom`.
 - Before shell selection, declare `pageStyleSource`: `templateDefault`, `userSpecified`, or `sampleProvided`.
 - Use `templateDefault` when the user has not specified page style and has not provided HTML/source/sample styling; choose the closest bundled template by usage scenario.
-- Use `userSpecified` when the user names a page style, layout style, visual shell, or design direction; follow that direction unless it breaks hard layout, brand, or interaction gates.
-- Use `sampleProvided` when screenshot, HTML source, image, or display sample supplies the visual structure; follow the provided design under `sampleRestore` unless the user asks for optimization or redesign.
-- Do not choose `pageShellPath: custom` merely because the user omitted style requirements. A custom shell needs explicit user direction, provided sample/source, or a documented template limitation.
+- Use `userSpecified` when the user names a page style, layout style, visual shell, or design direction; choose a bundled template that satisfies that direction unless the user explicitly asks for 自行设计开发 / 自由设计 / custom development.
+- Use `sampleProvided` when screenshot, HTML source, image, or display sample supplies the visual structure. Choose `pageShellPath: custom` only when the user explicitly asks for 百分百复刻 / exact restoration; otherwise choose the closest bundled template and record how the sample informs layout, density, and visual tone.
+- Do not choose `pageShellPath: custom` merely because the user omitted style requirements or provided a loose reference. A custom shell needs explicit custom-development intent, explicit exact-restoration intent, or a documented template limitation.
 - If `pageShellPath: custom`, declare `customDesignPath`:
   - `htmlReplica`: replicate provided HTML/source/sample structure.
   - `freeDesign`: create a custom shell from requirements without HTML/source/sample visual authority.
@@ -141,10 +145,11 @@ Load only the reference sections needed for the task:
 - `references/block-size-constraints.md`: calculate block sizes for 1920*1080 and 1280*768 viewports, then decide which spans can safely hold which component combinations without capping total report height.
 - `references/block-composition.md`: design a single grid block that contains multiple subcomponents.
 - `references/components-interactions.md`: report structure patterns, toolbar actions, drawers/popovers/modals, states, responsive behavior.
-- `references/template-routing.md`: choose among the three bundled template assets.
+- `references/template-routing.md`: choose among the four bundled template assets.
 - `references/template-shared-contract.md`: common template file map, edit boundaries, create/install/validate loop.
+- `references/template-usage-modes.md`: zero-development, copy-modify, and production redevelopment modes.
 - `references/template-redevelopment-playbook.md`: rebuild a business report from a copied template.
-- `references/template-single-page.md`: single-page top-bar dashboard specifics.
+- `references/template-single-page.md`: top-bar scroll dashboard specifics for dark and light variants.
 - `references/template-left-nav.md`: left-nav multi-page analytics specifics.
 - `references/template-sci-fi.md`: fixed 1920*1080 cockpit specifics.
 - `references/template-recipes-checklist.md`: common template edits and verification checklist.

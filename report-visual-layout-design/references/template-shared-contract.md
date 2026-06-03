@@ -4,16 +4,18 @@ Use this file when copying a template, locating extension points, or deciding wh
 
 ## Common Project Shape
 
-All three template assets share these extension points:
+All four template assets share these extension points:
 
-- `src/config/dashboard.config.ts`: title, logo, nav/page definitions, `layoutRows`, widgets, filters, actions, modals, theme.
-- `src/data/dashboard.data.ts`: static/mock business rows.
-- `src/dataSources/registry.ts`: data resolvers, dynamic filter option resolvers, API adapters.
+- `src/config/dashboard.config.ts`: title, logo, nav/page definitions, `layoutRows`, widgets, filters, actions, and theme.
+- `src/data/dashboard.dataset.json`: default JSON dataset with `filterData` and `businessData`.
+- `src/data/dashboard.loader.ts`: JSON loader for filter and business data.
+- `src/dataSources/registry.ts`: built-in JSON resolvers, built-in `apiData` / `httpData` resolver, response adapters, custom provider resolvers, and JSON/API switching points.
+- `demo/config-templates.ts`: copyable configuration examples for JSON data binding, API data binding, filters, local filters, viewport, and action hooks.
 - `src/widgets/templates/WidgetTemplate.vue`: starter file for every business widget.
 - `src/widgets/components/`: business widget components.
 - `src/widgets/types.ts`: widget prop contracts and registry types.
 - `src/widgets/registry.ts`: component registration.
-- `src/actions/registry.ts`: custom business action handlers.
+- `src/actions/registry.ts`: shell-level action hook registry. Business popup, navigation, drilldown, and deep interactions stay inside components.
 - `src/styles.css`: template shell styles only.
 - `public/`: logo and static assets.
 - `scripts/validate-dashboard-contract.mjs`: dashboard contract validator.
@@ -24,7 +26,7 @@ All three template assets share these extension points:
 1. Copy `assets/templates/<template-id>/` to the target project.
 2. Install only the dependencies needed by the current component set. Start with the base `package.json`; add `@antv/s2` and `@antv/s2-vue` only when the implementation contains pivot tables, cross tables, wide metric matrices, frozen-header analytical tables, or equivalent S2-class table needs.
 3. Edit `src/config/dashboard.config.ts`.
-4. Put data in `dashboard.data.ts` or `dataSources/registry.ts`.
+4. Put default/offline data in `src/data/dashboard.dataset.json`, or configure `data.id: 'apiData'` / `source.id: 'apiData'` with an `api` block in `dashboard.config.ts`. Register custom API/provider resolvers in `src/dataSources/registry.ts` only for complex providers.
 5. Add widgets through `components/`, `types.ts`, and `registry.ts`.
 6. Run `npm run validate:dashboard`.
 7. Run `npm run build`.
@@ -35,10 +37,12 @@ All three template assets share these extension points:
 Prefer config/data/widget layers:
 
 - Requirements -> `dashboard.config.ts`.
-- Static/mock data -> `dashboard.data.ts`.
-- Dynamic options/API-like resolvers -> `dataSources/registry.ts`.
+- Static/mock data -> `dashboard.dataset.json`.
+- Standard API endpoint/query binding -> `widget.data.api` or `filters[].source.api` in `dashboard.config.ts`.
+- Response adapters and custom API/provider resolvers -> `dataSources/registry.ts`.
 - Business visuals -> `src/widgets/components/*.vue`.
-- Business action handlers -> `src/actions/registry.ts`.
+- Component-owned popup/jump/drilldown -> component implementation.
+- Shell-level event observation or external integration hooks -> `src/actions/registry.ts`.
 
 Avoid framework edits unless intentionally changing the template itself:
 

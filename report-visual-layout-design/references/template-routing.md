@@ -10,21 +10,38 @@ Template assets live under:
 
 Copy the selected asset directory into the target project, or merge its `src/`, `public/`, scripts, and config files into an existing Vue 3 + Vite app.
 
+## Default Operation Logic
+
+Default to `pageShellPath: template`.
+
+Choose `pageShellPath: custom` only when:
+
+- the user explicitly says 自行设计开发, 自由设计, 自定义开发, custom development, or equivalent; or
+- the user provides a screenshot/HTML/source/sample and explicitly asks for 百分百复刻, 像素级复刻, exact restoration, or equivalent; or
+- a documented requirement cannot be met by any bundled template.
+
+When the user provides a sample but does not demand exact restoration, treat the sample as evidence for information hierarchy, density, and visual tone. Still choose the closest bundled template by scenario.
+
 ## Routing Matrix
+
+Only `frozen-title-sci-fi-cockpit-template` is fixed to a full 1920*1080 screen. All other bundled templates are scrollable `8 * N` report grids with a business overview/cockpit atmosphere, not fixed big-screen frames.
 
 | Asset | Use When | Avoid When |
 | --- | --- | --- |
-| `single-page-dashboard-template` | One compact report theme, top bar only, one scrollable `8 * N` content grid. | Multi-chapter suite, persistent side navigation, dense workbench, or fixed cockpit is needed. |
-| `left-nav-analytics-dashboard-template` | Multi-page report suite, complex analysis, dense tables, repeated filtering, enterprise workbench. | The page is a compact one-theme dashboard or a large-screen command center. |
-| `sci-fi-dashboard-template` | 1920*1080 exhibition screen, monitoring wall, command center, leadership cockpit. | Daily office analytics, long text, frequent editing, dense forms, or table-heavy workbench. |
+| `topbar-dark-scroll-dashboard-template` | One compact report theme, top bar only, dark Haier-branded shell, one scrollable `8 * N` content grid, overview/diagnosis cockpit feel without fixed big-screen constraints. | Multi-chapter suite, persistent side navigation, dense workbench, light office-reading scenario, or fixed exhibition cockpit is needed. |
+| `topbar-light-scroll-dashboard-template` | One compact report theme, top bar only, light enterprise shell, one scrollable `8 * N` content grid, daily office reports, readable analysis, and business handoff pages without fixed big-screen constraints. | Multi-chapter suite, persistent side navigation, dark command/cockpit atmosphere, or fixed big-screen display is needed. |
+| `left-nav-analytics-workbench-template` | Multi-page report suite, complex analysis, dense tables, repeated filtering, enterprise workbench, status/diagnosis/detail/action chapters; each nav page uses a scrollable `8 * N` content grid. | The page is a compact one-theme dashboard or a large-screen command center. |
+| `frozen-title-sci-fi-cockpit-template` | Fixed 1920*1080 exhibition screen, monitoring wall, command center, leadership cockpit, frozen title/background visual assets. | Daily office analytics, long text, frequent editing, dense forms, table-heavy workbench, or scrollable report reading. |
 
 ## Selection Priority
 
-0. Style source: when the user has not specified a page style and has not provided HTML/source/sample styling, use a bundled template by default.
-1. User-stated shell, provided sample/source style, or existing project frame.
-2. Display scenario: big-screen/presentation uses `sci-fi-dashboard-template`.
-3. Content volume: multiple chapters/views or dense repeated work uses `left-nav-analytics-dashboard-template`.
-4. Focused one-topic report uses `single-page-dashboard-template`.
-5. Analysis/diagnostic reports default to `single-page-dashboard-template` unless the user requests sidebar, multi-page, workbench, big screen, or fixed 1920*1080 cockpit.
+0. Hard intent: 自行设计开发 / 自由设计 routes to `custom/freeDesign`; 百分百复刻 routes to `custom/htmlReplica`.
+1. Existing project shell: if the user explicitly says to keep an existing shell, implement the selected template contract inside that shell where possible.
+2. Display scenario: fixed big-screen/presentation/command-center use `frozen-title-sci-fi-cockpit-template`.
+3. Navigation depth and content volume: multiple chapters/views, dense repeated work, or daily workbench use `left-nav-analytics-workbench-template`.
+4. Focused one-topic report uses a topbar scroll template.
+5. Choose `topbar-light-scroll-dashboard-template` for ordinary office analysis, long reading, detail/query, and handoff clarity.
+6. Choose `topbar-dark-scroll-dashboard-template` for overview, executive/diagnostic dashboards, stronger status atmosphere, or dark Haier-branded cockpit feel that still needs scrolling.
+7. Analysis/diagnostic reports default to a topbar scroll template unless the user requests sidebar, multi-page, workbench, big screen, or fixed 1920*1080 cockpit.
 
-Do not switch to a custom shell merely because the user omitted page style. Custom shell requires explicit user style direction, a provided sample/HTML/source style, or a documented template limitation.
+Do not switch to a custom shell merely because the user omitted page style or provided a loose reference. Custom shell requires explicit custom-development intent, explicit exact-restoration intent, or a documented template limitation.

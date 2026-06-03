@@ -10,6 +10,7 @@ Use this file when building a new business report from a copied template or heav
 2. Define filters:
    - Use `options` for stable enum filters.
    - Use `source` for time, organization, product, customer, project, owner, source system, and data version.
+   - Default templates keep only a global parameter entry; add business filters only when the requirement needs them.
 3. Design the `8 * N` grid:
    - Use 8 characters per row.
    - Use repeated characters for rectangular merged blocks.
@@ -21,9 +22,14 @@ Use this file when building a new business report from a copied template or heav
    - Every widget needs `type`, `visualType`, `title`, and either `data` or `dataPolicy`.
    - Data-bound widgets declare row/prop shape in `src/widgets/types.ts`.
 5. Add data:
-   - Put static/mock rows in `dashboard.data.ts`.
+   - Put static/mock rows in `src/data/dashboard.dataset.json`.
+   - Keep `filterData` for filter option rows and `businessData` for business rows.
+   - Use built-in JSON resolvers (`filterData`, `businessData`, `staticData`) for offline data.
+   - Use built-in standard API resolvers (`apiData`, `httpData`) for ordinary REST/BFF endpoints.
+   - Register custom API/provider resolvers in `src/dataSources/registry.ts` only for signatures, special auth, complex pagination, SDKs, realtime streams, or multi-step requests.
    - Map filters with same-name fields or `filterFields`.
    - Use `requiredFilters` when a widget must respond to a filter.
+   - Use `ignoredFilters` when a widget intentionally ignores a global filter.
 6. Implement widgets:
    - Copy `WidgetTemplate.vue`.
    - Render only inside the body viewport.
@@ -34,7 +40,7 @@ Use this file when building a new business report from a copied template or heav
 7. Add interactions:
    - Emit `dashboard-action` from widgets.
    - Configure `actions` in widget config.
-   - Put contextual detail in `modals`.
+   - Keep popup, navigation, drilldown, and detail behavior inside the component unless the host product intentionally observes events through `actions/registry.ts`.
 8. Validate:
    - Run `npm run validate:dashboard`.
    - Run `npm run build`.
@@ -61,8 +67,7 @@ widgets: {
     props: { unit: 'CNY' },
     actions: {
       pointClick: {
-        type: 'openModal',
-        target: 'RevenueDetail',
+        type: 'pointClick',
         params: {
           org: '$filters.org',
           period: '$event.period',
@@ -73,14 +78,21 @@ widgets: {
 }
 ```
 
-## Minimal Data And Dynamic Filter
+## Minimal JSON Data And Dynamic Filter
 
-```ts
-export const dashboardData = {
-  revenueTrend: [
-    { orgId: 'china', cycle: 'month', period: '2026-01', revenue: 128.6 },
-  ],
-};
+```json
+{
+  "filterData": {
+    "orgs": [
+      { "id": "china", "name": "中国区" }
+    ]
+  },
+  "businessData": {
+    "revenueTrend": [
+      { "orgId": "china", "cycle": "month", "period": "2026-01", "revenue": 128.6 }
+    ]
+  }
+}
 ```
 
 ```ts
@@ -100,38 +112,69 @@ filters: [
 
 Register `orgOptions` in `src/dataSources/registry.ts`.
 
-## Minimal Modal
+## Minimal API Data Source
 
 ```ts
-modals: {
-  RevenueDetail: {
-    title: 'Revenue Detail',
-    width: 960,
-    height: 640,
-    layoutRows: ['AAAA', 'BBBB'],
-    widgets: {
-      A: {
-        type: 'RevenueDetailSummary',
-        visualType: 'text-summary',
-        title: 'Summary',
-        dataPolicy: 'static',
-        props: {},
-      },
-      B: {
-        type: 'RevenueDetailTable',
-        visualType: 'table',
-        title: 'Rows',
-        data: {
-          id: 'staticData',
-          params: {
-            key: 'revenueDetails',
-            org: '$params.org',
-            period: '$params.period',
-          },
-          requiredParams: ['org', 'period'],
+widgets: {
+  A: {
+    type: 'RevenueTable',
+    visualType: 'table',
+    title: '收入明细',
+    data: {
+      id: 'apiData',
+      api: {
+        url: '/api/revenue/rows',
+        method: 'GET',
+        query: {
+          org: '$filters.org',
+          cycle: '$filters.cycle',
         },
+        responsePath: 'data.rows',
+        adapter: 'rows',
       },
+      filterFields: {
+        org: 'orgId',
+      },
+      requiredFilters: ['org'],
     },
   },
 }
 ```
+
+```ts
+filters: [
+  {
+    id: 'org',
+    label: 'Organization',
+    source: {
+      id: 'apiData',
+      api: {
+        url: '/api/filter-options/orgs',
+        responsePath: 'data.options',
+        adapter: 'rows',
+      },
+      labelField: 'name',
+      valueField: 'id',
+    },
+  },
+]
+```
+
+For provider payloads that do not already match widget row fields, add a named adapter in `src/dataSources/registry.ts` and reference it with `api.adapter`.
+
+## Component Local Filter Example
+
+```ts
+localFilters: [
+  {
+    id: 'productLine',
+    label: '产品线',
+    field: 'productLine',
+    labelField: 'productLineName',
+    mode: 'auto',
+    maxButtonOptions: 5,
+  },
+]
+```
+
+This filter reads options from the widget's already loaded rows. It does not call an API and does not change provider-level totals.

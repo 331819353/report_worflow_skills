@@ -31,18 +31,18 @@ Use this file for common adjustments and final verification after changing a tem
 ### Add A Data-Bound Widget
 
 1. Create/register the widget.
-2. Add static data in `dashboard.data.ts` or resolver in `dataSources/registry.ts`.
+2. Add static/mock rows in `src/data/dashboard.dataset.json`, configure `widget.data.id: 'apiData'` with `widget.data.api`, or register a custom API/provider resolver in `dataSources/registry.ts` for complex providers.
 3. Configure `widget.data`.
 4. Add `filterFields`, `requiredFilters`, `ignoredFilters`, or `requiredParams`.
 5. Render from the `data` prop inside the widget.
 
-### Add A Drilldown
+### Add Component Interaction
 
 1. Widget emits `dashboard-action`.
 2. Configure `actions[eventName]` on the widget.
-3. Use `openModal`, `setFilters`, `switchNav`, `navigateUrl`, `fullscreen`, `print`, or a custom action.
-4. Define modal content in `modals`.
-5. Use `context.isStale` in modal widgets when filters change after open.
+3. Implement popup, navigation, drilldown, and detail behavior inside the widget or hosting product module.
+4. Use `actions/registry.ts` only for shell-level utilities or host-system event observation.
+5. Keep global filters immutable from component actions unless the host product intentionally wires that behavior.
 
 ### Change Visual Style
 
@@ -55,8 +55,9 @@ Use this file for common adjustments and final verification after changing a tem
 
 - Template choice matches report scope and usage scenario.
 - Logo variant matches background.
-- `dashboard.config.ts` owns layout, filters, widgets, modals, and assets.
+- `dashboard.config.ts` owns layout, filters, widgets, actions, and assets.
 - Business data is not stored directly in config.
+- Standard API endpoints are configured with `apiData` / `httpData`; custom resolvers are reserved for complex providers.
 - Every widget has `visualType`.
 - Widgets without data have `dataPolicy`.
 - Filter scope and data field mapping are explicit.
