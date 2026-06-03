@@ -8,7 +8,7 @@ At the page grid level, one block is still one rectangular grid occupant. Inside
 
 Do not treat internal subcomponents as separate page-grid blocks. They must live inside the block body viewport and respect the block's padding, title area, and overflow strategy.
 
-Before deciding to combine subcomponents, check the outer span's usable pixel size in `block-size-constraints.md`. Composite widgets must pass the preferred/final span matrix, type minimums, and practical size constraints for the active viewport.
+Before deciding to combine subcomponents, choose the outer span from the default distribution in `grid-containers.md`, then check the usable pixel size in `block-size-constraints.md`. Composite widgets must have enough space for the dominant subcomponent plus internal labels, controls, dividers, legends, and states.
 
 ## When To Combine Components
 
@@ -28,7 +28,7 @@ Split into separate `8 * N` blocks when:
 - Each subcomponent needs its own independent title, filters, actions, or drilldown path; independent visible titles usually mean the content should become separate layout-owned blocks.
 - The body becomes too dense for readable labels, legends, or table columns.
 - Internal scroll becomes the primary way to use the block.
-- A subcomponent needs a final validated span that the outer block cannot safely provide.
+- A subcomponent needs more space than the outer block can safely provide.
 - The combined subcomponent count exceeds the limits in `block-size-constraints.md`.
 
 ## Title Design

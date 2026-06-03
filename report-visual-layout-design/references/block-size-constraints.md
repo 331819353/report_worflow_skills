@@ -30,7 +30,7 @@ Only the sci-fi cockpit template is normally fixed to one `1920 * 1080` screen. 
 
 ## 2. Size Formula
 
-Compute the actual top-level block size before choosing or accepting the component span. Defaults are recommendations only; a span is final only after type and pixel validation.
+Compute the actual top-level block size after choosing a default candidate span from `grid-containers.md`.
 
 ```text
 columnWidth = (contentWidth - (8 - 1) * gap) / 8
@@ -56,21 +56,19 @@ Default report cards:
 - 1280 viewport baseline: `horizontalPadding = 16-20`, `headerHeight = 40-48`.
 - Dense sci-fi blocks: padding may be smaller, but title, legend, and chart viewport must still have fixed space.
 
-## 3. Preferred Span To Final Span
+## 3. Default Span Selection And Size Check
 
-Every component has a preferred span, a type minimum span, and a pixel-validated required span:
+Use this order:
 
-```text
-final_span = max(
-  preferred_span,
-  type_min_span,
-  pixel_validated_required_span
-)
-```
+1. Pick a default candidate span from `grid-containers.md` by component type.
+2. Check the component's base minimum size in the detailed size table.
+3. Add complexity requirements for labels, legends, rows, columns, nodes, edges, depth, markers, tasks, or text length.
+4. Calculate the selected span's outer size and usable body size.
+5. If the body size is enough, keep the selected span.
+6. If it is not enough, try the next larger candidate span from the same default distribution row.
+7. If no candidate span can hold the content, split the component, use tabs, paginate, move details to drawer/fullscreen, aggregate the data, or change the component type.
 
-The preferred span is only a starting point. A layout is invalid if it keeps the preferred span while the computed body viewport is smaller than the component's minimum requirement.
-
-Final required size must not be determined by component type alone. Calculate it as:
+Required size is calculated as:
 
 ```text
 final_required_width_px =
@@ -80,30 +78,14 @@ final_required_height_px =
 base_min_outer_height_px + complexity_height_addition_px
 ```
 
-Then choose the smallest valid grid span that satisfies:
+The selected span passes when:
 
 ```text
 computed_outer_width_px >= final_required_width_px
 computed_outer_height_px >= final_required_height_px
 ```
 
-If no span can satisfy the requirement within the current row, move the component to a new row. If no span can satisfy the requirement within 8 columns, use full-width layout, split the component, paginate, drill down, aggregate, or render summary first.
-
-Validation sequence:
-
-1. Pick the preferred span from the component plan.
-2. Apply the component type minimum span.
-3. Apply complexity expansion by content count, label length, node/edge count, depth, rows, columns, markers, or tasks.
-4. Calculate `columnWidth`, `blockWidth`, and `blockHeight`.
-5. Subtract component padding, title/header, footer, legend, axis reserve, table header, and other fixed vertical costs.
-6. Compare the remaining body/plot/table/text viewport with the final required minimum.
-7. If width fails, increase columns first.
-8. If height fails, increase rows first.
-9. If both fail, increase both.
-10. If the upgraded block cannot fit at the current position, move it or append rows.
-11. If it still cannot fit, split, paginate, or move dense details to drawer/fullscreen.
-
-Breakpoints provide hints only. Pixel validation is the final authority, so `1279px` and `1281px` should not create contradictory layouts when the computed body size is effectively the same.
+For viewport breakpoints, use the computed body size rather than the breakpoint name alone. Two nearby widths such as `1279px` and `1281px` should not produce contradictory choices when the actual body size is effectively the same.
 
 ## 4. Pixel Calculation Details
 
@@ -149,9 +131,9 @@ Do not reduce padding, gap, row height, or line height below the minimums to for
 
 ## 5. Extended Component Size Requirements
 
-Classify every component into one of the following component types. `min_outer_width_px` and `min_outer_height_px` are hard base constraints. `recommended_min_span` is only the starting recommendation for an 8-column grid with `rowHeight ~= 96px` and `gap ~= 12-16px`; final span still requires pixel validation.
+Classify every component into one of the following component types. `min_outer_width_px` and `min_outer_height_px` are base size checks used after selecting a default candidate span. `size_check_hint` helps judge whether the default span is likely to pass; it does not replace the default span distribution in `grid-containers.md`.
 
-| component_type | min_outer_width_px | min_outer_height_px | recommended_min_span | notes |
+| component_type | min_outer_width_px | min_outer_height_px | size_check_hint | notes |
 | --- | ---: | ---: | --- | --- |
 | `title` | 600 | 56 | `8x1` | Page main title |
 | `section_header` | 360 | 48 | `8x1` | Section or chapter title |
@@ -206,15 +188,7 @@ Classify every component into one of the following component types. `min_outer_w
 
 ## 6. Complexity-Based Size Expansion Rules
 
-After applying the component type's base minimum size, expand the required size according to content complexity. The planner must follow this sequence:
-
-```text
-component_type
-  -> base_min_size
-  -> complexity_expansion
-  -> pixel_validation
-  -> final_span
-```
+After applying the component type's base minimum size, expand the required size according to content complexity.
 
 ### KPI Rules
 
@@ -508,9 +482,9 @@ At `1280 * 768`, prefer collapsed or low-intrusion navigation. With a collapsed 
 
 Do not keep a wide 256px sidebar permanently open on a 1280-wide work surface unless the report is navigation-first and content density is intentionally reduced.
 
-## 8. Composite Block Sanity Checks
+## 8. Composite Block Checks
 
-When one block contains multiple subcomponents, classify each visible subcomponent with the 50-type table, then validate the outer block against the most demanding component plus added internal spacing, headers, dividers, controls, and legends.
+When one block contains multiple subcomponents, check the outer block against the most demanding subcomponent plus added internal spacing, headers, dividers, controls, and legends.
 
 Split into separate grid blocks, tabs, drawer, fullscreen, or drilldown when:
 
@@ -522,32 +496,33 @@ Split into separate grid blocks, tabs, drawer, fullscreen, or drilldown when:
 
 KPI/status peers may use balanced internal layouts such as `2 * 2`, `3 * 2`, or `4 * 2`, but every tile still needs pixel validation.
 
-## 9. Hard Layout Constraints
+## 9. Layout Rules
 
 - The page-grid span belongs to the top-level block; internal subcomponents must not create nested page grids.
 - Do not treat `1920 * 1080` or `1280 * 768` as the report's maximum height.
 - Do not reduce `N`, row height, title space, chart body height, or table body height to force the full report into one viewport.
 - Do not divide available viewport height by `N` to create smaller rows.
-- Do not treat preferred/default spans as final spans.
+- Do not skip the default span distribution before size checking.
 - Do not render any component whose computed outer size or content viewport is smaller than its final required size.
 - Do not duplicate block titles inside chart/table/KPI bodies.
 - Do not make peer components too narrow, tiny, crowded, or unreadable; use balanced `M * N` layouts, split sections, or move details to drawer/fullscreen.
-- Do not bypass the 50-type table by using a generic `chart`, `table`, `map`, or `other` rule when a precise component type exists.
+- Do not use a generic `chart`, `table`, `map`, or `other` label when a precise component type exists.
 - Do not use more than one internal scroll area in one block.
 - If a title, legend, axis label, table column, toolbar, or status tag does not fit, increase the span or simplify the component.
 - On `1280 * 768`, promote mixed components by at least one span tier compared with 1920 planning.
 - If a block needs long explanations, detailed table review, or multiple independent actions, use a drawer/detail page instead of expanding the card forever.
 
-## 10. Selection Workflow
+## 10. Selection Steps
 
 1. Choose the business question for the block.
 2. Decide whether the block is single-component or composite.
-3. Classify the component with the 50-type table.
-4. Apply base minimum size and complexity expansion.
-5. Pick a preferred span and compute actual outer/body pixel size.
-6. Upgrade to the smallest final span that satisfies the computed requirement.
-7. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
-8. If the block still fails any constraint, either:
+3. Pick a default candidate span from `grid-containers.md`.
+4. Classify the component with the detailed size table.
+5. Apply base minimum size and complexity expansion.
+6. Compute actual outer/body pixel size.
+7. Keep the default span if it passes; otherwise try the next larger candidate span or redesign the block.
+8. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
+9. If the block still fails any constraint, either:
    - increase the span,
    - switch simultaneous subcomponents to tabs/segmented views,
    - move details to a drawer/modal,

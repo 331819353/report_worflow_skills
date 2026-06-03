@@ -119,7 +119,7 @@ If the component cannot fit cleanly, reduce nonessential labels, move legends, e
 
 When a component is placed in a report block, distinguish the block header from the component body.
 
-Hard rules:
+Rules:
 
 - The component may only render inside the block body viewport. It must not position charts, icons, legends, labels, empty states, or canvases across the header/title area.
 - The block body must be a measurable container with `width: 100%`, `height: 100%`, `min-width: 0`, `min-height: 0`, and a deliberate overflow policy.
@@ -302,7 +302,7 @@ Use these strategies:
 - Use fullscreen/expand for dense charts, maps, trees, and diagrams.
 - Use progressive disclosure: show summary first, details in drawer.
 
-Hard rules:
+Rules:
 
 - Do not set fixed component height when content length is variable unless internal scroll is defined.
 - In scrollable page templates, do not let any assigned report block resolve below 220px tall. If the full grid becomes taller than 1080px, use vertical page/content scrolling instead of shrinking blocks.
@@ -350,19 +350,18 @@ If the minimum viable size is larger than the assigned block:
 
 Do not solve fit problems by simply shrinking typography below readability.
 
-### Preferred And Final Span Rules
+### Default Span And Fit Rules
 
-When the page uses an `8 * N` grid, component size is owned by `report-visual-layout-design/references/block-size-constraints.md`: classify with the 50-type table, apply complexity expansion, then validate pixels. Component style work should only verify that the assigned body viewport remains readable after padding, title, legend, axes, controls, table headers, and footer are reserved.
+When the page uses an `8 * N` grid, start from the default span distribution in `report-visual-layout-design/references/grid-containers.md`, then use `report-visual-layout-design/references/block-size-constraints.md` to check whether the assigned body viewport remains readable after padding, title, legend, axes, controls, table headers, and footer are reserved.
 
-Hard rules:
+Rules:
 
-- Do not define a second component size table here.
-- Do not force distinct table, graph, map, KPI, or text types into one generic span rule.
-- If the assigned viewport fails fit, grow span, split, paginate, collapse, aggregate, or move details to drilldown.
+- Keep the default span when the component fits.
+- If the assigned viewport fails fit, try a larger default candidate span, split, paginate, collapse, aggregate, or move details to drilldown.
 - For scrollable page templates, final spans are valid only after the row-height rule is satisfied: every resulting block must be at least 220px tall.
 - Do not calculate row height by dividing the viewport height by `N`; increase `N`, scroll, split, or paginate.
 
-If the selected preferred span still feels cramped after validation, choose a larger final span. Do not continue to rendering with an invalid preferred span.
+If the selected default span still feels cramped after validation, choose a larger candidate span or redesign the component placement.
 
 ## Complex Diagram Viewport Rules
 
@@ -742,7 +741,7 @@ For dense charts:
 
 Radar charts are high risk for label and legend collision. Use them only for a small number of dimensions and only when the component has enough space.
 
-Hard rules:
+Rules:
 
 - Do not place a radar chart in a narrow or shallow card if it also needs an internal legend.
 - Reserve separate zones for title, radar dimension labels, plot area, and legend.

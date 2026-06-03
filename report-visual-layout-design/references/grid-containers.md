@@ -16,7 +16,7 @@ All report content display areas must use an `8 * N` rectangular block grid:
 
 Do not use masonry, staggered, diagonal, floating, or irregular component shapes.
 
-After choosing a preferred span, calculate its actual pixel size with `block-size-constraints.md`, especially for `1920 * 1080` and `1280 * 768` viewports. The preferred span is not final until it satisfies the component type minimum and pixel/content validation.
+After choosing a default span, calculate its actual pixel size with `block-size-constraints.md`, especially for `1920 * 1080` and `1280 * 768` viewports. Keep the default span when the content fits; enlarge, split, or move detail content only when the size check fails.
 
 ## 2. Scroll And Row Height
 
@@ -33,7 +33,7 @@ Fixed sci-fi/big-screen cockpit layouts are exempt from the 220px rule because t
 
 ## 3. Recommended Spans
 
-Use these common preferred spans, then validate and upgrade them before finalizing:
+Use these common spans before detailed size checks:
 
 - Hero summary or main chart: 8 columns.
 - KPI strip: four cards at 2 columns each; eight KPIs should use two rows, a full-width internal strip that passes pixel validation, tabs, or pagination.
@@ -54,21 +54,29 @@ For peer component groups, prefer a balanced `M * N` distribution where `M` mean
 - Prefer `M > N` when possible; square layouts are acceptable when the count naturally fits.
 - Avoid one long strip or one narrow column unless the component is explicitly a timeline, KPI strip, or navigation.
 
-## 4. Preferred And Final Span Matrix
+## 4. Default Span Distribution
 
-Use `block-size-constraints.md` as the source of truth for component type, base minimum outer size, complexity expansion, and recommended minimum span. When one block contains multiple subcomponents, choose the component class by the dominant or most layout-demanding subcomponent.
+Start with the default span distribution below. When one block contains multiple subcomponents, choose the row by the dominant or most layout-demanding subcomponent.
 
-A recommended span in the component table is still invalid if it fails computed pixel/content-size validation after complexity expansion.
+| Component type | Default candidate spans |
+| --- | --- |
+| 折线图 / 柱状图 / K 线图 / 热力图 | `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3` |
+| 饼图 / 雷达图 / 路径图 / 旭日图 / 仪表盘 | `1*1`, `2*2`, `3*2`, `2*3`, `3*3`, `4*4` |
+| 散点图 / 盒须图 / 平行坐标系 | `3*1`, `2*2`, `3*2`, `2*3`, `3*3`, `2*4`, `4*4`, `4*2`, `4*3`, `3*4` |
+| 地图 / 关系图 / 树图 / 矩形树图 / 桑基图 / 漏斗图 | `2*2`, `3*2`, `3*3`, `4*3`, `4*4` |
+| 指标卡 | `1*1`, `2*1` |
+| 表格 | `3*2`, `4*2`, `5*2`, `3*3`, `4*3`, `5*3`, `6*3`, `7*3`, `8*3`, `4*4`, `5*4`, `6*4`, `7*4`, `8*4` |
+| 其他组件 | `2*1`, `2*2`, `3*2`, `3*3`, `4*4`, `4*2`, `4*3` |
 
 Rules:
 
-- Treat candidate spans as starting points, not proof of fit.
-- Classify by the 50-type table before mapping to any runnable `visualType`.
-- If title, legend, axes, toolbar, or data density cannot fit, grow the span, split the component, or change component type.
+- Pick the smallest span that matches the component's importance and expected density.
+- Validate the selected span with `block-size-constraints.md`.
+- If the selected span fits, keep it.
+- If it does not fit, try the next larger candidate span in the same row.
+- If no candidate span fits, split the content, use tabs, move details to drawer/fullscreen, or change the component type.
 - Do not shrink text, hide overflow, or overlap legends to force a too-small span.
 - Composite widgets with multiple subcomponents must still declare one `visualType`; use the dominant visual type, or `other` only when no supported visual type dominates.
-- Do not render any business component as `1*1`. A `1*1` cell may be an empty placeholder or icon-only status marker only when no widget is mounted.
-- `2*1` is only valid for simple KPI cards that pass pixel validation.
 
 ## 5. Block Internal Anatomy
 
@@ -79,7 +87,7 @@ Each content block separates frame from component body:
 - Component body: the only viewport where charts, tables, KPI groups, text, empty states, diagrams, and business components render.
 - Optional footer: source, pagination, note, or legend only when reserved height exists.
 
-Hard rules:
+Rules:
 
 - Module title sits top-left as plain text: 16px, `font-weight: 600`, deep gray on light theme.
 - Do not put the title in a boxed nested card.
