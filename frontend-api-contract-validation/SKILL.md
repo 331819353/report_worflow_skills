@@ -1,6 +1,6 @@
 ---
 name: frontend-api-contract-validation
-description: "Validate frontend data-source/API contracts before replacing mock/static data or wiring runtime data. Use when checking REST, GraphQL, BFF, backend API docs, SDK responses, local JSON/files, realtime feeds, request/query rules, response fields, nesting, types, units, precision, enums, pagination, sorting, filters, empty/error/loading states, auth headers, and sample responses. Data service is optional: treat 数据服务/API文档 as one provider, not the only trigger."
+description: "用于前端接入数据前验证数据源/API契约，尤其在替换mock、联调前提前介入。用户提到前端接口契约、API字段校验、响应字段、嵌套结构、类型、单位、精度、枚举、分页、排序、筛选、空态、错误态、loading、鉴权头、REST/GraphQL/BFF/SDK/本地JSON/实时数据接入、样例响应核对时触发，确认前端可安全接入。"
 ---
 
 # Frontend API Contract Validation

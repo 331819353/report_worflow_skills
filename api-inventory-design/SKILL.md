@@ -1,6 +1,6 @@
 ---
 name: api-inventory-design
-description: "Design reusable API清单 / endpoint inventory artifacts for data-driven pages, services, and integration work. Use when requirements, metric lists, data models, data-source metadata, prototype data code, frontend contracts, backend notes, or testing findings must be converted into an API inventory before API documentation, implementation, integration, or validation. Covers endpoint grouping, method/path, business purpose, triggers, request parameters, response model, filters, pagination, sorting, auth, source-model dependency, priority, status, and unresolved API questions."
+description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、页面需要哪些接口、mock转接口、需求转API、接口优先级、接口分组、方法路径、参数响应、筛选分页排序、鉴权、未定接口问题时触发，为API文档、后端实现、前端联调和测试提供入口。"
 ---
 
 # API Inventory Design

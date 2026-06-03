@@ -1,6 +1,6 @@
 ---
 name: sso-auth-flow-test
-description: "Test SSO authentication flows for running frontend/backend report systems. Use for 鍗曠偣鐧诲綍, SSO娴嬭瘯, clientId/token storage, Application-Key/Access-Token headers, 401 invalid token handling, 403 no-permission handling, refresh/deep-link access, logout, re-login, backend token validation, and auth request evidence."
+description: "用于验证运行中系统的SSO登录、鉴权和权限链路。用户提到单点登录、SSO测试、登录跳转、token/clientId、Application-Key、Access-Token、401失效重登、403无权限、刷新/深链访问、logout、重新登录、后端token校验、前端SDK与后端鉴权断点、认证请求证据时触发。"
 ---
 
 # SSO Auth Flow Test

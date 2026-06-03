@@ -1,6 +1,6 @@
 ---
 name: test-evidence-defect-reporting
-description: "Produce structured test evidence and defect reports for report integration testing. Use for 测试报告, 缺陷报告, evidence capture, screenshots, headless browser screenshot evidence, multimodal visual anomaly findings, network logs, reproduction steps, expected/actual result, owner classification, blocker/missing information, pass/partial/fail conclusion, and handoff-ready QA summaries."
+description: "用于产出结构化测试证据、缺陷报告和验收结论。用户提到测试报告、缺陷报告、问题单、证据截图、浏览器截图、多模态视觉异常、网络日志、控制台日志、复现步骤、预期/实际结果、通过/失败/部分通过、阻塞项、责任归类、回归证据、验收总结、QA交付材料时触发，输出可交接的证据和缺陷闭环信息。"
 ---
 
 # Test Evidence Defect Reporting

@@ -1,6 +1,6 @@
 ---
 name: haier-iama-backend-sso
-description: "Implement backend single sign-on against Haier IAMA unified identity authentication. Use when adding, reviewing, or standardizing backend services that receive frontend JSSDK, Feishu, or account-center authorization codes, exchange codes for account-center tokens and user info, validate Access-Token values, wrap reusable IAMA OAuth clients, or connect IAMA identities to local sessions, JWTs, middleware, filters, interceptors, and tests."
+description: "用于后端接入海尔IAMA统一身份认证。用户提到海尔IAMA、账号中心后端SSO、授权码换token、获取用户信息、校验Access-Token、checkToken、clientId、JSSDK/飞书/账号中心code、JWT/session绑定、鉴权中间件、过滤器、拦截器、受保护API、401/403处理、后端登录态测试时触发。"
 ---
 
 # Haier IAMA Backend SSO

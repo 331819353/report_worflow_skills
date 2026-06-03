@@ -1,6 +1,6 @@
 ---
 name: filter-linkage-completeness-test
-description: "Test report filter completeness and linkage. Use for 杩囨护鍔熻兘娴嬭瘯, 绛涢€夐」瀹屾暣鎬? filter option data, defaults, reset, cascades, query params, filter-to-component binding, mock option coverage, backend-supported values, pagination/sorting/drilldown/export filter inheritance, and filter interaction evidence."
+description: "用于测试报表筛选器完整性和筛选联动。用户提到筛选测试、过滤测试、筛选项完整性、筛选默认值、重置、级联、联动、查询参数、筛选到组件绑定、筛选项数据源、mock选项覆盖、后端可选值、分页/排序/下钻/导出继承筛选、过滤条件不生效时触发，输出筛选矩阵、证据和缺陷结论。"
 ---
 
 # Filter Linkage Completeness Test

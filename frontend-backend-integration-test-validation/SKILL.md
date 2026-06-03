@@ -1,6 +1,6 @@
 ---
 name: frontend-backend-integration-test-validation
-description: "Run standalone runtime frontend/backend integration validation from already running frontend and backend URLs. Focus on SSO, frontend display data versus backend API data consistency, complete filter behavior, interactions, and evidence-backed QA. Use during testing when URLs are available for runtime URL verification, SSO validation, token/clientId headers, API response comparison, mock replacement verification, filter completeness, filter-to-component binding, and end-to-end report QA. Frontend/backend source files or Git URLs are optional diagnostics inputs for root-cause analysis."
+description: "用于已有前端URL和后端URL时执行独立的前后端运行联调验证。用户提到联调验证、集成验证、前后端一起测、运行URL测试、SSO验证、token/clientId请求头、接口连通性、页面展示与API对比、mock替换验收、筛选联动、交互流程、端到端报表QA、联调缺陷复现时触发，输出证据化测试结论和修复建议。"
 ---
 
 # Frontend Backend Integration Test Validation

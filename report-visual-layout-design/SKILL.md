@@ -1,6 +1,6 @@
 ---
 name: report-visual-layout-design
-description: "Design, critique, or refine visual layout and page structure for business report pages, dashboards, and cockpit-style screens. Use when deciding page shell, title and navigation areas, filter control surfaces, Haier logo usage, visual hierarchy, 8*N grids, chart/table containers, drawers, loading/empty/error states, export/fullscreen/refresh behavior, responsive fit, and report layout QA."
+description: "用于报表页面整体布局、页面壳、导航和内容区域设计/评审/修复。用户提到布局、页面结构、左侧导航、顶部栏、标题区、筛选区、工具栏、Haier logo、8*N网格、卡片/图表/表格容器、抽屉、空态/加载/错误态、导出/全屏/刷新、响应式适配、首屏信息层级、布局重做、页面不好看或元素重叠时触发。"
 ---
 
 # Report Visual Layout Design

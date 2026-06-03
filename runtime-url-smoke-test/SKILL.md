@@ -1,6 +1,6 @@
 ---
 name: runtime-url-smoke-test
-description: "Validate already running frontend and backend URLs before deeper report testing. Use for runtime URL smoke tests, 前端URL, 后端URL, 运行地址, 冒烟测试, environment/version alignment, backend health, API base URL, proxy/CORS, static assets, console errors, network failures, and deciding whether SSO/data/filter testing can proceed."
+description: "用于对已启动的前端/后端URL做冒烟验证，决定能否进入深度联调测试。用户提到运行地址、访问地址、前端URL、后端URL、localhost、页面打不开、接口不通、健康检查、版本环境一致性、API base URL、proxy/CORS、静态资源、控制台错误、网络失败、先看能不能跑、冒烟测试时触发。"
 ---
 
 # Runtime URL Smoke Test

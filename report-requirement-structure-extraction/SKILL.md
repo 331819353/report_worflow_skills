@@ -1,6 +1,6 @@
 ---
 name: report-requirement-structure-extraction
-description: "Convert vague user needs into real, development-ready requirements across multiple delivery scenarios. Use when the task mentions 需求分析, 需求转化, 需求梳理, 需求拆解, 需求澄清, 模糊需求转开发需求, PRD整理, 原型设计需求分析, 技术方案需求转化, 数据服务需求分析, 接口设计需求拆解, 数据可视化需求分析, 前后端联调需求, 测试需求分析, 权限/数据源/数据表/数据格式转化梳理, or when Codex must turn rough business ideas, screenshots, meeting notes, metric lists, data documents, API notes, or user stories into scenario-specific development requirements, including business problems, users, scope, metrics, dimensions, APIs, data models, source systems, permissions, transformations, integration contracts, tests, acceptance criteria, risks, gaps, and next skill/workflow routing."
+description: "用于把模糊想法、业务口述、截图、会议纪要、指标清单或零散资料提前转成可开发需求。用户提到需求分析、需求梳理、需求拆解、需求澄清、需求转化、PRD整理、模糊需求、业务问题转开发需求、原型/技术方案/后端/API/前端/测试需求、数据源/权限/验收标准不清时触发，输出范围、对象、指标、接口、数据模型、风险、缺口和下一步路由。"
 ---
 
 # Requirement Transformation Analysis

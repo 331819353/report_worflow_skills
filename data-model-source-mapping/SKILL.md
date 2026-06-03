@@ -1,6 +1,6 @@
 ---
 name: data-model-source-mapping
-description: "Create or refine reusable 数据模型文件 / source-to-consumer model mapping artifacts. Use when data-source documents, data元信息, metric lists, prototype mock/data-code fields, API inventory, API docs, frontend contracts, or testing evidence must be mapped into source models, logical/business models, response/view models, relationships, metrics, transformations, ownership, freshness, permission, and data-quality rules. This skill can support 技术方案, 数据服务, 前端联调, and 测试校验 workflows."
+description: "用于在开发前创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、指标口径、字段口径、维度关系、原型mock字段、响应模型、视图模型、数据血缘、刷新频率、权限、质量规则、数据模型文件、source-to-consumer mapping时触发，支撑技术方案、后端、前端联调和测试。"
 ---
 
 # Data Model Source Mapping

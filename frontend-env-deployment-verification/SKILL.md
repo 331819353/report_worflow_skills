@@ -1,6 +1,6 @@
 ---
 name: frontend-env-deployment-verification
-description: "Verify frontend environment, data-source configuration, proxy, build, preview, deployment, and URL behavior for Vite, Vue, React, Next, static, embedded, or micro-frontend projects. Use when configuring API/data base URLs, .env files, dev-server proxy, CORS workarounds, SDK/client init values, base paths, hash/history routing, static assets, public paths, build output, preview server, deployment target, or final shareable URL. Data service is optional; verify any runtime provider configuration."
+description: "用于验证或配置前端运行环境、数据源地址、代理和部署URL。用户提到环境变量、.env、API base URL、数据源地址、dev-server proxy、CORS、Vite/Vue/React/Next启动、build、preview、静态资源路径、public path、hash/history路由、嵌入页面、微前端、部署地址、访问URL、页面打不开、接口打错环境、最终预览地址时触发。"
 ---
 
 # Frontend Env Deployment Verification

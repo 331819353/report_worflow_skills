@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "Create implementation- and handoff-ready API documentation from API inventories, product/backend requirements, implemented routes, OpenAPI snippets, source/data model files, or integration contracts. Use for generic API documentation, backend/API handoff, frontend integration specs, test contracts, endpoint request/response examples, auth/error/pagination/filter conventions, model traceability, transformation notes, performance limits, and unresolved items."
+description: "用于生成或重构可交付的API/接口文档，支持开发前、联调前、测试前提前统一契约。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权/错误码/分页/筛选规范、字段口径、接口交付、接口验收、已有路由补文档时触发，输出实现、前端接入和测试可用的接口说明。"
 ---
 
 # API Documentation Design

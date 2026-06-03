@@ -1,6 +1,6 @@
 ---
 name: integration-test-case-design
-description: "Design integration test cases for report projects from API文档 and 前端功能说明. Use when the testing stage needs 测试样例, test cases, acceptance cases, SSO cases, API/display consistency cases, filter linkage cases, edge-state cases, permission cases, export cases, or evidence-ready test matrices before or during frontend/backend联调."
+description: "用于在联调/验收前设计集成测试用例和测试矩阵。用户提到测试用例、测试样例、验收用例、联调用例、集成测试设计、SSO用例、接口连通性、页面数据一致性、筛选联动、权限、导出、异常/空态/边界场景、回归标准、测试覆盖矩阵、根据API文档和前端功能说明设计测试时触发。"
 ---
 
 # Integration Test Case Design

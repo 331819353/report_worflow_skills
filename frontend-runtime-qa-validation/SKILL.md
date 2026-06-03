@@ -1,6 +1,6 @@
 ---
 name: frontend-runtime-qa-validation
-description: "Run structured browser/runtime QA for frontend apps, dashboards, prototypes, report pages, or embedded pages after implementation, mock replacement, data-provider integration, environment changes, or visual fixes. Use to verify console errors, network/SDK/file requests, filters, route jumps, tabs, drawers, modals, chart clicks, table actions, export/download, refresh, loading/empty/error/auth states, stale prototype copy, layout clipping, headless browser screenshots, multimodal visual anomaly recognition, targeted repair feedback, and final runnable URL. Data service is optional; validate the provider model actually used."
+description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发。"
 ---
 
 # Frontend Runtime QA Validation

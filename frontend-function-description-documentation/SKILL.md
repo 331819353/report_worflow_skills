@@ -1,6 +1,6 @@
 ---
 name: frontend-function-description-documentation
-description: "Create frontend function descriptions for handoff across dashboards, data-visualization pages, business apps, prototypes, or API-integrated frontend projects. Use when source code, routes, modules, data providers, API/SDK/static data mapping, filters, interactions, runtime verification, or known blockers must be summarized into 前端功能说明 for testing, delivery, business review, or maintenance. Data service is optional; document whichever provider model the frontend actually uses."
+description: "用于生成前端功能说明/交付说明，服务测试、验收、运维和二次开发。用户提到前端功能说明、页面功能清单、交付文档、测试依据、验收说明、维护文档、路由模块说明、数据来源、接口/SDK/静态数据映射、筛选交互、组件行为、运行验证、已知问题、阻塞项、给测试或业务看时触发。"
 ---
 
 # Frontend Function Description Documentation

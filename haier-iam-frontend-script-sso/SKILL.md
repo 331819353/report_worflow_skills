@@ -1,6 +1,6 @@
 ---
 name: haier-iam-frontend-script-sso
-description: "Implement, review, or standardize Haier account-center @haier/iam browser SDK SSO through script-tag integration in frontend projects. Use when a non-NPM, non-React, static HTML, Vue, Vite, legacy, embedded webview, or mixed frontend needs Haier IAM/账号中心 login, logout, token handling, 401 re-login, window.__USERCENTER__, optional ihaier/Feishu appId, debug mode, or migration from @haier/fe-stub-usercenter to @haier/iam by script access."
+description: "用于前端通过script标签接入海尔账号中心@haier/iam单点登录。用户提到海尔IAM、账号中心、@haier/iam、window.__USERCENTER__、script版SSO、非NPM接入、静态HTML/Vue/Vite/遗留页面/嵌入页登录、ihaier/飞书appId、token获取、logout、401重登、debug、从@haier/fe-stub-usercenter迁移时触发。"
 ---
 
 # Haier IAM Frontend Script SSO

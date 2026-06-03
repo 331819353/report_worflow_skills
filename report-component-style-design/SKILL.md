@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "Design, critique, or refine visual style and responsive behavior of business report components across dashboards and pages. Use when deciding how Element Plus filters/forms/buttons/tabs/tags/popovers/dialogs/drawers, text summaries, KPI cards, ECharts charts, AntV S2 analytical tables, legends, labels, titles, task cards, anomaly cards, comparison panels, decomposition diagrams, DuPont charts, trees, funnels, flows, component-level switches, segmented controls, dropdown selects, and compact control bars should look, align, resize, avoid overlap, preserve readability, support zoom/pan, animate, show hover values, and stay visually consistent."
+description: "用于报表组件视觉样式、响应式和可读性规则设计/评审/修复。用户提到组件样式、KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip悬浮、局部展示、复杂图形、树/漏斗/流程、组件溢出、对齐、缩放、移动端适配、视觉优化时触发。"
 ---
 
 # Report Component Style Design

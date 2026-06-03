@@ -1,6 +1,6 @@
 ---
 name: backend-data-transformation-design
-description: "Design and verify backend source-to-response data transformations for APIs, services, integrations, analytics endpoints, reports, exports, and adapters. Use when source files, database rows, upstream APIs, event payloads, or mocks do not match the target API/consumer contract, including date/period normalization such as YYYYMMDD to YYYYMM, aggregation grain changes, field renames, enum mapping, unit conversion, derived formulas, precision, default-fill behavior, sorting, grouping, reconciliation, and sample-based verification."
+description: "用于设计和验证后端从数据源到接口响应/导出的转换逻辑。用户提到数据清洗、字段映射、源表到响应、上游接口到API、mock到数据库、YYYYMMDD转月份、汇总口径、粒度转换、单位换算、枚举映射、公式派生、精度处理、默认填充、排序分组、对账校验、转换样例时触发，提前明确后端实现和验证规则。"
 ---
 
 # Backend Data Transformation Design

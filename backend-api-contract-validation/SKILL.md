@@ -1,6 +1,6 @@
 ---
 name: backend-api-contract-validation
-description: "Validate backend/API contracts across documentation, frontend clients, mock/display expectations, JSON fixtures, implemented routes, upstream services, database-backed responses, OpenAPI schemas, and runtime samples. Use for generic API contract validation, frontend/backend integration, mock replacement, implementation handoff, regression checks, response fields, nesting, types, units, precision, empty-state shape, pagination, sorting, filtering, error/auth contracts, transformation samples, and performance limits."
+description: "用于验证后端/API契约是否与文档、前端期望、mock、数据库/上游数据、OpenAPI、运行样例一致。用户提到接口契约校验、请求响应不一致、字段缺失、类型/单位/精度/枚举错误、分页排序筛选、空态/错误码/鉴权、数据库返回与页面不符、接口回归、mock替换前验证、联调问题定位时触发，输出字段级差异和修复/阻塞结论。"
 ---
 
 # Backend API Contract Validation

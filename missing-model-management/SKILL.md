@@ -1,6 +1,6 @@
 ---
 name: missing-model-management
-description: "Identify, document, and maintain reusable 待补充数据模型清单 / gap ledgers for data, model, requirement, API, security, performance, and integration uncertainty. Use when requirements, page scope, interactions, acceptance criteria, prototype data code, data sources, tables, fields, metadata, joins, metrics, formulas, enums, sample rows, refresh cadence, ownership, permission, response fields, API contracts, frontend bindings, test expectations, or prototype-to-source mappings are missing, ambiguous, temporary, assumed, or blocking inventory, documentation, implementation, integration, or validation work."
+description: "用于识别和维护需求、数据模型、API、前端绑定、测试期望中的缺口清单。用户提到待补充数据模型、缺失字段、口径不明、数据源未知、样例缺失、表关系不清、指标公式待定、枚举缺少、权限/性能/安全未定、原型mock无法映射、需求假设、阻塞开发、需要gap ledger或待补充清单时触发，跨技术方案、后端、前端和测试使用。"
 ---
 
 # Missing Model Management

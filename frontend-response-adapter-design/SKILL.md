@@ -1,6 +1,6 @@
 ---
 name: frontend-response-adapter-design
-description: "Design frontend data adapters that convert provider payloads into stable UI view models. Use when REST, GraphQL, BFF, SDK, static files, local data modules, realtime feeds, or backend API responses differ from existing mock/component props in fields, nesting, enum values, units, precision, date formats, nullability, pagination envelopes, stream events, or error shapes. Data service is optional; keep adapters provider-aware and components UI-stable."
+description: "用于设计前端响应适配器，把不同数据源载荷转换为稳定UI视图模型。用户提到response adapter、响应适配、字段改名、嵌套拉平、枚举翻译、单位/精度/日期格式转换、null默认值、分页包裹、错误结构、REST/GraphQL/BFF/SDK/本地JSON/实时流接入、mock结构与真实接口不一致、组件props不想改时触发。"
 ---
 
 # Frontend Response Adapter Design

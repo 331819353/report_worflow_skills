@@ -1,6 +1,6 @@
 ---
 name: backend-missing-info-management
-description: "Create, update, and validate missing-information documentation for backend, API, integration, data-source, service, deployment, and contract work. Use when data sources, fields, business definitions, transformation rules, enum dictionaries, formulas, filter options, auth headers, environment config, deployment values, health checks, observability, rollback, performance limits, upstream dependencies, permissions, test evidence, retest evidence, or consumer contract decisions are missing, ambiguous, temporary, or assumed."
+description: "用于后端/API/数据服务/部署交付中的缺失信息管理。用户提到信息不全、口径不清、字段缺失、数据源未知、转换规则待定、枚举/公式/筛选项/鉴权头/环境变量/健康检查/日志监控/性能限制/上游依赖/权限/测试证据/回归证据缺少或只是临时假设时触发，提前形成缺口清单、责任人、优先级、到期和阻塞结论。"
 ---
 
 # Backend Missing Info Management

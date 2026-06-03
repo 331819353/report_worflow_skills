@@ -1,6 +1,6 @@
 ---
 name: frontend-backend-data-consistency-test
-description: "Compare frontend displayed report data with backend API responses. Use for 前后端数据一致性, 接口数据与页面展示一致, API response comparison, component field mapping, response adapters, units, precision, date format, aggregation, totals, sorting, top N, chart/table binding, mock residue, and field-level mismatch evidence."
+description: "用于核对前端页面展示数据与后端/API返回是否一致。用户提到前后端数据一致性、页面数据核对、接口返回与图表/表格不一致、字段映射、响应适配器、单位精度、日期格式、汇总口径、合计、排序、TopN、筛选后数据、mock残留、组件绑定错误、联调验收时触发，输出字段级对比证据和问题定位。"
 ---
 
 # Frontend Backend Data Consistency Test
