@@ -24,6 +24,7 @@ Treat this skill as general report layout and template selection rather than pro
 - Use Haier blue and white as the primary palette. Avoid redundant information, heavy decoration, and many competing colors.
 - Use the bundled Haier logo correctly: original color logo on light backgrounds, white logo on dark backgrounds.
 - Title, navigation, and filters do not have to be three separate zones. They may be merged into one unified header/control area when that better fits the page style.
+- Page, section, and block titles are owned by the page layout layer. Data components render inside the body viewport and must not add duplicate visible titles inside charts, tables, KPI groups, or custom component bodies unless no layout title exists for that standalone surface.
 - The content display area must use an `8 * N` rectangular grid. `N` may grow with content, and scrollable report pages should support vertical scrolling rather than compressing content.
 - Treat `1920 * 1080` and `1280 * 768` as visible viewport baselines, not report size limits. Actual report height may exceed the first viewport.
 - If a dashboard template is selected, follow the template's own shell, logo slot, navigation, filter pattern, grid mechanics, and sizing model.
@@ -105,11 +106,24 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 - Choose by business question and content density; do not invent a fifth custom pattern unless the user explicitly requests it.
 - Record why the selected pattern fits the report and how it preserves the `8 * N` grid.
 
+### Title Ownership Gate
+
+- The page shell owns page titles, section titles, block titles, and stage/layer/lane titles. Component implementations receive a titled container and should render only the data visual, table, KPI values, controls, legends, notes, and states inside the body viewport.
+- Disable or omit ECharts/S2/custom-chart internal `title` options when the surrounding block already has a visible title. Do not repeat the same title in both the block header and the chart body.
+- If a component must run standalone without a page/block title, record that exception and reserve title height before computing the body viewport.
+
+### Component Size And Distribution Gate
+
+- Do not finalize a layout with components that are too narrow, too small, or crowded. Enlarge the block, reduce component count, split sections, add vertical scroll, use tabs/drawers/fullscreen, or change component type before shrinking text or overlapping content.
+- For peer component groups, prefer a balanced `M * N` matrix where `M` is columns and `N` is rows. Use `M > N` when possible, and allow square layouts when the count naturally fits.
+- Recommended peer layouts: 4 items -> `2 * 2`; 6 items -> `3 * 2`; 8 items -> `4 * 2`; 9 items -> `3 * 3`. Avoid long single-row or single-column strips unless the content is explicitly a timeline, KPI strip, or navigation.
+- Every repeated card/chart/table tile must have enough body width and height for its values, labels, legends, axes, pagination, and states at the target viewport.
+
 ### Complex Diagram Spacing Gate
 
 - For flow, Sankey, graph, tree, decomposition, DuPont, lineage, and process-chain visuals, apply the complex-diagram spacing rules below before finalizing coordinates. If deeper component styling is out of scope, produce a handoff note instead of requiring another skill.
-- The layout must reserve rail width, node half-width, label reserve, edge bend reserve, viewport padding, and a minimum gutter of 16px.
-- Do not pass QA when layer numbers, labels, nodes, edges, or curve bend areas overlap, touch, or sit within less than 16px of each other.
+- The layout must reserve rail width, node half-width, label reserve, stage/layer/lane title band, edge bend reserve, viewport padding, and a minimum gutter of 16px.
+- Do not pass QA when layer numbers, stage/layer/lane titles, group captions, labels, nodes, edges, or curve bend areas overlap, touch, or sit within less than 16px of each other.
 
 ### Filter Control Implementation Gate
 
@@ -170,11 +184,16 @@ Before finalizing a layout, verify:
 - Rate/change labels use Chinese `%` display and trend indicators follow positive-red-up / negative-green-down icon semantics.
 - The shell choice matches the scenario: single-page, left-nav analytics, sci-fi cockpit, or custom page.
 - Every top-level content block occupies a legal rectangular `8 * N` grid span.
+- Every titled block has exactly one visible layout-owned title. Components inside the block do not render a duplicate title in their body viewport.
 - Template choice, block IDs, component order, and `columns * rows` spans stay stable across revisions unless the business question, content volume, or display scenario changes.
 - Block height is based on component content capacity, not forced into the first 1080px viewport.
+- Peer component groups use balanced `M * N` distribution where `M` is columns and `N` is rows, with `M > N` when possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
+- Components are not too narrow, too small, or crowded; if labels, values, legends, axes, controls, or states cannot fit, the block is enlarged or the content is split before final acceptance.
 - Titles, filters, toolbar actions, legends, labels, charts, tables, and empty states do not overlap or clip.
+- Business-question text, conclusion text, titles, labels, legends, chart marks, diagrams, tables, and cards do not overlap, touch, or visually stack on top of each other.
+- Section headers, level labels, lane titles, stage titles, and group captions reserve their own title band and do not overlap, touch, or visually attach to cards, node boxes, connector lines, badges, or child labels. Keep at least 16px safe spacing; if this cannot pass, enlarge the block, move the title outside the diagram, or use fullscreen/zoom/pan.
 - Haier logo variant, brand colors, typography, spacing, and density remain consistent.
-- Flow, Sankey, graph, tree, decomposition, and lineage layouts pass the 16px safe-spacing gate.
+- Flow, Sankey, graph, tree, decomposition, and lineage layouts pass the 16px safe-spacing gate, including title-band reserve and no title-node collision.
 - Main filter controls use Element Plus or project design-system select/dropdown/date/cascader patterns, or a fully styled native select only for baseline prototypes.
 - Tables, dense charts, maps, lineage graphs, Gantt views, and complex diagrams have scroll, zoom, pan, drawer, or fullscreen strategy.
 - Loading, empty, error, no-permission, stale, export, refresh, and fullscreen states have visible layout placement.
@@ -184,6 +203,10 @@ Before finalizing a layout, verify:
 - Do not choose a template because it looks richer; choose by usage scenario, navigation depth, information density, and display environment.
 - Do not treat `1920 * 1080` as a hard page height for scrollable business reports.
 - Do not place charts, tables, legends, or empty states in the block header area.
+- Do not draw a second visible title inside a component body when the page or block layout already provides that title.
+- Do not place a section/stage/layer/lane title in the same collision band as a node card or component card.
+- Do not make components narrow, tiny, crowded, or arranged as an awkward long strip when a balanced `M * N` layout can carry the same content.
+- Do not allow business-question text, chart marks, labels, legends, cards, or diagram nodes to overlap, stack, or visually merge.
 - Do not use decorative panels, gradients, images, or colors that compete with the report conclusion.
 - Do not invent non-rectangular spans or compress dense components until labels and values become unreadable.
 - Do not leave export, fullscreen, drawer, or responsive behavior outside the layout plan.

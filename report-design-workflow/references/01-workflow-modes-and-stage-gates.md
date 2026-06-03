@@ -46,7 +46,7 @@ Use when the user wants code, a Vue dashboard, or an actual runnable page.
 Deliver:
 
 - All prototype design outputs.
-- Technical architecture based on `TypeScript + Vue 3 + Element Plus + ECharts + AntV S2`.
+- Technical architecture based on `TypeScript + Vue 3 + Element Plus + ECharts`, with AntV S2 installed and used only when the binding matrix contains S2-class analytical tables.
 - Template choice.
 - Data files or mock data.
 - Component implementation.
@@ -57,7 +57,7 @@ Deliver:
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-visual-layout-design/assets/templates/`: `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts + AntV S2`.
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-visual-layout-design/assets/templates/`: `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts` as the base stack; add AntV S2 dependencies only when a generated component actually needs S2.
 
 ### 4. Review And Repair Mode
 
@@ -447,7 +447,7 @@ Default technical architecture:
 - Build tool: Vite.
 - UI component framework: Element Plus for page controls, filters, form fields, buttons, tabs, tags, popovers, dropdowns, dialogs, drawers, tooltips, pagination, and simple data tables unless an existing project design system explicitly supersedes it.
 - Charting: ECharts for KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and most dashboard charts.
-- Analytical tables: AntV S2 through `@antv/s2` and `@antv/s2-vue` for pivot tables, cross tables, wide metric matrices, frozen headers, dense comparison grids, and analysis-style tables.
+- Analytical tables: install and use AntV S2 through `@antv/s2` and `@antv/s2-vue` only for pivot tables, cross tables, wide metric matrices, frozen headers, dense comparison grids, and analysis-style tables.
 - Icons and controls: use the template's existing icon/control system; keep business widgets typed and scoped.
 - Data: keep mock/static data in data files or data-source resolvers, not inside visual components.
 - Interactions: emit typed dashboard actions from widgets and keep navigation, drilldown, modal, filter mutation, fullscreen, and URL navigation in the framework layer.
@@ -487,6 +487,7 @@ Do not choose a template only because it "looks better"; choose by scenario, nav
 
 Implementation must:
 
+- Install dependencies on demand. Before running `npm install`, compare `package.json`, existing imports, and the component binding matrix. Keep base template dependencies minimal; add heavy packages such as `@antv/s2` and `@antv/s2-vue` only when current code imports them or the mapped component set requires them. If install hangs past 120 seconds, stop, remove unused heavy dependencies from the generated project and lockfile, and retry the minimal install path.
 - Keep business data out of config when the template expects data files or data sources.
 - Declare `brandMode`, `visualMode`, and pass brand asset discovery before changing files.
 - Declare `pageShellPath`; if custom, declare `customDesignPath`.

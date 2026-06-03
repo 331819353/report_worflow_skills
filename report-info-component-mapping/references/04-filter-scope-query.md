@@ -110,6 +110,7 @@ For bundled templates:
 - Apply expensive filters only after user confirmation when needed.
 - Reset should return to business default, not necessarily empty state.
 - Export should use the same active filter state as the visible result.
+- Apply global/page-level and permission filters as early as possible in the SQL `WHERE`, source/provider/repository/query path. Component-internal filters such as local tabs, legend toggles, in-component quick search, or display slicing may operate on the already fetched component dataset. Do not design a page-level full-materialize-then-filter path that builds or fetches all candidate records and then narrows them in component code, static data helpers, stores, or adapters.
 
 Shared links must include enough parameters to reproduce report state without exposing unauthorized data.
 
@@ -120,6 +121,7 @@ For each filter, define:
 - Filter ID and display label.
 - Query value type: single, multiple, range, keyword, date, or tree path.
 - Data binding: exact field name, resolver parameter, permission scope, or explicit mapping.
+- Execution stage: SQL `WHERE`/source query, provider query, repository query, resolver param, precompute/cache, Redis/cache read, or component-internal local filtering over already fetched component data.
 - Affected components: KPI, chart, table, drawer, export, jump, fullscreen, or local block.
 - Cascade dependencies and invalid-child reset behavior.
 - Empty-result behavior and reset target.
@@ -130,6 +132,7 @@ Force-check rules:
 
 - A runnable prototype must fail validation when a primary filter has no explicit component binding.
 - A widget affected by filters must declare `filterFields`, `requiredFilters`, or equivalent `filterMap`.
+- A runnable prototype must fail validation when a global/page-level or permission filter is applied only after building or fetching the full dataset. Component-internal filters must be labeled local and tested against already fetched component data.
 - If a component intentionally ignores a filter, declare that relationship and label the scope difference.
 - Multi-period filters are not acceptable unless affected data includes all selectable periods.
 

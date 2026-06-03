@@ -63,6 +63,6 @@ Use this file for common adjustments and final verification after changing a tem
 - Block spans match the size and component-count constraints in `block-size-constraints.md`.
 - `1920 * 1080` and `1280 * 768` are used as viewport checks, not total report height caps.
 - Layout blocks do not clip titles, legends, charts, tables, empty states, or controls.
-- `npm run validate:dashboard` runs after `npm install`.
+- `npm run validate:dashboard` runs after the minimal required dependencies are installed.
 - `npm run build` runs before handoff when implementation code changed.
 - A local dev/preview URL is started and verified when a runnable project is part of the task.

@@ -46,6 +46,7 @@ Deliver:
 
 - Implemented backend in the existing project stack, or Flask only for a new unconstrained Python service.
 - API documentation kept consistent with implemented routes.
+- SQLite-backed simulation database when a real runtime source is unavailable but mock data is needed for API development or local verification.
 - Missing-information documentation for unresolved data/API/config/auth items.
 - Contract validation and a runnable local URL when startup is possible.
 
@@ -108,19 +109,31 @@ Deliver:
 3. Design transformations.
    Compare source data, data models, mock data, API docs, and consumer display expectations. Use `$backend-data-transformation-design` for date/period conversion, aggregation, field renames, enum mapping, unit conversion, formulas, precision, defaults, sorting, grouping, and reconciliation.
 
+   For database-backed endpoints, push global/page-level filtering, permission scope, sorting, pagination, aggregation, joins, Top/Bottom, and count calculations into SQL `WHERE`/`JOIN`/`GROUP BY`/`ORDER BY`/`LIMIT` clauses, database views, or repository queries whenever the database is the authoritative source. Do not fetch broad result sets and calculate business results in memory except for small DTO formatting, enum label mapping, or explicitly bounded post-processing. Reject full-materialize-then-filter designs: the service must not build/load the complete candidate dataset, component view model, or page payload and then apply global filters, sorting, pagination, Top/Bottom, or business aggregation in memory. Component-internal filters are a separate scope: local tabs, legend toggles, small in-component search, and display-only slicing may run on the component's already fetched dataset after global SQL filtering, but must not become a substitute for global SQL `WHERE` filtering. Every list/table endpoint must have bounded pagination, stable sorting, and a documented default/max page size before implementation is considered complete.
+
 4. Design and validate API contracts.
    Generate or update endpoint contracts from the API文档. Use `$backend-api-contract-validation` to compare routes against consumer/mock/API expectations, including fields, filters, empty states, errors, pagination, sorting, auth, and performance.
 
    Use the design reasonableness gate before implementation when a route shape, DTO, transformation, source strategy, auth rule, or error behavior technically works but would not reasonably serve the consumer workflow.
 
-5. Execute mock-to-fixture-to-authoritative-source flow when mock data exists.
-   First validate the mock/display contract, then generate canonical JSON fixtures for examples/tests/local fallback, then replace the mock/fixture source with the authoritative runtime source such as database repository/query, upstream API, file service, event-derived store, or existing service client. Database-backed responses are only mandatory when the database is the confirmed authoritative source.
+5. Execute mock-to-SQLite-to-authoritative-source flow when mock data exists.
+   First validate the mock/display contract, then create a local SQLite fixture database with schema, seed rows, indexes, constraints, and representative edge cases. Implement local/demo API routes against SQLite queries instead of JSON or in-memory arrays. JSON may be used only as response examples in documentation or test assertions, not as the API data source. Then replace the SQLite fixture source with the authoritative runtime source such as database repository/query, upstream API, event-derived store, or existing service client when that source is available.
 
 6. Apply authentication.
    If authenticated flow is required and not explicitly disabled, integrate the project auth layer. For Haier IAMA, use `$haier-iama-backend-sso`: exchange codes through `{baseUrl}/api/oauth/code/get/v2`, validate tokens through `{baseUrl}/api/oauth/token/check`, and enforce protected business endpoints.
 
 7. Implement in the project-native stack.
    Keep route, service, repository, schema/DTO, config, error, CORS, and auth concerns separated. Do not introduce Flask when an existing backend stack is present.
+
+   Database filters must be index-friendly. Prefer direct column predicates such as `field = ?`, `field IN (...)`, `field >= ? AND field < ?`, and anchored prefix search where supported. Avoid `FUNCTION(field) = ?`, `DATE(field) = ?`, `YEAR(field) = ?`, `TO_CHAR(field) = ?`, `LOWER(field) = ?`, arithmetic on indexed columns, or leading-wildcard `LIKE` on large tables unless a matching function-based/generated-column/full-text index is explicitly confirmed. Rewrite date/month filters as ranges, and record any unindexed or non-sargable filter as a performance gap.
+
+   Implement pagination for every collection/list/table endpoint. Use `pageNo` + `pageSize` or the project convention for ordinary bounded lists, and prefer cursor/keyset pagination for high-volume, frequently updated, or deep-scroll result sets. Enforce a maximum page size, define default sorting for stable pages, return pagination metadata, and optimize total-count behavior. Do not expose unbounded full-list APIs or export-sized responses through synchronous list endpoints.
+
+   Use database connection pooling for database-backed implementations. Reuse the project pool when one exists; otherwise configure a bounded pool with min/max size, acquire timeout, idle timeout, validation/health behavior, and safe shutdown. Do not open a new physical database connection per request or per component call.
+
+   Consider Redis or the project cache layer for hot, repeated, expensive, or permission-scoped queries. Cache keys must include global filters, permission scope, user/tenant scope when relevant, pagination/sort params, source version, and locale/unit options that affect the response. Document TTL, invalidation, stampede protection, fallback behavior, and sensitive-data rules before marking cached behavior production-ready.
+
+   Return component-ready response models for report/dashboard endpoints. Each data-bearing route should serve one component or a justified coherent component group and return the KPI values, chart series, table rows, totals, ranks, pagination metadata, and derived formula fields needed by that component. Do not offload business aggregation, ranking, filtering, formula calculation, or multi-component response splitting to frontend code unless the exception is explicitly bounded and documented. Do not implement a broad all-data endpoint and rely on the frontend or service layer to narrow it after full construction.
 
 8. Update docs and missing information.
    Keep API文档, missing-info docs, examples, and implementation defaults consistent. Temporary assumptions must appear in docs and code with the same behavior.
@@ -131,26 +144,28 @@ Deliver:
 10. Check production closed-loop readiness.
    Apply `../workflow-shared-references/production-closed-loop-readiness.md` before calling implementation work production-ready. Include backend URL/health evidence, source mode proof, contract validation, auth behavior, config/env handling, observability, performance/capacity limits, deployment/rollback notes, missing-info status, and testing handoff. Local/demo-only services remain `partial` unless the user explicitly accepts them as the target.
 
-## Mandatory Mock To Fixture To Authoritative Source Flow
+## Mandatory Mock To SQLite To Authoritative Source Flow
 
 When backend implementation starts from frontend/prototype mock data, use this forced sequence:
 
 1. Mock contract validation.
    Treat the mock/display shape as the frontend contract. Validate fields, types, units, precision, enums, filters, empty states, sort order, and response nesting.
 
-2. Canonical JSON fixture generation.
-   Generate stable JSON fixtures for tests, examples, and local fallback. JSON fixtures are not the final production data source.
+2. SQLite fixture database generation.
+   Create a local SQLite database, schema DDL, seed data, indexes, and representative rows for default, filtered, empty, permission-limited, abnormal, and pagination states. SQLite fixtures are the required simulation source for API development; JSON files are allowed only for response examples or assertion snapshots.
 
 3. Authoritative source replacement.
-   Implement the confirmed runtime source and make it the default business data source. The source may be a database, upstream API, file/object store, event-derived read model, existing service client, or explicitly approved file-backed source.
+   Implement the confirmed runtime source and make it the default business data source. The source may be a production database, upstream API, event-derived read model, existing service client, or explicitly approved bounded source. Do not promote SQLite fixtures to production source unless the user explicitly defines a SQLite-backed deliverable.
 
 4. Multi-source verification.
-   Compare mock contract, JSON fixture response, and authoritative runtime-source response for representative requests. Record allowed differences and failures in API docs and missing-info docs.
+   Compare mock contract, SQLite query/API response, and authoritative runtime-source response for representative requests. Record allowed differences and failures in API docs and missing-info docs.
 
 Hard rules:
 
-- Do not stop after JSON fixture generation when a real runtime source is expected.
-- Do not leave production-mode APIs reading generated JSON by default unless the user explicitly requests and documents a file-backed service.
+- Do not use JSON files, Python/JS arrays, or in-memory collections as the API data source for local simulation when backend/API implementation is requested.
+- Do not build/load all fixture rows or authoritative rows before applying request filters, sort, pagination, ranking, or aggregation. SQLite simulation and production sources must both query the narrowed result set at the repository/source boundary.
+- Do not stop after SQLite fixture generation when a real runtime source is expected.
+- Do not leave production-mode APIs reading SQLite fixtures by default unless the user explicitly requests and documents a SQLite-backed service.
 - If source credentials, tables/views, SQL, upstream endpoint contracts, file paths, permissions, join keys, event topics, service clients, network access, or sample rows are missing, mark authoritative source replacement as blocked or partial.
 
 ## References
@@ -182,8 +197,9 @@ For backend implementation mode:
 - Design reasonableness status and decisions that affected routes, DTOs, transformations, auth, data sources, or examples.
 - Missing-information document.
 - Contract validation notes.
+- SQLite fixture schema/seed/index files and source-mode notes when simulation data is used.
 - Verification commands and runnable URL or exact blocker.
-- Production closed-loop readiness: health/smoke evidence, source-mode proof, auth/config notes, observability/performance limits, deployment/rollback notes, test handoff, and open blocker status.
+- Production closed-loop readiness: health/smoke evidence, source-mode proof, auth/config notes, observability/performance/pagination limits, deployment/rollback notes, test handoff, and open blocker status.
 - Stage handoff summary: backend URL, API doc version, auth/SSO contract, known partial endpoints, and testing blockers.
 
 ## Quality Checklist
@@ -193,8 +209,16 @@ For backend implementation mode:
 - Backend/API design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings block affected API docs/code or keep them `partial`.
 - Every endpoint response traces to a response model and source/logical model or a pending item.
 - Request params cover filters, drilldowns, pagination, sorting, exports, and defaults.
+- Database-backed endpoints push global/page-level filtering, permission scope, sorting, pagination, aggregation, joins, and counts into SQL/repository queries instead of broad in-memory calculation.
+- Component-internal filters are explicitly scoped to already fetched component datasets after global SQL filtering; they do not replace database `WHERE` filters for page/global criteria.
+- Full-materialize-then-filter behavior is blocked: no endpoint may build/load the complete candidate dataset or component/page payload before applying global filters, sorting, pagination, ranking, Top/Bottom, or business aggregation, except for explicitly bounded static enums, tiny lookup sets, or documented component-internal filters over already fetched component data.
+- Database filters are index-friendly direct predicates; any unavoidable `FUNCTION(field) = ?`, leading-wildcard search, or unindexed filter is documented as partial/blocked with a performance gap.
+- Database-backed implementations use a connection pool or document why the existing runtime manages pooling externally.
+- Redis/cache usage is evaluated for hot or expensive queries, with cache key, TTL, invalidation, permission safety, and fallback behavior documented when used.
+- Collection/list/table endpoints implement bounded pagination, maximum page size, stable sorting, and large-result handling; unbounded synchronous full-list APIs are partial or blocked.
+- Report/dashboard endpoints are component-aligned and return component-ready response models; frontend business computation exceptions are documented as partial scope.
 - Error, empty, auth, and no-permission behavior are documented.
 - Implementation mode is only used when backend code/startup is requested.
-- Mock-derived backend work completes mock-to-fixture-to-authoritative-source replacement or clearly reports the source blocker.
-- Production-bound data services include health/smoke evidence, source-mode proof, auth/config notes, observability/performance limits, deployment/rollback notes, and testing handoff before `ready`.
+- Mock-derived backend work uses SQLite fixture databases for simulation and completes mock-to-SQLite-to-authoritative-source replacement or clearly reports the source blocker.
+- Production-bound data services include health/smoke evidence, source-mode proof, auth/config notes, observability/performance/pagination limits, deployment/rollback notes, and testing handoff before `ready`.
 - The final output uses shared readiness values `ready`, `partial`, or `blocked`, and states whether frontend development and testing can consume the backend artifacts.

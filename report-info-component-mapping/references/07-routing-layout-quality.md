@@ -25,6 +25,8 @@ Do not create a separate domain overlay. Domain words such as 产业, 区域, �
 - Use the `8 * N` grid from `report-visual-layout-design`; every component must occupy a rectangular group of blocks.
 - Choose each component's span from the legal component span matrix in `report-visual-layout-design`.
 - Preserve the scrollable template block-height rule: every resolved block must be at least 220px tall, and layouts taller than 1080px must scroll vertically instead of compressing rows. Fixed sci-fi/big-screen templates are exempt.
+- Page, section, and block titles are layout-owned. Component mappings may keep a `title` field as metadata, but component bodies should not render duplicate visible titles when the surrounding block already has one.
+- Peer component groups should use balanced `M * N` distribution where possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`; prefer columns greater than rows unless the count naturally fits a square.
 - Text summary components use `text-summary` and legal spans `4*1`, `5*1`, `6*1`, `7*1`, `8*1`, or `3*2`.
 - Allocate larger spans to charts with long labels, dense legends, many categories, or horizontal comparisons.
 - Do not force KPI cards, text summaries, charts, and tables into equal sizes if their content density differs.
@@ -35,8 +37,8 @@ Do not create a separate domain overlay. Domain words such as 产业, 区域, �
 
 Apply `report-component-style-design`:
 
-- Titles must be clear, compact, and consistently positioned.
-- Text, labels, legends, and values must not overlap or truncate critical meaning.
+- Titles must be clear, compact, consistently positioned, and not duplicated inside component bodies.
+- Text, labels, legends, values, chart marks, tables, cards, and diagram nodes must not overlap, stack, visually merge, or truncate critical meaning.
 - Components should be horizontally and vertically balanced inside their allocated block.
 - Values should scale within sensible bounds, not with viewport width alone.
 - Long labels need wrapping, abbreviation plus tooltip, or a larger block.

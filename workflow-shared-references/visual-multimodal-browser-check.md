@@ -39,6 +39,7 @@ Capture the smallest set that can prove the page is visually usable:
 - One screenshot after changing a representative primary filter.
 - One screenshot of opened custom filter popovers/dropdowns when filter visual acceptance is in scope.
 - One screenshot focused on complex flow, Sankey, graph, tree, decomposition, or lineage diagrams when present.
+- For diagrams with layer/stage/lane labels such as `L1/L2/L3`, capture the full diagram header/title band and the first row of nodes in the same screenshot so title-node collisions are visible.
 - One screenshot after opening each important tab, drawer, modal, drilldown, fullscreen view, or export preview.
 - Error, empty, loading, no-permission, and token-invalid states when those states are in scope and reachable.
 
@@ -84,14 +85,19 @@ Ask the multimodal model to inspect screenshots for:
 - Layout offset: blocks are not aligned to the intended grid, content drifts out of its container, or spacing looks structurally broken.
 - Excessive blank area: first viewport or component body has large unused space that weakens the core answer.
 - Text overlap: titles, labels, values, legends, buttons, table cells, or tooltips overlap each other.
+- Duplicate component title: a page/block title is repeated again inside an ECharts/S2/table/KPI/custom component body, creating redundant hierarchy or wasting component body space.
+- Title-node collision: section headers, stage/layer/lane titles, group captions, or column labels overlap, touch, or visually attach to card borders, node cards, node titles, badges, connector paths, chart marks, legends, or child labels. This includes cases where a top stage label appears to sit inside or on the top edge of the first node card.
 - Graphic overlap: chart marks, labels, legends, axes, maps, diagrams, table headers, or cards overlap.
+- Text-graphic collision: business-question text, conclusion text, titles, labels, legends, chart marks, tables, cards, diagram nodes, connectors, or controls overlap, stack, or visually merge.
 - Component too small: chart/table/KPI/detail content is compressed, unreadable, or occupies too little of its block.
+- Crowded component distribution: repeated peer cards/charts/tiles are too narrow, too small, or arranged in an awkward long strip instead of a balanced `M * N` pattern when space allows.
 - Clipping or truncation: important text, values, legends, axes, controls, drawers, modals, or table content is cropped.
 - Nonblank rendering: charts, canvases, maps, icons, logos, images, and tables render with visible content.
 - Brand/logo acceptance: required logo or declared placeholder is visible, uses the correct light/dark variant, keeps aspect ratio, and is not clipped. For custom `htmlReplica` or `freeDesign` pages, a real bundled Haier logo is required; placeholder is a blocker.
 - Sample fidelity: for sample/screenshot/HTML-source restoration, shell, module order, control count, hierarchy, card proportions, and first viewport match the source unless an enhancement is labeled.
 - Control surface quality: primary filters use a styled design-system/custom select/dropdown surface; naked native `<select>` controls are not accepted as final visuals.
-- Complex diagram spacing: layer numbers, labels, nodes, and edges in flow/Sankey/graph/tree/decomposition visuals have at least 16px visible separation and do not collide with rail or edge-bend zones.
+- Complex diagram spacing: layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges in flow/Sankey/graph/tree/decomposition visuals have at least 16px visible separation and do not collide with rail, title-band, or edge-bend zones.
+- Complex diagram title band: layer/stage/lane titles reserve a separate top/side title band with at least 16px spacing from the nearest node, card border, connector, or label.
 - Bad visual proportion: primary KPI, chart, table, or conclusion area is visually underweighted compared with decorative or secondary elements.
 - Broken scroll behavior: page, table, drawer, modal, or chart needs scroll/zoom but no usable control is visible.
 - Low readability: font too small, contrast too weak, dense labels unreadable, or long values not inspectable.
@@ -115,8 +121,8 @@ Every visual anomaly must be recorded as:
 
 ## Severity Standard
 
-- `blocker`: the page is blank, core conclusion cannot be read, critical data is hidden, main interaction is unusable, deterministic diff breaks a key acceptance area, or the screenshot cannot support acceptance.
-- `major`: a key component is readable only with difficulty, a chart/table/card is visibly distorted, layout is clearly broken, deterministic diff changes important geometry/content, or a normal user may misread the result.
+- `blocker`: the page is blank, core conclusion cannot be read, critical data is hidden, main interaction is unusable, deterministic diff breaks a key acceptance area, text/graphic collision hides core content, title-node collision hides or corrupts a key layer/component title, or the screenshot cannot support acceptance.
+- `major`: a key component is readable only with difficulty, a chart/table/card is visibly distorted, duplicated titles waste meaningful body space, layout is clearly broken, components are cramped when a balanced layout is available, a stage/layer/lane title touches or visually attaches to a card/node/connector, deterministic diff changes important geometry/content, or a normal user may misread the result.
 - `minor`: polish issue, secondary spacing issue, non-critical alignment/diff problem, or low-risk text/visual density issue.
 
 ## Feedback Loop

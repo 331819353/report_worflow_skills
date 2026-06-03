@@ -127,7 +127,7 @@ Hard rules:
 - The body and component viewport background must extend to the body edge. Do not inset the visible background to a safety line, and do not leave a white or unrelated-color band between the frame and content background.
 - Do not add a default nested border around the component body; use the block frame, background, and clipping for containment.
 - ECharts canvases, AntV S2 tables, custom SVGs, and diagram canvases must mount to the body viewport and resize from that viewport.
-- Component-level internal titles are optional only when the block header already names the component. Avoid duplicate titles.
+- Component-level internal titles are not rendered when the block header already names the component. Treat the title as layout/header metadata, and avoid duplicate visible titles inside the body viewport.
 - If the business component needs its own toolbar, place it inside the body top edge with reserved space, or promote the action to the block header.
 - Empty, loading, and no-data states are body content. They should be centered in the body and explain the state without hiding the block title.
 - In templates, the DOM should make this separation explicit, such as `block > header/title + body > widget`.
@@ -432,20 +432,20 @@ Title rules:
 
 - Keep titles short and specific.
 - Put long definitions in popovers.
-- Align all component titles consistently, usually top-left inside the component header.
+- Align all layout-owned block titles consistently, usually top-left inside the block header.
 - Vertically center title text with header actions.
 - Do not let title text overlap action icons.
 - Do not wrap ordinary component titles in a visible boxed title card. Use plain text plus a subtle underline/divider/accent mark unless a very specific visual system asks for boxed headers.
 - Do not truncate decision-critical titles; wrap to two lines or shorten wording.
 - If a template provides a one-line block title, the title must have `min-width: 0`, ellipsis, and full-title tooltip. If that hides decision-critical meaning, shorten the title or move口径 into subtitle/popover instead of letting it overflow.
-- Use a title only when it helps scanning. Tiny KPI cards may use label-as-title.
-- For charts, title should state the measure and comparison dimension, such as "收入完成率 by 区域".
-- For tables, title should describe the record set, such as "逾期回款明细".
-- For text summaries, title can be omitted if the summary itself starts with a clear conclusion.
+- Use a layout-owned title only when it helps scanning. Tiny KPI cards may use a compact label in the layout/header area.
+- For charts, the layout-owned title should state the measure and comparison dimension, such as "收入完成率 by 区域"; do not repeat it inside the chart option body.
+- For tables, the layout-owned title should describe the record set, such as "逾期回款明细"; table body should start with headers/rows, not another title.
+- For text summaries, the layout-owned title can be omitted if the summary itself starts with a clear conclusion.
 
 Recommended title hierarchy:
 
-- Component title: 14-16px, semibold.
+- Layout/block title: 14-16px, semibold.
 - Component subtitle/helper: 12-13px, regular, medium contrast.
 - Metadata such as unit/source/update: 12px, muted but readable.
 
@@ -484,7 +484,7 @@ Recommended desktop scale:
 
 - Page/report title: 20-24px.
 - Section title: 16-18px.
-- Component title: 14-16px.
+- Layout/block title: 14-16px.
 - KPI value: 24-36px depending on card size and importance.
 - Secondary metric value: 18-24px.
 - Body/table text: 13-14px.
@@ -761,7 +761,7 @@ Hard rules:
 
 Tables are work surfaces.
 
-Use AntV S2 as the default analytical table engine for runnable prototypes when the table is a pivot table, cross table, wide metric matrix, financial comparison grid, frozen-header analytical table, or dense group-by table.
+Use AntV S2 as the default analytical table engine for runnable prototypes when the table is a pivot table, cross table, wide metric matrix, financial comparison grid, frozen-header analytical table, or dense group-by table. Install `@antv/s2` and `@antv/s2-vue` only for those S2-class table cases; keep them out of chart-only, KPI-only, simple-list, and simple-detail-table prototypes.
 
 S2 rules:
 

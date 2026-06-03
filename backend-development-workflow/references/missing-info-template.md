@@ -27,11 +27,13 @@ When backend work starts from mock data, authoritative source replacement gaps a
 - Missing credentials or environment variables:
 - Missing table/view names, endpoint paths, object keys, topic names, or client methods:
 - Missing SQL, query rules, request contract, file format, event schema, or client contract:
+- Missing index metadata, composite index rules, generated/normalized columns, full-text index availability, or query-plan evidence for required filters/sorts:
 - Missing sample rows for validation:
 - Missing join keys:
 - Missing permissions/network access:
 - Unknown default data-source mode:
-- Reason JSON fixture remains temporary:
+- Missing SQLite fixture schema, seed rows, indexes, or query rules for mock-derived API implementation:
+- Reason SQLite fixture remains temporary:
 
 ## 4. Data Model And Field Gaps
 
@@ -69,11 +71,21 @@ When replacing frontend mock data, record any mismatch between the mock/display 
 Document unknown or unconfirmed performance limits:
 
 - Default and maximum page size:
+- Stable default sort:
+- Total-count behavior:
+- Cursor/keyset pagination need:
 - Maximum export rows:
 - Cache or precompute requirement:
+- Redis/cache need, cache key dimensions, TTL, invalidation, and permission safety:
+- Database connection pool configuration, max connections, timeout, and health-check behavior:
 - Refresh cadence:
 - Timeout/retry behavior:
 - Large-file, database, or upstream API failure behavior:
+- SQL pushdown feasibility for filters, pagination, sorting, joins, aggregation, Top/Bottom, and counts:
+- Missing distinction between global SQL `WHERE` filters and component-internal local filters:
+- Full-materialize-then-filter risk or missing proof that filters/sort/page/aggregation execute before response construction:
+- Index support for required filters/sorts:
+- Any unavoidable non-sargable predicates, such as `FUNCTION(field) = ?`, date extraction, arithmetic on indexed columns, or leading-wildcard search:
 
 ## 8. Auth, Config, And Deployment Gaps
 

@@ -10,6 +10,7 @@
 
 - Page loads without blocking runtime errors.
 - Console has no blocking errors, repeated warnings, hydration failures, or asset load failures.
+- Network/provider traces do not show full-materialize-then-filter behavior for global/page scope: global filter/search/page/sort UI changes should update request/query/resolver params rather than fetching all candidate rows and narrowing locally. Component-internal filters may stay local when they operate only on already fetched component data.
 - Static assets, chunks, fonts, images, workers, and downloaded templates resolve under the intended base path.
 - Layout appears at target viewport sizes without obvious clipping or overlap.
 
@@ -22,6 +23,8 @@
 - If no baseline exists, save baseline candidates and record deterministic regression as `baseline missing`, not pass.
 - Send screenshots to a multimodal model using `../references/standalone-quality-gates.md#visual-browser-and-multimodal-check` when the model/service is available and explanatory visual review is in scope.
 - Record `VIS-*` findings for layout offset, excessive blank area, text overlap, graphic overlap, chart/table/card too small, clipping, unreadable labels, nonblank rendering failures, broken proportions, stale prototype residue, and broken scroll behavior.
+- Record `VIS-*` findings for duplicate component titles, cramped/narrow/tiny components, unbalanced peer-component strips, and text-graphic collisions where business-question text, labels, legends, chart marks, cards, or diagram nodes overlap or visually merge.
+- Record `VIS-*` findings for title-node collisions: section headers, stage/layer/lane titles, group captions, or column labels sitting on top of cards, node cards, connector paths, badges, legends, or child labels. The page cannot pass visual QA when this affects a key diagram or first-viewport component.
 - Re-capture, re-diff, and re-review affected screenshots after repairing `blocker` or `major` `VDIFF-*` or `VIS-*` findings.
 
 ## Route And Surface Checks
@@ -32,6 +35,10 @@
 ## Layout Checks
 
 - Charts, tables, legends, labels, KPI cards, buttons, drawers, modals, sticky areas, table scrollbars, and toolbars fit their containers.
+- Page/block titles are not duplicated inside component bodies through chart/table/KPI internal title options.
+- Peer component groups use balanced `M * N` layouts where possible, such as 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, and 9 -> `3 * 3`; components are not narrow, tiny, crowded, or unreadable.
+- Business-question text, conclusion text, labels, legends, chart marks, table cells, cards, diagrams, and controls do not overlap, stack, or visually merge.
+- Section headers, group captions, layer/stage/lane labels, and column titles reserve independent title bands and maintain at least 16px safe spacing from the nearest card, node, connector, chart mark, legend, or child label.
 - Verify dense data, long text, empty states, and loading states do not resize fixed-format UI unexpectedly.
 - Check target desktop and mobile/tablet viewports when the page is responsive or embedded in variable containers.
 - For ECharts, AntV S2, canvas, and virtualized tables, verify nonblank rendering, resize behavior after container changes, and cleanup/dispose behavior after route changes or tab switches.

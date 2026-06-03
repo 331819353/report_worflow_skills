@@ -24,12 +24,12 @@ Check these dimensions before marking a technical solution, data service, or tes
 
 - Architecture decision: selected runtime topology, service boundary, data flow, dependency ownership, and why alternatives were rejected when relevant.
 - Authoritative data source: source system/table/API/file owner, access method, refresh cadence, quality rule, fallback behavior, and sample evidence.
-- API/model contract: endpoint boundary, request params, response model, transformations, error envelope, pagination/sorting/export, versioning, and backward compatibility.
+- API/model contract: endpoint boundary, request params, response model, transformations, error envelope, pagination/sorting/export, default/max page size, stable ordering, global SQL/source-side/provider-side filter execution, component-internal local filter scope, versioning, and backward compatibility.
 - Security and permissions: SSO/auth, token/header rules, row/field/operation permission, masking, audit log, no-permission behavior, secret/config handling.
 - Environment and deployment: dev/test/prod base URLs, config variables, proxy/CORS, route/base path, deployment target, startup command, health endpoint, rollback or restore path.
 - Reliability and observability: logging, request IDs, metrics, traces, health checks, timeout/retry, upstream failure handling, alert owner, and SLA/SLO where needed.
-- Performance and capacity: expected volume, latency target, cache/precompute rule, pagination/export limits, slow-query risk, concurrency or batch behavior.
-- Testability: seed data, test account/role, executable case matrix, smoke checks, API/display consistency checks, filter/permission/export cases, and visual regression evidence.
+- Performance and capacity: expected volume, latency target, Redis/cache/precompute rule, pagination/export limits, max page size, total-count strategy, source-side filter/sort/page execution, component-local filter boundary, database connection-pool behavior, full-materialize-then-filter absence for global scope, slow-query risk, concurrency or batch behavior.
+- Testability: seed data, SQLite fixture database when simulated API data is used, test account/role, executable case matrix, smoke checks, API/display consistency checks, filter/pagination/permission/export cases, and visual regression evidence.
 - Defect closure: every blocker/major defect has owner, reproduction, expected/actual, evidence, fix location, retest criteria, and final status.
 
 ## Minimal Production Skill Chain
@@ -67,7 +67,7 @@ For data service / backend:
 - API document and implementation status.
 - Runtime backend URL or startup blocker.
 - Health/smoke evidence, contract validation, source mode, transformation validation, auth behavior, and missing-info document.
-- Deployment/config notes, observability notes, performance limits, and rollback notes.
+- Deployment/config notes, observability notes, pagination/performance limits, Redis/cache notes, database connection-pool notes, proof that global filters/sort/page/aggregation are pushed to the source/provider/repository instead of full-materialize-then-filter, SQLite fixture/source-mode proof when simulation data is used, and rollback notes.
 
 For testing integration:
 

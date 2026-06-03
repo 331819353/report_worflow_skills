@@ -66,6 +66,7 @@ Document:
 - Derived formulas:
 - Default/fill behavior:
 - Sort/group rules:
+- Filter/sort/page execution stage:
 
 ## 6. Contract Verification
 
@@ -74,20 +75,24 @@ Document:
 | Frontend/Mock Field | API Field | Type Match | Unit/Precision | Empty-State Shape | Notes |
 | --- | --- | --- | --- | --- | --- |
 
-### Mandatory Mock-To-Fixture-To-Authoritative-Source Gate
+### Mandatory Mock-To-SQLite-To-Authoritative-Source Gate
 
 Use this section when backend work starts from frontend/prototype mock data.
 
 - Mock contract validation: pass / partial / fail
-- Generated JSON fixture path(s):
-- JSON fixture purpose: contract test / API example / local fallback
-- Authoritative source type: database / upstream API / file or object store / event-derived read model / existing service / explicitly file-backed
+- SQLite fixture database path:
+- SQLite schema/DDL path:
+- SQLite seed data path or migration:
+- SQLite indexes and constraints:
+- JSON response example path(s), if any:
+- JSON purpose: API example / assertion snapshot only
+- Authoritative source type: production database / upstream API / event-derived read model / existing service / explicitly SQLite-backed
 - Authoritative source locator: table/view/query/API/path/topic/client
 - Runtime source implementation:
 - Default runtime data source:
-- JSON-only mode allowed only for:
-- Mock vs JSON comparison:
-- JSON vs authoritative source comparison:
+- SQLite-only mode allowed only for:
+- Mock vs SQLite comparison:
+- SQLite vs authoritative source comparison:
 - Authoritative source replacement status: complete / partial / blocked
 - Authoritative source replacement blockers:
 
@@ -108,16 +113,31 @@ Use this section when backend work starts from frontend/prototype mock data.
 
 - Default page size:
 - Maximum page size:
+- Stable default sort:
+- Total-count behavior:
+- Cursor/keyset pagination need:
 - Maximum export rows:
 - Cache/precompute strategy:
+- Redis/cache strategy:
+- Cache key dimensions:
+- Cache TTL and invalidation:
+- Database connection pool:
+- Pool min/max/acquire timeout/idle timeout:
 - Refresh cadence:
 - Timeout behavior:
 - Large-file/database fallback:
+- SQL pushdown scope: filters / sorting / pagination / joins / aggregation / counts / Top-Bottom
+- Global filter SQL `WHERE` rules:
+- Component-internal local filter scope:
+- Full-materialize-then-filter check: pass / partial / blocked
+- Index-backed filters and sorts:
+- Non-sargable predicates avoided or unresolved:
+- Required indexes/generated columns/full-text/precompute:
 
 ## 7. API Inventory
 
-| Method | Path | Purpose | Auth | Request Model | Response Model |
-| --- | --- | --- | --- | --- | --- |
+| Method | Path | Served component | Purpose | Auth | Request Model | Response Model | Filter/sort/page execution stage | Frontend compute policy |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 8. API Contracts
 
@@ -125,18 +145,24 @@ Use this section when backend work starts from frontend/prototype mock data.
 
 Purpose:
 
+Served component or component group:
+
 Auth:
 
 Data source:
 
 Transformation:
 
+Filter/sort/page execution stage:
+
+Frontend compute policy:
+
 Contract verification:
 
 Request:
 
-| Location | Field | Type | Required | Description |
-| --- | --- | --- | --- | --- |
+| Location | Field | Type | Required | Source field / SQL predicate / index support | Description |
+| --- | --- | --- | --- | --- | --- |
 
 Response:
 

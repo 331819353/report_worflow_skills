@@ -10,6 +10,7 @@ Required inputs:
 
 - `viewportPadding`: left/right/top/bottom padding inside the diagram body.
 - `leftRailWidth`: width reserved for level numbers, stage labels, axis rail, or side category labels.
+- `topLaneLabelHeight`: height reserved for top stage/layer/lane titles such as `L1/L2/L3`, group headers, or column captions.
 - `nodeHalfWidth` and `nodeHalfHeight`: half of the rendered node box size.
 - `labelReserve`: extra width/height for node labels, value labels, and badges when they render outside the node.
 - `edgeBendReserve`: horizontal/vertical space required for curved links, arrowheads, and link-value labels.
@@ -18,7 +19,9 @@ Required inputs:
 Coordinate rules:
 
 - First node column: `firstNodeLeftEdge >= viewportPadding.left + leftRailWidth + minGutter`.
+- First node row: `firstNodeTopEdge >= viewportPadding.top + topLaneLabelHeight + minGutter` whenever top stage/layer/lane titles exist.
 - Any node near a rail: `nodeX - nodeHalfWidth - labelReserve >= viewportPadding.left + leftRailWidth + minGutter`.
+- Any node near a top stage/layer/lane title: `nodeY - nodeHalfHeight - labelReserve >= viewportPadding.top + topLaneLabelHeight + minGutter`.
 - Adjacent node columns: `nextNodeLeftEdge - currentNodeRightEdge >= max(minGutter, edgeBendReserve)`.
 - Adjacent rows: `nextNodeTopEdge - currentNodeBottomEdge >= minGutter`; increase when labels or curved edges pass between rows.
 - Edge bend zone: curve control points and arrowheads must stay outside node boxes and label boxes by at least `minGutter`.
@@ -26,7 +29,8 @@ Coordinate rules:
 
 Acceptance:
 
-- Layer numbers, labels, nodes, edges, arrowheads, and edge labels must never overlap, touch, or sit within less than 16px of each other.
+- Layer numbers, stage/layer/lane titles, group captions, node labels, nodes, edges, arrowheads, and edge labels must never overlap, touch, or sit within less than 16px of each other.
+- A top stage/layer/lane title must not sit on top of a node card, node border, node title, badge, or connector path. If a title appears visually attached to or inside the first node card, the diagram fails QA even when the text remains readable.
 - If the formula cannot pass inside the current block, use zoom/pan, collapse branches, aggregate tails, split the diagram, move to fullscreen, or switch to a hierarchy table/tree list.
 
 ## Viewport First
@@ -40,6 +44,7 @@ Acceptance:
 
 - Node text must fit inside the node box. Wrap to two lines, abbreviate, or show full text in tooltip.
 - Do not let labels sit outside nodes if they collide with edges or neighboring nodes.
+- Do not place top layer/stage/lane titles in the same vertical band as node cards. Reserve a separate title band or move the title outside the diagram body.
 - Keep node padding sufficient for Chinese labels and numeric values.
 - If child branches are too dense, collapse low-priority branches and show expand controls.
 

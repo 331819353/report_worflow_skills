@@ -36,7 +36,7 @@ Rules:
 
 | Artifact | Owns | Must not own |
 | --- | --- | --- |
-| API清单 | Endpoint candidates, page/module coverage, request params at inventory level, response model names, source model dependencies, auth/permission notes, performance/cache/SLA notes, priority, status | Full JSON schema examples for every response, backend implementation details |
+| API清单 | Endpoint candidates, page/module coverage, request params at inventory level, response model names, source model dependencies, auth/permission notes, global SQL/source filter execution, component-internal local filter scope, pagination/performance/cache/SLA notes, Redis/cache expectation, connection-pool expectation, priority, status, SQLite fixture need when mock-derived implementation is expected | Full JSON schema examples for every response, backend implementation details |
 | 数据模型文件 | Source models, logical models, response/view models, field mapping, metric formulas, transformations, security/masking rules, quality rules, ownership, freshness | UI layout decisions, backend code |
 | 待补充数据模型清单 | Missing or assumed requirement/source/model/metric/enum/join/sample/permission/security/performance items, owner questions, impact, status | Completed decisions without source, vague TODOs |
 

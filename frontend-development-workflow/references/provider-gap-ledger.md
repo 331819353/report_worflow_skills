@@ -7,7 +7,8 @@ Use this reference whenever frontend integration depends on information that is 
 - Requirement: target page scope, supported user actions, acceptance criteria, or offline/demo expectations are unclear.
 - Provider: provider type, endpoint/query/file/SDK method, sample response, schema, or runtime availability is missing.
 - Field/model: required UI field, enum, formula, unit, precision, sort order, hierarchy, or identifier is unclear.
-- Input/filter: filter options, default values, cascades, pagination, sorting, route params, or export params are unsupported or undocumented.
+- Compute boundary: provider/API response is not component-ready and would force frontend business aggregation, ranking, formula calculation, broad global filtering, page/API-level full-materialize-then-filter behavior, or splitting one payload into unrelated component models.
+- Input/filter: filter options, default values, cascades, pagination, sorting, route params, export params, global source-side execution stage, or component-internal local filter scope are unsupported or undocumented.
 - Auth/permission: SSO, headers, cookies, client IDs, app IDs, roles, row-level permission, or no-permission behavior is unclear.
 - Environment/deployment: base URL, proxy target, CORS, route base, asset base, deployment target, or credentials are missing.
 - Runtime behavior: loading, empty, partial, retry, stale data, cancellation, cache invalidation, realtime reconnect, or unsubscribe behavior is undefined.

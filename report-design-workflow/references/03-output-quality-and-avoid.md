@@ -42,7 +42,7 @@ Use this structure:
 5. Interaction state and parameter plan.
 6. Shell path, style source, brand mode, visual mode, and brand asset gate: `pageShellPath`, `pageStyleSource`, `brandMode`, `visualMode`, `customDesignPath` and `customLayoutPattern` if any, logo discovery result, logo slot/placeholder, sample-fidelity decision, and sample module classification.
 7. Visual layout and component style plan.
-8. Technical architecture: TypeScript, Vue 3, Element Plus, ECharts, AntV S2, and template choice.
+8. Technical architecture: TypeScript, Vue 3, Element Plus, ECharts, optional AntV S2 trigger, and template choice.
 9. Self-check report and repair-loop plan.
 10. Automatic deployment plan and expected URL source.
 11. Verification plan.
@@ -105,7 +105,7 @@ Before final delivery, verify:
 - The self-check report covers Z-shaped component audit, data completeness, filter configuration, interaction usability, configuration completeness, and visual/runtime state.
 - Runnable self-check captures browser screenshots before visual pass/fail judgment, runs deterministic baseline image diff when baselines exist, and runs multimodal visual anomaly recognition on those screenshots when available.
 - Deterministic visual regression records baseline/current/diff paths, thresholds, masked regions, and `VDIFF-*` findings; first-run screenshots without approved baselines are baseline candidates, not regression pass evidence.
-- Multimodal visual findings cover layout offset, excessive blank area, text overlap, graphic overlap, clipping/truncation, unreadable chart/table/card content, nonblank rendering, visual proportion, scroll behavior, and stale prototype residue.
+- Multimodal visual findings cover layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, title-node collision, cramped/narrow/tiny components, clipping/truncation, unreadable chart/table/card content, nonblank rendering, visual proportion, scroll behavior, and stale prototype residue.
 - Z-shaped component audit starts from the first rendered component and checks each component's filters, filter setup, mock coverage, component data binding, filter binding, interaction binding, layout capacity, and block-size/clipping status.
 - Self-check issues were repaired and rechecked, up to 3 cycles when needed.
 - `blocker` and `major` `VDIFF-*` / `VIS-*` findings are repaired and rechecked with fresh screenshots and diff/review evidence, or explicitly remain blocked with evidence and owner question.
@@ -118,15 +118,19 @@ Before final delivery, verify:
 - Open drawers, selected rows, chart marks, and drill paths reset or show stale-selection state when filters remove the selected object.
 - Layout follows the 8*N rectangular grid.
 - Haier logo usage follows light/dark rules.
-- Components do not overlap, clip, truncate critical text, or use low-contrast labels.
-- Flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals reserve rail, node, label, gutter, and edge-bend space; layer numbers, labels, nodes, and edges remain at least 16px apart.
+- Page, section, and block titles are layout-owned. Component bodies do not duplicate titles through chart/table/KPI internal title options.
+- Peer component groups use balanced `M * N` distribution where possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`; prefer columns greater than rows unless a square layout naturally fits.
+- Components are not narrow, tiny, crowded, or unreadable; if content does not fit, enlarge, split, scroll, zoom, or move to fullscreen/drawer.
+- Components do not overlap, clip, truncate critical text, or use low-contrast labels. Section headers, group captions, layer labels, stage titles, lane titles, and column captions reserve an independent title band and stay at least 16px away from cards, nodes, connectors, chart marks, legends, badges, and child labels.
+- Business-question text, conclusion text, titles, labels, legends, chart marks, table cells, controls, cards, diagrams, nodes, and connectors do not overlap, stack, or visually merge.
+- Flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals reserve rail, node, label, gutter, edge-bend, and stage/layer/lane title-band space; layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges remain at least 16px apart.
 - Primary filter areas use Element Plus controls or project design-system equivalents; styled native select is only for baseline prototype acceptance.
 - Advanced visual acceptance for option menus uses a custom popover select because native OS dropdown menus cannot be fully internet-styled or screenshot-controlled.
 - Dense tables, lineage graphs, diagrams, maps, and Gantt charts have scroll, zoom, pan, drawer, or fullscreen strategy.
 - Export, refresh, download, share, and fullscreen actions respect filters and permissions.
 - Empty, loading, no-permission, error, and stale-selection states are defined.
 - Implementation uses existing project patterns and is verified locally when built.
-- Runnable prototypes use TypeScript + Vue 3 + Element Plus + ECharts + AntV S2 unless the existing project has an explicit conflicting stack.
+- Runnable prototypes use TypeScript + Vue 3 + Element Plus + ECharts as the base stack unless the existing project has an explicit conflicting stack. AntV S2 is installed and used only for pivot tables, cross tables, wide metric matrices, frozen-header analytical tables, dense financial grids, or equivalent table needs.
 - Runnable prototypes are automatically started on a verified available port and return the exact local URL when no public URL is available.
 - Deployment, when requested, builds successfully and returns a public URL or explains why only a local preview URL is available.
 
@@ -141,7 +145,11 @@ Before final delivery, verify:
 - Do not invent new report categories when one of the eight categories fits.
 - Do not treat mock data as random values.
 - Do not design filters or jumps without permission and state behavior.
-- Do not finish an implementation without checking for overlap, clipping, and broken layout.
+- Do not finish an implementation without checking for duplicate component titles, cramped components, overlap, clipping, broken layout, and title-node collision.
+- Do not finish with component titles repeated in both the layout header and the component body.
+- Do not finish with peer components arranged too narrowly, too small, crowded, or in an awkward strip when a balanced `M * N` layout is possible.
+- Do not finish when business-question text, chart marks, labels, legends, cards, tables, or diagram nodes overlap, stack, or visually merge.
+- Do not finish a flow, Sankey, graph, tree, decomposition, lineage, DuPont, or process-chain visual when a layer/stage/lane title such as `L1`/`L2`/`L3` sits on, touches, or visually attaches to a node card, card border, child title, badge, or connector path.
 - Do not finish a Haier/branded implementation without visible logo or placeholder screenshot evidence.
 - Do not finish sample/source restoration after changing the first viewport or main body layout unless the user asked for redesign or the change is labeled as an enhancement.
 - Do not promote a sample/source module to `must-have` only because it is visible in the sample.
@@ -153,7 +161,7 @@ Before final delivery, verify:
 - Do not finish deterministic visual regression without headless browser screenshots and baseline diff status when baselines exist.
 - Do not claim multimodal explanatory visual review passed without multimodal review results; if the model is unavailable, record `multimodal: not run` and keep overall visual QA `partial` when explanatory review is required.
 - Do not finish an implementation without producing the self-check report and completing the repair loop or explicitly reporting the unresolved issues after 3 cycles.
-- Do not replace ECharts or AntV S2 with ad hoc chart/table code for standard report components.
+- Do not replace ECharts with ad hoc chart code, and do not hand-roll S2-class analytical tables when AntV S2 is required and available.
 - Do not hand-roll filters, forms, dialogs, drawers, popovers, tags, pagination, or simple tables when Element Plus can provide the needed control.
 - Do not leave a completed runnable prototype at "please run npm..." handoff; detect a port, start it, verify it, and return the URL.
 - Do not say deployment is done without returning a URL or a concrete deployment blocker.

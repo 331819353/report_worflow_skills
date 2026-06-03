@@ -44,6 +44,15 @@ Use these common spans:
 
 Use `block-size-constraints.md` before finalizing dense blocks, composite widgets, tables, or any block containing 2/4/6/8 visible subcomponents.
 
+For peer component groups, prefer a balanced `M * N` distribution where `M` means columns and `N` means rows:
+
+- 4 peers: `2 * 2`.
+- 6 peers: `3 * 2`.
+- 8 peers: `4 * 2`.
+- 9 peers: `3 * 3`.
+- Prefer `M > N` when possible; square layouts are acceptable when the count naturally fits.
+- Avoid one long strip or one narrow column unless the component is explicitly a timeline, KPI strip, or navigation.
+
 ## 4. Legal Span Matrix
 
 Use legal top-level block spans unless the user explicitly extends the matrix for a special component. When one block contains multiple subcomponents, choose the span and `visualType` by the dominant or most layout-demanding subcomponent.
@@ -81,10 +90,14 @@ Hard rules:
 
 - Module title sits top-left as plain text: 16px, `font-weight: 600`, deep gray on light theme.
 - Do not put the title in a boxed nested card.
+- The block header owns the visible component title. ECharts/S2/custom component bodies must not render a duplicate visible title inside the body viewport when the block already has one.
+- Section, group, layer, stage, lane, and column titles must occupy a reserved title band. They must stay at least 16px away from card borders, node boxes, connector paths, legends, badges, and child labels.
+- When a diagram has top layer titles such as `L1/L2/L3`, subtract the reserved title band from the body viewport before placing the first node row. Do not draw nodes upward into the title band.
 - Component body must fill the body rectangle and not create an unnecessary inner moat.
 - The body viewport must have explicit `min-width: 0`, `min-height: 0`, and a defined overflow strategy.
 - ECharts and AntV S2 instances must mount and resize against the body viewport, not the whole card frame.
 - If the body contains multiple internal subcomponents, each subcomponent needs its own stable internal viewport and must remain visually subordinate to the block title.
+- Internal subcomponents may use legends, axis names, column names, chips, or short labels, but not duplicate block-level titles.
 - Empty/loading/no-permission states stay centered inside the body viewport and must not replace the title area.
 
 ## 6. Overflow Rules

@@ -16,7 +16,7 @@ The inventory is a planning and alignment artifact. It defines the API surface, 
 - Requirements or page/module descriptions.
 - Metric list and dimension/filter definitions.
 - 数据模型文件 or source metadata, if available.
-- Prototype data code, mock JSON, TypeScript types, data-source registry, or component field usage.
+- Prototype data code, mock/display data, TypeScript types, data-source registry, or component field usage. If the inventory will feed backend/API implementation with simulated data, plan a SQLite fixture database rather than a JSON data source.
 - Existing API notes or backend constraints, if provided.
 
 ## Reference Map
@@ -76,6 +76,9 @@ Loading guidance:
 - Do not keep an API inventory shape that is traceable but unreasonable. Use `DESIGN-*` findings for endpoint grouping, grain, filter, permission, export, action, or performance choices that would make downstream implementation or frontend integration awkward or incorrect.
 - Do not mark an API `ready` when its response model, formula, permission, or source dependency is missing.
 - Do not mark a P0 API `ready` when performance/cache/SLA, expected volume, or export limit is unknown and undocumented.
+- Do not mark collection/list/table APIs `ready` without pagination, maximum page size, stable sort, and large-result handling.
+- Do not mark APIs `ready` when global/page-level filters, sorting, pagination, ranking, Top/Bottom, grouping, aggregation, or counts require page/API-level full-materialize-then-filter behavior. The inventory must push global narrowing to SQL/source/provider/repository/cache stage, or mark a `GAP-*`. Component-internal filters must be separately scoped to already fetched component data.
+- Do not plan JSON files as the simulation data source for backend/API implementation. Use SQLite schema, seed rows, and indexes for mock-derived local APIs.
 - Do not leave required table cells blank. Use `none` when intentionally not applicable, or `TBD(GAP-*)` when unknown.
 
 ## Required Output
@@ -92,6 +95,7 @@ Use a table with these columns:
 - Source model dependency.
 - Auth/permission.
 - Pagination/sort/filter.
+- Filter/sort/page execution stage.
 - Performance/cache/SLA.
 - Priority.
 - Status.
@@ -104,5 +108,7 @@ Use a table with these columns:
 - API names and paths are stable enough for downstream API documentation, implementation, or validation.
 - API inventory design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected APIs `partial` or `blocked`.
 - Request params cover all required filters, drilldowns, pagination, sorting, exports, and actions.
+- List/table APIs have bounded pagination and documented default/max page size.
+- API rows do not depend on page/API-level full-materialize-then-filter behavior; global SQL/source/provider/repository/cache execution and component-internal local filter scope are explicit or linked to a `GAP-*`.
 - Response model names match the 数据模型文件.
 - Missing model/source/formula/enum/permission items are visible instead of hidden in notes.

@@ -41,10 +41,10 @@ Check the design across these dimensions:
    Drilldowns, drawers, jumps, exports, refresh, fullscreen, task actions, approvals, and evidence views preserve the same context and support the user's next step.
 
 8. Visual/layout reasonableness.
-   Shell, template, grid, first viewport, block spans, density, labels, legends, tables, and complex diagrams fit the content without overlap, clipping, unreadable text, or excessive blank space.
+   Shell, template, grid, first viewport, block spans, density, labels, legends, tables, and complex diagrams fit the content without duplicate component titles, cramped/narrow/tiny components, overlap, clipping, unreadable text, excessive blank space, or title-node collision. Page/block titles are layout-owned; peer component groups use balanced `M * N` layouts when possible; complex diagrams with layer/stage/lane titles must reserve an independent title band and keep titles at least 16px away from the first row of nodes, node borders, child labels, badges, connectors, and edge labels.
 
 9. API/backend feasibility.
-   API endpoints, response models, data models, transformations, auth, pagination, sorting, exports, and error states can support the UI contract without hidden invention.
+   API endpoints, response models, data models, transformations, auth, pagination, sorting, exports, and error states can support the UI contract without hidden invention. Global/page-level filters and permission scope execute through SQL `WHERE`, source/provider/repository queries, resolver params, Redis/precompute keys, or equivalent source-side scope wherever feasible; component-internal filters may operate on already fetched component data. A design that depends on page/API-level full-materialize-then-filter behavior is a `DESIGN-*` finding unless explicitly bounded.
 
 10. Testability.
    The design has acceptance criteria, validation cases, sample data or runtime evidence, and clear pass/fail behavior for empty, error, no-permission, stale, and edge states.
@@ -83,6 +83,7 @@ Accepted limitations:
 
 - The design has one clear business question and a matching report type.
 - Every must-have component, filter, interaction, dataset, and API has a reason.
+- Global filter/query behavior is feasible without building or fetching all candidate data before applying scope; component-internal filters are explicitly local to already fetched component data.
 - The first meaningful viewport is useful, not merely attractive.
 - Data, filters, interactions, layout, and tests form one traceable contract.
 - No unresolved `P0` design issue remains; unresolved `P1` issues are fixed or explicitly accepted as `partial`.

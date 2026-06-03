@@ -6,6 +6,10 @@ Use this reference when translating transformation rules into code, tests, and e
 
 - Put raw file/database/upstream parsing in repository, data-access, client, or adapter code.
 - Put source-to-target conversion, aggregation, and business formulas in service or transformation modules.
+- When the authoritative source is a database, push eligible filtering, sorting, pagination, joins, grouping, aggregation, Top/Bottom, and count calculations into SQL/database views/repository queries. Do not pull broad database rows into memory for business filtering or aggregation.
+- Do not use a full-materialize-then-filter pipeline for global/page-level scope. Source/repository code must apply global request filters, permission scope, sorting, pagination, ranking, and aggregation before service-layer response shaping. Building a complete target list and trimming it later is a fail unless the input is a documented component-internal filter over already fetched component data, tiny static enum, or bounded lookup.
+- When API implementation uses mock data, model the mock source as a SQLite fixture database and query it through the repository/data-access layer. Do not use JSON files, Python/JS arrays, or in-memory collections as the transformation source for backend/API simulation.
+- Keep service-layer transformations for bounded response shaping: field renames, enum labels, unit/precision formatting, DTO assembly, and small confirmed post-processing.
 - Put final response validation in schemas, DTOs, serializers, response helpers, or contract tests.
 - Keep transformations deterministic and documented.
 - Do not hide business formulas or source-specific cleanup inside route handlers.
@@ -16,6 +20,7 @@ Use this reference when translating transformation rules into code, tests, and e
 - Scenario:
 - Request params:
 - Source rows or upstream payload:
+- SQLite fixture table/query when simulation is used:
 - Transformation rules exercised:
 - Source quality cases:
 - Expected response fields:
@@ -29,3 +34,5 @@ Use this reference when translating transformation rules into code, tests, and e
 - Include at least one negative or missing-data sample when the rule has fallback behavior.
 - Compare representative runtime responses against the target API contract when implementation exists, and record field/request/error mismatches with reproducible evidence.
 - Record unknown rules or temporary defaults in a local transformation gap ledger with stable `GAP-*` IDs, owner, impact, assumption, and retest criteria.
+- For database-backed transformations, include at least one test or review sample proving global request filters map to index-friendly SQL predicates. Reject or mark partial any implementation that depends on `FUNCTION(field) = ?`, date extraction on indexed date columns, arithmetic on indexed columns, unbounded leading-wildcard search, global full-materialize-then-filter behavior, or broad in-memory aggregation without an explicit indexed/generated/full-text/precompute strategy.
+- For collection/list/table transformations, include pagination boundary tests for default page size, maximum page size, out-of-range pages, stable ordering, and total-count behavior.

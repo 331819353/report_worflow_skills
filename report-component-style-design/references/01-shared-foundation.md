@@ -6,13 +6,14 @@ Apply these rules to every component before applying component-specific rules.
 
 - Treat the assigned block body as the component viewport. Inner content must not escape this viewport.
 - Measure usable `width` and `height` after subtracting card padding, header, actions, legends, notes, and pagination.
+- The page/block layout owns the visible component title. Do not render a duplicate title inside ECharts, AntV S2, SVG/canvas diagrams, KPI groups, or table bodies when the surrounding block already has one.
 - Use `min-width: 0`, `min-height: 0`, and an explicit overflow policy on every component body.
 - Mount ECharts, AntV S2, SVG, canvas, and custom diagrams only after the viewport has measurable size.
 - Recalculate layout after filters, tabs, drawer state, fullscreen, legend toggles, or grid span changes.
 
 ## Typography Hierarchy
 
-- Title: 16px, weight 600.
+- Layout-owned title: 16px, weight 600. Component bodies should not add a second visible title when the block already has one.
 - Axis text and table headers: 12-13px, readable neutral. Axis text must be larger than chart data-label values when both appear together.
 - Chart data labels and annotation values: 11-12px. Do not shrink below 11px to force density.
 - Body text and table cells: 12-14px.
@@ -38,6 +39,11 @@ Apply these rules to every component before applying component-specific rules.
 ## Density And Collision Rules
 
 - Calculate a visible label budget from the real viewport before rendering labels.
+- Reserve separate collision boxes for section titles, layer/stage/lane titles, card titles, badges, values, legends, and diagram nodes before drawing or positioning content.
+- Parent/group titles must not overlap, touch, or visually attach to child cards or chart nodes. Keep at least 16px vertical and horizontal safe spacing between a group/layer title and the nearest card border, node border, connector line, or label.
+- Business-question text, conclusion text, labels, legends, chart marks, table cells, cards, controls, state messages, diagram nodes, and connectors must never overlap, stack, or visually merge.
+- If a component is too narrow, too small, or crowded for readable labels/values/legends/axes, increase its span or height, split it, use scroll/zoom/fullscreen/drawer/table fallback, or reduce visible label density. Do not solve crowding by overlap, unreadable font sizes, or hidden critical data.
+- Repeated peer tiles should use balanced `M * N` distribution with columns greater than rows when possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
 - When values or labels overlap, keep only key labels visible: latest/current, max, min, Top N, target gap, anomaly, selected item, first/last, or evenly sampled ticks.
 - Hide the rest by default and reveal full values on hover, focus, click, tooltip, drawer, fullscreen, or table fallback.
 - Preserve at least 4px between text boxes and between labels and marks.

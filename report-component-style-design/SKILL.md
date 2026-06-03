@@ -35,7 +35,7 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 1. Identify every component type, its data density, viewport size, interaction needs, and business priority.
 2. Load `references/00-component-reference-index.md` plus the smallest matching reference set.
 3. Reserve stable component dimensions before styling: header, actions, legend, body viewport, footer, pagination, and state messages.
-4. Apply shared fit rules first, then component-specific rules. If rules conflict, use the stricter no-overlap/no-truncation/no-hidden-critical-data rule.
+4. Apply shared fit rules first, then component-specific rules. If rules conflict, use the stricter no-duplicate-title/no-overlap/no-truncation/no-hidden-critical-data rule.
 5. Run design reasonableness checks when a component choice may weaken the business answer, hide exact values, duplicate another component, overload the container, or block the next action.
 6. Define overflow and exact-value disclosure: tooltip, drawer, fullscreen, zoom/pan, scroll, table fallback, or label sampling.
 7. Specify visual tokens: typography, color semantics, borders, shadows, spacing, states, hover/focus, and responsive behavior.
@@ -49,6 +49,9 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable container.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
 - Do not create one-off component styles that conflict with the page shell, Haier branding, or existing design system.
+- Do not render a duplicate visible component title inside the chart/table/KPI/custom component body when the page or block layout already provides a title. Component body titles are allowed only for explicitly standalone components without a layout-owned title, and then title height must be reserved before measuring the viewport.
+- Do not accept components that are too narrow, too small, or crowded for their labels, values, legends, axes, controls, pagination, and state messages. Enlarge the container, split the component, use scroll/zoom/fullscreen/drawer/table fallback, or reduce visible label density before final acceptance.
+- For repeated peer cards/charts/tiles inside a component or block, prefer balanced `M * N` distribution with columns `M` greater than rows `N` when possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
 - Text summaries, conclusions, and insight blocks must inherit the surrounding page shell tokens for surface, spacing, typography, radius, and semantic colors. Do not introduce a new standalone visual surface, grid rhythm, or density that conflicts with adjacent sections.
 - In `sampleRestore`, added conclusions must sit inside an existing sample-equivalent region and reuse its spacing, border, typography, and surface tokens; a new standalone horizontal band fails style QA unless the sample already has one.
 - Rate/change indicators in Chinese report UI display `%`, not `pt`, `p.p.`, or `percentage point`, unless the user explicitly requests that term.
@@ -56,6 +59,8 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not use naked native `<select>` controls as the final visual surface for primary filters.
 - Do not hand-roll Vue controls that Element Plus already provides unless the existing project design system explicitly supersedes Element Plus or the interaction is unsupported.
 - Do not accept flow, Sankey, graph, tree, decomposition, lineage, DuPont, or process-chain diagrams until rail, node, label, gutter, and edge-bend spacing has been calculated.
+- Do not accept layouts where section titles, layer/stage/lane titles, group captions, or parent labels overlap, touch, or visually attach to component cards, node cards, borders, connector lines, or child labels. Treat this as a `VIS-*` visual defect and repair spacing before handoff.
+- Do not accept overlap or stacking between business-question text, conclusion text, component text, legends, labels, chart marks, table cells, cards, diagram nodes, connector lines, controls, or state messages. Treat text-text, text-graphic, and graphic-graphic collisions as `VIS-*` defects.
 
 ## Output Format
 
@@ -72,12 +77,17 @@ When using this skill, provide:
 ## Quality Checklist
 
 - Each component has a stable body viewport and explicit overflow policy.
+- Component titles are layout-owned by default; chart/table/KPI bodies do not duplicate the block/page title.
 - Component choice is reasonable for the business task and data shape; unresolved `P0`/`P1` `DESIGN-*` findings are not styled over.
+- Component size is sufficient for the selected visual type and data density; cramped/narrow/small components are enlarged, split, scrolled, zoomed, or moved to fullscreen/drawer before pass.
+- Repeated peer cards/charts/tiles use balanced `M * N` distribution where possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
 - Titles, units, labels, legends, controls, pagination, and states fit without overlapping data marks.
+- Business-question text, conclusion text, component labels, chart marks, diagrams, tables, and cards do not overlap, stack, or visually merge.
+- Section titles, layer/stage/lane titles, and group captions have their own reserved title band and at least 16px safe spacing from the nearest card, node, connector, or label.
 - Hidden or abbreviated values are inspectable.
 - Dense charts use label budgets and tooltips; dense tables use S2 or horizontal scroll.
 - Complex diagrams use zoom/pan, minimap, drawer, or fullscreen instead of overflowing.
-- Complex diagrams keep layer numbers, labels, nodes, and edges at least 16px apart and reserve rail/edge-bend space.
+- Complex diagrams keep layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges at least 16px apart and reserve rail, title-band, and edge-bend space.
 - Primary filters use Element Plus or project design-system select/dropdown/date/cascader controls, or a fully styled native select only for baseline prototype acceptance.
 - Controls inside components have clear selected/hover/disabled/loading states and do not resize the block.
 - Text summaries and conclusions inherit the surrounding layout tokens and do not look like unrelated inserted bands.
@@ -89,5 +99,7 @@ When using this skill, provide:
 
 - Do not duplicate detailed reference rules in final answers; cite the loaded references and apply their decisions.
 - Do not use decorative cards, gradients, or visual noise when the component's job is analytical scanning.
+- Do not add internal chart/table/card titles that duplicate the page or block title.
+- Do not make a component look compact by making it too narrow, too small, crowded, or unreadable.
 - Do not hide required table columns, action text, KPI values, or alert labels merely to make the layout look cleaner.
 - Do not use a chart when the exact-value task requires a table or detail list.

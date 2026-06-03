@@ -68,7 +68,7 @@ Use the frontend specialty skills as guardrails inside this workflow:
    Identify provider base URLs, SDK keys, app/client IDs, auth headers, SSO requirements, proxy needs, route base, asset base, and deployment mode before editing components. Use `$frontend-env-deployment-verification` and SSO skills early enough that request/client code is not built around the wrong assumptions.
 
 6. Create a provider mapping and validate the contract.
-   Map every changed mock/static source to a provider call, file, query, SDK method, subscription, or retained offline mode. Define UI state to provider inputs, provider payload to UI view model, empty/error/auth behavior, pagination, sorting, refresh, export, and stale-selection behavior. Use `$frontend-api-contract-validation` before code changes.
+   Map every changed mock/static source to a provider call, file, query, SDK method, subscription, or retained offline mode. Define UI state to provider inputs, provider payload to UI view model, empty/error/auth behavior, pagination, sorting, refresh, export, and stale-selection behavior. Record where filters, sorting, pagination, ranking, Top/Bottom, grouping, and aggregation execute. Use `$frontend-api-contract-validation` before code changes.
 
 7. Add or reuse the data access layer.
    Prefer the project's existing request client, GraphQL client, SDK wrapper, store, composable, data-source resolver, parser, or subscription layer. If none exists, add the smallest project-native abstraction that handles env config, auth/client initialization, normalized errors, and typed provider functions.
@@ -77,7 +77,7 @@ Use the frontend specialty skills as guardrails inside this workflow:
    Update pages, composables, stores, widgets, and data-source configs to call the intended provider. Preserve layout and interactions. Keep adapters close to the provider boundary so UI components receive stable view models. Remove stale mock imports from production paths; keep offline/demo mocks only when explicitly required.
 
 9. Wire interaction and data lifecycle behavior.
-   Ensure filters, search, date ranges, organization selectors, pagination, sorting, tabs, drilldowns, refresh, export/download, and linked charts pass correct inputs. Handle loading, empty, failed, retry, partial, no-permission, token-invalid, stale selection, rapid filter changes, request cancellation or sequence guards, cache invalidation, and realtime unsubscribe/cleanup when applicable.
+   Ensure global filters, search, date ranges, organization selectors, permission scope, pagination, sorting, tabs, drilldowns, refresh, export/download, and linked charts pass correct inputs to the provider/source layer. Component-internal filters such as local tabs, legend toggles, in-component quick search, and local display slicing may run on the already fetched component dataset when the API/provider returned the complete dataset for that component after global filtering. Do not fetch all candidate rows or a broad page payload and then narrow it in components, stores, or adapters except for documented component-internal filters, tiny static enums, or bounded lookups. Handle loading, empty, failed, retry, partial, no-permission, token-invalid, stale selection, rapid filter changes, request cancellation or sequence guards, cache invalidation, and realtime unsubscribe/cleanup when applicable.
 
 10. Audit functions, copy, and visual behavior.
     Traverse the updated app page by page and component by component. Check controls, route jumps, tabs, drawers, modals, table operations, chart clicks, export, refresh, and edge states. Clean user-facing copy left from the prototype, including titles, menus, breadcrumbs, labels, button text, placeholders, tooltips, document title, download names, and error messages containing `原型`, `mock`, `demo`, `示例`, placeholder names, or stale descriptions. Use `$frontend-runtime-qa-validation` for the structured browser pass. For visual QA, first capture headless browser screenshots, run deterministic baseline diff when a baseline exists, then run multimodal visual anomaly recognition when available. Route `VDIFF-*` and `VIS-*` findings back into frontend repair or final QA notes.
@@ -102,6 +102,8 @@ Use the frontend specialty skills as guardrails inside this workflow:
 - For Chinese report UI, render rate/change/completion fields with `%` instead of `pt`, `p.p.`, or `percentage point` labels unless explicitly required; change-rate and variance-rate indicators use positive-red-up and negative-green-down icon+text semantics.
 - Preserve global UI tokens when implementing HTML-replica or custom layouts: copied structure may remain, but palette, typography, spacing, radius, shadows, semantic colors, and control states should not become one-off local styles.
 - Prefer service/composable/store/client/data-source integration over provider calls scattered inside templates.
+- Prefer component-ready provider/API responses. Do not move business aggregation, ranking, formula calculation, pagination totals, broad filtering, or multi-component response splitting into frontend code unless the exception is explicitly bounded and recorded as a provider/API gap.
+- Reject full-materialize-then-filter frontend paths for global/page-level scope. Active global filters, search, pagination, sorting, permission scope, drilldown scope, and export scope must be sent to the provider/API/resolver before data is shaped for components, not applied after fetching or constructing the full candidate dataset. Component-internal filters are allowed only over the already fetched component dataset and must not change API-level totals, permission scope, pagination, or business aggregation.
 - Keep mock fallback only when the user requests offline/demo mode or when a documented external blocker prevents runtime integration.
 - Normalize provider payload fields into the existing UI data shape instead of rewriting the whole page around provider naming.
 - Avoid broad visual redesign while replacing data sources unless broken states require small UI fixes.
@@ -137,7 +139,9 @@ Maintain these notes in the task response or project docs when useful:
 - Every replaced source has field-level contract validation against the UI/display shape.
 - Missing provider, field, auth, env, permission, and deployment information is captured in a visible gap ledger.
 - Response adapters keep existing component view models stable or document a deliberate narrow refactor.
-- Filters, pagination, sorting, refresh, drilldown, export, and route parameters feed provider inputs correctly.
+- Data-bearing components receive component-ready provider/API data, or the frontend compute exception is bounded, documented, and linked to a provider/API gap.
+- Global filters, pagination, sorting, refresh, drilldown, export, and route parameters feed provider inputs correctly.
+- Browser/runtime or code evidence shows requests/resolvers include active global filter, pagination, sorting, and scope inputs; local component-internal filters run only on already fetched component data and do not hide missing API/provider support.
 - Rapid filter changes, stale responses, cache invalidation, retries, and realtime cleanup are handled where applicable.
 - Each page/component has been checked for broken controls, dead routes, invalid interactions, and edge states that stopped working after provider integration.
 - User-facing text no longer exposes prototype-only wording unless the requirement explicitly keeps it.

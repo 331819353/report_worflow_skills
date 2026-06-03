@@ -9,7 +9,7 @@ description: "用于设计和验证后端从数据源到接口响应/导出的�
 
 Use this skill independently when backend/API work needs shaped data rather than raw source rows or raw upstream payloads. The service or adapter layer owns the transformation from source model to target response contract whenever consumers expect a different field shape, period grain, unit, enum label, formula, nesting, ordering, or aggregation.
 
-Typical inputs are source data, data models, database rows, upstream payloads, event schemas, API response expectations, frontend/prototype contracts, metric formulas, and sample rows. The output is a source-to-target transformation mapping with verification samples.
+Typical inputs are source data, data models, database rows, SQLite fixture rows, upstream payloads, event schemas, API response expectations, frontend/prototype contracts, metric formulas, and sample rows. The output is a source-to-target transformation mapping with verification samples.
 
 ## Core Workflow
 
@@ -31,11 +31,15 @@ Typical inputs are source data, data models, database rows, upstream payloads, e
 5. Define aggregation and reconciliation.
    Define source row, grouped row, summary, ranking, total/subtotal, nested, and export behavior as needed.
 
+   When the source is database-backed or SQLite-fixture-backed, global/page-level filtering, permission scope, sorting, pagination, grouping, aggregation, ranking, Top/Bottom, and counts belong in SQL `WHERE`/repository queries. Do not design transformations that require broad in-memory row loading for business filtering or aggregation. Reject full-materialize-then-filter transformations: never build a full target dataset, component view model, or export-sized row list before applying request scope. Component-internal filters may run after response shaping only when they operate on the already fetched component dataset and are not used for global scope, permission, pagination, ranking, aggregation, or counts.
+
 6. Define business derivations.
    Write formulas for rates, gaps, scores, status, risk level, aging, contribution, YoY/MoM, and other derived fields.
 
 7. Add verification samples.
    Every non-trivial transformation needs at least one input-to-output sample, focused test, or runtime assertion.
+
+   If mock data is used for backend/API implementation, verification samples should come from SQLite fixture rows or API responses produced by SQLite queries. JSON examples may show expected responses but must not be the transformation source.
 
 ## References
 
@@ -62,4 +66,8 @@ Produce a transformation design note with:
 - Source quality assumptions and malformed/duplicate/late data handling are documented or captured as missing information.
 - Date/period examples such as `YYYYMMDD -> YYYYMM` are verified by sample, test, or runtime evidence.
 - Aggregates, totals, counts, and derived KPIs reconcile with source rows.
+- Pagination, sorting, grouping, aggregation, and counts are pushed into SQL for database/SQLite-backed sources instead of broad in-memory calculation.
+- No transformation depends on full-materialize-then-filter behavior; request scope is applied at the repository/source boundary before response shaping.
+- Component-internal local filtering is documented separately from global SQL `WHERE` filtering.
+- Mock-derived backend/API transformations use SQLite fixture data for verification; JSON files are examples or assertions only.
 - Unknown rules are captured in a local missing-information note or backend gap ledger with owner, impact, current assumption, and blocking status.

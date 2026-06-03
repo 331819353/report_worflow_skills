@@ -17,8 +17,11 @@ Use this reference for detailed contract checks.
 - Path, query, header, and body parameter names.
 - Required status, defaults, allowed values, multi-select behavior, and validation rules.
 - Pagination names, defaults, maximums, total-count behavior, and out-of-range behavior.
+- Stable default sort and cursor/keyset need for high-volume or deep-scroll result sets.
 - Sorting syntax, default sort, allowed fields, stable ordering, and invalid sort behavior.
 - Filter names, date-range inclusivity, timezone, hierarchy filters, search behavior, and permission-scoped defaults.
+- For database-backed endpoints, each filter's source field, SQL predicate shape, and index support.
+- Global/page-level filters and permission-scope filters must be visible as SQL `WHERE` predicates or equivalent source/provider query params; component-internal filters must be explicitly local to already fetched component data.
 - Upload/download content types, filenames, streaming behavior, and export limits.
 
 ## Error And Auth Checks
@@ -31,7 +34,14 @@ Use this reference for detailed contract checks.
 ## Performance Checks
 
 - Default and maximum page size.
+- Stable sort, total-count strategy, cursor/keyset need, and out-of-range page behavior.
 - Export row/file limits.
 - Timeout, retry, circuit-breaker, and fallback behavior.
 - Cache/precompute assumptions and invalidation.
+- Redis/cache assumptions when used: cache key dimensions, TTL, invalidation, permission/tenant safety, stampede protection, and fallback.
+- Database connection-pool behavior for database-backed runtime: pooled connection reuse, max size, acquire timeout, idle timeout, validation/health behavior, and safe shutdown.
 - Large result handling and known expensive filters or joins.
+- SQL pushdown for database-backed endpoints: filtering, sorting, pagination, joins, grouping, aggregation, Top/Bottom, and counts should be performed by database queries rather than broad in-memory calculation.
+- Flag page/API-level full-materialize-then-filter behavior when an implementation builds or loads a complete candidate dataset/component payload and then applies global filters, permission scope, sorting, pagination, ranking, grouping, aggregation, or counts. This is a fail/partial finding unless the behavior is a documented component-internal filter over already fetched component data, tiny static enum, or bounded lookup.
+- Index-friendly predicates for filters and sorts. Flag `FUNCTION(field) = ?`, `DATE(field) = ?`, `YEAR(field) = ?`, `TO_CHAR(field) = ?`, `LOWER(field) = ?`, arithmetic on indexed columns, leading-wildcard search, or unknown index support as performance findings unless a matching function/generated/full-text index or precompute path is documented.
+- Mock-derived backend/API implementations must query SQLite fixtures for local simulation. Flag JSON file reads, Python/JS arrays, or broad in-memory filtering as source/performance findings unless the user explicitly scoped the work outside backend/API implementation.

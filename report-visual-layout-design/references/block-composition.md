@@ -25,7 +25,7 @@ Combine subcomponents inside one block when they answer one business question to
 Split into separate `8 * N` blocks when:
 
 - The subcomponents answer different business questions.
-- Each subcomponent needs its own independent title, filters, actions, or drilldown path.
+- Each subcomponent needs its own independent title, filters, actions, or drilldown path; independent visible titles usually mean the content should become separate layout-owned blocks.
 - The body becomes too dense for readable labels, legends, or table columns.
 - Internal scroll becomes the primary way to use the block.
 - A subcomponent needs a legal span that the outer block cannot safely provide.
@@ -53,6 +53,17 @@ Avoid:
 - Boxed mini-title cards.
 - Nested cards with their own shadows.
 - A block title that says "Chart + Table"; use the business question instead.
+
+## Peer Distribution
+
+When one block or section contains repeated peer cards/charts/tiles, use balanced `M * N` distribution where `M` is columns and `N` is rows:
+
+- 4 peers: `2 * 2`.
+- 6 peers: `3 * 2`.
+- 8 peers: `4 * 2`.
+- 9 peers: `3 * 3`.
+
+Prefer columns greater than rows when possible. Do not make a peer group into a narrow column or an awkward long strip unless the pattern is explicitly a timeline, KPI strip, or navigation.
 
 ## Internal Layout Patterns
 
@@ -123,6 +134,7 @@ Use when the summary explains how to read the table.
 - Every chart/table subcontainer needs `min-width: 0`, `min-height: 0`, and a deterministic resize behavior.
 - ECharts/S2 instances mount to their own internal viewport, not to the full block or title area.
 - Shared legends belong near the related chart, but must not overlap plot/table content.
+- Business-question text, conclusions, labels, legends, marks, table cells, cards, and diagram nodes must not overlap, stack, or visually merge inside the block body.
 - If internal labels wrap, increase the outer block span or switch to tabs/drawer.
 - Use one internal scroll area at most; prefer table-level scroll over whole-block body scroll.
 - Keep empty/loading/error/no-permission states inside the affected subcomponent when partial data fails; use whole-block state only when the whole block cannot render.
@@ -146,6 +158,8 @@ In bundled templates, one grid block maps to one configured widget. For a multi-
 
 - The block has one clear business title.
 - Internal labels are subordinate to the block title.
+- No duplicate visible component title appears inside the body when the block already has a title.
+- Peer subcomponents follow a balanced `M * N` distribution when they are shown simultaneously.
 - No nested card shadows or boxed mini-card titles.
 - Every internal component has a stable container.
 - No chart/table overlaps the title area.

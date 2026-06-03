@@ -24,7 +24,9 @@ Self-check dimensions:
    - For sample/source restoration, check `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`. A visible source module must not be treated as `must-have` unless it directly answers the stated report question.
    - Check interaction configuration and binding: clickable marks, rows, cards, buttons, drawers, modals, jumps, filter mutations, export/download/fullscreen, and close/back flows emit expected actions and target existing configured handlers.
    - Check layout capacity for the component: the page layout can carry all displayed indicators, labels, legends, tables, controls, warnings, and actions. If the component cannot carry the content, expand the layout, increase block span, split the component, move secondary details to drawer/fullscreen, or enable internal scroll/zoom.
-   - Check block size and clipping: the assigned block and component body viewport are large enough after title/action/padding are reserved; no content is compressed, cropped, hidden behind overflow, or made unreadable.
+   - Check title ownership: the page/block header owns the visible component title. The component body must not render a duplicate chart/table/KPI/custom title unless the component is explicitly standalone.
+   - Check peer component distribution: repeated cards/charts/tiles use balanced `M * N` layouts where possible, such as 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, and 9 -> `3 * 3`.
+   - Check block size and clipping: the assigned block and component body viewport are large enough after title/action/padding are reserved; no content is compressed, crowded, cropped, hidden behind overflow, or made unreadable.
    - Any failed component in the Z-shaped audit must be repaired and rechecked before handoff.
 
 2. Data completeness.
@@ -65,7 +67,8 @@ Self-check dimensions:
    - Capture at least the first viewport. Also capture full-page, representative filtered state, tab/drawer/modal/drilldown/fullscreen state, and responsive viewport screenshots when in scope.
    - Run deterministic baseline image diff using Playwright/Cypress or the project visual regression setup when baselines exist; if no baseline exists, save baseline candidates and record `baseline missing`.
    - Run multimodal visual anomaly recognition using `../../workflow-shared-references/visual-multimodal-browser-check.md` when available.
-   - Verify there is no layout offset, excessive blank area, text overlap, graphic overlap, critical truncation, low contrast, unreadable chart/table/KPI content, component overflow outside the component body, blank chart/canvas/table, or broken visual proportion.
+   - Verify there is no layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, title-node collision, critical truncation, low contrast, unreadable chart/table/KPI content, cramped/narrow/tiny components, component overflow outside the component body, blank chart/canvas/table, or broken visual proportion.
+   - For flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, capture the stage/layer/lane title band and the first row of nodes in the same screenshot. `L1`/`L2`/`L3` titles, group captions, and lane labels must reserve their own title band and stay at least 16px away from node cards, node borders, child titles, badges, connectors, chart marks, legends, and edge labels.
    - Verify `brandMode`, logo/header placement, sample conclusion placement, global UI token consistency, Chinese `%` metric display, and positive-red-up / negative-green-down change-rate indicators.
    - Record deterministic image-diff failures as `VDIFF-*` findings with baseline/current/diff paths, threshold, viewport/state, severity, component/region, impact, fix direction, and retest criteria.
    - Record multimodal anomalies as `VIS-*` findings with screenshot path, viewport/state, severity, component/region, impact, fix direction, and retest criteria.
@@ -75,7 +78,7 @@ Self-check dimensions:
 Severity:
 
 - `Blocker`: breaks build/startup, leaves core data/filter/interaction unusable, or makes the main report conclusion unreliable.
-- `Major`: a dependent component, filter, export, drawer, or key visual is wrong or incomplete, but the page can still run.
+- `Major`: a dependent component, filter, export, drawer, or key visual is wrong or incomplete, or a stage/layer/lane title touches or visually attaches to a card/node/connector but the page can still run.
 - `Minor`: polish, secondary copy, non-critical empty state, or low-risk style issue.
 
 Loop procedure:

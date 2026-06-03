@@ -61,7 +61,7 @@ Required handoff bundle when a prototype feeds technical solution:
 - Prototype theme, user scenario, report type, and core business questions.
 - Component binding matrix: component ID, business question, data source, row grain, required fields, filters, interactions, and empty state.
 - Mock/data-source contract: dataset IDs, field names, sample rows, formulas, units, enums, and derived values.
-- Filter contract: filter IDs, defaults, option source, field/query mapping, affected components, permission behavior.
+- Filter contract: filter IDs, defaults, option source, field/query mapping, global SQL/source execution stage, component-internal local filter scope, affected components, permission behavior, and bounded-local exception if any.
 - Interaction contract: event names, payload fields, target drawer/modal/route/export/action, stale-selection behavior.
 - Visual/layout constraints that affect data shape or export behavior.
 - Assumptions and gaps that affect model/API design.
@@ -73,6 +73,7 @@ Required handoff bundle:
 - `API清单` with API ID, page/module, method/path candidate, purpose, trigger, request params, response model, auth, priority, and status.
 - `数据模型文件` with source/logical/response models, fields, formulas, joins, ownership, freshness, permission and quality rules.
 - `待补充数据模型清单` with `GAP-*` IDs, impact, owner questions, assumptions, and blocked/partial status.
+- Filter/sort/page execution evidence: API rows and models must state whether global filters, sorting, pagination, ranking, grouping, aggregation, Top/Bottom, and counts run in SQL/source/provider/repository/precompute/cache, and must not rely on page/API-level full-materialize-then-filter behavior. Component-internal filters must be separately scoped to already fetched component data.
 - Consistency result: every API maps to a response model, and every response field maps to a source/formula/enum/gap.
 - Production architecture readiness when intended for real delivery: runtime topology, frontend/backend/data boundaries, source authority, environment/auth/security assumptions, observability/performance/deployment concerns, testing handoff, and open blockers.
 
@@ -80,13 +81,13 @@ Required handoff bundle:
 
 Required handoff bundle:
 
-- `API文档` with base URL, auth headers, endpoint details, request/response examples, errors, empty/no-permission behavior, pagination/sorting/filter rules, and pending items.
+- `API文档` with base URL, auth headers, endpoint details, request/response examples, errors, empty/no-permission behavior, pagination/sorting/filter rules, filter/sort/page execution stage, default/max page size, and pending items.
 - Runtime backend URL when implementation exists.
 - Auth/SSO contract: header names, token rules, 401/token-invalid response, 403 response, public allowlist.
 - Backend health/smoke evidence, source-mode proof, environment/config notes, version/API-doc alignment, and deployment/rollback notes when implementation exists.
-- Observability and performance constraints: log/error identifiers, timeout/export limits, expected volume, pagination/aggregation constraints, and known capacity risks.
+- Observability and performance constraints: log/error identifiers, timeout/export limits, expected volume, Redis/cache strategy, database connection-pool behavior, pagination/aggregation constraints, max page size, total-count strategy, source-side/provider-side execution proof, component-local filter boundary, full-materialize-then-filter absence for global scope, and known capacity risks.
 - Known partial/blocked endpoints and accepted assumptions.
-- Sample responses or fixtures for frontend adapter validation.
+- Sample responses for frontend adapter validation, plus SQLite fixture/source-mode notes when backend simulation data is used.
 
 ### Frontend Development To Testing Integration
 

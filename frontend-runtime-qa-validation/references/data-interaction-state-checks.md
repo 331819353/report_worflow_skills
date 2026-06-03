@@ -3,6 +3,7 @@
 ## Provider Checks
 
 - REST/BFF/GraphQL requests use expected base URLs, params, headers, and response shapes.
+- Global filter/search/pagination/sort interactions send active scope params to REST/BFF/GraphQL/SDK/data-source calls. Flag requests that fetch all candidate rows and then rely on component/store/adapter filtering as fail/partial. Component-internal filters may be local only when they operate on already fetched component data and do not affect API-level totals, permission scope, pagination, ranking, aggregation, or counts.
 - SDK calls initialize with expected app/client values and return the documented shape.
 - Static/local file loads use expected paths and do not depend on unavailable local absolute paths.
 - Realtime feeds connect, update, stop, retry, and show stale data policy correctly.

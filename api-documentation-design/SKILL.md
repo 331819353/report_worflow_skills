@@ -18,13 +18,13 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
    When multiple input authorities exist, run `references/standalone-quality-gates.md#entry-input-consistency-gate` before documenting endpoint behavior. API inventories, requirements, frontend contracts, source/data models, OpenAPI snippets, implemented routes, and runtime samples must not be merged silently when they conflict; unresolved `P0`/`P1` `ENTRY-*` findings keep the affected endpoint `partial` or `blocked` and require user confirmation only before the affected API document is repaired.
 
-   When the API document will drive frontend, backend, or tests, run `references/standalone-quality-gates.md#design-reasonableness-gate`. Check that endpoint boundaries, response models, pagination/sorting/filter rules, auth, errors, examples, and performance limits reasonably support the consuming business flow.
+   When the API document will drive frontend, backend, or tests, run `references/standalone-quality-gates.md#design-reasonableness-gate`. Check that endpoint boundaries, response models, pagination/sorting/filter rules, auth, errors, examples, global SQL/source filtering, component-internal local filtering, SQL/index feasibility, Redis/cache decisions, connection-pool behavior, and performance limits reasonably support the consuming business flow.
 
 2. Establish shared conventions.
-   Define base URL, version, auth, headers, response envelope, errors, pagination, sorting, filters, date/time format, enum format, and file behavior before documenting endpoint details.
+   Define base URL, version, auth, headers, response envelope, errors, pagination, sorting, filters, date/time format, enum format, file behavior, default/max page size, global filter execution, component-internal filter scope, Redis/cache expectations, connection-pool expectations, large-result handling, and export limits before documenting endpoint details.
 
 3. Document endpoint behavior.
-   For each endpoint, capture purpose, trigger, method/path, auth, request params/body, response schema, examples, errors, performance limits, compatibility notes, and status.
+   For each endpoint, capture purpose, trigger, method/path, auth, request params/body, response schema, examples, errors, pagination/performance limits, source mode, compatibility notes, and status.
 
 4. Trace dependencies.
    Link response fields to models, routes, repositories, source systems, upstream APIs, formulas, or explicit pending items. Avoid silently inventing fields or business rules.
@@ -63,7 +63,12 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - Entry conflicts across requirements, API inventories, data/source models, frontend contracts, route code, OpenAPI snippets, and runtime samples are resolved or listed as `ENTRY-*`; unresolved `P0`/`P1` findings keep affected endpoints `partial` or `blocked`.
 - API design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected endpoints `partial` or `blocked`.
 - Request params cover required filters, drilldowns, pagination, sorting, exports, defaults, and invalid-param behavior.
+- Database-backed request params document SQL predicate shape, index support, and SQL pushdown scope for global/page-level filters; unresolved index or non-sargable filter behavior keeps the endpoint `partial` or `blocked`.
+- API docs state where global filters, component-internal filters, sorting, pagination, ranking, Top/Bottom, and aggregation execute. Page/API-level full-materialize-then-filter behavior keeps the endpoint `partial` or `blocked` unless it is a documented component-internal filter over already fetched component data, tiny static enum, or bounded lookup.
+- Collection/list/table endpoints document default page size, maximum page size, stable sort, total-count behavior, cursor/keyset need when applicable, and large-result handling. Missing pagination/performance behavior keeps production-bound endpoints `partial` or `blocked`.
+- API implementation documents may use JSON only as response examples. If local/mock data is needed for backend/API development, the documented simulation source is SQLite with schema, seed rows, and indexes rather than JSON files.
+- Each data-bearing endpoint identifies the served component/component group and frontend compute policy; broad page-level responses that require frontend business calculation stay `partial` or `blocked`.
 - Response schemas include field names, types, nullability, units, precision, enums, nesting, empty states, and examples.
 - Auth, permission, no-data, invalid-param, unauthorized, no-permission, and upstream/backend failure behavior are documented when relevant.
-- Production-bound API documents include source authority, runtime/environment notes, auth/permission behavior, observability/performance constraints, version compatibility, and testing handoff before `ready`.
+- Production-bound API documents include source authority, runtime/environment notes, auth/permission behavior, Redis/cache and connection-pool behavior when relevant, observability/performance constraints, version compatibility, and testing handoff before `ready`.
 - Pending items remain visible and do not masquerade as confirmed API behavior.

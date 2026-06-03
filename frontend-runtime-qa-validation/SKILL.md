@@ -30,10 +30,10 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
    After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. Store screenshot paths as QA evidence.
 
 4. Run multimodal visual anomaly recognition.
-   Use `references/standalone-quality-gates.md#visual-browser-and-multimodal-check` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, text overlap, graphic overlap, clipping, tiny charts/tables/cards, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
+   Use `references/standalone-quality-gates.md#visual-browser-and-multimodal-check` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
 
 5. Check browser console and network.
-   Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses.
+   Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.
 
 6. Exercise page interactions.
    Traverse visible controls page by page: filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, drawers, modals, chart clicks, table row actions, export/download, refresh, fullscreen, and close/back flows.
@@ -59,6 +59,7 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Multimodal visual review was run on the screenshots, with `VIS-*` findings recorded or an explicit no-issue result.
 - Runtime data requests hit expected endpoints, SDKs, files, or configured proxies.
 - Filters and interactions update the correct data without stale values.
+- Global filter/search/pagination/sort interactions send scope params to providers before response construction; any all-data request followed by local filtering is a `fail` or `partial` QA finding unless it is explicitly a component-internal filter over already fetched component data.
 - Empty/error/loading/auth states are visible and stable.
 - No stale prototype-only wording remains unless explicitly required.
 - Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.

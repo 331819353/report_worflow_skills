@@ -210,6 +210,7 @@ Minimum practical spans:
 - KPI/status-only: `4*1` or `8*1`.
 - Mixed chart/list/text: `4*2` at 1920, `6*2` or `8*2` at 1280.
 - Table plus three helpers: `8*2` minimum; prefer `8*3`.
+- When four peer tiles are shown simultaneously, prefer a balanced `2 * 2` internal distribution unless the content is explicitly a shallow KPI strip.
 
 Allowed combinations:
 
@@ -227,6 +228,7 @@ Minimum practical spans:
 - KPI/status-only: `8*1` if each item is very compact; `8*2` is safer.
 - Mixed components: `8*2` minimum at 1920, `8*3` at 1280.
 - Any table/chart-heavy composition: `8*3` or split.
+- When six peer tiles are shown simultaneously, prefer `3 * 2`; avoid `6 * 1` except for compact KPI/status strips.
 
 Allowed combinations:
 
@@ -243,6 +245,7 @@ Minimum practical spans:
 - KPI-only strip: `8*1`.
 - Compact card grid: `8*2`.
 - Mixed chart/list/table: usually split; if kept together, use `8*3` or larger with one primary component and subordinate helpers.
+- When eight peer tiles are shown simultaneously, prefer `4 * 2`; avoid narrow columns or dense `8 * 1` analytical strips.
 
 Allowed combinations:
 
@@ -252,11 +255,22 @@ Allowed combinations:
 
 Avoid eight visible analytical panels in one block. That is usually a section, not a block.
 
+### Nine Subcomponents
+
+Minimum practical spans:
+
+- KPI/status-only: `8*3` or split by section.
+- Mixed chart/list/table: split into multiple blocks, tabs, or drawers.
+
+When nine peer tiles are shown simultaneously, use `3 * 3` only if each tile remains readable at the active viewport. Do not force nine analytical charts into one crowded block.
+
 ## 6. Hard Layout Constraints
 
 - The page-grid span belongs to the top-level block; internal subcomponents must not create nested page grids.
 - Do not treat `1920 * 1080` or `1280 * 768` as the report's maximum height.
 - Do not reduce `N`, row height, title space, chart body height, or table body height to force the full report into one viewport.
+- Do not duplicate block titles inside chart/table/KPI bodies.
+- Do not make peer components too narrow, tiny, crowded, or unreadable; use balanced `M * N` layouts, split sections, or move details to drawer/fullscreen.
 - Do not put a normal table into `1*1`, `2*1`, `2*2`, or `3*1`.
 - Do not place axis-heavy charts into `1*1` or `2*1`.
 - Do not place chart plus table into anything smaller than `8*2`.

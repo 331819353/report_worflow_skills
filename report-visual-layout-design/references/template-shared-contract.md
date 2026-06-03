@@ -22,7 +22,7 @@ All three template assets share these extension points:
 ## Basic Create Loop
 
 1. Copy `assets/templates/<template-id>/` to the target project.
-2. Run `npm install`.
+2. Install only the dependencies needed by the current component set. Start with the base `package.json`; add `@antv/s2` and `@antv/s2-vue` only when the implementation contains pivot tables, cross tables, wide metric matrices, frozen-header analytical tables, or equivalent S2-class table needs.
 3. Edit `src/config/dashboard.config.ts`.
 4. Put data in `dashboard.data.ts` or `dataSources/registry.ts`.
 5. Add widgets through `components/`, `types.ts`, and `registry.ts`.
@@ -49,3 +49,5 @@ Avoid framework edits unless intentionally changing the template itself:
 - validation/start scripts
 
 Template assets intentionally exclude `node_modules` and `dist`.
+
+Dependency rule: if install stalls for more than 120 seconds, stop the install, remove unused heavy packages from the generated project and lockfile, then retry with the minimal dependency set needed for the current prototype.

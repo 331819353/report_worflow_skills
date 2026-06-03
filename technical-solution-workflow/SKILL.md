@@ -16,7 +16,7 @@ This workflow does not implement backend APIs, frontend pages, SQL jobs, or data
 - 需求文档: business scenario, users, pages, interactions, conclusions, permissions, and constraints.
 - 数据文档: source systems, tables/views/files/APIs, metadata, owners, refresh cadence, permissions, sample fields, and source notes.
 - 指标清单: metric names, formulas, dimensions, grain, units, precision, baselines, thresholds, and ownership.
-- 原型数据代码: data files, mock modules, data-source resolvers, TypeScript interfaces, component data props, filter mappings, and fixture JSON produced by prototype design.
+- 原型数据代码: data files, mock modules, data-source resolvers, TypeScript interfaces, component data props, filter mappings, and response examples produced by prototype design.
 
 If an input is absent, continue only when the missing part can be safely inferred. Otherwise record it through `$missing-model-management`.
 
@@ -79,7 +79,9 @@ Loading guidance:
    Use `$data-model-source-mapping`. Define source models, logical/business models, response/view models, joins, keys, dimensions, metrics, source-to-response mapping, quality checks, and ownership.
 
 6. Build the API清单.
-   Use `$api-inventory-design`. Define endpoint candidates with method, path, page/module, business purpose, request params, response model, source model dependencies, auth need, pagination/sorting/filter rules, and priority.
+   Use `$api-inventory-design`. Define endpoint candidates with method, path, page/module/component, business purpose, request params, response model, source model dependencies, auth need, pagination/sorting/filter rules, global SQL/source filter execution, component-internal local filter scope, Redis/cache expectation, database connection-pool expectation, performance/capacity expectations, frontend compute policy, and priority.
+
+   Default to one API per data-bearing component or interaction surface. Merge endpoints only when components share grain, global filters, permission, refresh cadence, source dependency, payload lifecycle, and a single understandable response model. Do not create a broad page-level API that forces frontend code to split data, aggregate rows, calculate formulas, rank, group, apply global filters, or derive chart/table series for multiple unrelated components. Component-internal filters may be local only after the component has fetched its globally filtered dataset.
 
 7. Build the 待补充数据模型清单.
    Use `$missing-model-management`. Every unresolved requirement/model/source/metric/enum/join/permission/sample/performance issue must have impact, owner question, current assumption, and whether it blocks downstream API documentation, implementation, integration, or validation.
@@ -101,7 +103,12 @@ Loading guidance:
 - Do not call a technical architecture production-ready if it only contains API清单 and 数据模型文件. Production-bound architecture also needs runtime topology, service/data-flow boundaries, environment/auth/security, observability, performance, deployment/rollback, and testing readiness notes.
 - Do not copy prototype mock fields as final source fields unless a source mapping confirms them.
 - Every API must trace to a page/module need and a response model.
+- Every data-bearing component should trace to one API row or a justified component-group API row. Unjustified page-level APIs that move business calculation to the frontend must be repaired or marked with `DESIGN-*`.
+- Every collection/list/table API row must declare pagination, maximum page size, stable sort, and large-result/export handling before it can be `ready`.
+- Every database-backed API row must distinguish global SQL `WHERE` filters from component-internal local filters, and must state Redis/cache expectation and connection-pool expectation when performance is in scope.
+- If the API inventory will feed backend/API implementation and only mock/prototype data exists, the handoff must require a SQLite fixture database plan. Do not hand off JSON files as the backend simulation data source.
 - Every response/view field must trace to a source field, formula, static enum, or pending item.
+- Frontend compute policy must be explicit. For implementation handoff, APIs should return component-ready data; frontend work is limited to display formatting, enum labels, null handling, interaction state, component-internal local filters over already fetched component data, and small bounded UI transforms unless an exception is documented.
 - Every assumption must use the same wording across API清单、数据模型文件、待补充数据模型清单, and downstream API docs.
 - Use status values exactly: `ready`, `partial`, `blocked` for artifacts and APIs; `open`, `assumed`, `blocked`, `resolved`, `obsolete` for pending model items.
 - If a missing item affects correctness, permission, metric口径, or source traceability, do not mark the artifact as `ready`.
@@ -110,7 +117,7 @@ Loading guidance:
 
 Produce or update these artifacts:
 
-- `API清单`: endpoint inventory table, grouped by page/module/domain, including performance/cache/SLA and linked gap IDs.
+- `API清单`: endpoint inventory table, grouped by page/module/domain, including pagination/performance/cache/SLA and linked gap IDs.
 - `数据模型文件`: complete model definitions with data-source metadata, field tables, relationships, metrics, source-to-response mapping, security rules, examples, and quality rules. If the full artifact is written to a file, include the file path and a concise summary.
 - `待补充数据模型清单`: missing requirement/model/source/field/formula/enum/join/sample/permission/performance/security items with status and owner questions.
 - Entry consistency result with `ENTRY-*` conflicts, confirmation decisions, and affected API/model artifacts when mixed input materials were checked.
@@ -138,6 +145,8 @@ Produce or update these artifacts:
 - Production closed-loop readiness is checked for production-bound outputs; missing auth/source/env/observability/performance/deployment/testability controls keep the handoff `partial` or `blocked`.
 - Prototype mock/view-model/filter/interaction contracts are not ignored.
 - API items are not invented without a page/module/business need.
+- API items are component-aligned and do not rely on frontend-side business aggregation, ranking, formula calculation, or broad global filtering.
+- API items include pagination/performance constraints, Redis/cache and connection-pool expectations when relevant, and mock-derived implementation handoff points to SQLite fixture planning rather than JSON data files.
 - Data models include source metadata, not only frontend response fields.
 - Ambiguous formulas, joins, enums, refresh rules, and permission constraints are captured as pending items.
 - The output is ready for `$api-documentation-design` or clearly marked as blocked.

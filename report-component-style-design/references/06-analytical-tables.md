@@ -1,6 +1,6 @@
 # Analytical Table Rules
 
-Use for AntV S2, pivot tables, cross tables, wide metric matrices, financial grids, and detailed record tables.
+Use for AntV S2, pivot tables, cross tables, wide metric matrices, financial grids, and detailed record tables. AntV S2 is an on-demand runtime dependency, not a default template dependency; install `@antv/s2` and `@antv/s2-vue` only when the implemented table actually needs S2 behavior.
 
 ## Viewport
 

@@ -14,7 +14,7 @@ Do not trigger this workflow for pure report design theory, visual rules, data r
 Standard prototype-design contract:
 
 - Inputs: 需求文档, 指标清单, optional screenshot/image, optional HTML源码.
-- Implementation output: Vue + TypeScript + Element Plus + ECharts + AntV S2 project source, mock/data files, filters, interactions, visual layout, component implementation, self-check report, and verified URL when required.
+- Implementation output: Vue + TypeScript + Element Plus + ECharts project source, with AntV S2 added only when the component mapping requires pivot tables, cross tables, wide metric matrices, or equivalent analytical tables; include mock/data files, filters, interactions, visual layout, component implementation, self-check report, and verified URL when required.
 - HTML源码 and screenshots are references for information architecture, visible metrics, style, controls, and interaction intent; convert them into maintainable Vue/TS/data-source structure instead of copying them as static artifacts.
 
 Default path:
@@ -92,8 +92,11 @@ Before writing or changing prototype code, pass these gates:
 - Chinese metric display gate: for rate/change fields, display percentage values with `%` in Chinese UI. Do not show `pt`, `p.p.`, or `percentage point` in the visible page for rate/completion/change labels unless the user explicitly requires that technical term.
 - Trend indicator gate: for change-rate and variance-rate indicators, positive values use red text plus an upward SVG/icon, negative values use green text plus a downward SVG/icon, and zero values are neutral. Do not use color without the icon/sign pairing.
 - Custom layout pattern gate: when a custom shell is used, choose one of `symmetricBalance` 对称式, `threePart` 三部式, `masterDetail` 主从式, or `narrativeStack` 分层叙事式; record why it fits the report and how it preserves the `8 * N` grid.
-- Complex diagram spacing gate: for flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, calculate rail, node, label, gutter, and edge-bend spacing before implementation. Layer numbers, labels, nodes, and edges need at least 16px separation.
+- Title ownership gate: page, section, and block titles are owned by the layout layer. Disable or omit chart/table/KPI/custom component internal titles when a surrounding layout title exists. A component body may render a title only when it is explicitly standalone and has reserved title height.
+- Component size and distribution gate: do not implement components that are too narrow, too small, crowded, or unreadable. Peer component groups should use balanced `M * N` distribution with columns `M` greater than rows `N` when possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
+- Complex diagram spacing gate: for flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, calculate rail, node, label, gutter, edge-bend, and stage/layer/lane title-band spacing before implementation. Layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges need at least 16px separation. A top title such as `L1`/`L2`/`L3` that touches, overlaps, or visually attaches to a node card, node border, child title, badge, or connector path fails the gate.
 - Filter control gate: primary filter areas in Vue prototypes must use Element Plus controls such as `ElSelect`, `ElDatePicker`, `ElCascader`, `ElTreeSelect`, `ElInput`, `ElButton`, and `ElPopover` unless an existing project design system explicitly supersedes it. A native `<select>` is only acceptable as a baseline prototype when it is fully styled with `appearance: none`, custom arrow, focus ring, and hover/active/disabled/loading/error states; advanced visual acceptance requires Element Plus or custom popover select behavior.
+- Dependency gate: before running dependency installation, inspect the selected template/project `package.json`, existing imports, and the component binding matrix. Install the current base dependencies first. Add `@antv/s2` and `@antv/s2-vue` only when the implementation actually includes S2-class analytical tables. If installation runs longer than 120 seconds or appears stuck on network/package resolution, stop the install, remove unused heavy optional packages from the generated project, preserve or regenerate the lockfile, and retry with the minimal dependency set needed to build and run the current prototype.
 
 ## Minimal Workflow
 
@@ -105,9 +108,9 @@ Before writing or changing prototype code, pass these gates:
 6. Use `report-info-component-mapping` to produce answer atoms, component bundles, data model, filter/query model, interaction model, and binding matrix.
 7. Run the design reasonableness gate and repair `DESIGN-*` findings before visual polish or implementation.
 8. Apply the hard data/filter/component linkage gate before visual polish or implementation.
-9. Apply the implementation preflight gates for shell path, style source, brand mode, visual mode, brand assets, sample fidelity, sample module classification, conclusion placement, global UI tokens, Chinese metric display, custom design path, custom layout pattern, complex diagrams, and filter controls.
+9. Apply the implementation preflight gates for shell path, style source, brand mode, visual mode, brand assets, sample fidelity, sample module classification, conclusion placement, global UI tokens, Chinese metric display, custom design path, custom layout pattern, title ownership, component size/distribution, complex diagrams including title-node collision checks, and filter controls.
 10. Use `report-visual-layout-design` and `report-component-style-design` for page shell, layout, component fit, and visual QA.
-11. For implementation, choose the appropriate bundled template or project-native structure, then implement with TypeScript + Vue 3 + Element Plus + ECharts + AntV S2 unless the existing project requires a different stack.
+11. For implementation, choose the appropriate bundled template or project-native structure, then implement with TypeScript + Vue 3 + Element Plus + ECharts as the base stack. Add AntV S2 only when the binding matrix contains pivot tables, cross tables, wide metric matrices, frozen-header analytical tables, dense financial grids, or equivalent S2-class table needs.
 12. Run the self-check repair loop, local startup/free-port handling, deployment, and URL return rules from `references/02-self-check-startup-deployment.md` when runnable output is requested.
    For runnable frontend/prototype output, the visual part of the self-check must first capture headless browser screenshots, run deterministic baseline image diff when a baseline exists, then use multimodal visual anomaly recognition when available. Feed `VDIFF-*` and `VIS-*` findings into the repair loop.
 13. Use the output and quality rules from `references/03-output-quality-and-avoid.md` before final delivery.
@@ -168,7 +171,10 @@ Before final delivery, verify:
 - Filters have stable IDs, defaults, option sources, permission behavior, and affected-component mappings.
 - Interactions preserve period, scope, object, metric, filters, permissions, and return path.
 - Layout follows the 8*N rectangular grid and components do not overlap, clip, or truncate critical text.
-- Flow, Sankey, graph, tree, decomposition, and lineage components pass the 16px safe-spacing gate.
+- Page/block titles are layout-owned; component bodies do not duplicate visible titles through chart/table/KPI internal title options.
+- Peer component groups use balanced `M * N` distribution where possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`; components are not narrow, tiny, crowded, or unreadable.
+- Business-question text, conclusion text, labels, legends, chart marks, tables, cards, diagrams, and controls do not overlap, stack, or visually merge.
+- Flow, Sankey, graph, tree, decomposition, and lineage components pass the 16px safe-spacing gate, including reserved stage/layer/lane title bands and no title-node collision.
 - Primary filters do not rely on naked native `<select>` controls as their final visual surface.
 - Runnable prototypes are built, started on an available port, verified, and handed off with an exact URL unless blocked.
 - Runnable prototypes have headless browser screenshot evidence and deterministic baseline diff status before deterministic visual regression is marked pass. Multimodal explanatory review is recorded as pass or not run; if required but unavailable, overall visual QA is `partial` rather than a full pass.
