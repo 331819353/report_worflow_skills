@@ -746,7 +746,7 @@ watch(
   () => {
     void loadWidgetData();
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
 </script>
 

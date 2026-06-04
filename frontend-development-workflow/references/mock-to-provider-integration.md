@@ -2,6 +2,20 @@
 
 Use this reference when replacing prototype mock/static data with the intended runtime provider. Provider means any source that supplies UI data: REST/BFF HTTP, GraphQL, SDK/client package, static/generated file, realtime feed, data-source registry, or explicitly retained offline/demo mode.
 
+## Working Path Guard
+
+When the current input is `原型源码`, do not replace mock/static data in that source directory directly unless the user explicitly says the prototype directory is the frontend delivery target.
+
+Before editing:
+
+1. Record `prototypeSourcePath`.
+2. Resolve `frontendTargetPath`.
+3. Copy the prototype source into `frontendTargetPath` when the paths differ.
+4. Run dependency installation, builds, provider wiring, mock removal, and runtime QA from `frontendTargetPath`.
+5. Keep `prototypeSourcePath` read-only as upstream evidence.
+
+If `frontendTargetPath` is unknown, stop before edits and ask for the target path. Do not infer that the runnable prototype path is also the frontend delivery path.
+
 ## Discovery Commands
 
 Search for mock data, fake request patterns, and existing provider paths:

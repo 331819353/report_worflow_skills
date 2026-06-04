@@ -15,6 +15,14 @@ Standard stage contract:
 - Outputs: provider-integrated 前端源码 and 前端功能说明.
 - Production paths should use the intended runtime provider unless the user explicitly requests offline/demo mode.
 
+Prototype source handoff contract:
+
+- When provided `原型源码` is an upstream artifact, treat it as read-only evidence by default. It is not the writable frontend target unless the user explicitly says the prototype directory is the frontend delivery directory.
+- Before any frontend integration edit, resolve two paths: `prototypeSourcePath` and `frontendTargetPath`.
+- If `prototypeSourcePath` exists and `frontendTargetPath` is different, copy the prototype source into `frontendTargetPath` first, then run installs, builds, provider wiring, mock replacement, visual repairs, and QA from `frontendTargetPath`.
+- If `frontendTargetPath` is missing and cannot be inferred from an existing frontend repository, stop before file edits and ask for the target path. Do not silently use the prototype source path as the target.
+- Do not modify, delete, reformat, install dependencies into, regenerate lockfiles in, or commit changes inside `prototypeSourcePath` unless the user explicitly designates it as the frontend target. Any exception must be recorded in the handoff notes.
+
 ## Reference Map
 
 - Read `../workflow-shared-references/report-delivery-pipeline-contract.md` for cross-workflow routing, readiness values, and handoff requirements.
@@ -56,43 +64,46 @@ Use the frontend specialty skills as guardrails inside this workflow:
 
    Run the design reasonableness gate when a source-to-provider replacement, adapter, filter behavior, interaction, retained mock, or visual repair could make the page less useful even if it compiles. Repair or record `DESIGN-*` findings before wiring affected behavior.
 
-2. Run a baseline check before large edits.
-   Detect the package manager from lockfiles and package scripts, install dependencies if needed, then run available typecheck, lint, test, and build commands. Start the dev server when feasible. Record baseline failures so later work does not hide pre-existing project problems.
+2. Resolve the prototype-to-frontend working path.
+   If the input is prototype source, classify it as `prototypeSourcePath` and keep it read-only unless the user explicitly names it as the frontend target. Identify or create/copy into `frontendTargetPath` before editing. All subsequent commands and edits must run from `frontendTargetPath`. If the target path is unknown and cannot be safely inferred from the repository layout, ask for the path before making changes.
 
-3. Inventory current data paths.
+3. Run a baseline check before large edits.
+   Detect the package manager from lockfiles and package scripts in `frontendTargetPath`, install dependencies if needed, then run available typecheck, lint, test, and build commands. Start the dev server when feasible. Record baseline failures so later work does not hide pre-existing project problems.
+
+4. Inventory current data paths.
    Locate mock/static data, fixture JSON, hard-coded arrays, localStorage/sessionStorage seeds, artificial `Promise.resolve` calls, fake timers, existing HTTP/GraphQL/SDK calls, generated data modules, realtime subscriptions, and dashboard data-source configs. For each source, identify consumers, fields, filters, pagination, sorting, drilldowns, exports, charts, tables, and interaction payloads.
 
-4. Classify provider evidence.
+5. Classify provider evidence.
    Decide whether each target data path should use REST/BFF HTTP, GraphQL, SDK/client package, static/generated files, local fixture mode, realtime feed, data-source registry, or an explicitly retained offline/demo source. Use `references/provider-gap-ledger.md` for anything missing or ambiguous.
 
-5. Decide env and auth before runtime wiring.
+6. Decide env and auth before runtime wiring.
    Identify provider base URLs, SDK keys, app/client IDs, auth headers, SSO requirements, proxy needs, route base, asset base, and deployment mode before editing components. Use `$frontend-env-deployment-verification` and SSO skills early enough that request/client code is not built around the wrong assumptions.
 
-6. Create a provider mapping and validate the contract.
+7. Create a provider mapping and validate the contract.
    Map every changed mock/static source to a provider call, file, query, SDK method, subscription, or retained offline mode. Define UI state to provider inputs, provider payload to UI view model, empty/error/auth behavior, pagination, sorting, refresh, export, and stale-selection behavior. Record where filters, sorting, pagination, ranking, Top/Bottom, grouping, and aggregation execute. Use `$frontend-api-contract-validation` before code changes.
 
-7. Add or reuse the data access layer.
+8. Add or reuse the data access layer.
    Prefer the project's existing request client, GraphQL client, SDK wrapper, store, composable, data-source resolver, parser, or subscription layer. If none exists, add the smallest project-native abstraction that handles env config, auth/client initialization, normalized errors, and typed provider functions.
 
-8. Replace or isolate mock data.
+9. Replace or isolate mock data.
    Update pages, composables, stores, widgets, and data-source configs to call the intended provider. Preserve layout and interactions. Keep adapters close to the provider boundary so UI components receive stable view models. Remove stale mock imports from production paths; keep offline/demo mocks only when explicitly required.
 
-9. Wire interaction and data lifecycle behavior.
+10. Wire interaction and data lifecycle behavior.
    Ensure global filters, search, date ranges, organization selectors, permission scope, pagination, sorting, tabs, drilldowns, refresh, export/download, and linked charts pass correct inputs to the provider/source layer. Component-internal filters such as local tabs, legend toggles, in-component quick search, and local display slicing may run on the already fetched component dataset when the API/provider returned the complete dataset for that component after global filtering. Do not fetch all candidate rows or a broad page payload and then narrow it in components, stores, or adapters except for documented component-internal filters, tiny static enums, or bounded lookups. Handle loading, empty, failed, retry, partial, no-permission, token-invalid, stale selection, rapid filter changes, request cancellation or sequence guards, cache invalidation, and realtime unsubscribe/cleanup when applicable.
 
-10. Audit functions, copy, and visual behavior.
+11. Audit functions, copy, and visual behavior.
     Traverse the updated app page by page and component by component. Check controls, route jumps, tabs, drawers, modals, table operations, chart clicks, export, refresh, and edge states. Clean user-facing copy left from the prototype, including titles, menus, breadcrumbs, labels, button text, placeholders, tooltips, document title, download names, and error messages containing `原型`, `mock`, `demo`, `示例`, placeholder names, or stale descriptions. Use `$frontend-runtime-qa-validation` for the structured browser pass. For visual QA, first capture headless browser screenshots, run deterministic baseline diff when a baseline exists, then run multimodal visual anomaly recognition when available. Route `VDIFF-*` and `VIS-*` findings back into frontend repair or final QA notes.
 
-11. Verify build, preview, and deployment behavior.
+12. Verify build, preview, and deployment behavior.
     Run validation commands, build, start dev or preview server, and open the target page in a browser when visual frontend behavior is involved. Repair compile errors, runtime exceptions, provider failures, proxy mistakes, CORS symptoms, malformed adapters, missing fields, broken interactions, stale copy, and UI regressions until runnable or blocked by a concrete external dependency.
 
-12. Produce frontend function description.
+13. Produce frontend function description.
     Use `$frontend-function-description-documentation` to document pages, modules, provider mapping, filters, interactions, states, permissions, exports, verification evidence, known limitations, and unresolved gaps. This document is the standard input for testing/integration handoff.
 
-13. Return a verified URL.
+14. Return a verified URL.
     For local handoff, start the frontend on an available port and return the verified local URL. If startup is blocked, state the exact command, error, attempted fixes, and remaining external blocker.
 
-14. Check production closed-loop readiness when applicable.
+15. Check production closed-loop readiness when applicable.
     For production-bound frontend integration, apply `../workflow-shared-references/production-closed-loop-readiness.md`. Record frontend URL/build, backend base URL, provider/source mode, auth behavior, env/config, runtime QA evidence, retained offline/demo sources, testing handoff, and open blockers. Do not mark the frontend handoff `ready` when production paths still depend on unapproved mocks or unverified provider/auth/runtime behavior.
 
 ## Implementation Defaults
@@ -106,6 +117,7 @@ Use the frontend specialty skills as guardrails inside this workflow:
 - Prefer component-ready provider/API responses. Do not move business aggregation, ranking, formula calculation, pagination totals, broad filtering, or multi-component response splitting into frontend code unless the exception is explicitly bounded and recorded as a provider/API gap.
 - Reject full-materialize-then-filter frontend paths for global/page-level scope. Active global filters, search, pagination, sorting, permission scope, drilldown scope, and export scope must be sent to the provider/API/resolver before data is shaped for components, not applied after fetching or constructing the full candidate dataset. Component-internal filters are allowed only over the already fetched component dataset and must not change API-level totals, permission scope, pagination, or business aggregation.
 - Keep mock fallback only when the user requests offline/demo mode or when a documented external blocker prevents runtime integration.
+- Treat provided prototype source as immutable upstream input unless explicitly designated as the frontend target. Copy it to `frontendTargetPath` before integration edits; never let the convenience of an already-runnable prototype path become the writable delivery path by default.
 - Normalize provider payload fields into the existing UI data shape instead of rewriting the whole page around provider naming.
 - Avoid broad visual redesign while replacing data sources unless broken states require small UI fixes.
 - Keep secrets, tokens, cookies, SDK credentials, and private endpoints out of code and logs.
@@ -116,6 +128,7 @@ Use the frontend specialty skills as guardrails inside this workflow:
 Maintain these notes in the task response or project docs when useful:
 
 - `Input Files`: frontend/prototype files, provider docs/samples, env/auth/config files, and their roles.
+- `Source And Target Paths`: `prototypeSourcePath`, `frontendTargetPath`, copy action, and whether the prototype source remained read-only.
 - `Entry Consistency Audit`: status, checked artifacts, `ENTRY-*` conflicts, user-confirmed decisions, and affected frontend/API/auth/data contracts when mixed inputs were checked.
 - `Design Reasonableness Audit`: status, checked dimensions, `DESIGN-*` findings, repairs, accepted limitations, and affected frontend/API/auth/data contracts.
 - `Current Data Inventory`: mock/static/runtime source, consumers, fields, and affected interactions.
@@ -134,6 +147,8 @@ Maintain these notes in the task response or project docs when useful:
 ## Verification Checklist
 
 - Every target mock/static source is either replaced by the intended provider or intentionally retained for offline/demo mode.
+- When prototype source is provided, edits, installs, builds, generated files, and commits happen in `frontendTargetPath`, not `prototypeSourcePath`, unless the user explicitly designated the prototype path as the frontend target.
+- The final diff or change list proves the prototype source was preserved read-only, or documents the explicit user decision that made it the writable target.
 - Entry-material contradictions across requirements, HTML/sample UI, frontend source, API docs/provider samples, env/auth notes, mocks, or runtime traces are resolved or keep affected work `partial`/`blocked`; no `P0`/`P1` conflict is silently repaired.
 - Frontend design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings do not get hidden behind adapter code, retained mocks, or visual polish.
 - Every implemented runtime provider is traceable to docs, source code, schema, SDK types, sample files, runtime traces, or a documented assumption.
