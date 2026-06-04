@@ -25,6 +25,22 @@ export const datasetTemplate = {
         amount: 1280.5,
         completion: 96.4,
       },
+      {
+        period: '2026-03',
+        regionId: 'china',
+        productLine: 'refrigerator',
+        productLineName: '冰箱',
+        amount: 1168.2,
+        completion: 91.7,
+      },
+      {
+        period: '2026-04',
+        regionId: 'china',
+        productLine: 'refrigerator',
+        productLineName: '冰箱',
+        amount: 1212.9,
+        completion: 93.8,
+      },
     ],
   },
 } as const;
@@ -115,7 +131,10 @@ export const widgetTemplates = {
     visualType: 'line',
     title: '收入趋势',
     props: {
+      categoryField: 'period',
       valueField: 'amount',
+      sortField: 'period',
+      sortDirection: 'asc',
     },
     data: {
       id: 'businessData',

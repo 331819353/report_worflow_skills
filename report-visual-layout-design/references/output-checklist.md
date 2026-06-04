@@ -62,6 +62,7 @@ Before finalizing, verify:
 - Toolbar actions are grouped by frequency and importance.
 - Tables, charts, cards, and drawers each have a clear job.
 - ECharts and AntV S2 containers have stable dimensions and resize against the body viewport.
+- Line, area, bar, and other category-axis charts explicitly sort the x-axis; labels, points, values, tooltips, and click payloads all come from the same sorted row order.
 - Element Plus controls are used for filters, form fields, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables unless a project design system explicitly supersedes them.
 - Template validation and build commands are planned or run when code is changed.
 - The right edge and bottom edge of every component are checked for clipping.

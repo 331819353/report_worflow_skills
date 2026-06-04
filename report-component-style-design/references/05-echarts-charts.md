@@ -36,6 +36,7 @@ Use for standard charts built with ECharts: bar, line, area, pie, radar, scatter
 
 ## Line And Area Charts
 
+- Sort the source row tuples before deriving `xAxis.data`, `series.data`, tooltip payloads, and click payloads. Do not sort category labels independently while series values still map the unsorted rows.
 - Do not label every point on dense time series.
 - Permanently label endpoints, anomalies, max/min, or selected points.
 - For one data point, center the point in the plot area.

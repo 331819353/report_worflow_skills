@@ -118,6 +118,12 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 - Disable or omit ECharts/S2/custom-chart internal `title` options when the surrounding block already has a visible title. Do not repeat the same title in both the block header and the chart body.
 - If a component must run standalone without a page/block title, record that exception and reserve title height before computing the body viewport.
 
+### Chart X-Axis Ordering Gate
+
+- 折线图、面积图、柱状图等类目轴图表必须显式排序 x 轴。时间、月份、周期类 x 轴默认按时间升序，除非用户或业务规则明确要求倒序或自定义顺序。
+- 不允许只排序 x 轴标签、`labels`、`categories` 或 `xAxis.data`，再用未排序的原始行生成 `series.data`。必须先按 x 轴字段排序整行数据，再从同一个有序行列表生成 `xAxis.data`、所有 `series.data`、tooltip payload 和点击 payload。
+- 当 x 轴来自接口或 mock 数据时，组件实现仍要声明排序字段和排序方向；不能假设上游已经排好序。
+
 ### Component Size And Distribution Gate
 
 - Do not finalize a layout with components that are too narrow, too small, or crowded. Enlarge the block, reduce component count, split sections, add vertical scroll, use tabs/drawers/fullscreen, or change component type before shrinking text or overlapping content.
@@ -193,6 +199,7 @@ Before finalizing a layout, verify:
 - Every top-level content block occupies a legal rectangular `8 * N` grid span.
 - Component spans are selected from the default distribution first and adjusted only when the size check shows the content cannot fit.
 - Every titled block has exactly one visible layout-owned title. Components inside the block do not render a duplicate title in their body viewport.
+- Line, area, bar, and other category-axis charts explicitly sort the x-axis and derive labels, points, values, tooltips, and click payloads from the same sorted row order.
 - Template choice, block IDs, component order, and `columns * rows` spans stay stable across revisions unless the business question, content volume, or display scenario changes.
 - Block height follows component capacity and fixed row-height rules; the page grows, scrolls, or paginates instead of compressing rows.
 - Repeated cards, charts, tables, and peer groups pass balanced-distribution and pixel-fit checks before final acceptance.

@@ -47,6 +47,8 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not accept a polished component that is unreasonable for the task. Use `DESIGN-*` findings when a chart should be a table, a dense component needs drilldown/fullscreen, a component duplicates another message, or the style hides the user's decision-critical value.
 - Do not hide decision-critical labels, units, warnings, or values without a hover/focus/click disclosure path.
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable container.
+- For ECharts line, area, bar, and other category-axis charts, the x-axis categories must be ordered explicitly. Time/period axes default to ascending chronological order unless the user or business rule explicitly requires reverse/custom order.
+- Do not sort only x-axis labels, categories, or `xAxis.data` while series values still map the unsorted source rows. Sort the row tuples first, then derive `xAxis.data`, every `series.data`, tooltip payloads, and click payloads from the same ordered rows.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
 - Do not create one-off component styles that conflict with the page shell, Haier branding, or existing design system.
 - Do not render a duplicate visible component title inside the chart/table/KPI/custom component body when the page or block layout already provides a title. Component body titles are allowed only for explicitly standalone components without a layout-owned title, and then title height must be reserved before measuring the viewport.
@@ -80,6 +82,7 @@ When using this skill, provide:
 - Component titles are layout-owned by default; chart/table/KPI bodies do not duplicate the block/page title.
 - Component choice is reasonable for the business task and data shape; unresolved `P0`/`P1` `DESIGN-*` findings are not styled over.
 - Component size is sufficient for the selected visual type and data density; cramped/narrow/small components are enlarged, split, scrolled, zoomed, or moved to fullscreen/drawer before pass.
+- Line, area, bar, and other category-axis charts have an explicitly sorted x-axis, and labels/points/values/tooltips are derived from the same sorted row order.
 - Repeated peer cards/charts/tiles use balanced `M * N` distribution where possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`.
 - Titles, units, labels, legends, controls, pagination, and states fit without overlapping data marks.
 - Business-question text, conclusion text, component labels, chart marks, diagrams, tables, and cards do not overlap, stack, or visually merge.

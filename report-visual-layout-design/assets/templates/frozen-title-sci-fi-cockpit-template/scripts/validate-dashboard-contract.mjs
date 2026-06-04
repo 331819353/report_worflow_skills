@@ -365,6 +365,29 @@ const validateWidgetSource = (filePath) => {
   const text = readText(filePath);
   const label = path.relative(projectRoot, filePath);
   const hasRadar = /type\s*:\s*['"]radar['"]|radar\s*:/.test(text);
+  const hasLineChart =
+    /type\s*:\s*['"]line['"]|visualType\s*:\s*['"]line['"]|series\s*:[\s\S]{0,900}type\s*:\s*['"]line['"]/.test(
+      text,
+    );
+  const sortsCategoryLabelsOnly =
+    /\b(?:labels|xAxisData|categories|categoryLabels)\b[\s\S]{0,260}(?:\.sort\s*\(|\.toSorted\s*\()/.test(text) ||
+    /xAxis\s*:[\s\S]{0,520}data\s*:[\s\S]{0,260}(?:\.sort\s*\(|\.toSorted\s*\()/.test(text);
+  const mapsSeriesFromRawRows =
+    /series\s*:[\s\S]{0,1400}data\s*:\s*(?:props\.)?(?:data|rows|chartRows|filteredRows)\s*\.\s*map\s*\(/.test(
+      text,
+    );
+  const usesAlignedCategoryHelper =
+    /sortRowsForCategoryAxis|buildSingleSeriesCategoryData|\b(?:sortedRows|orderedRows)\b/.test(text);
+
+  if (hasLineChart && sortsCategoryLabelsOnly && mapsSeriesFromRawRows && !usesAlignedCategoryHelper) {
+    errors.push(
+      `${label}: line chart categories are sorted separately while series data maps raw rows; sort rows first, then derive xAxis labels and every series.data from the same sorted rows.`,
+    );
+  } else if (hasLineChart && sortsCategoryLabelsOnly && !usesAlignedCategoryHelper) {
+    warnings.push(
+      `${label}: line chart sorts labels/categories directly; verify every series is built from that same ordered category list or use sortRowsForCategoryAxis/buildSingleSeriesCategoryData.`,
+    );
+  }
 
   if (hasRadar) {
     if (!/nameGap|axisName/.test(text)) {

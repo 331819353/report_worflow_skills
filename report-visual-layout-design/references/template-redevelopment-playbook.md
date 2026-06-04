@@ -30,6 +30,7 @@ Use this file when building a new business report from a copied template or heav
    - Map filters with same-name fields or `filterFields`.
    - Use `requiredFilters` when a widget must respond to a filter.
    - Use `ignoredFilters` when a widget intentionally ignores a global filter.
+   - For line, area, and category-axis charts, keep each category label and value in the same row tuple. Sort rows first, then derive `xAxis.data`, every `series.data`, tooltip payloads, and click payloads from that same ordered row list.
 6. Implement widgets:
    - Copy `WidgetTemplate.vue`.
    - Render only inside the body viewport.
@@ -64,7 +65,13 @@ widgets: {
       },
       requiredFilters: ['org', 'cycle'],
     },
-    props: { unit: 'CNY' },
+    props: {
+      categoryField: 'period',
+      valueField: 'revenue',
+      sortField: 'period',
+      sortDirection: 'asc',
+      unit: 'CNY',
+    },
     actions: {
       pointClick: {
         type: 'pointClick',

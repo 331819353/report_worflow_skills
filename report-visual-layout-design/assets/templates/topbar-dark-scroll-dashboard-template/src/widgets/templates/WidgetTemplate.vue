@@ -91,6 +91,9 @@
  *    无 data 的组件必须在配置里写 dataPolicy: 'static' | 'external'，否则 validate:dashboard 会失败。
  *    每个组件必须写 visualType，框架会用它校验当前 layoutRows 占位是否合法。
  *    多月/趋势/月环比/同比页面必须提供完整周期数据，不要只给默认单月数据。
+ *    折线/面积/柱状等类目轴图表必须先排序整行数据，再从同一个 sortedRows 同步生成 xAxis labels 和 series.data。
+ *    不要只对 labels/xAxisData/categories 排序后继续用原始 data.map(...) 生成数值，否则点位和值会错位。
+ *    可复用 src/widgets/chartData.ts 的 sortRowsForCategoryAxis 或 buildSingleSeriesCategoryData。
  *    说明、摘要、总结类文本组件使用 visualType: 'text-summary'，合法占位为 4x1/5x1/6x1/7x1/8x1 或 3x2。
  *
  * 9. 筛选作用域通过 filterScope 控制：
@@ -130,6 +133,8 @@
  * - 内容区背景由模板铺满整个 body，不要再做一个缩进背景或默认边框。
  * - KPI 核心数字使用 28-32px；单位/同比/辅助标签使用 12-14px；表格/列表里的财务和指标数字右对齐。
  * - 多系列 ECharts 必须显示 legend；隐藏外边框和纵向网格，横向网格用浅色虚线。
+ * - 折线图排序时先 sort rows，再用同一份 rows 生成 xAxis.data 和所有 series.data。
+ *   不要写 labels.sort() 后让 series.data 继续读取未排序 data。
  * - 状态文字必须渲染成 badge/pill 或 icon+text，不要只输出纯文本。
  * - 简单表格默认按列内容自适应；单元格内容必须可换行或通过表格内部横向滚动完整查看，不用省略号表达未展示。
  * - WidgetRenderer/WidgetViewport 是外层能力，业务组件只写自己的展示逻辑和私有样式。

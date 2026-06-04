@@ -34,7 +34,8 @@ Use this file for common adjustments and final verification after changing a tem
 2. Add static/mock rows in `src/data/dashboard.dataset.json`, configure `widget.data.id: 'apiData'` with `widget.data.api`, or register a custom API/provider resolver in `dataSources/registry.ts` for complex providers.
 3. Configure `widget.data`.
 4. Add `filterFields`, `requiredFilters`, `ignoredFilters`, or `requiredParams`.
-5. Render from the `data` prop inside the widget.
+5. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
+6. Render from the `data` prop inside the widget.
 
 ### Add Component Interaction
 
