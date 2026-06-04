@@ -9,6 +9,8 @@ Use this reference when translating transformation rules into code, tests, and e
 - When the authoritative source is a database, push eligible filtering, sorting, pagination, joins, grouping, aggregation, Top/Bottom, and count calculations into SQL/database views/repository queries. Do not pull broad database rows into memory for business filtering or aggregation.
 - Do not use a full-materialize-then-filter pipeline for global/page-level scope. Source/repository code must apply global request filters, permission scope, sorting, pagination, ranking, and aggregation before service-layer response shaping. Building a complete target list and trimming it later is a fail unless the input is a documented component-internal filter over already fetched component data, tiny static enum, or bounded lookup.
 - When API implementation uses mock data, model the mock source as a SQLite fixture database and query it through the repository/data-access layer. Do not use JSON files, Python/JS arrays, or in-memory collections as the transformation source for backend/API simulation.
+- SQLite simulation must be experience-equivalent to the real API for parameter behavior. Seed fewer rows if necessary, but include enough combinations for filters, date ranges, dimensions, statuses, permissions, sorting, pagination, Top/Bottom, drilldown, empty, abnormal, and aggregate scenarios to produce visibly different responses.
+- When real database table/view metadata is available, implement the source-to-response mapping through SQL, views, repository queries, or bounded service transformations. After contract, field quality, permission, performance, and verification checks pass, the real SQL-backed path can be published directly and must become the default source.
 - Keep service-layer transformations for bounded response shaping: field renames, enum labels, unit/precision formatting, DTO assembly, and small confirmed post-processing.
 - Put final response validation in schemas, DTOs, serializers, response helpers, or contract tests.
 - Keep transformations deterministic and documented.
@@ -21,7 +23,9 @@ Use this reference when translating transformation rules into code, tests, and e
 - Request params:
 - Source rows or upstream payload:
 - SQLite fixture table/query when simulation is used:
+- Real table/view query when authoritative source is used:
 - Transformation rules exercised:
+- Parameter changes exercised:
 - Source quality cases:
 - Expected response fields:
 - Reconciliation notes:
@@ -30,6 +34,8 @@ Use this reference when translating transformation rules into code, tests, and e
 ## Test Guidance
 
 - Add focused tests for non-trivial field renames, date/period conversion, aggregation, formulas, enum mapping, unit conversion, rounding, default fill, sorting, and empty states.
+- For SQLite simulation, add parameter-variation tests proving that filters, time ranges, dimensions, permission scope, sorting, pagination, drilldown, and aggregate requests change the response according to the API contract.
+- For real table-backed APIs, add mapping tests or SQL review samples proving that source table/view fields produce the prototype/API response fields and that the real source is the default publishable path after validation.
 - Add source quality tests for missing keys, duplicate rows, malformed values, invalid enums, invalid dates, late-arriving data, and reject/quarantine behavior when those risks exist.
 - Include at least one negative or missing-data sample when the rule has fallback behavior.
 - Compare representative runtime responses against the target API contract when implementation exists, and record field/request/error mismatches with reproducible evidence.

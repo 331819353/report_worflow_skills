@@ -121,6 +121,10 @@ Deliver:
 5. Execute mock-to-SQLite-to-authoritative-source flow when mock data exists.
    First validate the mock/display contract, then create a local SQLite fixture database with schema, seed rows, indexes, constraints, and representative edge cases. Implement local/demo API routes against SQLite queries instead of JSON or in-memory arrays. JSON may be used only as response examples in documentation or test assertions, not as the API data source. Then replace the SQLite fixture source with the authoritative runtime source such as database repository/query, upstream API, event-derived store, or existing service client when that source is available.
 
+   SQLite simulation may use fewer rows than production, but data quality must stay high. Seed data must be dense enough to make request parameter changes visibly affect API results: filters, date ranges, organization/region/product/customer dimensions, status enums, permission scope, sorting, pagination, Top/Bottom, drilldown IDs, empty states, abnormal values, and aggregate totals must each have matching and non-matching rows. Do not generate a thin fixture where all parameters return the same shape, identical totals, or only default-state data. Treat SQLite responses as experience-equivalent to the real interface for local frontend/integration testing.
+
+   When real table metadata is available, implement the authoritative path by mapping real table/view fields into the prototype/API response model, applying formula, enum, unit, date, permission, and aggregation transformations in SQL/repository queries. After source authority, join keys, permission scope, performance constraints, and contract validation are confirmed, the real SQL-backed interface can be the default publishable service without a SQLite handoff step.
+
 6. Apply authentication.
    If authenticated flow is required and not explicitly disabled, integrate the project auth layer. For Haier IAMA, use `$haier-iama-backend-sso`: exchange codes through `{baseUrl}/api/oauth/code/get/v2`, validate tokens through `{baseUrl}/api/oauth/token/check`, and enforce protected business endpoints.
 
@@ -156,8 +160,12 @@ When backend implementation starts from frontend/prototype mock data, use this f
 2. SQLite fixture database generation.
    Create a local SQLite database, schema DDL, seed data, indexes, and representative rows for default, filtered, empty, permission-limited, abnormal, and pagination states. SQLite fixtures are the required simulation source for API development; JSON files are allowed only for response examples or assertion snapshots.
 
+   Fixture rows must cover every request parameter that changes the response. Keep row count modest, but include enough combinations for filter narrowing, cross-period comparison, grouping, ranking, pagination, drilldown, permission-limited visibility, empty result, and abnormal value scenarios. A parameter that cannot change fixture results must be documented as unsupported or blocked, not silently accepted.
+
 3. Authoritative source replacement.
    Implement the confirmed runtime source and make it the default business data source. The source may be a production database, upstream API, event-derived read model, existing service client, or explicitly approved bounded source. Do not promote SQLite fixtures to production source unless the user explicitly defines a SQLite-backed deliverable.
+
+   For real database sources, transform the confirmed table/view structure into the prototype/API field contract through SQL, views, repository queries, or a bounded response adapter. If the field mapping, formulas, permissions, quality rules, and performance checks are ready, the real table-backed API is publishable directly; do not keep SQLite as the default source after the real source path is validated.
 
 4. Multi-source verification.
    Compare mock contract, SQLite query/API response, and authoritative runtime-source response for representative requests. Record allowed differences and failures in API docs and missing-info docs.
@@ -166,6 +174,7 @@ Hard rules:
 
 - Do not use JSON files, Python/JS arrays, or in-memory collections as the API data source for local simulation when backend/API implementation is requested.
 - Do not build/load all fixture rows or authoritative rows before applying request filters, sort, pagination, ranking, or aggregation. SQLite simulation and production sources must both query the narrowed result set at the repository/source boundary.
+- Do not accept low-quality SQLite fixtures where request parameters do not change totals, rows, rankings, empty states, pagination, drilldowns, or permission-limited responses as the real API would.
 - Do not stop after SQLite fixture generation when a real runtime source is expected.
 - Do not leave production-mode APIs reading SQLite fixtures by default unless the user explicitly requests and documents a SQLite-backed service.
 - If source credentials, tables/views, SQL, upstream endpoint contracts, file paths, permissions, join keys, event topics, service clients, network access, or sample rows are missing, mark authoritative source replacement as blocked or partial.

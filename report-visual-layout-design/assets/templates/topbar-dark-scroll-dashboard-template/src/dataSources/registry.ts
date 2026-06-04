@@ -3,8 +3,15 @@ import type {
   DashboardDataSourceRef,
   DashboardDataSourceRequest,
 } from '../types/data-source';
+import axios, { AxiosHeaders, type AxiosRequestConfig } from 'axios';
 import { readDashboardBusinessRows, readDashboardFilterRows } from '../data/dashboard.loader';
 import { resolveDashboardParams, resolveDashboardValue } from '../utils/dashboardExpressions';
+
+declare global {
+  interface Window {
+    __DASHBOARD_AUTH_HEADERS__?: Record<string, string> | (() => Record<string, string>);
+  }
+}
 
 export type DashboardDataSourceResolver = (
   request: DashboardDataSourceRequest,
@@ -112,6 +119,52 @@ const getByPath = (source: unknown, path?: string) => {
 };
 
 const toRowArray = (payload: unknown) => (Array.isArray(payload) ? payload : []);
+
+const dashboardHttp = axios.create({
+  timeout: 15000,
+});
+
+const resolveDashboardAuthHeaders = () => {
+  if (typeof window === 'undefined' || !window.__DASHBOARD_AUTH_HEADERS__) {
+    return {};
+  }
+
+  const headers =
+    typeof window.__DASHBOARD_AUTH_HEADERS__ === 'function'
+      ? window.__DASHBOARD_AUTH_HEADERS__()
+      : window.__DASHBOARD_AUTH_HEADERS__;
+
+  return Object.fromEntries(
+    Object.entries(headers ?? {}).filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== ''),
+  );
+};
+
+dashboardHttp.interceptors.request.use((config) => {
+  const authHeaders = resolveDashboardAuthHeaders();
+
+  if (Object.keys(authHeaders).length > 0) {
+    const headers = AxiosHeaders.from(config.headers);
+
+    Object.entries(authHeaders).forEach(([key, value]) => headers.set(key, value));
+    config.headers = headers;
+  }
+
+  return config;
+});
+
+dashboardHttp.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status ?? 'network';
+      const statusText = error.response?.statusText || error.message;
+
+      return Promise.reject(new Error(`Dashboard API source failed: ${status} ${statusText}`));
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -221,30 +274,6 @@ const createRequestBody = (
   return JSON.stringify(body);
 };
 
-const parseApiResponse = async (response: Response) => {
-  if (response.status === 204) {
-    return [];
-  }
-
-  const contentType = response.headers.get('content-type') ?? '';
-
-  if (contentType.includes('application/json')) {
-    return response.json();
-  }
-
-  const text = await response.text();
-
-  if (!text) {
-    return [];
-  }
-
-  try {
-    return JSON.parse(text);
-  } catch {
-    return text;
-  }
-};
-
 // 常规响应适配器注册表。大多数接口只需要配置 responsePath；字段重命名、嵌套拉平、
 // 单位/枚举转换等差异，再新增具名 adapter。
 export const responseAdapterRegistry: Record<string, DashboardResponseAdapter | undefined> = {
@@ -260,28 +289,30 @@ const resolveApiData: DashboardDataSourceResolver = async (request) => {
 
   const method = api.method ?? 'GET';
   const headers = normalizeHeaders(resolveApiParams(api.headers, request));
-  const init: RequestInit = {
+  const config: AxiosRequestConfig = {
     method,
-    credentials: api.credentials,
+    url: buildApiUrl(api, request),
   };
 
   const body = createRequestBody(api, request, headers);
 
   if (Object.keys(headers).length > 0) {
-    init.headers = headers;
+    config.headers = headers;
   }
 
   if (body !== undefined && method !== 'GET' && method !== 'DELETE') {
-    init.body = body;
+    config.data = body;
   }
 
-  const response = await fetch(buildApiUrl(api, request), init);
-
-  if (!response.ok) {
-    throw new Error(`Dashboard API source failed: ${response.status} ${response.statusText}`);
+  if (api.credentials === 'include') {
+    config.withCredentials = true;
+  } else if (api.credentials === 'omit') {
+    config.withCredentials = false;
   }
 
-  const payload = await parseApiResponse(response);
+  const response = await dashboardHttp.request(config);
+
+  const payload = response.status === 204 ? [] : (response.data ?? []);
   const selectedPayload = getByPath(payload, api.responsePath);
   const adapter = api.adapter ? responseAdapterRegistry[api.adapter] : responseAdapterRegistry.rows;
 
@@ -306,17 +337,18 @@ const resolveApiData: DashboardDataSourceResolver = async (request) => {
 // - 组件确实不受某个全局筛选影响时，写 source.ignoredFilters 显式声明。
 // - 组件必须受某个筛选影响时，写 source.requiredFilters 防止字段漏配后静默失效。
 // - 固定 params 也必须参与过滤时，写 source.requiredParams 防止字段漏配后静默失效。
-// - apiData/httpData 根据 source.api 发起请求，支持 query、headers、body、responsePath 和 adapter。
+// - apiData/httpData 通过带拦截器的 dashboardHttp 发起 axios 请求，支持 query、headers、body、responsePath 和 adapter。
+// - 宿主系统可通过 window.__DASHBOARD_AUTH_HEADERS__ 注入统一鉴权头。
 //
 // 示例：
 // export const dataSourceRegistry = {
 //   ...builtinDataSourceRegistry,
 //   signedRevenueRows: async ({ filters }) => {
-//     const response = await fetch(`/api/revenue/rows?regionId=${filters.regionId}`, {
+//     const response = await dashboardHttp.get('/api/revenue/rows', {
+//       params: { regionId: filters.regionId },
 //       headers: { 'X-Signature': createSignature(filters) },
 //     });
-//     const payload = await response.json();
-//     return payload.data.rows;
+//     return response.data.data.rows;
 //   },
 // };
 export const builtinDataSourceRegistry: Record<string, DashboardDataSourceResolver | undefined> = {

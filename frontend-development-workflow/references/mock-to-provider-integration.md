@@ -88,12 +88,12 @@ Missing information:
 1. Replace direct mock imports with a provider service, composable, store action, SDK wrapper, parser, or data-source resolver.
 2. Add or preserve `loading`, `error`, `empty`, `partial`, `stale`, and `data` state where the UI needs them.
 3. Pass current global/page filters, route params, pagination, sorting, permissions, and selection state into the provider layer.
-4. Re-fetch, re-query, reload, or resubscribe when those state values change.
+4. Re-request, re-query, reload, or resubscribe when those state values change.
 5. Keep chart/table/card props shaped like the existing view model unless a narrow refactor is safer. Component-internal filters may operate locally on the already fetched component dataset when they are display/interactivity controls, not global or permission-scoped criteria.
 6. Enforce the frontend compute boundary.
    Prefer one provider/API call per data-bearing component or coherent component group. Do not replace a component's mock data with a broad page-level response that requires frontend code to split unrelated component data, aggregate, rank, group, paginate, filter large arrays, or calculate business formulas. If the documented API is not component-ready, record a provider/API gap and keep the affected component `partial` rather than baking heavy business logic into the frontend.
 7. Reject full-materialize-then-filter.
-   Active global filters, search terms, permission scope, pagination, sorting, drilldown scope, Top/Bottom, ranking, and aggregation requirements must be provider inputs whenever the provider can support them. Do not fetch or construct all candidate records and then filter/page/rank them in components, stores, or adapters except for documented component-internal filters over already fetched component data, tiny static enums, or bounded lookups.
+   Active global filters, search terms, permission scope, pagination, sorting, drilldown scope, Top/Bottom, ranking, and aggregation requirements must be provider inputs whenever the provider can support them. Do not request or construct all candidate records and then filter/page/rank them in components, stores, or adapters except for documented component-internal filters over already loaded component data, tiny static enums, or bounded lookups.
 
 ## Verification
 

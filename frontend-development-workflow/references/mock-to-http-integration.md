@@ -40,29 +40,37 @@ Verification case:
 
 ## Request Layer Pattern
 
-Prefer the existing request utility. If none exists, add the smallest project-native client.
+Prefer the existing axios instance and interceptors. If none exists, add the smallest project-native axios client.
 
 ```ts
+import axios from "axios";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
-export async function requestJson<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(init.headers ?? {}),
-    },
-  });
+export const http = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 15000,
+  headers: { "Content-Type": "application/json" },
+});
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
+http.interceptors.request.use((config) => {
+  // Attach project auth/request headers here, using the product's token source.
+  return config;
+});
 
-  return response.json() as Promise<T>;
+http.interceptors.response.use(
+  (response) => response,
+  (error) => Promise.reject(error),
+);
+
+export async function requestJson<T>(path: string, params?: Record<string, unknown>): Promise<T> {
+  const response = await http.get<T>(path, { params });
+
+  return response.data;
 }
 ```
 
-For axios projects, use the existing axios instance and interceptors instead of adding `fetch`.
+Data-visualization development standardizes on axios with interceptors. Do not add new `fetch` request paths; when legacy `fetch` exists, route new API integration through the axios client and plan cleanup unless the host project explicitly provides a non-axios request SDK. Request headers, token refresh, unauthorized handling, and response error normalization belong in axios interceptors rather than page components.
 
 ## Service Function Pattern
 
@@ -103,12 +111,12 @@ When a component previously imported a mock array:
 1. Replace the import with a service call, composable, or store action consistent with the project.
 2. Add reactive `loading`, `error`, and `data` state if absent.
 3. Pass current global/page filters, route params, pagination, and sorting into the service call.
-4. Re-fetch when those state values change.
+4. Re-request data when those state values change.
 5. Keep chart/table props shaped like the existing view model unless a narrow refactor is necessary. Component-internal filters may run locally on the already fetched component dataset when they are not global scope, permission scope, pagination, ranking, aggregation, or count logic.
 
 Do not make the frontend responsible for business calculation. The HTTP API for a report component should return component-ready KPI values, chart series, table rows, totals, ranks, pagination metadata, and derived formula fields whenever those values are business-defined. Frontend adapters may normalize envelopes, rename fields, handle nulls, format display units, and map enums, but should not aggregate broad rows, compute rates from unrelated source arrays, apply business filters, or derive several independent components from one page-level payload. If the API is not component-ready, log a contract gap and keep the scope partial.
 
-Do not implement full-materialize-then-filter HTTP paths for global/page scope. Service calls must send active global filters, search terms, date/org scope, pagination, sorting, drilldown params, and permission-relevant params in the request. Components, stores, and adapters must not fetch all rows and then filter/page/rank them locally except for documented component-internal filters over already fetched component data, tiny static enums, or bounded lookups.
+Do not implement full-materialize-then-filter HTTP paths for global/page scope. Service calls must send active global filters, search terms, date/org scope, pagination, sorting, drilldown params, and permission-relevant params in the request. Components, stores, and adapters must not request all rows and then filter/page/rank them locally except for documented component-internal filters over already loaded component data, tiny static enums, or bounded lookups.
 
 Vue example:
 

@@ -92,10 +92,14 @@ Loading guidance:
 
    Use `$permission-matrix-validation` to turn role/data-scope/field/action/export rules into model/API constraints. Use `$data-quality-validation` to convert critical model/source risks into quality rules that backend and testing can execute.
 
+   When prototype data contracts and real table/view metadata both exist, define how real source fields, SQL expressions, joins, enum dictionaries, formulas, and permission predicates produce the prototype/API response fields. Do not leave the backend to infer this mapping from mock field names.
+
 6. Build the API清单.
    Use `$api-inventory-design`. Define endpoint candidates with method, path, page/module/component, business purpose, request params, response model, source model dependencies, auth need, pagination/sorting/filter rules, global SQL/source filter execution, component-internal local filter scope, Redis/cache expectation, database connection-pool expectation, performance/capacity expectations, frontend compute policy, and priority.
 
    Default to one API per data-bearing component or interaction surface. Merge endpoints only when components share grain, global filters, permission, refresh cadence, source dependency, payload lifecycle, and a single understandable response model. Do not create a broad page-level API that forces frontend code to split data, aggregate rows, calculate formulas, rank, group, apply global filters, or derive chart/table series for multiple unrelated components. Component-internal filters may be local only after the component has fetched its globally filtered dataset.
+
+   For mock-derived backend handoff, require a SQLite fixture plan that covers parameter-driven response changes, not only default examples. Each filter, date range, dimension, status, permission scope, sort, pagination, Top/Bottom, and drilldown parameter in the API清单 must have expected matching/non-matching fixture behavior or a linked gap. For real database-backed handoff, state whether the confirmed table/view mapping is ready for direct SQL-backed publication.
 
 7. Build the 待补充数据模型清单.
    Use `$missing-model-management`. Every unresolved requirement/model/source/metric/enum/join/permission/sample/performance issue must have impact, owner question, current assumption, and whether it blocks downstream API documentation, implementation, integration, or validation.
@@ -123,6 +127,8 @@ Loading guidance:
 - Every collection/list/table API row must declare pagination, maximum page size, stable sort, and large-result/export handling before it can be `ready`.
 - Every database-backed API row must distinguish global SQL `WHERE` filters from component-internal local filters, and must state Redis/cache expectation and connection-pool expectation when performance is in scope.
 - If the API inventory will feed backend/API implementation and only mock/prototype data exists, the handoff must require a SQLite fixture database plan. Do not hand off JSON files as the backend simulation data source.
+- SQLite fixture plans may use small datasets, but must preserve real-interface behavior for parameter changes, totals, rankings, pagination, empty states, drilldowns, and permissions.
+- If real table/view metadata exists, API/model handoff must map real source fields into prototype/API response fields and state whether the real SQL-backed path can be published directly after validation.
 - Every response/view field must trace to a source field, formula, static enum, or pending item.
 - Frontend compute policy must be explicit. For implementation handoff, APIs should return component-ready data; frontend work is limited to display formatting, enum labels, null handling, interaction state, component-internal local filters over already fetched component data, and small bounded UI transforms unless an exception is documented.
 - Every assumption must use the same wording across API清单、数据模型文件、待补充数据模型清单, and downstream API docs.
@@ -168,6 +174,7 @@ Produce or update these artifacts:
 - API items are not invented without a page/module/business need.
 - API items are component-aligned and do not rely on frontend-side business aggregation, ranking, formula calculation, or broad global filtering.
 - API items include pagination/performance constraints, Redis/cache and connection-pool expectations when relevant, and mock-derived implementation handoff points to SQLite fixture planning rather than JSON data files.
+- SQLite fixture planning covers parameter-driven response variation; real table-backed planning identifies the SQL/source mapping needed for direct publication.
 - Data models include source metadata, not only frontend response fields.
 - Metric definitions include stable IDs,口径 version, grain, lineage, and cross-report conflict status when metrics are reused.
 - Permission rules are represented as API/model constraints, not only UI notes.

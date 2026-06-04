@@ -24,6 +24,7 @@ export interface DashboardApiSourceConfig {
   arrayFormat?: DashboardApiArrayFormat;
   // 默认 true，自动忽略空字符串、all、__all、undefined、null。
   omitEmptyQuery?: boolean;
+  // 兼容原配置名；axios 请求中 include/omit 会映射为 withCredentials true/false。
   credentials?: RequestCredentials;
 }
 

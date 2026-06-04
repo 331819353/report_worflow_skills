@@ -9,6 +9,7 @@ Name these items before writing rules:
 - Target endpoint, operation, export, event, or adapter.
 - Target consumer or contract.
 - Authoritative source: file, database table/view, upstream API, event stream, fixture, or generated data.
+- Source mode: SQLite simulation, real database table/view, upstream API, or other authoritative runtime source.
 - Source grain: raw row, transaction, day, month, user, org, order, project, product, region, or other unit.
 - Target grain: detail row, grouped row, KPI card, trend point, ranking item, tree node, export row, nested object, or summary.
 - Transformation owner: repository, service, adapter, serializer, DTO, view, SQL, or upstream dependency.
@@ -29,6 +30,27 @@ For each target field, record:
 - Error behavior:
 - Source trace:
 - Status: ready / partial / blocked
+
+For prototype-derived contracts, the target field may come from mock/component data, but the source field must come from SQLite fixture schema or confirmed real table/view metadata. Do not treat a prototype mock field name as a real source field unless the source mapping confirms it.
+
+## SQLite Fixture Quality Gate
+
+Use this gate when SQLite simulates an interface built from prototype data structures:
+
+- Every request parameter has matching and non-matching rows.
+- Time, organization, region, product, customer, status, permission, drilldown, sorting, pagination, Top/Bottom, and empty-state behavior are represented when they exist in the API contract.
+- Aggregates, totals, rankings, and derived metrics change when the relevant filter or dimension changes.
+- Fixture data may be small, but it cannot be single-state or single-total data that makes every parameter return the same business answer.
+- Unsupported parameter behavior is recorded as `partial` or `blocked`.
+
+## Real Table Publish Gate
+
+Use this gate when real table/view structure is available:
+
+- Each target response field maps to a real source field, SQL expression, view column, formula, enum dictionary, permission rule, or explicit constant.
+- Joins, grouping keys, period conversion, filters, sorting, pagination, and permission predicates can run in SQL/repository queries.
+- Field quality, nullability, enum coverage, date format, unit, precision, and duplicate behavior are confirmed or captured as gaps.
+- The real source path can replace SQLite as the default service source after contract, data quality, permission, and performance checks pass.
 
 ## Source Quality Gate
 
