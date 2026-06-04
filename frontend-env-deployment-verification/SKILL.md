@@ -25,7 +25,7 @@ This skill is not bound to 数据服务. It verifies the runtime configuration f
 2. Configure data-source runtime values.
    Use environment variables and project-native config for API URLs, SDK keys, GraphQL endpoints, static asset bases, fixture mode, or realtime hosts. Keep local, test, and production values separable.
 
-3. Configure local proxy when needed.
+3. Configure local proxy when direct provider access is blocked.
    Use Vite/webpack/dev-server proxy only when local browser CORS blocks direct provider access and the target host is known. Document proxy target and path rewrite behavior.
 
 4. Verify route and asset base path.

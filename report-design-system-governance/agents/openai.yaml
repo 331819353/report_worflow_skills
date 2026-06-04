@@ -1,0 +1,5 @@
+interface:
+  display_name: "报表设计系统治理"
+  short_description: "沉淀颜色字号间距图表状态交互和响应式规范"
+  default_prompt: "当用户提出报表设计系统、视觉规范、颜色/字号/间距/图表/表格/空态/异常态/交互/响应式规范，或多个报表风格不一致时，使用 $report-design-system-governance 输出可复用设计系统规范。"
+

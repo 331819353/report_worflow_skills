@@ -8,6 +8,10 @@ Before a workflow finalizes design, API/model contracts, frontend/backend wiring
 
 Before a workflow marks technical architecture, data service/backend, frontend integration, or testing acceptance as production-ready, run `production-closed-loop-readiness.md`. A stage can be document-complete or locally runnable while still only `partial` if source authority, environment, auth, deployment, observability, performance, testability, or defect retest closure is missing.
 
+When a request changes an existing delivered or in-progress artifact, route first through `$change-impact-analysis`. Do not patch one document or code surface while leaving affected metrics, API contracts, data models, frontend bindings, tests, permissions, screenshots, or delivery versions unknown.
+
+When artifacts span more than one iteration, maintain a delivery version chain through `$delivery-version-management`. Every prototype/API/model/backend/frontend/test/release artifact should state which upstream version it consumes and which downstream version validated it.
+
 ## Stage Routing Matrix
 
 All expected user inputs are Chinese. Prefer the Chinese trigger words below when deciding the top-level workflow.
@@ -19,6 +23,13 @@ All expected user inputs are Chinese. Prefer the Chinese trigger words below whe
 | `数据服务`、`后端开发`、`服务端`、`接口文档`、`API文档`、`接口实现`、`接口开发`、`后端接口`、`数据接口`、`接口契约`、`启动后端`、`后端服务`、`Flask服务`、`鉴权中间件`、`SSO后端接入`、`Access-Token校验` | `backend-development-workflow` | `API清单` + `数据模型文件` for docs; API docs/source/env for implementation | `API文档`, backend code when requested, runnable backend URL when possible | Requirement-to-API inventory planning |
 | `前端开发`、`前端联调`、`前端接入接口`、`替换mock`、`去掉mock`、`接真实接口`、`接口对接`、`报表页面联调`、`前端数据接入`、`请求封装`、`响应适配`、`筛选参数联动`、`组件联动`、`代理配置`、`CORS`、`SSO前端接入`、`页面运行`、`启动前端`、`修复编译错误`、`修复请求错误` | `frontend-development-workflow` | Frontend/prototype source plus API docs/provider/env/auth evidence | Provider-integrated frontend source, `前端功能说明`, runnable frontend URL when possible | Business report prototype design from scratch |
 | `测试`、`联调测试`、`集成测试`、`前后端联调验证`、`测试样例`、`测试用例`、`测试结果`、`验收标准`、`冒烟测试`、`URL可用性验证`、`接口连通性验证`、`SSO登录测试`、`鉴权测试`、`权限测试`、`前后端数据一致性`、`筛选联动测试`、`交互测试`、`导出测试`、`缺陷报告`、`问题复现`、`阻塞项` | `testing-integration-workflow` | `API文档`, `前端功能说明`, optional runtime URLs/accounts/data | `测试样例`, `测试结果`, defects/blockers | Building or repairing source code unless defect follow-up is requested |
+| `需求变更`、`变更影响`、`改指标`、`改口径`、`改筛选`、`改权限`、`改接口`、`字段调整`、`回归范围` | `change-impact-analysis` | Change request plus current artifacts/version index when available | Impact matrix, affected artifacts, regression scope, version update plan | New greenfield design without existing artifacts |
+| `指标字典`、`口径版本`、`指标血缘`、`指标权限`、`跨报表一致性`、`同名指标不同口径` | `metric-governance-lineage` | Metric list, data model/source evidence, consuming reports | Metric dictionary, definition versions, lineage, quality rules, consistency findings | One-off chart styling or layout |
+| `交付版本`、`版本链路`、`交付物索引`、`prototype-v1`、`api-v1`、`test-v1`、`发布包清单` | `delivery-version-management` | Artifact paths, versions, release/change IDs | Delivery index, version chain, stale/missing artifact list | Single artifact drafting with no version relationship |
+| `数据质量`、`完整性`、`唯一性`、`及时性`、`准确性`、`异常值`、`重复数据`、`数据延迟`、`口径漂移`、`跨源一致性` | `data-quality-validation` | Source/model/API/data samples, metric rules, SLA | Quality rule matrix, execution result, trust conclusion | Pure API reachability smoke test |
+| `权限矩阵`、`多角色验收`、`字段可见性`、`数据范围`、`操作权限`、`导出权限`、`行级权限`、`列级权限` | `permission-matrix-validation` | Role list, org scopes, pages/APIs/fields/actions | Permission matrix, multi-role test cases, evidence/blockers | Basic SSO login flow only |
+| `报表设计系统`、`视觉规范`、`颜色规范`、`字号`、`间距`、`图表规范`、`空态`、`异常态`、`响应式规范` | `report-design-system-governance` | Existing reports/screens/components/theme rules | Reusable design-system spec and adoption plan | One narrow page bug without reusable standard |
+| `上线后监控`、`接口监控`、`前端错误监控`、`性能监控`、`访问埋点`、`用户反馈`、`异常告警`、`数据刷新SLA` | `production-observability-feedback` | Runtime URLs/APIs/SLA/release version/monitoring platform | Monitoring matrix, instrumentation, alert and feedback loop | Pre-release mock-only testing |
 
 ## Stage Handoff Requirements
 
@@ -26,6 +37,7 @@ Every stage output must include:
 
 - `Stage`: workflow name.
 - `Artifact version/source`: file paths, source URLs, commit, or user-provided document names when known.
+- `Delivery version chain`: upstream/downstream version mapping when the artifact participates in an iteration or release.
 - `Entry consistency`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `ENTRY-*` IDs when applicable.
 - `Design reasonableness`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `DESIGN-*` IDs when applicable.
 - `Production closed loop`: `ready`, `partial`, `blocked`, or `not needed`, with missing production controls or open retest items when applicable.

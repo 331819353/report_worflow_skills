@@ -1,0 +1,5 @@
+interface:
+  display_name: "指标治理与血缘"
+  short_description: "管理指标字典口径版本血缘权限和跨报表一致性"
+  default_prompt: "当用户提出指标字典、口径版本、指标血缘、同名指标不同口径、跨报表数字不一致、指标权限分级或指标质量规则时，使用 $metric-governance-lineage 生成指标治理包和下游影响。"
+

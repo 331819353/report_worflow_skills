@@ -29,7 +29,7 @@ Typical inputs are source data, data models, database rows, SQLite fixture rows,
    Explicitly define parsing, timezone, calendar/fiscal rules, grain conversion, output format, and invalid-date behavior.
 
 5. Define aggregation and reconciliation.
-   Define source row, grouped row, summary, ranking, total/subtotal, nested, and export behavior as needed.
+   For each output shape present in the requirement, define source row, grouped row, summary, ranking, total/subtotal, nested, and export behavior.
 
    When the source is database-backed or SQLite-fixture-backed, global/page-level filtering, permission scope, sorting, pagination, grouping, aggregation, ranking, Top/Bottom, and counts belong in SQL `WHERE`/repository queries. Do not design transformations that require broad in-memory row loading for business filtering or aggregation. Reject full-materialize-then-filter transformations: never build a full target dataset, component view model, or export-sized row list before applying request scope. Component-internal filters may run after response shaping only when they operate on the already fetched component dataset and are not used for global scope, permission, pagination, ranking, aggregation, or counts.
 

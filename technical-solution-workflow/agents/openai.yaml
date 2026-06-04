@@ -1,4 +1,4 @@
-﻿interface:
+interface:
   display_name: "技术方案 Workflow"
-  short_description: "将需求、数据源、指标和原型数据代码转成API清单与数据模型"
-  default_prompt: "当用户提出技术方案、技术架构、接口规划、接口清单、API清单、数据建模、数据模型、数据源映射、字段映射、指标口径映射、原型数据代码分析、mock数据转接口、需求转API或需求转数据模型时，使用 $technical-solution-workflow 产出API清单、数据模型文件和待补充数据模型清单。"
+  short_description: "将需求数据指标原型转成API模型指标治理权限质量和版本交付"
+  default_prompt: "当用户提出技术方案、技术架构、接口规划、API清单、数据建模、数据模型、数据源映射、字段映射、指标口径、指标字典、指标血缘、权限矩阵、数据质量规则、原型数据代码分析、mock数据转接口、需求转API、需求转数据模型或交付版本对齐时，使用 $technical-solution-workflow 产出API清单、数据模型文件、指标治理包、权限/质量规则和待补充数据模型清单。"

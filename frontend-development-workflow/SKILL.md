@@ -34,6 +34,7 @@ Use the frontend specialty skills as guardrails inside this workflow:
 - Use `$haier-iam-frontend-script-sso` when Haier account-center IAM/SSO is required. That child skill chooses the correct frontend SSO path, including script tag, package-based SDK, iHaier/Feishu container, micro-frontend/iframe/webview, or retrofit.
 - Use `$frontend-runtime-qa-validation` for browser/runtime QA after provider integration, environment changes, visual fixes, or before final handoff.
 - Use `$frontend-function-description-documentation` to produce 前端功能说明 after runtime verification.
+- Use `$production-observability-feedback` when production-bound frontend delivery needs runtime error monitoring, performance metrics, analytics events, user feedback, alerting, or data refresh SLA visibility.
 
 ## Child Skill Call Checklist
 

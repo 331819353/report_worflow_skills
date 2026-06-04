@@ -1,0 +1,55 @@
+---
+name: production-observability-feedback
+description: "用于报表上线后的监控、运维和运营反馈闭环。用户提到上线后监控、接口监控、前端错误监控、性能监控、页面埋点、用户行为反馈、异常告警、数据刷新SLA、可用性、接口耗时、失败率、前端白屏、用户反馈闭环、生产验收时触发。"
+---
+
+# Production Observability Feedback
+
+## Overview
+
+Use this skill to design post-release monitoring and feedback loops for report systems. It extends delivery beyond integration testing into production quality and usage effectiveness.
+
+## Inputs
+
+- Frontend/backend URLs, API list, data refresh rules, deployment topology, logs/metrics platform, analytics tool, alert channel, owner roster, SLA, release version, known risks, or production incidents.
+- Optional: existing monitoring config, SLO targets, user roles, feedback channels, and support process.
+
+Read `references/01-observability-feedback-template.md` when producing a reusable monitoring plan.
+
+## Workflow
+
+1. Define monitored surfaces.
+   Include page availability, API availability/latency/errors, frontend runtime errors, white screen, asset loading, data refresh SLA, data quality rules, export jobs, SSO/auth failures, and user behavior events.
+
+2. Define metrics and thresholds.
+   Specify indicator, threshold, severity, frequency, owner, alert channel, evidence, and escalation path.
+
+3. Define instrumentation.
+   List frontend events, API logs, trace IDs, request IDs, custom metrics, dashboard panels, synthetic probes, and data refresh jobs.
+
+4. Define alert response.
+   For every alert, include triage owner, diagnosis evidence, rollback/fallback, user communication, and retest/closure criteria.
+
+5. Define feedback loop.
+   Capture user behavior, low-usage pages, failed searches/filters, export frequency, feedback tickets, and requested improvements. Route product changes to `$change-impact-analysis`.
+
+6. Link to delivery versions.
+   Every production result must state release version, frontend/backend/API/data versions, and whether the issue belongs to current or older release.
+
+## Required Output
+
+- Monitoring scope: pages, APIs, jobs, data refresh, SSO, exports, roles.
+- Metric/alert matrix: indicator, threshold, severity, owner, channel, response.
+- Instrumentation plan: logs, metrics, traces, frontend events, synthetic checks.
+- Data refresh SLA and data-quality monitoring plan.
+- User behavior and feedback loop: event names, dashboard, review cadence, owner actions.
+- Incident/defect closure process: evidence, likely owner, rollback, retest, version linkage.
+- Production readiness conclusion: ready / partial / blocked.
+
+## Quality Checklist
+
+- API success, page rendering, data freshness, and business data quality are monitored separately.
+- Alerts have thresholds, owners, and response playbooks.
+- Frontend events avoid collecting sensitive data.
+- User feedback routes to change-impact analysis before implementation.
+- Production conclusions link to exact delivery/release versions.

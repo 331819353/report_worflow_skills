@@ -1,6 +1,6 @@
 ---
 name: report-requirement-structure-extraction
-description: "用于把模糊想法、业务口述、截图、会议纪要、指标清单或零散资料提前转成可开发需求。用户提到需求分析、需求梳理、需求拆解、需求澄清、需求转化、PRD整理、模糊需求、业务问题转开发需求、原型/技术方案/后端/API/前端/测试需求、数据源/权限/验收标准不清时触发，输出范围、对象、指标、接口、数据模型、风险、缺口和下一步路由。"
+description: "用于把模糊想法、业务口述、截图、会议纪要、指标清单、变更诉求或零散资料提前转成可开发需求。用户提到需求分析、需求梳理、需求拆解、需求澄清、需求变更、变更影响、需求转化、PRD整理、业务问题转开发需求、原型/技术方案/后端/API/前端/测试需求、指标口径、数据源/权限/验收标准不清时触发，输出范围、对象、指标、接口、数据模型、风险、缺口、变更影响和下一步路由。"
 ---
 
 # Requirement Transformation Analysis
@@ -32,6 +32,8 @@ Load references only when their scenario is relevant. Do not bulk-load every ref
 - Read `references/testing-integration-playbook.md` for test design, frontend-backend integration, smoke tests, SSO tests, data consistency, and defect evidence.
 - Read `references/data-governance-permission-playbook.md` whenever data source credibility,口径, lineage, reconciliation, masking, audit, or permission design matters.
 - Read `references/object-model-and-acceptance.md` when object fields, acceptance criteria, or implementation task lists need more detail than the core output skeleton.
+- Route to `$change-impact-analysis` immediately when the input is a change to an existing metric,口径, filter, permission, API, page, field, model, test case, or delivery document.
+- Route to `$metric-governance-lineage`, `$permission-matrix-validation`, `$data-quality-validation`, `$delivery-version-management`, or `$production-observability-feedback` when those concerns are the primary deliverable rather than just supporting context.
 
 ## Input Adaptation
 
@@ -52,6 +54,8 @@ Use this sequence for every requirement transformation:
 
 1. Identify the primary deliverable.
    State whether the user likely expects a requirement brief, prototype spec, technical solution, API list, data model, backend plan, frontend integration plan, test plan, or executable implementation.
+
+   If the request modifies existing delivered or in-progress artifacts, classify it as change management first and use `$change-impact-analysis` before redesigning or implementing the affected scope.
 
 2. Judge the scenario.
    Pick one primary scenario and optional secondary scenarios. If scenario choice is not obvious, read `references/scenario-routing.md`.
@@ -79,6 +83,8 @@ Use this sequence for every requirement transformation:
 
 10. Route to downstream skills.
     Recommend the next skill/workflow only after the requirement package is clear enough for that skill to act.
+
+    Include governance routes when relevant: `$metric-governance-lineage` for指标口径, `$permission-matrix-validation` for multi-role/data-scope rules, `$data-quality-validation` for real data trust, `$delivery-version-management` for artifact versions, and `$production-observability-feedback` for上线后闭环.
 
 ## Output Skeleton
 

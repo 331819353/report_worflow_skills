@@ -1,0 +1,4 @@
+interface:
+  display_name: "交付版本管理"
+  short_description: "维护原型API模型前后端测试报告的版本链路和交付物索引"
+  default_prompt: "当用户提出交付物版本管理、原型/API/数据模型/后端/前端/测试报告对应关系、prototype-v1 到 test-v1、发布包清单或哪个文档对应哪个版本时，使用 $delivery-version-management 生成版本链路和交付物索引。"

@@ -41,6 +41,7 @@ Load only the references needed by the active workflow mode:
 - Report-type skills: `$status-overview-report-design`, `$analysis-diagnostic-report-design`, `$detail-query-report-design`, `$performance-evaluation-report-design`, `$review-recap-report-design`, `$anomaly-monitoring-report-design`, `$operational-execution-report-design`, and `$reconciliation-traceability-report-design`.
 - Implementation bridge: `$report-info-component-mapping`.
 - Presentation layer: `$report-visual-layout-design` and `$report-component-style-design`.
+- Design-system layer: `$report-design-system-governance` when reusable visual/product standards are requested or multiple reports must stay consistent.
 
 ## Child Skill Call Checklist
 
@@ -51,6 +52,7 @@ Load only the references needed by the active workflow mode:
 | `$report-info-component-mapping` | Any output becomes specification, mock data, config, source code, or frontend handoff. | Pure high-level conceptual advice with no prototype/spec/code deliverable. |
 | `$report-visual-layout-design` | Layout, page shell, template, navigation, grid, or URL/runnable output is in scope. | Pure data/model discussion. |
 | `$report-component-style-design` | Components, charts, tables, cards, drawers, or visual QA are in scope. | Pure business requirement extraction. |
+| `$report-design-system-governance` | The request asks for reusable design standards, multi-report visual consistency, tokens, chart rules, state rules, or responsive governance. | One narrow prototype/page repair with no reusable standard. |
 
 Domain words such as `产业`, `区域`, `国家`, `品牌`, or `渠道` are themes, dimensions, filters, objects, or drilldown levels. Do not route by domain keyword alone.
 
@@ -110,6 +112,7 @@ Before writing or changing prototype code, pass these gates:
 8. Apply the hard data/filter/component linkage gate before visual polish or implementation.
 9. Apply the implementation preflight gates for shell path, style source, brand mode, visual mode, brand assets, sample fidelity, sample module classification, conclusion placement, global UI tokens, Chinese metric display, custom design path, custom layout pattern, title ownership, component size/distribution, complex diagrams including title-node collision checks, and filter controls.
 10. Use `report-visual-layout-design` and `report-component-style-design` for page shell, layout, component fit, and visual QA.
+    Use `$report-design-system-governance` before page-level styling when the task should create or enforce a reusable report design system.
 11. For implementation, choose the appropriate bundled template or project-native structure, then implement with TypeScript + Vue 3 + Element Plus + ECharts as the base stack. Add AntV S2 only when the binding matrix contains pivot tables, cross tables, wide metric matrices, frozen-header analytical tables, dense financial grids, or equivalent S2-class table needs.
 12. Run the self-check repair loop, local startup/free-port handling, deployment, and URL return rules from `references/02-self-check-startup-deployment.md` when runnable output is requested.
    For runnable frontend/prototype output, the visual part of the self-check must first capture headless browser screenshots, run deterministic baseline image diff when a baseline exists, then use multimodal visual anomaly recognition when available. Feed `VDIFF-*` and `VIS-*` findings into the repair loop.

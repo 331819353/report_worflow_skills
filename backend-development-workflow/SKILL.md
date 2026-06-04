@@ -56,6 +56,8 @@ Deliver:
 - Use `$backend-data-transformation-design` when source models differ from API/consumer response models.
 - Use `$backend-api-contract-validation` before and after implementation, or when validating API docs against frontend/prototype contracts.
 - Use `$backend-missing-info-management` when source fields, formulas, enums, filters, auth/config, performance limits, runtime source details, or contract decisions are missing or assumed.
+- Use `$data-quality-validation` when backend/API implementation depends on real data trust, refresh SLA, completeness, uniqueness, accuracy, anomalies, drift, or cross-source reconciliation.
+- Use `$production-observability-feedback` when backend/API output is production-bound and needs monitoring for availability, latency, error rate, logs, refresh SLA, alerting, or feedback closure.
 - Use `$haier-iama-backend-sso` when backend endpoints must validate Haier IAMA `Application-Key` and `Access-Token` values. That child skill chooses the correct backend SSO path, including Java SDK, direct API, local session/JWT bridge, middleware retrofit, or multi-client/tenant-aware flow.
 
 ## Child Skill Call Checklist
@@ -70,8 +72,8 @@ Deliver:
 
 ## API Documentation Mode Flow
 
-0. Run entry input consistency when needed.
-   If API清单, 数据模型文件, API文档, frontend/prototype contracts, source samples, or implemented routes are all present, read `../workflow-shared-references/entry-input-consistency-gate.md`. Do not write or repair API docs/code while unresolved `P0` or `P1` `ENTRY-*` conflicts affect endpoint scope, response models, source authority, formulas, permissions, auth, or runtime source behavior.
+0. Run entry input consistency when multiple entry artifacts exist.
+   If two or more of API清单, 数据模型文件, API文档, frontend/prototype contracts, source samples, or implemented routes are present, read `../workflow-shared-references/entry-input-consistency-gate.md`. Do not write or repair API docs/code while unresolved `P0` or `P1` `ENTRY-*` conflicts affect endpoint scope, response models, source authority, formulas, permissions, auth, or runtime source behavior.
 
 1. Read API清单.
    Confirm endpoint id, page/module, method/path, purpose, trigger, request params, response model, source model dependency, auth need, priority, and status.

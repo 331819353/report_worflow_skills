@@ -1,6 +1,6 @@
 ---
 name: technical-solution-workflow
-description: "运行技术方案阶段，用于在编码前把需求、数据源、指标、原型或mock数据转成开发交付物。用户提到技术方案、技术架构、接口规划、API清单、数据建模、数据模型、数据源映射、字段映射、指标口径、原型数据代码分析、mock数据转接口、需求转API、需求转数据模型、待补充数据模型清单、开发前先梳理时触发，输出API清单、数据模型和缺口清单。"
+description: "运行技术方案阶段，用于在编码前把需求、数据源、指标、原型或mock数据转成开发交付物，并强化指标治理、权限矩阵、数据质量规则和交付版本链路。用户提到技术方案、技术架构、接口规划、API清单、数据建模、数据模型、数据源映射、字段映射、指标口径、指标字典、指标血缘、权限矩阵、数据质量规则、原型数据代码分析、mock数据转接口、需求转API、需求转数据模型、待补充数据模型清单、交付版本对齐、开发前先梳理时触发，输出API清单、数据模型、指标治理、权限/质量规则和缺口清单。"
 ---
 
 # Technical Solution Workflow
@@ -17,6 +17,7 @@ This workflow does not implement backend APIs, frontend pages, SQL jobs, or data
 - 数据文档: source systems, tables/views/files/APIs, metadata, owners, refresh cadence, permissions, sample fields, and source notes.
 - 指标清单: metric names, formulas, dimensions, grain, units, precision, baselines, thresholds, and ownership.
 - 原型数据代码: data files, mock modules, data-source resolvers, TypeScript interfaces, component data props, filter mappings, and response examples produced by prototype design.
+- Optional governance inputs: existing metric dictionary, permission matrix, data quality rules, delivery index, change request IDs, and previous version artifacts.
 
 If an input is absent, continue only when the missing part can be safely inferred. Otherwise record it through `$missing-model-management`.
 
@@ -24,8 +25,12 @@ If an input is absent, continue only when the missing part can be safely inferre
 
 - Use `$report-requirement-structure-extraction` when inputs are rough business ideas, meeting notes, screenshots, partial PRDs, or otherwise not structured enough to safely create API/model artifacts.
 - Use `$data-model-source-mapping` to create the 数据模型文件 with source metadata, logical models, response/view models, relationships, metrics, and transformation notes.
+- Use `$metric-governance-lineage` when metric definitions,口径 versions, lineage, permission level, quality rules, or cross-report consistency matter.
+- Use `$permission-matrix-validation` when role, organization scope, field visibility, operation permission, export permission, or row/column-level rules affect API/model design.
+- Use `$data-quality-validation` when source/model/API handoff must include executable quality rules for completeness, uniqueness, timeliness, accuracy, outliers, drift, or reconciliation.
 - Use `$api-inventory-design` to create the API清单 from requirements, model coverage, prototype data contracts, filters, and interactions.
 - Use `$missing-model-management` whenever source tables, fields, formulas, enum values, grain, ownership, refresh cadence, join keys, samples, or permission rules are missing.
+- Use `$delivery-version-management` when technical-solution artifacts must align to prototype/API/backend/frontend/test/release versions.
 
 ## Child Skill Call Checklist
 
@@ -33,8 +38,12 @@ If an input is absent, continue only when the missing part can be safely inferre
 | --- | --- | --- |
 | `$report-requirement-structure-extraction` | Inputs are rough, partial, screenshot/meeting-note based, or do not yet define users, pages, metrics, dimensions, permissions, and missing facts clearly enough for API/model work. | Inputs are already structured into requirement, data, metric, and prototype contracts. |
 | `$data-model-source-mapping` | A complete technical-solution output is requested, or any API/model artifact will be consumed by backend development. | Only doing a narrow routing/gap review that does not produce or update a data model. |
+| `$metric-governance-lineage` | Metrics need dictionary entries,口径 versions, lineage, permission level, quality rules, or cross-report consistency. | No metrics or derived indicators are in scope. |
+| `$permission-matrix-validation` | Role/data-scope/field/action/export permission affects pages, APIs, models, or tests. | Permissions are explicitly out of scope or single-role public data is confirmed. |
+| `$data-quality-validation` | Real data trust, freshness, duplicates, missing values, abnormal values, drift, or reconciliation rules affect handoff. | Only static mock/prototype data is in scope and quality is not a delivery requirement. |
 | `$api-inventory-design` | Any API list, endpoint inventory, request/response planning, or backend handoff is required. | Only assessing source/model gaps without designing API candidates. |
 | `$missing-model-management` | Any source, field, formula, enum, join, grain, permission, sample, freshness, ownership, or performance fact is missing or assumed. | All required model and source facts are confirmed and traceable. |
+| `$delivery-version-management` | Multi-iteration artifacts or downstream handoff versions must be aligned. | One-off draft with no versioned handoff requirement. |
 
 ## Reference Map
 
@@ -72,11 +81,15 @@ Loading guidance:
 3. Extract metric and dimension contracts.
    Normalize each metric's formula, grain, dimension scope, period logic, unit, precision, baseline, threshold, and source dependency. Mark ambiguous metric口径 as a pending item.
 
+   Use `$metric-governance-lineage` when indicators will be reused across reports or when同名指标、口径版本、血缘、权限分级、质量规则, or cross-report consistency matter.
+
 4. Read prototype data code.
    Inspect data files, TypeScript interfaces, mock rows, data-source registries, component props, filter fields, and interaction payloads. Convert them into frontend data contracts: component, required fields, row grain, filters, expected response shape, empty state, and sample values.
 
 5. Build the 数据模型文件.
    Use `$data-model-source-mapping`. Define source models, logical/business models, response/view models, joins, keys, dimensions, metrics, source-to-response mapping, quality checks, and ownership.
+
+   Use `$permission-matrix-validation` to turn role/data-scope/field/action/export rules into model/API constraints. Use `$data-quality-validation` to convert critical model/source risks into quality rules that backend and testing can execute.
 
 6. Build the API清单.
    Use `$api-inventory-design`. Define endpoint candidates with method, path, page/module/component, business purpose, request params, response model, source model dependencies, auth need, pagination/sorting/filter rules, global SQL/source filter execution, component-internal local filter scope, Redis/cache expectation, database connection-pool expectation, performance/capacity expectations, frontend compute policy, and priority.
@@ -88,6 +101,8 @@ Loading guidance:
 
 8. Run the consistency gate.
    Verify every API item maps to at least one frontend need and one response model. Verify every response model traces to logical/source models or appears in the pending list. Verify every metric in the indicator list appears in an API, model, or pending item.
+
+   Use `$delivery-version-management` when the output updates an existing iteration or must be consumed by backend/frontend/testing. Record the artifact version chain and any stale upstream/downstream artifact.
 
 9. Run the design reasonableness gate.
    Check whether the API清单 and 数据模型文件 reasonably support the report question, component binding, metric口径, filters, interactions, permissions, exports, and tests. Record unreasonable API/model structures as `DESIGN-*` findings, not only as traceability gaps.
@@ -119,7 +134,11 @@ Produce or update these artifacts:
 
 - `API清单`: endpoint inventory table, grouped by page/module/domain, including pagination/performance/cache/SLA and linked gap IDs.
 - `数据模型文件`: complete model definitions with data-source metadata, field tables, relationships, metrics, source-to-response mapping, security rules, examples, and quality rules. If the full artifact is written to a file, include the file path and a concise summary.
+- `指标治理包` when metrics are in scope: metric dictionary,口径 versions, lineage, permission classification, and cross-report consistency findings.
+- `权限矩阵` when permissions are in scope: role x page/component/field/action/data-scope/export/API rules and unresolved permission blockers.
+- `数据质量规则` when real data trust is in scope: completeness, uniqueness, timeliness, accuracy, anomaly, drift, and reconciliation rules.
 - `待补充数据模型清单`: missing requirement/model/source/field/formula/enum/join/sample/permission/performance/security items with status and owner questions.
+- `交付版本索引` when versioned handoff is in scope: prototype/model/API/backend/frontend/test chain and stale/missing artifacts.
 - Entry consistency result with `ENTRY-*` conflicts, confirmation decisions, and affected API/model artifacts when mixed input materials were checked.
 - Design reasonableness result with `DESIGN-*` findings, repairs, accepted limitations, and affected API/model artifacts.
 - Production closed-loop readiness: architecture overview, nonfunctional controls, environment/deployment/observability/performance/testability notes, readiness status, and blockers.
@@ -148,6 +167,10 @@ Produce or update these artifacts:
 - API items are component-aligned and do not rely on frontend-side business aggregation, ranking, formula calculation, or broad global filtering.
 - API items include pagination/performance constraints, Redis/cache and connection-pool expectations when relevant, and mock-derived implementation handoff points to SQLite fixture planning rather than JSON data files.
 - Data models include source metadata, not only frontend response fields.
+- Metric definitions include stable IDs,口径 version, grain, lineage, and cross-report conflict status when metrics are reused.
+- Permission rules are represented as API/model constraints, not only UI notes.
+- Data quality rules are measurable and have owner/threshold/frequency when real data is in scope.
+- Versioned handoffs identify which prototype/API/model/test artifacts belong together.
 - Ambiguous formulas, joins, enums, refresh rules, and permission constraints are captured as pending items.
 - The output is ready for `$api-documentation-design` or clearly marked as blocked.
 - `API清单`, `数据模型文件`, and `待补充数据模型清单` use the shared readiness values `ready`, `partial`, or `blocked`, and state whether backend development can consume them directly.

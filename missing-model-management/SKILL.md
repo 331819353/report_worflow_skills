@@ -59,7 +59,7 @@ Loading guidance:
 - Every unresolved requirement/source/model/formula/enum/join/permission/security/performance issue must be visible.
 - Every temporary assumption must use the same wording across API清单、数据模型文件, and downstream API docs.
 - No endpoint or response field may depend on an undocumented model gap.
-- Do not merge unrelated gaps into one vague TODO row.
+- Do not merge unrelated gaps into one vague placeholder row.
 - Resolved items must include where the decision came from and which artifacts were updated.
 - If a gap can change business results, permissions, or source traceability, severity cannot be `Low`.
 - Do not leave required gap-list cells blank. Use `none` when intentionally not applicable, or `TBD` only when paired with a concrete confirmation question.

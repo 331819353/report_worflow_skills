@@ -98,7 +98,7 @@ SSO, data consistency, and filters must each have separate logic tests. They are
     Click chart marks, KPI cards, table rows, tabs, drilldowns, modal/drawer actions, export/download buttons, refresh controls, and reset controls. Verify interactions use the current auth state and active filters, pass the correct parameters, and render updated data without stale loading or mixed old/new values.
 
 17. Validate layout capacity during testing.
-    While comparing data, check whether all returned metrics fit the page and component containers. Flag any compressed, clipped, truncated, overlapped, or ellipsis-hidden business data. Tables must adapt columns to content and use horizontal scrolling when needed instead of hiding required values.
+    While comparing data, check whether all returned metrics fit the page and component containers. Flag any compressed, clipped, truncated, overlapped, or ellipsis-hidden business data. Tables must adapt columns to content and use horizontal scrolling when required columns exceed the available width instead of hiding required values.
 
 18. Produce evidence-backed test output.
     Consolidate pass/fail/blocker conclusions, reproduction steps, expected/actual results, screenshots or network evidence, likely owner side, and missing information.
