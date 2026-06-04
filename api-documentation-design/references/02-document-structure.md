@@ -4,12 +4,18 @@ Use this reference when creating the API document skeleton.
 
 ## Recommended Structure
 
+0. Human-readable summary
+   - Who will consume this API document.
+   - Main modules/endpoints covered.
+   - Current readiness: ready, partial, or blocked.
+   - Critical blockers, assumptions, and next owner actions.
 1. Document metadata
    - Title, version, date, owner, status, environment, related artifacts, and change notes.
 2. Common conventions
    - Base URL, versioning, auth, headers, response envelope, error envelope, pagination, sorting, filtering, date/time, enums, file upload/download, idempotency, and rate/performance limits.
 3. Endpoint overview table
    - API id, module/domain, name, method, path, purpose, auth, response model, priority, status, and pending items.
+   - Add one plain-language sentence before the table that explains the endpoint group and frontend/backend consumer.
 4. Endpoint details
    - Full detail for each endpoint. Use `03-endpoint-detail-rules.md`.
 5. Model and dependency trace

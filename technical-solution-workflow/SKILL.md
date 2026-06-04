@@ -52,6 +52,7 @@ Read only the reference files needed for the current task:
 | Need | Read |
 | --- | --- |
 | Cross-workflow stage routing, readiness values, and handoff requirements | `../workflow-shared-references/report-delivery-pipeline-contract.md` |
+| Human-first but AI-extractable artifact structure | `../workflow-shared-references/human-ai-readable-artifact-standard.md` |
 | Entry-material conflict detection across requirements, data docs, metric lists, prototype data code, API plans, and source evidence | `../workflow-shared-references/entry-input-consistency-gate.md` |
 | Design reasonableness checks for API/model feasibility, page/data fit, metric support, filters, interactions, permissions, and testability | `../workflow-shared-references/design-reasonableness-gate.md` |
 | Production closed-loop readiness for architecture, data service handoff, environment/auth/observability/performance/testability | `../workflow-shared-references/production-closed-loop-readiness.md` |
@@ -146,15 +147,16 @@ Produce or update these artifacts:
 
 ## Default Output Structure
 
-1. 输入清单.
-2. 页面/模块与数据契约.
-3. 指标与维度契约.
-4. API清单.
-5. 数据模型文件完整内容或文件路径 + 摘要.
-6. 待补充数据模型清单.
-7. 入口一致性审计、设计合理性审计与一致性校验结果.
-8. 生产闭环准备度: architecture/data-service/testing readiness, production blockers, accepted partial scope.
-9. 下一阶段交接说明: what the data-service stage can consume directly and what remains blocked.
+1. 一页摘要: business scope, key technical decisions, readiness, blockers, and next owner actions.
+2. 输入清单.
+3. 页面/模块与数据契约.
+4. 指标与维度契约.
+5. API清单.
+6. 数据模型文件完整内容或文件路径 + 摘要.
+7. 待补充数据模型清单.
+8. 入口一致性审计、设计合理性审计与一致性校验结果.
+9. 生产闭环准备度: architecture/data-service/testing readiness, production blockers, accepted partial scope.
+10. 下一阶段交接说明: what the data-service stage can consume directly and what remains blocked.
 
 ## Quick Quality Gate
 

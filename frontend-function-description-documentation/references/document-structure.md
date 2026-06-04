@@ -5,6 +5,15 @@ Use this structure for 前端功能说明. Omit sections only when they truly do
 ```markdown
 # 前端功能说明
 
+## 一页摘要
+
+- 本次交付范围:
+- 面向用户/测试对象:
+- 关键功能:
+- 数据来源/接口模式:
+- 当前 readiness: ready / partial / blocked
+- 主要限制或阻塞:
+
 ## Document Metadata
 
 - Project:
@@ -21,6 +30,8 @@ Use this structure for 前端功能说明. Omit sections only when they truly do
 - Out of scope:
 
 ## Feature Inventory
+
+先用 1-2 句话说明本次页面/模块的整体使用路径，再给出明细表。
 
 | Module | User purpose | Main components | Data provider | Key interactions | States | Verification |
 |---|---|---|---|---|---|---|

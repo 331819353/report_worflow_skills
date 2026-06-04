@@ -13,6 +13,7 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 
 ## Reference Map
 
+- Read `../workflow-shared-references/human-ai-readable-artifact-standard.md` so the document is human-first while preserving extractable contracts.
 - Read `references/document-structure.md` to choose the output structure.
 - Read `references/feature-inventory-fields.md` for page/module and provider-binding fields.
 - Read `references/handoff-quality-checklist.md` before finalizing the document.

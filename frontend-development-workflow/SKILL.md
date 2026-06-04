@@ -26,6 +26,7 @@ Prototype source handoff contract:
 ## Reference Map
 
 - Read `../workflow-shared-references/report-delivery-pipeline-contract.md` for cross-workflow routing, readiness values, and handoff requirements.
+- Read `../workflow-shared-references/human-ai-readable-artifact-standard.md` before producing 前端功能说明 or stage handoff notes.
 - Read `../workflow-shared-references/entry-input-consistency-gate.md` when frontend/prototype source, requirements, HTML/source samples, API docs, provider samples, env/auth notes, or runtime traces may conflict.
 - Read `../workflow-shared-references/design-reasonableness-gate.md` when UI/data/provider/interaction/layout decisions may be internally consistent but unreasonable for the business question or handoff.
 - Read `../workflow-shared-references/visual-multimodal-browser-check.md` before visual QA pass/fail judgment for any runnable frontend/prototype; use deterministic screenshot/baseline diff for repeatable regression and multimodal review for explanatory findings.

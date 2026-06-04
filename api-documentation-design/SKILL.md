@@ -40,6 +40,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 ## References
 
+- Read [../workflow-shared-references/human-ai-readable-artifact-standard.md](../workflow-shared-references/human-ai-readable-artifact-standard.md) so API documents stay human-readable while preserving extractable endpoint contracts.
 - Read [references/01-inputs-and-traceability.md](references/01-inputs-and-traceability.md) when identifying source artifacts, authority, dependency trace, or unresolved model/API items.
 - Read [references/standalone-quality-gates.md#entry-input-consistency-gate](references/standalone-quality-gates.md#entry-input-consistency-gate) when API docs are built from conflicting requirements, API inventories, model docs, frontend contracts, route code, OpenAPI snippets, or runtime samples.
 - Read [references/standalone-quality-gates.md#design-reasonableness-gate](references/standalone-quality-gates.md#design-reasonableness-gate) when API design choices affect business fit, data/API feasibility, frontend usability, or testability.

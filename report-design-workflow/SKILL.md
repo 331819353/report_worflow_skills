@@ -29,6 +29,7 @@ Load only the references needed by the active workflow mode:
 | Need | Read |
 | --- | --- |
 | Cross-workflow stage routing, readiness values, and handoff requirements | `../workflow-shared-references/report-delivery-pipeline-contract.md` |
+| Human-first but AI-extractable artifact structure | `../workflow-shared-references/human-ai-readable-artifact-standard.md` |
 | Entry-material conflict detection across requirements, HTML/source, screenshots, API docs, mocks, and code | `../workflow-shared-references/entry-input-consistency-gate.md` |
 | Cross-stage design reasonableness checks for business fit, component necessity, data/API feasibility, interaction closure, layout, and testability | `../workflow-shared-references/design-reasonableness-gate.md` |
 | Headless browser screenshots, deterministic baseline diff, multimodal explanatory review, and visual finding feedback loop | `../workflow-shared-references/visual-multimodal-browser-check.md` |

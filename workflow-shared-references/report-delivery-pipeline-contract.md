@@ -2,6 +2,8 @@
 
 Use this shared contract from every top-level workflow. It keeps the report delivery pipeline consistent across prototype design, technical solution, backend/data service, frontend integration, and testing.
 
+Every stage artifact must follow `human-ai-readable-artifact-standard.md`: produce one dual-readable artifact by default, with human-first summary and narrative plus structured contract tables/appendices for downstream AI extraction. Create separate human and machine outputs only when explicitly requested or when a formal/external/machine-schema deliverable would otherwise make one document hard to review.
+
 Before a top-level workflow builds, repairs, documents, or hands off artifacts from mixed entry materials, run `entry-input-consistency-gate.md`. User requirements, HTML/source samples, screenshots, API docs, data models, mock data, frontend/backend code, env/auth notes, and runtime traces may contradict each other; unresolved `P0` and `P1` entry conflicts keep the affected scope `partial` or `blocked` and require user confirmation only before the affected repair or implementation proceeds.
 
 Before a workflow finalizes design, API/model contracts, frontend/backend wiring, visual repair, test cases, or handoff readiness, run `design-reasonableness-gate.md` when design decisions are in scope. A design can be input-consistent but still unreasonable if it fails the business question, report type, component necessity, data/API feasibility, interaction closure, layout, or testability checks.
@@ -35,6 +37,7 @@ All expected user inputs are Chinese. Prefer the Chinese trigger words below whe
 
 Every stage output must include:
 
+- `Artifact readability`: confirm the artifact is human-first and AI-extractable, or state why separate human/machine outputs were created.
 - `Stage`: workflow name.
 - `Artifact version/source`: file paths, source URLs, commit, or user-provided document names when known.
 - `Delivery version chain`: upstream/downstream version mapping when the artifact participates in an iteration or release.
