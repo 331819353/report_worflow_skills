@@ -713,6 +713,7 @@ watch(
   theme,
   (value) => {
     document.documentElement.dataset.theme = value;
+    document.documentElement.classList.toggle('dark', value === 'dark');
   },
   { immediate: true },
 );

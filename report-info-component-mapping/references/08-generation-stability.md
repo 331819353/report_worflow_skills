@@ -25,6 +25,8 @@ Choose one mode before generating.
 
 When mode is unclear, use `spec-contract`.
 
+For `prototype-config` targeting bundled dashboard templates, the physical mock-data target is `src/data/dashboard.dataset.json`: filter option datasets go under `filterData`, business/component datasets go under `businessData`, and widgets/filters bind through `widget.data` or `filters[].source`. Do not create generated `*.ts` fixture modules for mock rows, arrays, or payloads.
+
 ## Controlled Vocabularies
 
 Use these values unless the target project explicitly defines a different vocabulary.
@@ -103,6 +105,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 
 - Always include a binding matrix for `spec-contract` and `prototype-config` modes.
 - Use the same field name for the same concept across datasets, filters, actions, and matrix rows.
+- For bundled template prototypes, each mock dataset ID must map to a `dashboard.dataset.json` key or to an explicit API/provider resolver. A generated TS data file is not an acceptable mock dataset target.
 - Use a controlled `filterExecutionStage` for primary filters and implementation-handoff components. Global/page filters should prefer `sql-where`, `source-query`, `provider-query`, or `repository-query`; component-internal filters may use `component-local`; `blocked` is required when the current design depends on page/API-level full-materialize-then-filter behavior.
 - Do not alternate between `org`, `organization`, `orgId`, and `department` for the same scope. Pick one and map aliases explicitly.
 - Do not mix Chinese labels into IDs or query params.

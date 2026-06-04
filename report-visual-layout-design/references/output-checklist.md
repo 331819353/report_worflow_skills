@@ -52,12 +52,13 @@ Before finalizing, verify:
 - Every chosen block span has been checked against `1920 * 1080` or `1280 * 768` practical viewport constraints.
 - `1920 * 1080` and `1280 * 768` are not treated as total report height limits.
 - If one grid block contains multiple subcomponents, it has one clear block-level business title and the internal subcomponents remain visually subordinate.
-- Peer component groups use balanced `M * N` distribution where `M` is columns and `N` is rows; use 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`, and prefer `M > N` when possible.
-- Blocks with 2/4/6/8 internal subcomponents obey the component count limits and are split, tabbed, or moved to drawers when too dense.
+- Peer component groups inside one large block use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, they use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M` is columns, `N` is internal rows, `M >= N`, and `M - N` is minimal among valid factor pairs.
+- Blocks with repeated internal subcomponents obey the `actualTotal > 4` threshold, expand the parent block with `heightExpansionRows = ceil(N * 2 / 3)` when more height is needed, and are split, tabbed, paginated, or moved to drawers when the valid factor pair is too dense.
 - Components are not narrow, tiny, crowded, or forced into cramped spans. Increase span/height, split content, add scroll/zoom/fullscreen, or reduce visible labels before accepting the layout.
 - Scrollable report pages keep usable row/block heights and support vertical scrolling when content exceeds the first viewport.
 - Navigation is present only when it helps orientation and remains low-intrusion.
 - Filters are easy to invoke and active conditions are visible.
+- Template-based pages preserve the selected template's native navigation/filter mechanism; config changes patch `nav`/`page`, `filters`, toolbar labels, and theme fields instead of replacing the shell.
 - Filter changes have visible, layout-safe effects across cards, charts, tables, drawers, and export/fullscreen states.
 - Toolbar actions are grouped by frequency and importance.
 - Tables, charts, cards, and drawers each have a clear job.
@@ -72,6 +73,7 @@ Before finalizing, verify:
 - Complex diagram layer/stage titles reserve a separate top/side title band with at least 16px spacing from the nearest node/card/connector. A screenshot like a title sitting on the top edge of a node card fails visual QA.
 - Flow, Sankey, graph, tree, decomposition, and lineage visuals keep layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges at least 16px apart and reserve rail, title-band, node, label, and edge-bend space.
 - Main filter controls are Element Plus or project design-system select/dropdown/date/cascader controls, or a styled native select that declares baseline-only acceptance.
+- Dark template pages load Element Plus dark variables and set the `.dark` class or equivalent `--el-*` overrides; logo variant, `screen.grid.innerBackgroundColor`, cards, form/filter controls, and popovers do not render as white islands.
 - Advanced visual acceptance for option menus uses a custom popover select, not the operating system's native dropdown menu.
 - Screenshot evidence covers the logo/header area, filter controls, complex diagrams when present, and sample-restoration first viewport when applicable.
 - Empty, loading, error, delayed-data, and no-permission states are handled.
@@ -82,6 +84,7 @@ Before finalizing, verify:
 - Do not choose a custom shell merely because the user did not specify page style.
 - Do not mark a custom page complete with only a logo placeholder.
 - Do not redesign a selected template's shell unless the task explicitly asks for template-level changes.
+- Do not overwrite a template's original navigation/filter shell with newly generated standalone controls.
 - Do not choose a template without explaining why it fits the report scope and usage scenario.
 - Do not force title, navigation, and filters into three separate areas when a unified control area is cleaner.
 - Do not omit the Haier logo from a `brandMode: haierBranded` custom page's title/control area or a template's logo slot.
@@ -96,7 +99,7 @@ Before finalizing, verify:
 - Do not use naked native `<select>` controls as the final visual surface for primary filters.
 - Do not use masonry, staggered, irregular, diagonal, or non-rectangular component layouts.
 - Do not duplicate a block/page title inside the component body.
-- Do not make components too narrow, too small, or crowded when a balanced `M * N` distribution can carry the content.
+- Do not make components too narrow, too small, or crowded when `actualTotal > 4` and an internal exact `M * N` distribution plus parent-block expansion can carry the content.
 - Do not let section/stage/layer/lane titles collide with or sit on top of component cards, node cards, connector lines, or child labels.
 - Do not let business-question text, labels, legends, chart marks, cards, or diagram nodes overlap, stack, or visually merge.
 - Do not create a marketing-style hero for operational reports.

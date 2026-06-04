@@ -127,8 +127,8 @@ If a preferred template asset is missing, cannot be copied, fails dependency ins
 ### Component Size And Distribution Gate
 
 - Do not finalize a layout with components that are too narrow, too small, or crowded. Enlarge the block, reduce component count, split sections, add vertical scroll, use tabs/drawers/fullscreen, or change component type before shrinking text or overlapping content.
-- For peer component groups, prefer a balanced `M * N` matrix where `M` is columns and `N` is rows. Use `M > N` when possible, and allow square layouts when the count naturally fits.
-- Recommended peer layouts: 4 items -> `2 * 2`; 6 items -> `3 * 2`; 8 items -> `4 * 2`; 9 items -> `3 * 3`. Avoid long single-row or single-column strips unless the content is explicitly a timeline, KPI strip, or navigation.
+- For peer component groups inside one large block, use the internal exact `M * N` matrix algorithm only when `actualTotal > 4`. For `actualTotal <= 4`, use a small-group layout based on content and block shape instead of this factor algorithm. When the algorithm applies, `M` is columns and `N` is internal rows. Calculate from `layoutTotal`: normally `layoutTotal = actualTotal`; when `actualTotal` is prime, use `layoutTotal = actualTotal + 1`; then choose `layoutTotal = M * N`, `M >= N`, and minimal `M - N` among valid factor pairs. This decides the subcomponent layout inside the large block; it does not replace the outer `8 * N` page-grid span.
+- After choosing the internal matrix, run parent-block expansion: if the current large block body cannot provide readable height, increase the outer block's row span with `heightExpansionRows = ceil(N * 2 / 3)` before shrinking labels, charts, or tables. Do not add arbitrary empty placeholders to force a prettier matrix; the only allowed spare cell is the single prime-balancing cell created when the algorithm applies to a prime count, and it must not create fake metrics or mock data. If the factor pair creates an unreadable long strip, split the group by business meaning, tabs, pagination, drawer, or another block before finalizing. Avoid long single-row or single-column strips unless the content is explicitly a timeline, KPI strip, or navigation and passes pixel-fit checks.
 - Every repeated card/chart/table tile must have enough body width and height for its values, labels, legends, axes, pagination, and states at the target viewport.
 
 ### Complex Diagram Spacing Gate
@@ -202,7 +202,7 @@ Before finalizing a layout, verify:
 - Line, area, bar, and other category-axis charts explicitly sort the x-axis and derive labels, points, values, tooltips, and click payloads from the same sorted row order.
 - Template choice, block IDs, component order, and `columns * rows` spans stay stable across revisions unless the business question, content volume, or display scenario changes.
 - Block height follows component capacity and fixed row-height rules; the page grows, scrolls, or paginates instead of compressing rows.
-- Repeated cards, charts, tables, and peer groups pass balanced-distribution and pixel-fit checks before final acceptance.
+- Repeated cards, charts, tables, and peer groups pass the small-group threshold, internal exact `M * N` distribution when `actualTotal > 4`, parent-block expansion, and pixel-fit checks before final acceptance.
 - Titles, filters, toolbar actions, legends, labels, charts, tables, and empty states do not overlap or clip.
 - Business-question text, conclusion text, titles, labels, legends, chart marks, diagrams, tables, and cards do not overlap, touch, or visually stack on top of each other.
 - Section headers, level labels, lane titles, stage titles, and group captions reserve their own title band and do not overlap, touch, or visually attach to cards, node boxes, connector lines, badges, or child labels. Keep at least 16px safe spacing; if this cannot pass, enlarge the block, move the title outside the diagram, or use fullscreen/zoom/pan.
@@ -219,7 +219,7 @@ Before finalizing a layout, verify:
 - Do not place charts, tables, legends, or empty states in the block header area.
 - Do not draw a second visible title inside a component body when the page or block layout already provides that title.
 - Do not place a section/stage/layer/lane title in the same collision band as a node card or component card.
-- Do not make components narrow, tiny, crowded, or arranged as an awkward long strip when a balanced `M * N` layout can carry the same content.
+- Do not make components narrow, tiny, crowded, or arranged as an awkward long strip when `actualTotal > 4` and an internal exact `M * N` layout plus parent-block expansion can carry the same content.
 - Do not allow business-question text, chart marks, labels, legends, cards, or diagram nodes to overlap, stack, or visually merge.
 - Do not use decorative panels, gradients, images, or colors that compete with the report conclusion.
 - Do not invent non-rectangular spans or compress dense components until labels and values become unreadable.

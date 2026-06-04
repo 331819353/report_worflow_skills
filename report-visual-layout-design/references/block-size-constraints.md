@@ -494,7 +494,24 @@ Split into separate grid blocks, tabs, drawer, fullscreen, or drilldown when:
 - there are more than four analytical subcomponents visible at once;
 - internal scrolling becomes the main way to understand the block.
 
-KPI/status peers may use balanced internal layouts such as `2 * 2`, `3 * 2`, or `4 * 2`, but every tile still needs pixel validation.
+KPI/status peers should use the exact internal layout rule only when `actualTotal > 4`; for `actualTotal <= 4`, use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs. Every tile still needs pixel validation; split the group when the factor pair is unreadable.
+
+For a composite large block, the internal matrix feeds the parent height decision. If the internal peer layout has `N` rows, calculate the outer block height expansion with:
+
+```text
+heightExpansionRows = ceil(N * 2 / 3)
+```
+
+Then calculate the outer block body height needed as:
+
+```text
+requiredOuterBodyHeight =
+  heightExpansionRows * childMinOuterHeight
+  + max(0, heightExpansionRows - 1) * innerGap
+  + internalControlsOrDividerReserve
+```
+
+If the current outer body height is smaller, expand the large block's row span until it passes. In practical terms, a block that could carry one row of child tiles uses roughly `N * 2 / 3` as the height expansion baseline when the internal matrix has `N` rows; convert fractional results to whole page-grid rows by rounding up. Do not reduce row height, padding, title height, or child chart/table body height to make the current outer block pass.
 
 ## 9. Layout Rules
 
@@ -505,7 +522,7 @@ KPI/status peers may use balanced internal layouts such as `2 * 2`, `3 * 2`, or 
 - Do not skip the default span distribution before size checking.
 - Do not render any component whose computed outer size or content viewport is smaller than its final required size.
 - Do not duplicate block titles inside chart/table/KPI bodies.
-- Do not make peer components too narrow, tiny, crowded, or unreadable; use balanced `M * N` layouts, split sections, or move details to drawer/fullscreen.
+- Do not make peer components too narrow, tiny, crowded, or unreadable; when `actualTotal > 4`, use internal exact `M * N` layouts, expand the parent block, split sections, or move details to drawer/fullscreen.
 - Do not use a generic `chart`, `table`, `map`, or `other` label when a precise component type exists.
 - Do not use more than one internal scroll area in one block.
 - If a title, legend, axis label, table column, toolbar, or status tag does not fit, increase the span or simplify the component.

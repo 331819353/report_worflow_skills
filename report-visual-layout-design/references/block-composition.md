@@ -56,14 +56,19 @@ Avoid:
 
 ## Peer Distribution
 
-When one block or section contains repeated peer cards/charts/tiles, use balanced `M * N` distribution where `M` is columns and `N` is rows:
+When one block or section contains repeated peer cards/charts/tiles, use internal exact `M * N` distribution where `M` is columns and `N` is internal rows:
 
-- 4 peers: `2 * 2`.
-- 6 peers: `3 * 2`.
-- 8 peers: `4 * 2`.
-- 9 peers: `3 * 3`.
-
-Prefer columns greater than rows when possible. Do not make a peer group into a narrow column or an awkward long strip unless the pattern is explicitly a timeline, KPI strip, or navigation.
+- Let `actualTotal` be the actual number of peers shown together.
+- Apply this factor algorithm only when `actualTotal > 4`.
+- For `actualTotal <= 4`, use a small-group layout based on content, hierarchy, and the outer block shape; do not create a prime-balancing cell.
+- Normally `layoutTotal = actualTotal`; when `actualTotal` is prime, use `layoutTotal = actualTotal + 1` before calculating factor pairs.
+- `layoutTotal = M * N`.
+- `M >= N`.
+- Choose the valid factor pair with the smallest `M - N`.
+- Use this matrix for the subcomponents inside the large block; do not reinterpret it as the top-level page-grid span.
+- After choosing the matrix, check whether the outer block needs more page-grid rows with `heightExpansionRows = ceil(N * 2 / 3)` without crowding.
+- Do not add arbitrary empty placeholders to force a nicer shape. The only allowed spare cell is the single prime-balancing cell created when the algorithm applies to a prime count, and it must not create fake metrics or mock data.
+- If the factor pair creates a narrow column or awkward long strip, split the peers by business meaning, tabs, pagination, drawer, or another block unless the pattern is explicitly a timeline, KPI strip, or navigation and passes pixel-fit checks.
 
 ## Internal Layout Patterns
 
@@ -159,7 +164,7 @@ In bundled templates, one grid block maps to one configured widget. For a multi-
 - The block has one clear business title.
 - Internal labels are subordinate to the block title.
 - No duplicate visible component title appears inside the body when the block already has a title.
-- Peer subcomponents follow a balanced `M * N` distribution when they are shown simultaneously.
+- Peer subcomponents follow internal exact `M * N` distribution only when `actualTotal > 4`; prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs; the outer block passes the expansion check with `heightExpansionRows = ceil(N * 2 / 3)`.
 - No nested card shadows or boxed mini-card titles.
 - Every internal component has a stable container.
 - No chart/table overlaps the title area.

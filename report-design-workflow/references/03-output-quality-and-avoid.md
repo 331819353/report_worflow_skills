@@ -119,7 +119,7 @@ Before final delivery, verify:
 - Layout follows the 8*N rectangular grid.
 - Haier logo usage follows light/dark rules.
 - Page, section, and block titles are layout-owned. Component bodies do not duplicate titles through chart/table/KPI internal title options.
-- Peer component groups use balanced `M * N` distribution where possible: 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, 9 -> `3 * 3`; prefer columns greater than rows unless a square layout naturally fits.
+- Peer component groups inside one large block use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, use a small-group layout based on content and block shape. When the algorithm applies, normally `layoutTotal = actualTotal`; when `actualTotal` is prime, use `layoutTotal = actualTotal + 1`; then choose `layoutTotal = M * N`, columns `M >= N`, and the minimal `M - N` among valid factor pairs. This is an internal subcomponent matrix; it does not replace the top-level large block span. After choosing it, check whether the outer block needs vertical expansion with `heightExpansionRows = ceil(N * 2 / 3)`. Do not add arbitrary empty placeholders; the only allowed spare cell is the single prime-balancing cell created when the algorithm applies to a prime count, and it must not create fake metrics or mock data. Split the group if the exact shape is unreadable.
 - Components are not narrow, tiny, crowded, or unreadable; if content does not fit, enlarge, split, scroll, zoom, or move to fullscreen/drawer.
 - Components do not overlap, clip, truncate critical text, or use low-contrast labels. Section headers, group captions, layer labels, stage titles, lane titles, and column captions reserve an independent title band and stay at least 16px away from cards, nodes, connectors, chart marks, legends, badges, and child labels.
 - Business-question text, conclusion text, titles, labels, legends, chart marks, table cells, controls, cards, diagrams, nodes, and connectors do not overlap, stack, or visually merge.
@@ -147,7 +147,7 @@ Before final delivery, verify:
 - Do not design filters or jumps without permission and state behavior.
 - Do not finish an implementation without checking for duplicate component titles, cramped components, overlap, clipping, broken layout, and title-node collision.
 - Do not finish with component titles repeated in both the layout header and the component body.
-- Do not finish with peer components arranged too narrowly, too small, crowded, or in an awkward strip when a balanced `M * N` layout is possible.
+- Do not finish with peer components arranged too narrowly, too small, crowded, or in an awkward strip when `actualTotal > 4` and an internal exact `M * N` layout plus parent-block expansion can carry the content.
 - Do not finish when business-question text, chart marks, labels, legends, cards, tables, or diagram nodes overlap, stack, or visually merge.
 - Do not finish a flow, Sankey, graph, tree, decomposition, lineage, DuPont, or process-chain visual when a layer/stage/lane title such as `L1`/`L2`/`L3` sits on, touches, or visually attaches to a node card, card border, child title, badge, or connector path.
 - Do not finish a Haier/branded implementation without visible logo or placeholder screenshot evidence.

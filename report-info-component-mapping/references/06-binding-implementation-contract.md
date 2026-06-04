@@ -111,6 +111,7 @@ Minimum columns:
 
 For bundled templates:
 
+- Offline/mock filter options and business rows must live in `src/data/dashboard.dataset.json` and be loaded through `src/data/dashboard.loader.ts` plus the data-source registry. Do not create generated TS files for fixture rows, arrays, or payloads.
 - `widget.data.params.key` must point to a real dataset in `dashboardData`.
 - Use `filters[].source` for data-derived filter options and `filters[].options` for static enums.
 - Use `widget.data.filterFields` when filter ID differs from dataset field.
@@ -141,7 +142,7 @@ For custom Vue or non-template pages:
 - Use AntV S2 through `@antv/s2` and `@antv/s2-vue` for analytical tables: pivot tables, cross tables, wide metric matrices, frozen-header tables, drillable comparison grids, and dense financial/operation tables. Treat those packages as on-demand dependencies; do not add or install them when the mapped components only use charts, KPI cards, simple Element Plus tables, lists, or text summaries.
 - Use regular Vue/HTML tables only when Element Plus and S2 are both unavailable or the existing project stack explicitly forbids them.
 - Keep chart/table widgets typed, data-driven, and isolated from shell actions.
-- Keep mock/static data in data files or data-source resolvers, not embedded in ECharts or S2 setup code.
+- Keep mock/static data in JSON data files or data-source resolvers, not embedded in ECharts/S2 setup code or generated TS fixture modules. In bundled templates, use `src/data/dashboard.dataset.json`.
 - Visible Chinese UI uses `%` for rate, completion, variance-rate, YoY, MoM, and change labels. Avoid `pt`, `p.p.`, and `percentage point` labels unless explicitly requested.
 - Change-rate and variance-rate indicators use positive-red-up and negative-green-down semantics: positive value = red text plus upward SVG/icon; negative value = green text plus downward SVG/icon; zero = neutral.
 

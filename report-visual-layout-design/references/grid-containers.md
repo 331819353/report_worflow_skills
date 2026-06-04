@@ -43,15 +43,22 @@ Use these common spans before detailed size checks:
 - Table or task list: usually 8 columns and at least 4 rows.
 - Secondary cards: 2 or 4 columns.
 
-Use `block-size-constraints.md` before finalizing dense blocks, composite widgets, tables, or any block containing 2/4/6/8 visible subcomponents.
+Use `block-size-constraints.md` before finalizing dense blocks, composite widgets, tables, or any block containing repeated visible subcomponents.
 
-For peer component groups, prefer a balanced `M * N` distribution where `M` means columns and `N` means rows:
+For peer component groups inside one large block, use an internal exact `M * N` distribution where `M` means columns and `N` means internal rows:
 
-- 4 peers: `2 * 2`.
-- 6 peers: `3 * 2`.
-- 8 peers: `4 * 2`.
-- 9 peers: `3 * 3`.
-- Prefer `M > N` when possible; square layouts are acceptable when the count naturally fits.
+1. Let `total` be the actual number of peer cards/charts/tiles shown together.
+2. If `total <= 4`, do not apply this factor algorithm; use a small-group layout based on content and the outer block shape.
+3. If `total > 4` and `total` is prime, set `layoutTotal = total + 1`; otherwise set `layoutTotal = total`.
+4. Find integer factor pairs where `layoutTotal = M * N`.
+5. Keep only pairs where `M >= N`.
+6. Choose the pair with the smallest `M - N`.
+7. Use this pair as the subcomponent matrix inside the large block, then check whether the outer large block needs more page-grid rows with `heightExpansionRows = ceil(N * 2 / 3)`.
+8. Do not add arbitrary empty placeholders to force a prettier matrix. The only allowed spare cell is the single prime-balancing cell created by `layoutTotal = total + 1`; it must not create fake metrics or mock data. If the pair creates an unreadable strip, split the group by business meaning, tabs, pagination, drawer, or another block.
+
+Example: when an outer large block such as `8 * 2` contains 8 peer subcomponents, the internal peer matrix is `4 * 2`; then verify whether the `8 * 2` outer block has enough body height under `heightExpansionRows = ceil(2 * 2 / 3) = 2`. If not, expand the outer block row span instead of compressing the 8 child components.
+
+Examples: 1-4 peers -> small-group layout, not this algorithm; 5 peers -> calculate as 6 -> `3 * 2`; 6 peers -> `3 * 2`; 7 peers -> calculate as 8 -> `4 * 2`; 8 peers -> `4 * 2`; 9 peers -> `3 * 3`; 10 peers -> `5 * 2`; 11 peers -> calculate as 12 -> `4 * 3`; 12 peers -> `4 * 3`.
 - Avoid one long strip or one narrow column unless the component is explicitly a timeline, KPI strip, or navigation.
 
 ## 4. Default Span Distribution

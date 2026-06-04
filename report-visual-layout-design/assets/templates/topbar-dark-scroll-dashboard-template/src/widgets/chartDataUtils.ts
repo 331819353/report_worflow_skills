@@ -1,3 +1,4 @@
+// Chart row transformation helpers only. Mock/offline rows belong in src/data/dashboard.dataset.json.
 export type CategorySortDirection = 'asc' | 'desc';
 
 type RowField<T> = Extract<keyof T, string>;

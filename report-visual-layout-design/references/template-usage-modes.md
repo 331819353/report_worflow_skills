@@ -43,13 +43,15 @@ Use when:
 Required changes:
 
 - Copy `assets/templates/<template-id>/` into the project.
-- Edit `src/config/dashboard.config.ts` for title, theme, navigation, `layoutRows`, `widgets`, global filters, and toolbar labels.
-- Put mock/static data in `src/data/dashboard.dataset.json`.
+- Edit `src/config/dashboard.config.ts` for title, theme, navigation, `layoutRows`, `widgets`, global filters, and toolbar labels, but preserve the copied template's native nav/page shape, filter trigger/panel/popover pattern, toolbar placement, theme fields, and logo slot.
+- Put mock/static data in `src/data/dashboard.dataset.json`. Do not create generated `src/widgets/*Data.ts`, `src/data/*.ts`, or other TS fixture modules for rows, arrays, or payloads.
 - Register business widgets in `src/widgets/types.ts` and `src/widgets/registry.ts`.
 - Implement visual components under `src/widgets/components/`.
 - Bind widgets through `widget.data.id` and either `widget.data.params.key` for JSON mode or `widget.data.api` for standard API mode.
 - Bind component-title filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run on the component's already loaded data.
 - Configure `actions` only as event forwarding or integration hooks; component-level popup, navigation, drilldown, and detail behavior stays inside the component.
+- Add, remove, or relabel navigation/filter items through the template's existing `nav`/`page` and `filters` arrays. Do not create a new standalone sidebar, top navigation, filter bar, or filter drawer unless the task is explicitly a template-level redesign.
+- When `screen.defaultTheme` is `dark`, the logo variant, grid/card surfaces, Element Plus controls, and component scoped backgrounds must follow the same dark token system as the shell; do not leave default white cards, `ElSelect`/`ElInput`/date-picker surfaces, or popovers in a dark page.
 
 Data options:
 

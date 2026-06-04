@@ -93,7 +93,7 @@
  *    多月/趋势/月环比/同比页面必须提供完整周期数据，不要只给默认单月数据。
  *    折线/面积/柱状等类目轴图表必须先排序整行数据，再从同一个 sortedRows 同步生成 xAxis labels 和 series.data。
  *    不要只对 labels/xAxisData/categories 排序后继续用原始 data.map(...) 生成数值，否则点位和值会错位。
- *    可复用 src/widgets/chartData.ts 的 sortRowsForCategoryAxis 或 buildSingleSeriesCategoryData。
+ *    可复用 src/widgets/chartDataUtils.ts 的 sortRowsForCategoryAxis 或 buildSingleSeriesCategoryData；这里是工具函数，不存放 mock 行数据。
  *    说明、摘要、总结类文本组件使用 visualType: 'text-summary'，合法占位为 4x1/5x1/6x1/7x1/8x1 或 3x2。
  *
  * 9. 筛选作用域通过 filterScope 控制：
