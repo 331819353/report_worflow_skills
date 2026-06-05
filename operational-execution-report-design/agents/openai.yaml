@@ -1,4 +1,0 @@
-interface:
-  display_name: "运营执行报表设计"
-  short_description: "沉淀运营执行类报表的子类型、任务来源、执行动作、责任协同、状态流转、证据验收与效果验证"
-  default_prompt: "Use $operational-execution-report-design to select an operational-execution subtype and design task sources, row grain, actions, ownership, priority, status flow, collaboration, evidence, closure criteria, and effect verification."

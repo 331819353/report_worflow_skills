@@ -4,16 +4,16 @@ Use this reference when the mapping must route to report-type skills, fit layout
 
 ## Report Type Routing
 
-Map information patterns to these skills:
+Map information patterns to `report-type-design` with one of these primary type labels:
 
-- `status-overview-report-design`: current status, health judgment, target progress, variance, trend, structure, risk entry.
-- `analysis-diagnostic-report-design`: phenomenon, driver, cause, attribution, decomposition, evidence, recommendation.
-- `detail-query-report-design`: records, fields, filters, sorting, export, row detail, source object.
-- `performance-evaluation-report-design`: target completion, score, rank, tier, benchmark, fairness, improvement gap.
-- `review-recap-report-design`: period story, conclusion, major change, reason, risk, next action, export to PPT/PDF.
-- `anomaly-monitoring-report-design`: rule breach, severity, affected object, owner, SLA, handling status.
-- `operational-execution-report-design`: task, owner, deadline, progress, blocker, evidence, acceptance, closure.
-- `reconciliation-traceability-report-design`: source,口径, version, matching result, difference, lineage, correction, audit log.
+- `status-overview`: current status, health judgment, target progress, variance, trend, structure, risk entry.
+- `analysis-diagnostic`: phenomenon, driver, cause, attribution, decomposition, evidence, recommendation.
+- `detail-query`: records, fields, filters, sorting, export, row detail, source object.
+- `performance-evaluation`: target completion, score, rank, tier, benchmark, fairness, improvement gap.
+- `review-recap`: period story, conclusion, major change, reason, risk, next action, export to PPT/PDF.
+- `anomaly-monitoring`: rule breach, severity, affected object, owner, SLA, handling status.
+- `operational-execution`: task, owner, deadline, progress, blocker, evidence, acceptance, closure.
+- `reconciliation-traceability`: source,口径, version, matching result, difference, lineage, correction, audit log.
 
 When one page mixes multiple intents, choose one primary type for page logic and use secondary types only for local blocks.
 Do not create a separate domain overlay. Domain words such as 产业, 区域, 国家, 品牌, 渠道, 客户, or 产品 are handled as theme, object, dimension, filter, drilldown hierarchy, or narrative context inside the selected report type.

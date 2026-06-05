@@ -1,6 +1,6 @@
 ---
 name: api-inventory-design
-description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、页面需要哪些接口、mock转接口、需求转API、接口优先级、接口分组、方法路径、参数响应、筛选分页排序、鉴权、未定接口问题时触发，为API文档、后端实现、前端联调和测试提供入口。"
+description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、页面需要哪些接口、mock转接口、需求转API、方法路径、请求参数、响应模型、筛选分页排序、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
 ---
 
 # API Inventory Design
@@ -29,8 +29,8 @@ Read only the reference files needed for the current task:
 | Decide endpoint boundaries, common endpoint patterns, and when to split or merge APIs | `references/02-endpoint-patterns-and-splitting.md` |
 | Define inventory-level request params, response model references, auth, pagination, sorting, filters, exports, and actions | `references/03-request-response-auth-rules.md` |
 | Run API traceability, status, no-invention, and gap-linking checks | `references/04-api-stability-gate.md` |
-| Resolve authority conflicts when requirements, prototype data code, existing APIs, source metadata, or testing evidence disagree | `references/standalone-quality-gates.md#entry-input-consistency-gate` |
-| Audit whether endpoint boundaries and API inventory design reasonably support the business question, UI contract, data model, permissions, and tests | `references/standalone-quality-gates.md#design-reasonableness-gate` |
+| Resolve authority conflicts when requirements, prototype data code, existing APIs, source metadata, or testing evidence disagree | `$quality-gate-validation` |
+| Audit whether endpoint boundaries and API inventory design reasonably support the business question, UI contract, data model, permissions, and tests | `$quality-gate-validation` |
 
 Loading guidance:
 

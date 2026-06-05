@@ -1,0 +1,4 @@
+interface:
+  display_name: "质量门禁校验"
+  short_description: "执行入口一致性、设计合理性、生产就绪、视觉运行和交付可读性等跨阶段质量门禁。"
+  default_prompt: "Use $quality-gate-validation to run entry consistency, design reasonableness, production readiness, visual/runtime, and artifact quality gates."

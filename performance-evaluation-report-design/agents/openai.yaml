@@ -1,4 +1,0 @@
-interface:
-  display_name: "绩效评估报表设计"
-  short_description: "沉淀绩效评估型报表的子类型、评价对象、评分规则、排名等级、证据下钻、复核申诉与规则治理"
-  default_prompt: "Use $performance-evaluation-report-design to select a performance-evaluation subtype and design evaluation objects, indicators, scoring rules, weights, grades, rankings, evidence drilldowns, reviews, and governance."

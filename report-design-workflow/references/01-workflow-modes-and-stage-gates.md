@@ -57,7 +57,7 @@ Deliver:
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-visual-layout-design/assets/templates/`: `single-page-dashboard-template` for compact focused reports and for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its content height may exceed 1080px and scroll vertically. Use `left-nav-analytics-dashboard-template` for explicit standard enterprise analytics reports, multi-chapter reports, and workbenches with sidebar navigation. Use `sci-fi-dashboard-template` for fixed 1920x1080 sci-fi cockpit screens. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts` as the base stack; add AntV S2 dependencies only when a generated component actually needs S2.
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-prototype-template-management/assets/templates/`: `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` for compact focused reports, `left-nav-analytics-workbench-template` for multi-chapter analytics workbenches, and `frozen-title-sci-fi-cockpit-template` for fixed 1920x1080 cockpit screens. Topbar and left-nav templates may exceed 1080px and scroll vertically. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts` as the base stack; add AntV S2 dependencies only when a generated component actually needs S2.
 
 ### 4. Review And Repair Mode
 
@@ -132,7 +132,7 @@ Visual mode:
 
 Brand assets:
 
-- For Haier/branded pages, search for logo assets in the existing project, selected template `public` path, and `report-visual-layout-design/assets`.
+- For Haier/branded pages, search for logo assets in the existing project, selected template `public` path, and `report-prototype-template-management/assets/brand`.
 - Configure the logo in the header, unified title area, sidebar brand area, or template logo slot before implementing components.
 - If no usable asset exists, render an explicit logo placeholder in that slot and record the missing asset. Do not silently omit the logo.
 - For `pageShellPath: custom` with `brandMode: haierBranded`, placeholder state is a blocker. Do not pass visual QA until `haier-logo.svg`, `haier-logo-original.svg`, or `haier-logo-white.svg` is actually configured.
@@ -216,27 +216,27 @@ Skip only when the user already provides a clean structured brief.
 
 Choose one primary report-type skill:
 
-- `status-overview-report-design`: current status, health, target, variance, risk entry.
-- `analysis-diagnostic-report-design`: why a metric changed, driver, cause, attribution.
-- `detail-query-report-design`: records, fields, filters, sorting, export, row detail.
-- `performance-evaluation-report-design`: target completion, scoring, ranking, fairness, improvement.
-- `review-recap-report-design`: period story, conclusion, evidence, risk, action, meeting output.
-- `anomaly-monitoring-report-design`: anomaly rules, severity, owner, SLA, handling.
-- `operational-execution-report-design`: task, owner, progress, evidence, acceptance, closure.
-- `reconciliation-traceability-report-design`: data correctness, differences, source, lineage, version, audit.
+- `report-type-design`: current status, health, target, variance, risk entry.
+- `report-type-design`: why a metric changed, driver, cause, attribution.
+- `report-type-design`: records, fields, filters, sorting, export, row detail.
+- `report-type-design`: target completion, scoring, ranking, fairness, improvement.
+- `report-type-design`: period story, conclusion, evidence, risk, action, meeting output.
+- `report-type-design`: anomaly rules, severity, owner, SLA, handling.
+- `report-type-design`: task, owner, progress, evidence, acceptance, closure.
+- `report-type-design`: data correctness, differences, source, lineage, version, audit.
 
 Use secondary report-type skills only for local blocks or follow-up flows. Do not invent extra report types for maps, funnels, tables, or charts.
 
 Do not route by domain keyword alone. If the request says `产业`, `区域`, `国家`, `品牌`, `渠道`, or similar domain words, first identify the user's decision question:
 
-- Use `status-overview-report-design` when the question is "整体是否健康、是否达标、风险在哪里".
-- Use `analysis-diagnostic-report-design` when the question is "为什么变化、问题来自哪里、哪些因素驱动".
-- Use `performance-evaluation-report-design` when the question is "谁表现更好、如何排名/评分/评价".
-- Use `detail-query-report-design` when the question is "查哪些记录、字段、明细、导出".
-- Use `review-recap-report-design` when the question is "周期内发生了什么、如何汇报复盘".
-- Use `anomaly-monitoring-report-design` when the question is "哪些对象异常、严重程度与处理状态".
-- Use `operational-execution-report-design` when the question is "任务如何推进、责任与闭环如何跟踪".
-- Use `reconciliation-traceability-report-design` when the question is "数据是否一致、差异如何追溯".
+- Use `report-type-design` when the question is "整体是否健康、是否达标、风险在哪里".
+- Use `report-type-design` when the question is "为什么变化、问题来自哪里、哪些因素驱动".
+- Use `report-type-design` when the question is "谁表现更好、如何排名/评分/评价".
+- Use `report-type-design` when the question is "查哪些记录、字段、明细、导出".
+- Use `report-type-design` when the question is "周期内发生了什么、如何汇报复盘".
+- Use `report-type-design` when the question is "哪些对象异常、严重程度与处理状态".
+- Use `report-type-design` when the question is "任务如何推进、责任与闭环如何跟踪".
+- Use `report-type-design` when the question is "数据是否一致、差异如何追溯".
 
 Domain words then become dimensions, filters, decomposition paths, table fields, hierarchy levels, or narrative context in later stages.
 
@@ -455,33 +455,34 @@ Default technical architecture:
 
 Template choice:
 
-- The three bundled templates now live under `report-visual-layout-design/assets/templates/`; use `single-page-dashboard-template`, `left-nav-analytics-dashboard-template`, and `sci-fi-dashboard-template` as template asset ids, not as separate skills.
+- The four bundled templates now live under `report-prototype-template-management/assets/templates/`; use `topbar-light-scroll-dashboard-template`, `topbar-dark-scroll-dashboard-template`, `left-nav-analytics-workbench-template`, and `frozen-title-sci-fi-cockpit-template` as template asset ids, not as separate skills.
 
 - Report is a content form, not a template decision. A "报告/报表/复盘/诊断" request can use any template after judging content volume and usage.
-- Use `single-page-dashboard-template` for a compact focused report, and use it by default for analysis/diagnostic reports when the user has not explicitly requested a sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit. Its frame is a top menu bar with centered title, left logo, right-side theme switch/refresh/filter/download, light/dark layouts, and one 8*N content grid that may grow beyond 1080px.
-- Use `left-nav-analytics-dashboard-template` for enterprise analytics reports, multi-chapter reports, report suites, or workbenches with multiple pages/modules, sidebar navigation, filters, 8*N cards, business widgets, and standard repeated-use behavior.
-- Use `sci-fi-dashboard-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
+- Use `topbar-light-scroll-dashboard-template` for a compact focused office-readable report and detail/query-heavy handoff pages.
+- Use `topbar-dark-scroll-dashboard-template` for a compact focused dark Haier-branded overview or diagnosis cockpit that still scrolls.
+- Use `left-nav-analytics-workbench-template` for enterprise analytics reports, multi-chapter report suites, or dense workbenches with multiple pages/modules.
+- Use `frozen-title-sci-fi-cockpit-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
 - If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
 
 Template selection rules:
 
 | Situation | Choose | Why |
 | --- | --- | --- |
-| Primary type is analysis/diagnostic and the user does not explicitly ask for sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit | `single-page-dashboard-template` | Analysis pages should default to one focused reading flow; let the single-page content height exceed 1080px with vertical scrolling rather than forcing a sidebar. |
-| Compact report: one decision question, usually 1-3 sections, roughly 4-12 components, no persistent page navigation, and users need a direct first-screen answer | `single-page-dashboard-template` | It keeps the frame light and lets one 8*N content grid carry the report. |
-| Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-dashboard-template` | Sidebar navigation can represent report chapters as well as different report modules. |
-| Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-dashboard-template` | It is optimized for enterprise work rather than showpiece display. |
-| Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `sci-fi-dashboard-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact. |
-| The user explicitly asks for 单页 / 顶部栏 / 无侧边栏 | `single-page-dashboard-template` | Respect the requested shell unless existing code forces another pattern. |
-| The user explicitly asks for 大屏 / 驾驶舱 / 指挥中心 / 科技风 | `sci-fi-dashboard-template` | These terms indicate presentation or monitoring display. |
+| Primary type is analysis/diagnostic and the user does not explicitly ask for sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit | `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` | Analysis pages should default to one focused reading flow; choose light for office readability and dark for cockpit atmosphere. |
+| Compact report: one decision question, usually 1-3 sections, roughly 4-12 components, no persistent page navigation, and users need a direct first-screen answer | `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` | A topbar shell keeps the frame light and lets one 8*N content grid carry the report. |
+| Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-workbench-template` | Sidebar navigation can represent report chapters as well as different report modules. |
+| Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-workbench-template` | It is optimized for enterprise work rather than showpiece display. |
+| Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `frozen-title-sci-fi-cockpit-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact. |
+| The user explicitly asks for 单页 / 顶部栏 / 无侧边栏 | topbar template | Respect the requested shell unless existing code forces another pattern. |
+| The user explicitly asks for 大屏 / 驾驶舱 / 指挥中心 / 科技风 | `frozen-title-sci-fi-cockpit-template` | These terms indicate presentation or monitoring display. |
 
 Selection priority:
 
 1. Existing project framework and user-stated shell.
-2. Display scenario: big-screen/presentation uses `sci-fi-dashboard-template`.
-3. Analysis/diagnostic default: if the primary report type is analysis/diagnostic and the user has not explicitly requested another shell, use `single-page-dashboard-template` even when the page needs to scroll beyond 1080px.
-4. Content volume and information architecture: explicit multi-chapter or dense workbench reports use `left-nav-analytics-dashboard-template` even if the user calls it one report.
-5. Standalone compact report uses `single-page-dashboard-template`.
+2. Display scenario: big-screen/presentation uses `frozen-title-sci-fi-cockpit-template`.
+3. Analysis/diagnostic default: if the primary report type is analysis/diagnostic and the user has not explicitly requested another shell, use a topbar scroll template even when the page needs to scroll beyond 1080px.
+4. Content volume and information architecture: explicit multi-chapter or dense workbench reports use `left-nav-analytics-workbench-template` even if the user calls it one report.
+5. Standalone compact report uses a topbar scroll template.
 
 Do not choose a template only because it "looks better"; choose by scenario, navigation depth, interaction density, and display environment.
 

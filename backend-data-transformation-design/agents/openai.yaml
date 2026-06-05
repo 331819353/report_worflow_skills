@@ -1,4 +1,0 @@
-interface:
-  display_name: "后端数据转换设计"
-  short_description: "设计源数据、上游响应或事件载荷到目标 API/消费者契约的后端转换、聚合、公式和验证样例"
-  default_prompt: "Use $backend-data-transformation-design to design and verify backend source-to-target transformations for APIs, services, integrations, reports, exports, or adapters."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表类型设计"
+  short_description: "选择并设计八类报表业务类型，输出核心问题、指标维度、组件建议、筛选交互、证据链和验收口径。"
+  default_prompt: "Use $report-type-design to choose and design the report business type, including core questions, metrics, dimensions, content blocks, filters, interactions, evidence, and acceptance criteria."

@@ -1,4 +1,4 @@
 interface:
   display_name: "报表视觉布局设计"
-  short_description: "沉淀通用报表视觉布局方法，覆盖页面结构、标题导航、筛选控制区、Haier 标识、8*N 栅格、图表表格容器与状态布局。"
-  default_prompt: "Use $report-visual-layout-design to design the page shell, title/navigation/filter areas, Haier branding, visual hierarchy, 8*N grid, chart/table containers, and runtime states for a business report page."
+  short_description: "设计报表页面壳、导航、标题筛选工具区、Haier 品牌位置、8*N 网格、区块尺寸、响应式和布局缺陷修复。"
+  default_prompt: "Use $report-visual-layout-design to design the report page shell, header/navigation/filter areas, brand placement, 8*N content grid, block sizing, responsive behavior, and layout defect repairs."

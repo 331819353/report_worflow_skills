@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "用于报表组件视觉样式、响应式和可读性规则设计/评审/修复。用户提到组件样式、KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip悬浮、局部展示、复杂图形、树/漏斗/流程、组件溢出、对齐、缩放、移动端适配、视觉优化时触发。"
+description: "用于报表组件级视觉样式、响应式和可读性设计/评审/修复。用户提到KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip、复杂图形、树/漏斗/流程、组件溢出、对齐、缩放、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
 ---
 
 # Report Component Style Design
@@ -28,7 +28,7 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 | Trees, Sankey, attribution, DuPont, flows, complex diagrams | `references/09-complex-diagrams.md` |
 | Capsule switches, segmented controls, dropdowns inside components | `references/10-in-component-controls.md` |
 | Legacy detailed rules not yet covered by focused references | `references/11-detailed-style-rules.md` |
-| Cross-stage design reasonableness when component style choices affect business comprehension, density, exact values, or interaction closure | `references/standalone-quality-gates.md#design-reasonableness-gate` |
+| Cross-stage design reasonableness when component style choices affect business comprehension, density, exact values, or interaction closure | `$quality-gate-validation` |
 
 ## Workflow
 

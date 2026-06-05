@@ -21,7 +21,7 @@
 - Capture additional screenshots after representative filter changes, tab switches, drawer/modal opening, drilldown, fullscreen, export preview, and relevant empty/error/auth states.
 - Run deterministic baseline image diff when approved baselines exist. Record baseline path, current screenshot path, diff path, thresholds, masked regions, and `VDIFF-*` findings.
 - If no baseline exists, save baseline candidates and record deterministic regression as `baseline missing`, not pass.
-- Send screenshots to a multimodal model using `../references/standalone-quality-gates.md#visual-browser-and-multimodal-check` when the model/service is available and explanatory visual review is in scope.
+- Send screenshots to a multimodal model using `$quality-gate-validation` when the model/service is available and explanatory visual review is in scope.
 - Record `VIS-*` findings for layout offset, excessive blank area, text overlap, graphic overlap, chart/table/card too small, clipping, unreadable labels, nonblank rendering failures, broken proportions, stale prototype residue, and broken scroll behavior.
 - Record `VIS-*` findings for duplicate component titles, cramped/narrow/tiny components, unbalanced peer-component strips, and text-graphic collisions where business-question text, labels, legends, chart marks, cards, or diagram nodes overlap or visually merge.
 - Record `VIS-*` findings for title-node collisions: section headers, stage/layer/lane titles, group captions, or column labels sitting on top of cards, node cards, connector paths, badges, legends, or child labels. The page cannot pass visual QA when this affects a key diagram or first-viewport component.

@@ -1,6 +1,6 @@
 ---
 name: automated-test-generation
-description: "用于根据测试矩阵、测试用例表、验收用例、API/页面覆盖矩阵生成可运行自动化测试工程。用户提到自动化测试生成、根据测试矩阵生成 API 测试、E2E 测试、截图回归测试、Playwright/Cypress 测试、CI 执行脚本、GitHub Actions、测试脚本全流程、把测试样例转成代码、回归测试脚本、批量生成测试工程时触发。"
+description: "用于根据测试矩阵、测试用例表、验收用例、API/页面覆盖矩阵生成可运行自动化测试工程。用户提到自动化测试生成、根据测试矩阵生成API测试、E2E测试、截图回归测试、Playwright/Cypress测试、CI执行脚本、GitHub Actions、把测试样例转成代码、回归测试脚本时触发；不负责人工测试结论。"
 ---
 
 # Automated Test Generation

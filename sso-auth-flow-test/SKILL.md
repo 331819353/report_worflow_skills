@@ -1,6 +1,6 @@
 ---
 name: sso-auth-flow-test
-description: "用于验证运行中系统的SSO登录、鉴权和权限链路。用户提到单点登录、SSO测试、登录跳转、token/clientId、Application-Key、Access-Token、401失效重登、403无权限、刷新/深链访问、logout、重新登录、后端token校验、前端SDK与后端鉴权断点、认证请求证据时触发。"
+description: "用于验证运行中系统的SSO登录、鉴权和权限链路。用户提到单点登录、SSO测试、登录跳转、token/clientId、Application-Key、Access-Token、401失效重登、403无权限、刷新/深链访问、logout、重新登录、后端token校验、前端SDK与后端鉴权断点、认证请求证据时触发；不负责SSO代码接入。"
 ---
 
 # SSO Auth Flow Test
@@ -14,7 +14,7 @@ Use this skill to validate that frontend SSO behavior and backend auth enforceme
 - Read `references/01-sso-case-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
 - Read `references/02-sso-breakpoint-closure.md` when the task is to find, explain, or repair breakpoints between frontend SDK login, backend token exchange, protected API validation, 401 recovery, 403 permission handling, or logout.
 - Read `references/03-sso-test-process-and-standards.md` when the task needs concrete SSO test procedure, acceptance criteria, fail/blocker standards, evidence rules, or test-report structure.
-- Read `references/standalone-quality-gates.md#production-closed-loop-readiness` when SSO results are used for production acceptance, release readiness, or defect retest closure.
+- Read `$quality-gate-validation` when SSO results are used for production acceptance, release readiness, or defect retest closure.
 
 ## Required Inputs
 

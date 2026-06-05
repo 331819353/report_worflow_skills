@@ -1,4 +1,0 @@
-interface:
-  display_name: "待补充数据模型管理"
-  short_description: "识别并维护跨阶段复用的数据模型缺口清单"
-  default_prompt: "Use $missing-model-management to create and update a reusable pending data model list for missing source, field, metric, enum, relationship, permission, binding, and validation information."

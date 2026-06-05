@@ -1,6 +1,6 @@
 ---
 name: runtime-url-smoke-test
-description: "用于对已启动的前端/后端URL做冒烟验证，决定能否进入深度联调测试。用户提到运行地址、访问地址、前端URL、后端URL、localhost、页面打不开、接口不通、健康检查、版本环境一致性、API base URL、proxy/CORS、静态资源、控制台错误、网络失败、先看能不能跑、冒烟测试时触发。"
+description: "用于对已启动的前端/后端URL做基础冒烟验证。用户提到运行地址、访问地址、前端URL、后端URL、localhost、页面打不开、接口不通、健康检查、版本环境一致性、API base URL、proxy/CORS、静态资源、控制台错误、网络失败、先看能不能跑、冒烟测试时触发；不做深度联调用例执行。"
 ---
 
 # Runtime URL Smoke Test

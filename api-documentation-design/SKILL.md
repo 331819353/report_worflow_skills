@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "用于生成或重构可交付的API/接口文档，支持开发前、联调前、测试前提前统一契约。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权/错误码/分页/筛选规范、字段口径、接口交付、接口验收、已有路由补文档时触发，输出实现、前端接入和测试可用的接口说明。"
+description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权、错误码、分页、筛选、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
 ---
 
 # API Documentation Design
@@ -16,9 +16,9 @@ Do not implement backend code merely because this skill is triggered. Produce do
 1. Collect inputs and select the documentation mode.
    Use inventory-to-document, route-to-document, requirement-to-contract, contract-refresh, async-job, webhook/callback, streaming, or file-transfer mode based on the available artifacts.
 
-   When multiple input authorities exist, run `references/standalone-quality-gates.md#entry-input-consistency-gate` before documenting endpoint behavior. API inventories, requirements, frontend contracts, source/data models, OpenAPI snippets, implemented routes, and runtime samples must not be merged silently when they conflict; unresolved `P0`/`P1` `ENTRY-*` findings keep the affected endpoint `partial` or `blocked` and require user confirmation only before the affected API document is repaired.
+   When multiple input authorities exist, run `$quality-gate-validation` before documenting endpoint behavior. API inventories, requirements, frontend contracts, source/data models, OpenAPI snippets, implemented routes, and runtime samples must not be merged silently when they conflict; unresolved `P0`/`P1` `ENTRY-*` findings keep the affected endpoint `partial` or `blocked` and require user confirmation only before the affected API document is repaired.
 
-   When the API document will drive frontend, backend, or tests, run `references/standalone-quality-gates.md#design-reasonableness-gate`. Check that endpoint boundaries, response models, pagination/sorting/filter rules, auth, errors, examples, global SQL/source filtering, component-internal local filtering, SQL/index feasibility, Redis/cache decisions, connection-pool behavior, and performance limits reasonably support the consuming business flow.
+   When the API document will drive frontend, backend, or tests, run `$quality-gate-validation`. Check that endpoint boundaries, response models, pagination/sorting/filter rules, auth, errors, examples, global SQL/source filtering, component-internal local filtering, SQL/index feasibility, Redis/cache decisions, connection-pool behavior, and performance limits reasonably support the consuming business flow.
 
 2. Establish shared conventions.
    Define base URL, version, auth, headers, response envelope, errors, pagination, sorting, filters, date/time format, enum format, file behavior, default/max page size, global filter execution, component-internal filter scope, Redis/cache expectations, connection-pool expectations, large-result handling, and export limits before documenting endpoint details.
@@ -36,15 +36,15 @@ Do not implement backend code merely because this skill is triggered. Produce do
    Include enough examples and edge states for frontend contract validation, backend implementation, integration tests, runtime QA, and delivery review.
 
 7. Mark production readiness when the API document is production-bound.
-   Apply `references/standalone-quality-gates.md#production-closed-loop-readiness` before calling the API document production-ready. API documentation is only `partial` when authoritative source, auth/permission, environment/base URL, health/runtime evidence, observability, performance/export limits, version compatibility, or testing handoff is missing.
+   Apply `$quality-gate-validation` before calling the API document production-ready. API documentation is only `partial` when authoritative source, auth/permission, environment/base URL, health/runtime evidence, observability, performance/export limits, version compatibility, or testing handoff is missing.
 
 ## References
 
 - Read [../workflow-shared-references/human-ai-readable-artifact-standard.md](../workflow-shared-references/human-ai-readable-artifact-standard.md) so API documents stay human-readable while preserving extractable endpoint contracts.
 - Read [references/01-inputs-and-traceability.md](references/01-inputs-and-traceability.md) when identifying source artifacts, authority, dependency trace, or unresolved model/API items.
-- Read [references/standalone-quality-gates.md#entry-input-consistency-gate](references/standalone-quality-gates.md#entry-input-consistency-gate) when API docs are built from conflicting requirements, API inventories, model docs, frontend contracts, route code, OpenAPI snippets, or runtime samples.
-- Read [references/standalone-quality-gates.md#design-reasonableness-gate](references/standalone-quality-gates.md#design-reasonableness-gate) when API design choices affect business fit, data/API feasibility, frontend usability, or testability.
-- Read [references/standalone-quality-gates.md#production-closed-loop-readiness](references/standalone-quality-gates.md#production-closed-loop-readiness) when API docs feed production delivery or release acceptance.
+- Read `$quality-gate-validation` when API docs are built from conflicting requirements, API inventories, model docs, frontend contracts, route code, OpenAPI snippets, or runtime samples.
+- Read `$quality-gate-validation` when API design choices affect business fit, data/API feasibility, frontend usability, or testability.
+- Read `$quality-gate-validation` when API docs feed production delivery or release acceptance.
 - Read [references/02-document-structure.md](references/02-document-structure.md) when creating the document skeleton, common conventions, overview tables, and appendix.
 - Read [references/03-endpoint-detail-rules.md](references/03-endpoint-detail-rules.md) when writing endpoint-level request, response, example, auth, error, performance, and compatibility sections.
 - Read [references/04-handoff-quality-gate.md](references/04-handoff-quality-gate.md) before final delivery or when preparing frontend/backend/testing handoff.

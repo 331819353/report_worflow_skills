@@ -1,0 +1,41 @@
+---
+name: performance-optimization
+description: "用于报表、API、SQL、数据服务和前端可视化性能优化。用户提到接口慢、SQL慢、查询优化、索引、分页、缓存、Redis、连接池、并发、首屏慢、图表卡顿、表格大数据、导出慢、渲染性能、ECharts 性能、OLAP 建模、生产性能压测或容量限制时触发。"
+---
+
+# Performance Optimization
+
+## Positioning
+
+Use this skill to design, review, or repair performance-sensitive behavior across data services, SQL/OLAP, APIs, frontend data loading, charts, tables, exports, and runtime rendering.
+
+It owns performance strategy and verification. It does not replace API design, data modeling, frontend implementation, or testing workflows.
+
+## Reference Loading
+
+- Data service resilience, cache, pagination, pooling, and capacity: `references/data-service-performance-resilience-contract.md`
+- SQL query writing and index-friendly filters: `references/sql-query-writing-optimization.md`
+- OLAP modeling and analytical aggregation: `references/olap-data-modeling-optimization.md`
+
+## Workflow
+
+1. Identify the performance surface: SQL/source, API, backend service, cache, export, frontend fetch/adaptation, chart/table rendering, or deployment runtime.
+2. Define performance target: latency, throughput, first screen, interaction time, export time, row count, concurrency, freshness, or memory budget.
+3. Locate current bottleneck evidence: query plan, network waterfall, API logs, browser performance trace, data volume, component count, or user report.
+4. Apply the smallest appropriate optimization: query/index/range rewrite, pagination/keyset, aggregation pushdown, cache, connection pool, request batching, lazy loading, virtualization, chart sampling, memoization, or worker/off-main-thread processing.
+5. Define verification commands, metrics, before/after evidence, and residual risk.
+
+## Required Output
+
+- Performance surface and target.
+- Bottleneck evidence and hypothesis.
+- Optimization plan or implemented changes.
+- Risks around correctness, freshness, permission scope, cache invalidation, and export completeness.
+- Verification result or blocker.
+
+## Quality Gate
+
+- Do not optimize by changing metric口径, permission scope, or business totals.
+- Do not fetch broad result sets and filter/sort/page globally in memory for database-backed data.
+- Cache keys must include filters, permission/user/tenant scope, source version, pagination/sort, and locale/unit options when relevant.
+- Frontend rendering optimizations must preserve loading, empty, error, and interaction states.

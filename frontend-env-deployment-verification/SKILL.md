@@ -1,6 +1,6 @@
 ---
 name: frontend-env-deployment-verification
-description: "用于验证或配置前端运行环境、数据源地址、代理和部署URL。用户提到环境变量、.env、API base URL、数据源地址、dev-server proxy、CORS、Vite/Vue/React/Next启动、build、preview、静态资源路径、public path、hash/history路由、嵌入页面、微前端、部署地址、访问URL、页面打不开、接口打错环境、最终预览地址时触发。"
+description: "用于验证或配置前端运行环境、数据源地址、代理、构建和部署URL。用户提到环境变量、.env、API base URL、数据源地址、dev-server proxy、CORS、Vite/Vue/React/Next启动、build、preview、静态资源路径、public path、hash/history路由、嵌入页面、微前端、部署地址、页面打不开、接口打错环境时触发；不负责业务数据适配。"
 ---
 
 # Frontend Env Deployment Verification

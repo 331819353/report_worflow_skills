@@ -1,6 +1,6 @@
 ---
 name: filter-linkage-completeness-test
-description: "用于测试报表筛选器完整性和筛选联动。用户提到筛选测试、过滤测试、筛选项完整性、筛选默认值、重置、级联、联动、查询参数、筛选到组件绑定、筛选项数据源、mock选项覆盖、后端可选值、分页/排序/下钻/导出继承筛选、过滤条件不生效时触发，输出筛选矩阵、证据和缺陷结论。"
+description: "用于测试报表筛选器完整性和筛选联动。用户提到筛选测试、过滤测试、筛选项完整性、筛选默认值、重置、级联、联动、查询参数、筛选到组件绑定、筛选项数据源、后端可选值、分页/排序/下钻/导出继承筛选、过滤条件不生效时触发；不做全量集成测试编排。"
 ---
 
 # Filter Linkage Completeness Test
@@ -12,7 +12,7 @@ Use this skill to verify that report filters are complete, valid, and correctly 
 ## References
 
 - Read `references/01-filter-linkage-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
-- Read `references/standalone-quality-gates.md#production-closed-loop-readiness` when filter linkage results are used for production acceptance or defect retest closure.
+- Read `$quality-gate-validation` when filter linkage results are used for production acceptance or defect retest closure.
 
 ## Required Inputs
 

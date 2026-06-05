@@ -1,6 +1,6 @@
 ---
 name: frontend-runtime-qa-validation
-description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发。"
+description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
 ---
 
 # Frontend Runtime QA Validation
@@ -16,7 +16,7 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
 - Read `references/browser-qa-matrix.md` for browser, console, route, asset, and layout checks.
 - Read `references/data-interaction-state-checks.md` for provider, filter, interaction, and edge-state checks.
 - Read `references/qa-note-template.md` when producing the QA result.
-- Read `references/standalone-quality-gates.md#visual-browser-and-multimodal-check` before visual pass/fail judgment for any runnable page.
+- Read `$quality-gate-validation` before visual pass/fail judgment for any runnable page.
 
 ## Workflow
 
@@ -30,7 +30,7 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
    After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. Store screenshot paths as QA evidence.
 
 4. Run multimodal visual anomaly recognition.
-   Use `references/standalone-quality-gates.md#visual-browser-and-multimodal-check` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
+   Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
 
 5. Check browser console and network.
    Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Haier IAM 前端 Script SSO"
-  short_description: "沉淀 Haier IAM 前端 script 接入规范"
-  default_prompt: "Use $haier-iam-frontend-script-sso to integrate Haier IAM browser SDK by script tag in a frontend project."

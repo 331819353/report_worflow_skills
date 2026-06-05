@@ -34,16 +34,16 @@ These are routing labels for requirement transformation, not skill names. Use th
 Recommend the smallest complete path.
 
 - Use `report-design-workflow` when the user explicitly wants a report/page/dashboard prototype, runnable page, screenshot-to-prototype repair, mock-data-backed demo, deployment, or preview URL.
-- Use `report-info-component-mapping`, `report-visual-layout-design`, and `report-component-style-design` for prototype/detail design after the requirement is structured.
-- Use report-type skills when the requirement is a business report: `status-overview-report-design`, `analysis-diagnostic-report-design`, `detail-query-report-design`, `performance-evaluation-report-design`, `review-recap-report-design`, `anomaly-monitoring-report-design`, `operational-execution-report-design`, `reconciliation-traceability-report-design`.
+- Use `report-type-design` when the requirement is a business report and needs business type selection: status overview, analysis diagnosis, detail query, performance evaluation, review recap, anomaly monitoring, operational execution, or reconciliation traceability.
+- Use `report-info-component-mapping`, `report-visual-layout-design`, `report-prototype-template-management`, and `report-component-style-design` for prototype/detail design after the requirement is structured.
 - Use `technical-solution-workflow` when the deliverable is API inventory, data model files, data source mapping, or pending model gaps.
 - Use `api-inventory-design` for endpoint inventory and request/response contracts.
 - Use `data-model-source-mapping` for table/model/source relationships and transformations.
 - Use `data-model-requirement-playbook.md` in this directory before `data-model-source-mapping` when vague business/data needs must first become a clear model requirement.
-- Use `missing-model-management` when required source tables, fields,口径, or model metadata are missing.
+- Use `gap-ledger-management` when required source tables, fields,口径, or model metadata are missing.
 - Use `backend-development-workflow` when implementing a backend/data service.
-- Use `api-documentation-design`, `backend-api-contract-validation`, `backend-data-transformation-design`, and `backend-missing-info-management` for backend subproblems.
+- Use `api-documentation-design`, `api-contract-validation`, `data-transformation-adapter-design`, `gap-ledger-management`, and `performance-optimization` for backend subproblems.
 - Use `frontend-development-workflow` when integrating a frontend prototype/page with real APIs.
-- Use `frontend-api-contract-validation`, `frontend-response-adapter-design`, `frontend-runtime-qa-validation`, and `frontend-env-deployment-verification` for frontend subproblems.
+- Use `api-contract-validation`, `data-transformation-adapter-design`, `frontend-runtime-qa-validation`, `frontend-env-deployment-verification`, and `performance-optimization` for frontend subproblems.
 - Use `testing-integration-workflow` when the deliverable is联调,测试设计,验收, defect evidence, or end-to-end validation.
-- Use `integration-test-case-design`, `frontend-backend-integration-test-validation`, `frontend-backend-data-consistency-test`, `filter-linkage-completeness-test`, `runtime-url-smoke-test`, `sso-auth-flow-test`, and `test-evidence-defect-reporting` for targeted testing.
+- Use `integration-test-case-design`, `runtime-url-smoke-test`, `sso-auth-flow-test`, `frontend-backend-data-consistency-test`, `filter-linkage-completeness-test`, and `test-evidence-defect-reporting` for targeted testing.

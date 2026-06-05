@@ -1,4 +1,0 @@
-interface:
-  display_name: "后端接口契约校验"
-  short_description: "校验 API 文档、前端调用、mock、fixture、路由实现、上游或数据库响应之间的契约一致性"
-  default_prompt: "Use $backend-api-contract-validation to compare API contracts across documentation, consumers, mocks, fixtures, implementation, upstream/database sources, and runtime responses."

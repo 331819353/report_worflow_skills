@@ -1,4 +1,4 @@
 interface:
   display_name: "前端开发 Workflow"
-  short_description: "将原型/前端源码接入真实接口，并用截图+多模态视觉QA验证"
-  default_prompt: "当用户提出前端开发、前端联调、前端接入接口、替换mock、去掉mock、接真实接口、接口对接、报表页面联调、前端数据接入、请求封装、响应适配、筛选参数联动、组件联动、代理配置、SSO前端接入、页面运行、启动前端、修复编译错误或修复请求错误时，使用 $frontend-development-workflow 完成前端接入、运行验证和功能说明；可运行页面需通过截图+多模态视觉QA检查。"
+  short_description: "编排前端接真实数据与运行交付，覆盖契约校验、响应适配、环境部署、Haier SSO、运行QA、性能和功能说明。"
+  default_prompt: "Use $frontend-development-workflow to orchestrate frontend provider integration, mock replacement, contract validation, adapters, env/deployment, Haier SSO, runtime QA, performance, and handoff docs."

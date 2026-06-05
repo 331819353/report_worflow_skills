@@ -1,6 +1,6 @@
 ---
 name: data-model-source-mapping
-description: "用于在开发前创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、指标口径、字段口径、维度关系、原型mock字段、响应模型、视图模型、数据血缘、刷新频率、权限、质量规则、数据模型文件、source-to-consumer mapping时触发，支撑技术方案、后端、前端联调和测试。"
+description: "用于创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、逻辑模型、响应模型、视图模型、指标/字段口径、维度关系、原型mock字段、数据血缘、刷新频率、权限、质量规则时触发；不负责API文档或代码实现。"
 ---
 
 # Data Model Source Mapping
@@ -30,8 +30,8 @@ Read only the reference files needed for the current task:
 | Map physical sources into logical models and response/view models | `references/02-source-logical-response-mapping.md` |
 | Define metric formulas, transformations, permissions, and data-quality rules | `references/03-metrics-transformations-quality.md` |
 | Run model traceability, no-invention, and pending-item routing checks | `references/04-model-stability-gate.md` |
-| Resolve authority conflicts when requirements, metric lists, prototype code, API contracts, source documents, or tests disagree | `references/standalone-quality-gates.md#entry-input-consistency-gate` |
-| Audit whether source/logical/response model design reasonably supports the business question, API inventory, frontend contract, permissions, and tests | `references/standalone-quality-gates.md#design-reasonableness-gate` |
+| Resolve authority conflicts when requirements, metric lists, prototype code, API contracts, source documents, or tests disagree | `$quality-gate-validation` |
+| Audit whether source/logical/response model design reasonably supports the business question, API inventory, frontend contract, permissions, and tests | `$quality-gate-validation` |
 
 Loading guidance:
 

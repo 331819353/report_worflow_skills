@@ -1,4 +1,0 @@
-interface:
-  display_name: "后端缺失信息管理"
-  short_description: "沉淀后端/API/集成工作的缺失信息、临时假设、风险影响、确认问题和解决记录"
-  default_prompt: "Use $backend-missing-info-management to create or update missing-information documentation and keep assumptions consistent across code, API docs, fixtures, tests, runtime evidence, and delivery notes."

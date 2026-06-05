@@ -1,4 +1,0 @@
-interface:
-  display_name: "海尔 IAMA 后端单点登录"
-  short_description: "沉淀海尔统一身份认证 IAMA 后端 SSO 接入，封装授权码换 token 和 token 有效性校验接口"
-  default_prompt: "Use $haier-iama-backend-sso to implement backend SSO with Haier IAMA code-to-token exchange and token validation."

@@ -16,8 +16,8 @@ Use this reference when deciding what the API document is based on and how endpo
 - Prefer implemented behavior only when the task is documenting current implementation.
 - Prefer API inventory or explicit product/backend contract when the task is designing future APIs.
 - Prefer frontend display/mock contracts when the task is integration handoff and no backend contract has been finalized.
-- Treat absent details as pending information. Treat contradictory details as `ENTRY-*` conflicts using `../references/standalone-quality-gates.md#entry-input-consistency-gate`; unresolved `P0`/`P1` conflicts keep affected endpoint behavior `partial` or `blocked` and require user confirmation only before the affected endpoint behavior is repaired or documented as final.
-- Treat complete but unreasonable endpoint design as a `DESIGN-*` finding using `../references/standalone-quality-gates.md#design-reasonableness-gate`. Examples include response grain that cannot support the component, filters that cannot drive data, endpoint grouping that mixes incompatible permissions/freshness, or examples that cannot prove the business flow.
+- Treat absent details as pending information. Treat contradictory details as `ENTRY-*` conflicts using `$quality-gate-validation`; unresolved `P0`/`P1` conflicts keep affected endpoint behavior `partial` or `blocked` and require user confirmation only before the affected endpoint behavior is repaired or documented as final.
+- Treat complete but unreasonable endpoint design as a `DESIGN-*` finding using `$quality-gate-validation`. Examples include response grain that cannot support the component, filters that cannot drive data, endpoint grouping that mixes incompatible permissions/freshness, or examples that cannot prove the business flow.
 
 ## Traceability Rules
 

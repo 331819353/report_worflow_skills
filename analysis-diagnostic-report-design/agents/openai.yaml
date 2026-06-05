@@ -1,4 +1,0 @@
-interface:
-  display_name: "分析诊断报表设计"
-  short_description: "沉淀分析诊断报表的预实差开头、诊断子类型、归因拆解、证据链与行动建议"
-  default_prompt: "Use $analysis-diagnostic-report-design to start from the expected-versus-actual gap, choose the diagnostic subtype, and design the decomposition, evidence, interactions, and action path for an analysis diagnostic report."
