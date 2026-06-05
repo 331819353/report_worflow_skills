@@ -16,7 +16,7 @@ The goal is to answer: "Which version of each artifact belongs together, and wha
 - Artifact folders/files, current version naming, PRD/prototype/API/model/frontend/backend/test documents, release notes, branch/commit, environment, or defect reports.
 - Optional: target version, release date, owner, status, dependency chain, and change request IDs.
 
-Read `references/01-delivery-index-template.md` when producing the index table. Use `scripts/build_delivery_index.py` to create a first-pass index from files.
+Use `$delivery-artifact-template-management` when producing the delivery index table. Use `scripts/build_delivery_index.py` to create a first-pass index from files.
 
 ## Workflow
 

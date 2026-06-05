@@ -25,7 +25,7 @@ Read only the reference files needed for the current task:
 
 | Need | Read |
 | --- | --- |
-| Produce the exact API清单 table and required columns | `references/01-api-inventory-template.md` |
+| Produce the exact API清单 table and required columns | `$delivery-artifact-template-management` |
 | Decide endpoint boundaries, common endpoint patterns, and when to split or merge APIs | `references/02-endpoint-patterns-and-splitting.md` |
 | Define inventory-level request params, response model references, auth, pagination, sorting, filters, exports, and actions | `references/03-request-response-auth-rules.md` |
 | Run API traceability, status, no-invention, and gap-linking checks | `references/04-api-stability-gate.md` |
@@ -34,7 +34,7 @@ Read only the reference files needed for the current task:
 
 Loading guidance:
 
-- For any generated or updated API清单, read all four references.
+- For any generated or updated API清单, load the API inventory template from `$delivery-artifact-template-management` plus the three local references below.
 - For a quick endpoint review, read `02-endpoint-patterns-and-splitting.md` and `04-api-stability-gate.md`.
 - For export, action, permission, pagination, or dynamic filter APIs, `03-request-response-auth-rules.md` is mandatory.
 

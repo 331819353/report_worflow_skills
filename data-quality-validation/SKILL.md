@@ -14,7 +14,7 @@ Use this skill to design or execute data quality checks for report delivery and 
 - Data model, source table/API metadata, metric dictionary, API samples, production exports, SQL snippets, data files, reconciliation rules, refresh SLA, or incident examples.
 - Optional: expected thresholds, source owner, refresh schedule, historical baseline, business calendar, and critical metric list.
 
-Read `references/01-quality-rule-template.md` when producing a reusable rule matrix.
+Use `$delivery-artifact-template-management` when producing a reusable data-quality rule matrix.
 
 ## Workflow
 

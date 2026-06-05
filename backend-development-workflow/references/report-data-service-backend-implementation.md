@@ -4,9 +4,7 @@ Use this shared reference whenever a report, BI, dashboard, or data-visualizatio
 
 This reference is about the report backend as a controlled query service. It complements:
 
-- `olap-data-modeling-optimization.md` for business process, grain, fact/dimension, metric, and serving-model design.
-- `sql-query-writing-optimization.md` for concrete database query shape and execution-plan risk.
-- `data-service-performance-resilience-contract.md` for concurrency, cache, pools, async work, timeout, limits, and observability.
+- `$performance-optimization` for OLAP business process, grain, fact/dimension, metric, serving-model design, SQL query shape, execution-plan risk, concurrency, cache, pools, async work, timeout, limits, and observability.
 
 ## Core Principle
 
@@ -109,7 +107,7 @@ Metric expressions and column expressions must be owned by backend configuration
 - Inject tenant and data-permission predicates on the backend, not from frontend-supplied scope.
 - Generate optional predicates according to the actual request. Avoid broad nullable-OR templates for high-volume endpoints.
 - Apply global filters, permission scope, sorting, pagination, Top/Bottom, grouping, aggregation, and counts at the source/provider/repository/precompute/cache stage, not after full materialization in application memory.
-- Apply `sql-query-writing-optimization.md` for database-backed endpoints and capture plan evidence for risky P0/high-volume queries.
+- Apply `$performance-optimization` for database-backed endpoints and capture plan evidence for risky P0/high-volume queries.
 
 ## Parameter Guardrails
 
@@ -250,4 +248,4 @@ Backend/API documentation, implementation notes, and validation reports should i
 - Async export/job lifecycle evidence when applicable.
 - Result metadata for columns, precision, freshness, quality, cache status, and trace id.
 - Audit and monitoring evidence.
-- Linked `olap-data-modeling-optimization.md`, `sql-query-writing-optimization.md`, and `data-service-performance-resilience-contract.md` findings or pass status.
+- Linked `$performance-optimization` findings or pass status.

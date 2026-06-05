@@ -25,6 +25,10 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 | Runtime visual QA | `$frontend-runtime-qa-validation` |
 | Quality gates | `$quality-gate-validation` |
 
+## Reference Loading
+
+- Read `references/report-integration-testing-implementation.md` when validating a report/BI/dashboard data chain, frontend/backend pair, export, permission path, cache path, UAT, release smoke, or defect retest closure.
+
 ## Workflow
 
 1. Inventory test basis: API docs, frontend function description, permission matrix, data-quality rules, URLs, accounts, env, data, and versions.

@@ -40,12 +40,12 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 ## References
 
-- Read [../workflow-shared-references/human-ai-readable-artifact-standard.md](../workflow-shared-references/human-ai-readable-artifact-standard.md) so API documents stay human-readable while preserving extractable endpoint contracts.
+- Read `$quality-gate-validation` for artifact readability and extractable endpoint-contract checks.
 - Read [references/01-inputs-and-traceability.md](references/01-inputs-and-traceability.md) when identifying source artifacts, authority, dependency trace, or unresolved model/API items.
 - Read `$quality-gate-validation` when API docs are built from conflicting requirements, API inventories, model docs, frontend contracts, route code, OpenAPI snippets, or runtime samples.
 - Read `$quality-gate-validation` when API design choices affect business fit, data/API feasibility, frontend usability, or testability.
 - Read `$quality-gate-validation` when API docs feed production delivery or release acceptance.
-- Read [references/02-document-structure.md](references/02-document-structure.md) when creating the document skeleton, common conventions, overview tables, and appendix.
+- Read `$delivery-artifact-template-management` when creating the API document skeleton, common conventions, overview tables, and appendix.
 - Read [references/03-endpoint-detail-rules.md](references/03-endpoint-detail-rules.md) when writing endpoint-level request, response, example, auth, error, performance, and compatibility sections.
 - Read [references/04-handoff-quality-gate.md](references/04-handoff-quality-gate.md) before final delivery or when preparing frontend/backend/testing handoff.
 

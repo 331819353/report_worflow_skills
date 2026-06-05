@@ -18,7 +18,7 @@ Optional inputs: test account, data seed, environment URL, source commit, risk l
 
 ## References
 
-- Read `references/01-test-case-matrix-template.md` when the output should be a reusable execution matrix or when blocked cases must be tracked explicitly.
+- Use `$delivery-artifact-template-management` when the output should be a reusable execution matrix or when blocked cases must be tracked explicitly.
 
 ## Workflow
 

@@ -4,7 +4,7 @@ Use this shared contract whenever a data service, backend API, API inventory, AP
 
 Performance and stability are design concerns, not late implementation details. A data service is not production-ready just because routes return the right fields.
 
-For report/BI/dashboard backends, apply `report-data-service-backend-implementation.md` alongside this contract so metadata, permissions, parameter guardrails, query planning, component-ready responses, async export, audit, freshness, and slow-report governance are covered in addition to generic performance controls.
+For report/BI/dashboard backends, apply `$backend-development-workflow` alongside this contract so metadata, permissions, parameter guardrails, query planning, component-ready responses, async export, audit, freshness, and slow-report governance are covered in addition to generic performance controls.
 
 ## Required Design Dimensions
 

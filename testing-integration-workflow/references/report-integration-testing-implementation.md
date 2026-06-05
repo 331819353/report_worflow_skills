@@ -18,11 +18,10 @@ source data
 
 It complements:
 
-- `olap-data-modeling-optimization.md` for model grain, metric additivity, lineage, and quality.
-- `report-data-service-backend-implementation.md` for report query APIs, cache, permissions, export, and audit.
-- `report-data-visualization-frontend-implementation.md` for chart/table/KPI semantics and runtime visual QA.
-- `data-service-performance-resilience-contract.md` for concurrency, cache, pool, timeout, retry, degradation, and observability.
-- `environment-profile-contract.md` for `.env.test` and `.env.production` runtime separation.
+- `$performance-optimization` for OLAP model grain, metric additivity, lineage, concurrency, cache, pool, timeout, retry, degradation, and observability.
+- `$backend-development-workflow` for report query APIs, cache, permissions, export, and audit.
+- `$frontend-development-workflow` for chart/table/KPI semantics and runtime visual QA.
+- `$quality-gate-validation` for `.env.test` and `.env.production` runtime separation.
 
 ## Core Principle
 

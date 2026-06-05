@@ -14,7 +14,7 @@ Use this skill to design and validate role-based access for enterprise reports. 
 - Role list, organization hierarchy, page list, API docs, data model, field sensitivity, SSO/auth notes, export rules, screenshots, or known permission defects.
 - Optional: test accounts, org codes, sample data ownership, environment URL, audit requirements, and legal/security policy.
 
-Read `references/01-permission-matrix-template.md` when producing a reusable matrix.
+Use `$delivery-artifact-template-management` when producing a reusable permission matrix.
 
 ## Workflow
 

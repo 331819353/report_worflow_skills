@@ -10,7 +10,7 @@ Use `assets/templates/frozen-title-sci-fi-cockpit-template` only for fixed 1920*
 - Navigation/filter drawers instead of office-style dense controls.
 - `nav[].layoutRows` and `nav[].widgets` per cockpit page.
 - Exempt from the 220px scrollable-row rule; fit content inside 1920*1080.
-- Use the sci-fi 1920 preset in `block-size-constraints.md`; 3 visible rows are about `314px` tall, while 4 visible rows drop to about `233px`.
+- Use the sci-fi 1920 preset from `$report-visual-layout-design`; 3 visible rows are about `314px` tall, while 4 visible rows drop to about `233px`.
 
 ## Core Config
 

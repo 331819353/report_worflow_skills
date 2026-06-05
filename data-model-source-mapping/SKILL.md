@@ -26,7 +26,7 @@ Read only the reference files needed for the current task:
 
 | Need | Read |
 | --- | --- |
-| Produce the exact 数据模型文件 structure and required table columns | `references/01-model-file-template.md` |
+| Produce the exact 数据模型文件 structure and required table columns | `$delivery-artifact-template-management` |
 | Map physical sources into logical models and response/view models | `references/02-source-logical-response-mapping.md` |
 | Define metric formulas, transformations, permissions, and data-quality rules | `references/03-metrics-transformations-quality.md` |
 | Run model traceability, no-invention, and pending-item routing checks | `references/04-model-stability-gate.md` |
@@ -35,8 +35,8 @@ Read only the reference files needed for the current task:
 
 Loading guidance:
 
-- For any generated or updated 数据模型文件, read all four references.
-- For source-to-response mapping only, read `01-model-file-template.md`, `02-source-logical-response-mapping.md`, and `04-model-stability-gate.md`.
+- For any generated or updated 数据模型文件, load the data model template from `$delivery-artifact-template-management` plus the three local references below.
+- For source-to-response mapping only, use `$delivery-artifact-template-management`, `02-source-logical-response-mapping.md`, and `04-model-stability-gate.md`.
 - For metric-heavy work, `03-metrics-transformations-quality.md` is mandatory.
 
 ## Workflow

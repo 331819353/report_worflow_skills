@@ -13,8 +13,8 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 
 ## Reference Map
 
-- Read `../workflow-shared-references/human-ai-readable-artifact-standard.md` so the document is human-first while preserving extractable contracts.
-- Read `references/document-structure.md` to choose the output structure.
+- Read `$quality-gate-validation` for artifact readability and extractable contract checks.
+- Use `$delivery-artifact-template-management` to choose the frontend function description output structure.
 - Read `references/feature-inventory-fields.md` for page/module and provider-binding fields.
 - Read `references/handoff-quality-checklist.md` before finalizing the document.
 
@@ -47,7 +47,7 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 
 ## Required Output
 
-Produce the function description using `references/document-structure.md`.
+Produce the function description using the standard frontend function document structure from `$delivery-artifact-template-management`.
 
 ## Quality Checklist
 

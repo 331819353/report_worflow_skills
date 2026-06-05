@@ -4,8 +4,8 @@ Use this shared reference whenever a report, BI, dashboard, large-screen, or dat
 
 This reference is about turning data into a usable decision interface. It complements:
 
-- `report-data-service-backend-implementation.md` for report backend metadata, query planning, permissions, cache, export, and audit.
-- `data-service-performance-resilience-contract.md` for backend/data-service capacity and resilience.
+- `$backend-development-workflow` for report backend metadata, query planning, permissions, cache, export, and audit.
+- `$performance-optimization` for backend/data-service capacity and resilience.
 - `report-component-style-design` references for detailed component styling, responsive fit, ECharts, tables, and visual QA.
 - `frontend-development-workflow` for provider wiring, environment profiles, runtime verification, and handoff.
 

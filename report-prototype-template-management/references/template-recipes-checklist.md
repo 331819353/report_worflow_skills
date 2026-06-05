@@ -22,7 +22,7 @@ Use this file for common adjustments and final verification after changing a tem
 1. Edit `layoutRows`.
 2. Keep 8 columns per row unless the template explicitly supports another grid.
 3. Keep repeated characters rectangular.
-4. Calculate the actual block width/height with `block-size-constraints.md`.
+4. Calculate the actual block width/height with `$report-visual-layout-design`.
 5. Verify each span can hold its chart/table/KPI/composite content at the target viewport size.
 6. Keep or add vertical scrolling when the report needs more rows than the first viewport can show.
 7. Rename widget keys to match changed block ids.
@@ -62,7 +62,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Every widget has `visualType`.
 - Widgets without data have `dataPolicy`.
 - Filter scope and data field mapping are explicit.
-- Block spans match the size and component-count constraints in `block-size-constraints.md`.
+- Block spans match the size and component-count constraints from `$report-visual-layout-design`.
 - `1920 * 1080` and `1280 * 768` are used as viewport checks, not total report height caps.
 - Layout blocks do not clip titles, legends, charts, tables, empty states, or controls.
 - `npm run validate:dashboard` runs after the minimal required dependencies are installed.

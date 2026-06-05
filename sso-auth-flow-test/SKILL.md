@@ -11,7 +11,7 @@ Use this skill to validate that frontend SSO behavior and backend auth enforceme
 
 ## References
 
-- Read `references/01-sso-case-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
+- Use `$delivery-artifact-template-management` when the task needs a reusable SSO case matrix/template or standardized evidence structure.
 - Read `references/02-sso-breakpoint-closure.md` when the task is to find, explain, or repair breakpoints between frontend SDK login, backend token exchange, protected API validation, 401 recovery, 403 permission handling, or logout.
 - Read `references/03-sso-test-process-and-standards.md` when the task needs concrete SSO test procedure, acceptance criteria, fail/blocker standards, evidence rules, or test-report structure.
 - Read `$quality-gate-validation` when SSO results are used for production acceptance, release readiness, or defect retest closure.

@@ -15,14 +15,15 @@ It is a guardrail skill. It should not produce the primary business/API/code/tes
 
 Primary shared gates:
 
-- `../workflow-shared-references/entry-input-consistency-gate.md`
-- `../workflow-shared-references/design-reasonableness-gate.md`
-- `../workflow-shared-references/production-closed-loop-readiness.md`
-- `../workflow-shared-references/visual-multimodal-browser-check.md`
-- `../workflow-shared-references/human-ai-readable-artifact-standard.md`
-- `../workflow-shared-references/report-delivery-pipeline-contract.md`
+- `references/entry-input-consistency-gate.md`
+- `references/design-reasonableness-gate.md`
+- `references/production-closed-loop-readiness.md`
+- `references/visual-multimodal-browser-check.md`
+- `references/human-ai-readable-artifact-standard.md`
+- `references/report-delivery-pipeline-contract.md`
+- `references/environment-profile-contract.md`
 
-Preserved source-specific local gates live as `*-standalone-quality-gates.md` files in this skill's reference directory. Load them only when the current skill domain needs local wording not covered by shared gates.
+Legacy standalone gates have been absorbed into the primary shared gates above. Use the main gate references instead of source-specific duplicate files.
 
 ## Gate Types
 
@@ -33,6 +34,8 @@ Preserved source-specific local gates live as `*-standalone-quality-gates.md` fi
 | Production readiness | A handoff claims real delivery or release readiness. |
 | Visual/runtime gate | Runnable UI needs screenshot, baseline diff, multimodal layout review, or visual defect triage. |
 | Artifact readability | Outputs must be human-readable while still extractable by downstream agents. |
+| Environment profile | Test/prod runtime profiles, base URLs, proxy/CORS, auth, deployment, and rollback must be separated. |
+| Delivery pipeline | A workflow handoff must stay aligned across requirement, prototype, model, API, backend, frontend, test, release, and retest artifacts. |
 
 ## Workflow
 
@@ -54,4 +57,4 @@ Preserved source-specific local gates live as `*-standalone-quality-gates.md` fi
 
 - Do not use this skill as a dumping ground for domain logic.
 - Do not mark `ready` when high-impact conflicts, missing production controls, or untested required runtime behavior remain.
-- Keep local gate references discoverable until their unique rules are fully absorbed.
+- Keep gate ownership clear: quality gates decide readiness and conflicts; implementation details route to the owning skill/workflow.

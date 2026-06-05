@@ -11,7 +11,7 @@ Use this skill to verify that report filters are complete, valid, and correctly 
 
 ## References
 
-- Read `references/01-filter-linkage-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
+- Use `$delivery-artifact-template-management` when the task needs a reusable filter-linkage matrix/template or standardized evidence structure.
 - Read `$quality-gate-validation` when filter linkage results are used for production acceptance or defect retest closure.
 
 ## Required Inputs

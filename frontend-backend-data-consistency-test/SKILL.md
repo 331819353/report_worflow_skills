@@ -11,7 +11,7 @@ Use this skill to verify that each API-backed report component displays the same
 
 ## References
 
-- Read `references/01-data-consistency-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
+- Use `$delivery-artifact-template-management` when the task needs a reusable data-consistency matrix/template or standardized evidence structure.
 
 ## Required Inputs
 

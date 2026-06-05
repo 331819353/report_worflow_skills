@@ -22,6 +22,11 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 | Production observability | `$production-observability-feedback` |
 | Quality gates | `$quality-gate-validation` |
 
+## Reference Loading
+
+- Read `references/report-data-service-backend-implementation.md` when the backend is a report/BI/dashboard query service, or when production readiness depends on metadata, source/SQL mapping, permission injection, component-ready response shape, async export, audit, cache safety, or slow-report governance.
+- Existing backend document/missing-info references are legacy handoff aids; prefer `$api-documentation-design`, `$gap-ledger-management`, and `$delivery-artifact-template-management` for new standardized artifacts.
+
 ## Workflow
 
 1. Choose mode: API documentation, backend implementation, or backend repair/debug.

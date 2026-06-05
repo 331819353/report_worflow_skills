@@ -352,7 +352,7 @@ Do not solve fit problems by simply shrinking typography below readability.
 
 ### Default Span And Fit Rules
 
-When the page uses an `8 * N` grid, start from the default span distribution in `report-visual-layout-design/references/grid-containers.md`, then use `report-visual-layout-design/references/block-size-constraints.md` to check whether the assigned body viewport remains readable after padding, title, legend, axes, controls, table headers, and footer are reserved.
+When the page uses an `8 * N` grid, use `$report-visual-layout-design` for default span distribution and block-size constraints, then check whether the assigned body viewport remains readable after padding, title, legend, axes, controls, table headers, and footer are reserved.
 
 Rules:
 

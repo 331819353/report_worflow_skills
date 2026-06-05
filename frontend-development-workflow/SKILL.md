@@ -22,6 +22,12 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 | Performance | `$performance-optimization` |
 | Quality gates | `$quality-gate-validation` |
 
+## Reference Loading
+
+- Read `references/mock-to-provider-integration.md` or `references/mock-to-http-integration.md` when replacing mock/static data with provider/API calls.
+- Read `references/provider-gap-ledger.md` when provider fields, auth, environment, or ownership are incomplete.
+- Read `references/report-data-visualization-frontend-implementation.md` when the frontend is a report/BI/dashboard decision interface, or when production readiness depends on first-screen conclusion, chart/table semantics, provider mapping, edge states, freshness/quality display, performance, theme/accessibility, or runtime QA evidence.
+
 ## Workflow
 
 1. Discover source and target paths. If prototype source is upstream evidence, copy or identify a writable frontend target before editing.

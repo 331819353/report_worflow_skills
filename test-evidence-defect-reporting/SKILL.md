@@ -11,7 +11,7 @@ Use this skill to turn runtime testing into a handoff-ready report. Every failur
 
 ## References
 
-- Read `references/01-evidence-defect-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
+- Use `$delivery-artifact-template-management` when the task needs a reusable evidence/defect template or standardized evidence structure.
 
 ## Evidence Rules
 

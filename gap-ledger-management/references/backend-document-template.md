@@ -4,7 +4,7 @@ Use this reference when creating or updating a missing-information document.
 
 ## Location
 
-Prefer `docs/missing-info.md`. If no docs folder exists, use `MISSING_INFO.md`. Follow an existing project convention when one is already present.
+Prefer the existing project documentation folder when one is already present. If no convention exists, create one clearly named missing-information document.
 
 ## Header
 

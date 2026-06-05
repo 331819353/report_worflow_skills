@@ -33,7 +33,7 @@ Recommended matrix fields:
 - Evidence / 证据.
 - Tags / 标签.
 
-Read `references/01-test-matrix-schema.md` when the user needs the supported field aliases, step DSL, or input examples.
+Use `$delivery-artifact-template-management` when the user needs the automation test matrix schema, supported field aliases, step DSL, or input examples.
 
 ## Workflow
 

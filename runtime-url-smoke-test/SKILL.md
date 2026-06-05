@@ -11,7 +11,7 @@ Use this skill at the start of the testing phase. It answers whether the provide
 
 ## References
 
-- Read `references/01-url-smoke-matrix-template.md` when the task needs a reusable matrix/template or standardized evidence structure.
+- Use `$delivery-artifact-template-management` when the task needs a reusable URL smoke matrix/template or standardized evidence structure.
 
 ## Required Inputs
 

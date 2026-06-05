@@ -15,7 +15,7 @@ Use this file when building a new business report from a copied template or heav
    - Use 8 characters per row.
    - Use repeated characters for rectangular merged blocks.
    - Keep block ids stable.
-   - Before finalizing `layoutRows`, calculate each block's actual size with `block-size-constraints.md`.
+   - Before finalizing `layoutRows`, calculate each block's actual size with `$report-visual-layout-design`.
    - Check whether the block can safely hold its component count and component mix at the `1920 * 1080` and `1280 * 768` viewport baselines.
    - Let `layoutRows` grow when the report needs more content; do not cap the report at one viewport.
 4. Define widgets:
@@ -37,7 +37,7 @@ Use this file when building a new business report from a copied template or heav
    - Use `width: 100%; height: 100%; min-width: 0; min-height: 0;`.
    - Mount ECharts/S2 against the widget body, not the card frame.
    - If one block needs multiple subcomponents, implement one composite widget and keep internal subcomponent labels subordinate to the block title.
-   - If the composite needs 2/4/6/8 visible subcomponents, follow the count limits in `block-size-constraints.md`.
+   - If the composite needs 2/4/6/8 visible subcomponents, follow the count limits from `$report-visual-layout-design`.
 7. Add interactions:
    - Emit `dashboard-action` from widgets.
    - Configure `actions` in widget config.

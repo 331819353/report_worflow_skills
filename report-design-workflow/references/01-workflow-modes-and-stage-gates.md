@@ -128,7 +128,7 @@ Visual mode:
 - Use `sampleRestore` when the input is a display sample, screenshot, image, or HTML source and the user asks to restore, follow, or build from it without explicit redesign.
 - Use `haierEnterprise` for ordinary business report prototypes, enterprise report pages, and Haier/brand-unified pages.
 - Use `sciFiCockpit` only for explicit big-screen, cockpit, command-center, exhibition, monitoring-wall, or fixed 1920*1080 presentation scenarios.
-- If instructions conflict, first apply `../../workflow-shared-references/entry-input-consistency-gate.md`. Explicit user direction wins when it resolves the conflict; unresolved `P0`/`P1` entry conflicts require confirmation before implementation. Otherwise sample/source restoration wins over generic enterprise styling, sci-fi wins for explicit big-screen display, and all remaining business reports default to `haierEnterprise`.
+- If instructions conflict, first apply the entry consistency gate from `$quality-gate-validation`. Explicit user direction wins when it resolves the conflict; unresolved `P0`/`P1` entry conflicts require confirmation before implementation. Otherwise sample/source restoration wins over generic enterprise styling, sci-fi wins for explicit big-screen display, and all remaining business reports default to `haierEnterprise`.
 
 Brand assets:
 
