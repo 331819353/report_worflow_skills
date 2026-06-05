@@ -1,6 +1,6 @@
 ---
 name: data-transformation-adapter-design
-description: "用于设计和校验数据从源头到消费端的转换与适配逻辑。用户提到字段映射、源表到响应、上游到API、mock到数据库、response adapter、响应适配、嵌套拉平、枚举翻译、单位/精度/日期转换、汇总聚合、粒度转换、公式派生、null默认值、组件view model、前后端结构不一致时触发。"
+description: "用于设计和校验数据从源头到消费端的转换与适配逻辑。用户提到字段映射、源表到响应、上游到API、mock到数据库、response adapter、响应适配、嵌套拉平、枚举翻译、单位/精度/日期转换、百分比/比例显示、汇总聚合、粒度转换、公式派生、null默认值、组件view model、前后端结构不一致时触发。"
 ---
 
 # Data Transformation Adapter Design
@@ -24,10 +24,11 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 
 1. Identify source payload, target API contract, and UI/view model contract.
 2. Define grain, required fields, optional fields, defaults, null behavior, precision, units, enum dictionaries, date/time formats, and locale labels.
-3. Decide execution boundary: SQL/source query, backend service/DTO, API gateway/BFF, frontend adapter, or component-local display formatting.
-4. Specify transformations: rename, flatten, group, aggregate, derive, rank, sort, paginate, reconcile, mask, filter, and permission scope.
-5. Provide representative before/after examples and edge cases.
-6. Define verification cases for default, filtered, empty, abnormal, missing, permission-limited, and large-result states.
+3. For rate/percentage/change fields, keep calculation value, display value, display unit, rounding, and label wording explicit. Chinese report UI display values should render `%` for rates unless the user or contract intentionally requires another term.
+4. Decide execution boundary: SQL/source query, backend service/DTO, API gateway/BFF, frontend adapter, or component-local display formatting.
+5. Specify transformations: rename, flatten, group, aggregate, derive, rank, sort, paginate, reconcile, mask, filter, and permission scope.
+6. Provide representative before/after examples and edge cases.
+7. Define verification cases for default, filtered, empty, abnormal, missing, permission-limited, and large-result states.
 
 ## Required Output
 
@@ -43,3 +44,5 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 - Do not let backend publish fields whose source, formula, enum, or unit is unknown.
 - Adapter output must keep component view models stable or document the exact refactor.
 - Examples must prove the transformation for at least one non-default case when filters or formulas matter.
+- Do not collapse raw numeric values and formatted display strings into one ambiguous field when downstream calculations, sorting, tooltips, exports, or tests need the original value.
+- Do not use a frontend adapter to fake filter variation over one default snapshot; add provider/resolver branches, query params, or row grain that proves non-default states.

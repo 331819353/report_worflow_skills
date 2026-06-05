@@ -60,7 +60,7 @@ Data options:
 - JSON mode: use built-in `filterData`, `businessData`, or `staticData` resolvers.
 - Standard API mode: use `id: 'apiData'` or `id: 'httpData'`, configure `api.url`, `api.query`, `api.headers`, `api.body`, `api.responsePath`, and optional `api.adapter` directly on `widget.data` or `filters[].source`.
 - Custom provider mode: for signatures, special auth, complex pagination, SDKs, realtime streams, multi-step requests, or scenario data that must change by view/month/organization/status but is not row-filterable, add a resolver in `src/dataSources/registry.ts`, adapt the provider payload to component-ready rows, then reference the resolver id in `widget.data.id` or `filters[].source.id`.
-- Field mapping: if a global filter id differs from a row field, use `data.filterFields`; if the widget must respond to a filter, add `requiredFilters`; if it should ignore a global filter, add `ignoredFilters` only with an intentional invariant-scope reason.
+- Field mapping: if a global filter id differs from a row field, use `data.filterFields`; if the widget must respond to a filter, add `requiredFilters`; if it should ignore a global filter, add `ignoredFilters` plus `ignoredFilterReasons` only with an intentional invariant-scope reason.
 - Mock/offline data: one default snapshot is not enough for an affecting global filter. Add matching rows or resolver branches for every primary filter option that should visibly change component data.
 
 Verification:

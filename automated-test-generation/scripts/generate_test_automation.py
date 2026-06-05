@@ -52,6 +52,27 @@ ALIASES = {
         "接口预期",
         "预期接口结果",
     ],
+    "forbidden_text": [
+        "forbidden text",
+        "must not contain",
+        "must not contain text",
+        "forbidden ui text",
+        "禁止文案",
+        "禁用文案",
+        "不可出现",
+        "不应出现",
+        "不得出现",
+    ],
+    "change_selector": [
+        "change selector",
+        "value change selector",
+        "changed value selector",
+        "filter change selector",
+        "变化值选择器",
+        "数值变化选择器",
+        "筛选后变化选择器",
+        "必须变化选择器",
+    ],
     "evidence": ["evidence", "证据", "截图证据", "取证"],
     "tags": ["tags", "tag", "标签"],
 }
@@ -233,6 +254,23 @@ def split_tags(value: Any) -> List[str]:
     return [part.strip() for part in re.split(r"[,，;；\s]+", str(value)) if part.strip()]
 
 
+def split_assertion_list(value: Any) -> List[str]:
+    if value is None or value == "":
+        return []
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    text = str(value).strip()
+    if not text:
+        return []
+    try:
+        loaded = json.loads(text)
+        if isinstance(loaded, list):
+            return [str(item).strip() for item in loaded if str(item).strip()]
+    except Exception:
+        pass
+    return [part.strip() for part in re.split(r"[,，;；\n]+", text) if part.strip()]
+
+
 def parse_api_method_and_url(api: str, method: str, path: str) -> tuple[str, str]:
     method = method.strip().upper()
     target = path.strip() or api.strip()
@@ -306,6 +344,8 @@ def normalize_cases(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
             "steps": split_steps(row.get("steps")),
             "expectedFrontend": clean_string(row.get("expected_frontend")),
             "expectedApi": clean_string(row.get("expected_api")),
+            "forbiddenText": split_assertion_list(row.get("forbidden_text")),
+            "changeSelector": clean_string(row.get("change_selector")),
             "evidence": clean_string(row.get("evidence")),
             "tags": split_tags(row.get("tags")),
             "extra": row.get("extra", {}),
@@ -448,6 +488,7 @@ const fixture = require('../fixtures/test-cases.json');
 const cases = fixture.e2e || [];
 
 type Step = string | { action?: string; selector?: string; value?: string; url?: string; name?: string };
+type StepState = { capturedText: Record<string, string> };
 
 function parseStep(step: Step): { action: string; selector?: string; value?: string; url?: string; name?: string; raw?: string } {
   if (typeof step !== 'string') {
@@ -473,7 +514,26 @@ function parseStep(step: Step): { action: string; selector?: string; value?: str
   return { action, selector: rest, raw };
 }
 
-async function runStep(page: Page, step: Step, tc: any): Promise<void> {
+function normalizeText(value: string): string {
+  return value.replace(/\\s+/g, ' ').trim();
+}
+
+async function locatorText(page: Page, selector: string): Promise<string> {
+  return normalizeText(await page.locator(selector).first().innerText({ timeout: 10_000 }));
+}
+
+async function expectTextChanged(page: Page, selector: string, before: string, message: string): Promise<void> {
+  await expect
+    .poll(async () => locatorText(page, selector), { timeout: 10_000, message })
+    .not.toBe(normalizeText(before));
+}
+
+function requireValue(value: string | undefined, message: string): string {
+  if (!value) throw new Error(message);
+  return value;
+}
+
+async function runStep(page: Page, step: Step, tc: any, state: StepState): Promise<void> {
   const parsed = parseStep(step);
   const action = parsed.action;
   if (action === 'goto') {
@@ -500,6 +560,28 @@ async function runStep(page: Page, step: Step, tc: any): Promise<void> {
     await expect(page.locator(parsed.selector || '')).toBeHidden();
   } else if (action === 'expect_text') {
     await expect(page.locator(parsed.selector || '')).toContainText(parsed.value || '');
+  } else if (action === 'expect_no_text' || action === 'expect_not_text') {
+    const selector = parsed.value ? parsed.selector || 'body' : 'body';
+    const forbidden = parsed.value || parsed.selector || '';
+    requireValue(forbidden, 'expect_no_text requires text to reject.');
+    await expect(page.locator(selector)).not.toContainText(forbidden);
+  } else if (action === 'capture_text') {
+    const name = requireValue(parsed.selector, 'capture_text requires a capture name before =>.');
+    const selector = requireValue(parsed.value, 'capture_text requires a selector after =>.');
+    state.capturedText[name] = await locatorText(page, selector);
+  } else if (action === 'expect_text_changed') {
+    const name = requireValue(parsed.selector, 'expect_text_changed requires a capture name before =>.');
+    const selector = requireValue(parsed.value, 'expect_text_changed requires a selector after =>.');
+    const before = state.capturedText[name];
+    requireValue(before, `No captured text found for "${name}". Add capture_text first.`);
+    await expectTextChanged(page, selector, before, `Expected text for ${selector} to change from captured "${name}".`);
+  } else if (action === 'expect_value_change_after_filter') {
+    const valueSelector = requireValue(parsed.selector, 'expect_value_change_after_filter requires value selector before =>.');
+    const triggerSelector = requireValue(parsed.value, 'expect_value_change_after_filter requires filter trigger selector after =>.');
+    const before = await locatorText(page, valueSelector);
+    await page.locator(triggerSelector).click();
+    await page.waitForLoadState('networkidle').catch(() => undefined);
+    await expectTextChanged(page, valueSelector, before, `Expected ${valueSelector} to change after ${triggerSelector}.`);
   } else if (action === 'expect_url') {
     await expect(page).toHaveURL(new RegExp(parsed.url || parsed.selector || ''));
   } else if (action === 'screenshot') {
@@ -519,8 +601,23 @@ function sanitize(value: string): string {
 for (const tc of cases) {
   test(`[${tc.id}] ${tc.title}`, async ({ page }) => {
     await page.goto(tc.route || '/');
+    await page.waitForLoadState('networkidle').catch(() => undefined);
+    const state: StepState = { capturedText: {} };
+    const changeSelector = String(tc.changeSelector || '').trim();
+    const initialChangeText = changeSelector ? await locatorText(page, changeSelector) : '';
     for (const step of tc.steps || []) {
-      await runStep(page, step, tc);
+      await runStep(page, step, tc, state);
+    }
+    if (changeSelector) {
+      await expectTextChanged(
+        page,
+        changeSelector,
+        initialChangeText,
+        `Expected ${changeSelector} to change after case steps.`
+      );
+    }
+    for (const forbidden of tc.forbiddenText || []) {
+      await expect(page.locator('body')).not.toContainText(String(forbidden));
     }
     if (tc.expectedFrontend) {
       test.info().annotations.push({

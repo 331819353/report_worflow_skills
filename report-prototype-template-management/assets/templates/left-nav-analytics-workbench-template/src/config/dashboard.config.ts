@@ -79,7 +79,7 @@ export const cockpitConfig: DashboardConfig = {
   // 10. visualType 用来声明组件视觉类型，校验脚本会用它检查当前块占位是否合法。
   // 11. filterScope 用来声明当前组件受哪些有 scope 的筛选项影响。
   //     组件的数据源用 filterFields 映射筛选字段；用 requiredFilters 防止漏配后静默失效；
-  //     用 ignoredFilters 显式声明组件不受某些全局筛选影响。
+  //     用 ignoredFilters + ignoredFilterReasons 显式声明组件不受某些全局筛选影响。
   // 12. localFilters 用来声明组件标题区筛选，只过滤组件已加载 data，不作为接口参数。
   //     少量选项自动显示为滑动胶囊按钮，多条件或多选项自动显示为筛选面板。
   // 13. 弹窗、跳转、下钻等业务交互由组件内部自行实现。

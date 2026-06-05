@@ -1,6 +1,6 @@
 ---
 name: report-design-system-governance
-description: "用于沉淀和评审可复用报表设计系统规范。用户提到报表设计系统、视觉规范、颜色/字号/间距/tokens、图表规范、表格规范、空态/loading/错误态、交互规范、响应式规范、多报表风格一致、长期复用产品化规范时触发；不处理单个组件修复或单页模板复制。"
+description: "用于沉淀和评审可复用报表设计系统规范。用户提到报表设计系统、视觉规范、颜色/字号/间距/tokens、图表规范、表格规范、指标单位/百分比显示、卡片文本适配、空态/loading/错误态、交互规范、响应式规范、多报表风格一致、长期复用产品化规范时触发；不处理单个组件修复或单页模板复制。"
 ---
 
 # Report Design System Governance
@@ -27,10 +27,10 @@ Read `references/01-design-system-spec-template.md` when producing a reusable sp
    Specify color roles, typography scale, spacing/grid, radius, border, shadow, density, icon size, z-index, and responsive breakpoints.
 
 3. Define component rules.
-   For each report component, specify anatomy, states, data density, label/tooltip behavior, overflow, loading/empty/error behavior, accessibility, and interaction expectations.
+   For each report component, specify anatomy, states, data density, label/tooltip behavior, overflow, loading/empty/error behavior, accessibility, interaction expectations, and internal fit rules for KPI/summary/card titles and values.
 
 4. Define visualization rules.
-   Specify chart selection, axis/legend/tooltip/data-label rules, color semantics, comparison baselines, threshold/alert styling, drilldown behavior, and screenshot regression requirements.
+   Specify chart selection, axis/legend/tooltip/data-label rules, color semantics, metric unit wording, percentage/rate display conventions, comparison baselines, threshold/alert styling, drilldown behavior, and screenshot regression requirements.
 
 5. Define governance.
    Mark stable tokens/components, allowed variants, deprecated patterns, exception process, review checklist, and versioning policy.
@@ -44,6 +44,7 @@ Read `references/01-design-system-spec-template.md` when producing a reusable sp
 - Token specification: color, typography, spacing, grid, radius, border, state, breakpoint.
 - Component specification: filters, KPI cards, charts, tables, detail views, actions, feedback states.
 - Visualization specification: chart choice, semantics, legends, labels, tooltips, thresholds, interaction.
+- Metric display specification: raw vs display scale, percent/rate wording, rounding, trend icon semantics, and forbidden legacy terms.
 - Responsive and accessibility rules.
 - Governance matrix: version, owner, allowed variants, deprecated patterns, exception approval, review checklist.
 - Adoption plan: affected projects/components, migration priority, screenshot regression baseline plan.
@@ -54,4 +55,6 @@ Read `references/01-design-system-spec-template.md` when producing a reusable sp
 - Tokens distinguish semantic roles rather than one-off colors.
 - Empty/error/loading/no-permission states are specified.
 - Dense enterprise-report needs are prioritized over marketing-style layouts.
+- KPI/summary/card internals have wrapping, min-height, tooltip/expand, or scroll rules for long labels and values; critical metric text is not hidden by ellipsis-only treatment.
+- Chinese report rate/change/completion labels use `%` by default; exceptions require named legacy/product rationale.
 - Design-system version and adoption checklist are explicit.

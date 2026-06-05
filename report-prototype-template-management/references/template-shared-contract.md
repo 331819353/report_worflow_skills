@@ -67,7 +67,7 @@ Avoid shell replacement in generated projects:
 Filter binding rules:
 
 - If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.
-- Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record the scope reason; do not use it because mock rows lack the filter field or because the resolver is missing.
+- Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record each scope reason in `widget.data.ignoredFilterReasons`; do not use it because mock rows lack the filter field or because the resolver is missing.
 - Offline/mock rows or custom resolvers must produce different affected widget data for meaningful non-default filter states such as view, snapshot date, month, organization, industry, or scenario.
 - After binding filters, test at least one non-default option and verify a visible KPI/chart/table/list value changes, not only the filter selected state.
 

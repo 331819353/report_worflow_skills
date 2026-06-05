@@ -40,6 +40,8 @@ export interface DashboardDataSourceRef {
   filterFields?: Record<string, string | string[]>;
   // 明确声明该数据源不受哪些筛选影响，避免全局筛选被误认为漏配字段。
   ignoredFilters?: string[];
+  // 每个 ignoredFilters 项都必须给出不可变原因，避免用忽略筛选掩盖数据粒度不足。
+  ignoredFilterReasons?: Record<string, string>;
   // 明确声明必须命中的筛选字段。若数据行缺少对应字段，该行不会通过筛选。
   requiredFilters?: string[];
   // 明确声明必须命中的固定参数。用于防止 params 字段拼错后 staticData 静默不过滤。

@@ -28,10 +28,12 @@ Recommended matrix fields:
 - Preconditions / 前置条件.
 - Steps / 操作步骤.
 - Test Data / Params / Body / Headers.
-- Expected API Result / Expected Status.
-- Expected Frontend Result / Expected UI.
-- Evidence / 证据.
-- Tags / 标签.
+    - Expected API Result / Expected Status.
+    - Expected Frontend Result / Expected UI.
+    - Forbidden Text / 禁止文案: page text that must not appear, such as `pt`, `p.p.`, or `percentage point` for Chinese rate labels.
+    - Change Selector / 变化值选择器: a locator whose text must change after the case steps exercise a non-default filter.
+    - Evidence / 证据.
+    - Tags / 标签.
 
 Use `$delivery-artifact-template-management` when the user needs the automation test matrix schema, supported field aliases, step DSL, or input examples.
 
@@ -90,7 +92,10 @@ Use `$delivery-artifact-template-management` when the user needs the automation 
    npm run update:snapshots
    ```
 
-7. Report limitations instead of overstating coverage.
+7. Use executable regression assertions when matrix intent is specific.
+   Supported E2E step DSL includes `expect_text`, `expect_no_text`, `capture_text`, `expect_text_changed`, and `expect_value_change_after_filter`. Prefer these over free-text expectations for metric unit checks and filter-linked value-change checks.
+
+8. Report limitations instead of overstating coverage.
    If matrix steps are natural language and cannot be mapped to the DSL, the generated E2E test records an annotation and can be made strict with `STRICT_E2E_STEPS=true`. Mark these cases as pending/manual in the handoff unless selectors/actions are supplied.
 
 ## Execution Script
@@ -108,6 +113,8 @@ Use `--run install`, `--run api`, `--run e2e`, `--run visual`, or `--run all`. R
 - Generated tests preserve traceability to the original case ID and title.
 - API cases include method, path/url, expected status, headers/query/body when available.
 - E2E cases use executable selectors/actions or are clearly annotated as manual/unsupported.
+- Metric display cases use forbidden-text assertions when the expected result says Chinese rate/change labels must not use `pt`, `p.p.`, or `percentage point`.
+- Filter-linkage cases use a change selector or explicit `capture_text`/`expect_text_changed`/`expect_value_change_after_filter` steps when the expected behavior is visible data change.
 - Visual cases define a route/page and produce deterministic Playwright snapshots.
 - CI workflow uploads Playwright report, test results, screenshots, and traces.
 - Credentials, tokens, and environment-specific URLs are read from env variables, not hard-coded into committed tests.

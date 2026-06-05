@@ -33,7 +33,7 @@ Use this file for common adjustments and final verification after changing a tem
 1. Create/register the widget.
 2. Add static/mock rows in `src/data/dashboard.dataset.json`, configure `widget.data.id: 'apiData'` with `widget.data.api`, or register a custom API/provider resolver in `dataSources/registry.ts` for complex providers. Do not create TS fixture modules for mock rows.
 3. Configure `widget.data`.
-4. Add `filterFields`, `requiredFilters`, API params, resolver params, or `requiredParams` for every affecting global/page filter. Use `ignoredFilters` only for filters the widget intentionally does not consume.
+4. Add `filterFields`, `requiredFilters`, API params, resolver params, or `requiredParams` for every affecting global/page filter. Use `ignoredFilters` plus `ignoredFilterReasons` only for filters the widget intentionally does not consume.
 5. If mock/offline mode is used, ensure non-default filter values return different rows or values when the business state should change; add a custom resolver when plain rows cannot model the scenario.
 6. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
 7. Render from the `data` prop inside the widget.
@@ -63,7 +63,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Every widget has `visualType`.
 - Widgets without data have `dataPolicy`.
 - Filter scope and data field mapping are explicit.
-- Affecting filters are bound through `filterFields`, `requiredFilters`, API params, or resolver params; `ignoredFilters` is used only for intentionally invariant widgets.
+- Affecting filters are bound through `filterFields`, `requiredFilters`, API params, or resolver params; `ignoredFilters` is used only for intentionally invariant widgets and each ignored filter has `ignoredFilterReasons`.
 - Non-default primary filter states visibly change affected widget data in JSON/API/resolver mode, or the widget is clearly labeled static/invariant.
 - Block spans match the size and component-count constraints from `$report-visual-layout-design`.
 - Outer block validation does not replace component-internal fit checks. Composite widgets must be reviewed with `$report-component-style-design` for summary columns, nested KPI grids, text wrapping, min-height, and no critical nowrap/ellipsis clipping.

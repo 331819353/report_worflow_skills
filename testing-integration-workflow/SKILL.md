@@ -35,6 +35,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 - Keep case design, automation generation, runtime execution, and acceptance conclusion separate. Generated scripts or smoke checks cannot turn unexecuted cases into passes.
 - Automation must preserve case IDs and list unsupported, manual-step, selector, account, data, credential, and environment gaps as `blocked`, `manual-step`, or `not run`.
 - Visual/layout judgment requires captured screenshots first; run deterministic baseline diff when baselines exist and record multimodal/browser QA findings when available.
+- Regression scope must include recently discovered delivery defects when relevant: selected-state-only filters, single-snapshot mock/provider data, wrong percentage display terms, and internal KPI/summary/card text clipping.
 - Every failure or blocker needs evidence, likely owner workflow, reproduction, expected/actual result, and retest criteria.
 - Production acceptance requires defect closure evidence: `open -> fixed -> retest -> closed`, or a visible `blocked` state. Missing URL, account, data, env, permission, source evidence, or quality threshold prevents `ready`.
 
@@ -42,8 +43,8 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 
 1. Inventory test basis: API docs, frontend function description, permission matrix, data-quality rules, URLs, accounts, env, data, and versions.
 2. Run `$quality-gate-validation` when test basis, runtime URLs, data, env/auth notes, screenshots, or source evidence conflict.
-3. Design the test matrix with `$integration-test-case-design`.
-4. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression.
+3. Design the test matrix with `$integration-test-case-design`, including explicit cases for filter-linked data variation, metric display text, and component internal fit when those surfaces exist.
+4. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
 5. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
 6. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, `$permission-matrix-validation`, and `$data-quality-validation` as applicable.
 7. Use `$frontend-runtime-qa-validation` for visual/layout/browser checks on runnable frontend URLs.
@@ -53,6 +54,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 ## Required Output
 
 - Test matrix and coverage map.
+- Regression coverage for filter binding, metric display, and internal component fit when in scope.
 - Runtime environment and execution status.
 - Automation project path/commands when generated.
 - Evidence summary: screenshots, network/API samples, console logs, traces, or blocker notes.

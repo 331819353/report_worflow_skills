@@ -26,13 +26,13 @@ Optional inputs: test account, data seed, environment URL, source commit, risk l
    Map each page/module/control to APIs, request params, response fields, filters, interactions, permissions, and expected states.
 
 2. Define test categories.
-   Include runtime smoke, SSO/auth, API contract, data consistency, filters, interactions, edge states, permission, export/download, layout/data visibility, and regression cases.
+   Include runtime smoke, SSO/auth, API contract, data consistency, filters, interactions, edge states, permission, export/download, layout/data visibility, metric display semantics, and regression cases.
 
 3. Design positive cases.
-   Cover default page load, normal filter changes, expected drilldowns, successful exports, valid permissions, and representative data rows.
+   Cover default page load, normal filter changes that prove affected data changes, expected drilldowns, successful exports, valid permissions, representative data rows, and visible rate/change/completion labels using `%` in Chinese report UI.
 
 4. Design negative and edge cases.
-   Cover empty data, invalid params, missing token, expired token, no permission, API failure, timeout, missing optional fields, null values, boundary dates, cascade clearing, and no-result filters.
+   Cover empty data, invalid params, missing token, expired token, no permission, API failure, timeout, missing optional fields, null values, boundary dates, cascade clearing, no-result filters, stale selected-state-only filters, single-snapshot mock residue, and text truncation in KPI/summary/card internals.
 
 5. Define expected results and evidence.
    Each case must specify precondition, steps, test data/API params, expected UI result, expected API behavior, evidence to capture, and pass/fail criteria.
@@ -74,7 +74,9 @@ When using this skill, produce:
 - Runtime URL smoke and environment alignment.
 - First access, valid token, invalid token, and no-permission SSO behavior.
 - One API/display consistency case per major KPI/chart/table/drawer/export.
-- Default filter, single filter, combined filters, reset, cascade, no-result, and permission-limited filter cases.
+- Default filter, single filter, combined filters, reset, cascade, no-result, and permission-limited filter cases. At least one non-default filter state must prove changed values, row sets, series, totals, or empty/no-permission state for each affected component group.
+- Metric display cases for rate/change/completion/YoY/MoM/variance-rate fields, including absence of `pt`, `p.p.`, and `percentage point` in Chinese report UI unless explicitly accepted.
+- Layout/data visibility cases that check KPI/summary/card internal titles and values wrap or resize without clipping, nowrap ellipsis loss, or hidden critical text.
 - Drilldown/drawer/modal/page-jump parameter preservation.
 - Loading, empty, error, timeout, null, and partial data states.
 - Export/download inherits active filters and permissions.

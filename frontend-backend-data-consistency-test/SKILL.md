@@ -30,7 +30,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
    For each component, record endpoint, method, request params, active filters, response payload, status code, and timing. Capture adapter output if the frontend exposes it or if it can be inferred.
 
 3. Map fields to display.
-   For every displayed value, identify backend field, adapter rule, unit conversion, date/period conversion, precision rule, null/empty rule, and label/legend meaning.
+   For every displayed value, identify backend field, adapter rule, raw scale, display scale, unit conversion, date/period conversion, precision rule, null/empty rule, and label/legend meaning. Rate/change/completion fields in Chinese report UI should visibly use `%` unless the accepted contract says otherwise.
 
 4. Recalculate expected values.
    Independently derive displayed KPIs, ratios, totals, subtotals, chart series, table cells, ranking, top N, and trend values from backend responses.
@@ -38,10 +38,13 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 5. Compare component output.
    Check value equality or documented tolerance, ordering, grouping, series/category alignment, legend labels, color/category semantics, pagination counts, and table totals.
 
-6. Check mock residue.
+6. Prove filter-bound data changes.
+   For every primary/global filter that should affect a component, capture a default and non-default state. Selected control state alone is not a pass; visible value, row set, series, total, API payload, or adapter output must change or the component must be documented as invariant.
+
+7. Check mock residue.
    Verify API-backed components do not display stale static mock values, hardcoded demo data, placeholder metric names, or prototype-only copy.
 
-7. Check edge states.
+8. Check edge states.
    Validate zero, null, empty array, partial data, error response, timeout, and no-permission responses show the expected frontend state.
 
 ## Required Output
@@ -52,6 +55,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Expected display calculations:
 - Matched values:
 - Mismatched values:
+- Filter-state proof:
 - Mock residue:
 - Edge-state result:
 - Defects/blockers:
@@ -61,5 +65,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Every API-backed component has a known endpoint, request params, response fields, and display mapping.
 - Frontend values match backend values after documented transformations.
 - Units, precision, percentages, date formats, sorting, and totals are consistent.
+- Visible Chinese report rate/change/completion labels use `%`, not `pt`, `p.p.`, or `percentage point`, unless that wording is explicitly required.
+- Affected components show real data variation for non-default filter states, or are explicitly scoped as invariant.
 - No stale mock or hardcoded demo value appears in API-backed components.
 - Mismatches include enough evidence to identify whether the likely owner is frontend adapter, backend contract, data source, or documentation.

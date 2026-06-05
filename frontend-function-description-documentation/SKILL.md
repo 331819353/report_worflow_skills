@@ -1,6 +1,6 @@
 ---
 name: frontend-function-description-documentation
-description: "用于生成前端功能说明/交付说明，服务测试、验收、运维和二次开发。用户提到前端功能说明、页面功能清单、交付文档、测试依据、验收说明、维护文档、路由模块说明、数据来源、接口/SDK/静态数据映射、筛选交互、组件行为、运行验证、已知问题、阻塞项时触发；不做运行QA本身。"
+description: "用于生成前端功能说明/交付说明，服务测试、验收、运维和二次开发。用户提到前端功能说明、页面功能清单、交付文档、测试依据、验收说明、维护文档、路由模块说明、数据来源、接口/SDK/静态数据映射、筛选交互、组件行为、指标单位/百分比显示、运行验证、已知问题、阻塞项时触发；不做运行QA本身。"
 ---
 
 # Frontend Function Description Documentation
@@ -34,10 +34,10 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
    For each page/module, describe user purpose, visible controls, filters, data display, interactions, drilldowns, refresh, export/download, empty/error/loading states, and permission behavior.
 
 3. Map data providers to features.
-   Link each functional module to endpoint names/paths, SDK calls, static files, GraphQL operations, data-source IDs, request params, response adapter, and displayed fields. Do not repeat the whole provider document; reference it and summarize the frontend binding.
+   Link each functional module to endpoint names/paths, SDK calls, static files, GraphQL operations, data-source IDs, request params, response adapter, displayed fields, raw/display value rules, and metric units. Do not repeat the whole provider document; reference it and summarize the frontend binding.
 
 4. Record data and filter behavior.
-   Explain default filters, option sources, cascades, reset behavior, pagination, sorting, search, cross-component linkage, and state persistence.
+   Explain default filters, option sources, cascades, reset behavior, pagination, sorting, search, cross-component linkage, state persistence, and which visible component values/rows/series should change for non-default filters. Mark invariant components and retained mock/offline data explicitly.
 
 5. Record interaction behavior.
    Cover chart clicks, KPI/card clicks, table row actions, drawer/modal content, page jumps, parameter passing, back behavior, fullscreen, download, and refresh.
@@ -54,5 +54,7 @@ Produce the function description using the standard frontend function document s
 - Testers can derive test cases from the function description without rereading source code.
 - Each data-backed feature names its provider, source file, SDK call, endpoint, or document section.
 - Filters, interactions, permissions, edge states, and exports are not omitted.
+- Displayed metric units, percentage/rate scaling, rounding, and forbidden display terms are documented when KPI/chart/table values contain rates or changes.
+- Filter binding evidence is clear enough for testers to verify more than selected-state changes.
 - Stale prototype wording, mock-only behavior, and temporary assumptions are clearly marked.
 - The document distinguishes implemented behavior from blocked, deferred, or not-tested behavior.

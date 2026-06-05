@@ -87,7 +87,7 @@
  *    组件配置只写 data.id、data.params、data.api 和 filterFields；框架会把数据源结果作为 data prop 传入组件。
  *    如果组件必须受某个筛选影响，写 requiredFilters，避免字段漏配后筛选静默失效。
  *    如果固定 params 必须过滤 staticData，写 requiredParams，避免参数字段拼错后静默不过滤。
- *    如果组件明确不受某个全局筛选影响，写 ignoredFilters，不要让联动关系变成隐性假设。
+ *    如果组件明确不受某个全局筛选影响，写 ignoredFilters，并同步写 ignoredFilterReasons 说明不可变范围。
  *    无 data 的组件必须在配置里写 dataPolicy: 'static' | 'external'，否则 validate:dashboard 会失败。
  *    每个组件必须写 visualType，框架会用它校验当前 layoutRows 占位是否合法。
  *    多月/趋势/月环比/同比页面必须提供完整周期数据，不要只给默认单月数据。

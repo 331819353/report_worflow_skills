@@ -283,9 +283,28 @@ const validateWidget = (widgetNode, location, span) => {
 
     const requiredFilters = getStringArray(getProperty(dataNode, 'requiredFilters'));
     const filterFieldKeys = getObjectKeys(getProperty(dataNode, 'filterFields'));
-    [...requiredFilters, ...filterFieldKeys].forEach((filterId) => {
+    const ignoredFilters = getStringArray(getProperty(dataNode, 'ignoredFilters'));
+    const ignoredFilterReasonsNode = getProperty(dataNode, 'ignoredFilterReasons');
+
+    [...requiredFilters, ...filterFieldKeys, ...ignoredFilters].forEach((filterId) => {
       if (filterIds.length > 0 && !filterIds.includes(filterId)) {
         warnings.push(`${location}: data binding references filter "${filterId}", but no filters[] entry uses that id.`);
+      }
+    });
+
+    ignoredFilters.forEach((filterId) => {
+      const reason = getStringValue(getProperty(ignoredFilterReasonsNode, filterId));
+
+      if (!reason) {
+        errors.push(
+          `${location}: ignoredFilters includes "${filterId}" but data.ignoredFilterReasons.${filterId} is missing; explain the invariant scope instead of hiding missing filter grain.`,
+        );
+      }
+    });
+
+    getObjectKeys(ignoredFilterReasonsNode).forEach((filterId) => {
+      if (!ignoredFilters.includes(filterId)) {
+        warnings.push(`${location}: ignoredFilterReasons.${filterId} is set but ignoredFilters does not include "${filterId}".`);
       }
     });
 

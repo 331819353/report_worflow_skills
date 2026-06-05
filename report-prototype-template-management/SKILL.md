@@ -57,7 +57,7 @@ All template directories must be copied with their full project structure: `pack
 5. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components.
 6. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
 7. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
-8. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets, never to cover missing data grain.
+8. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
 9. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
 ## Required Output
@@ -69,7 +69,7 @@ All template directories must be copied with their full project structure: `pack
 - Files or extension points to edit.
 - Brand/logo asset decision.
 - Data binding mode: JSON, API, custom resolver, or retained offline mode.
-- Filter-to-widget binding decision: `filterFields`, `requiredFilters`, API params, resolver params, or intentionally labeled `ignoredFilters`.
+- Filter-to-widget binding decision: `filterFields`, `requiredFilters`, API params, resolver params, or intentionally labeled `ignoredFilters` with `ignoredFilterReasons`.
 - Validation and startup commands.
 - Any template limitation or custom-development gap.
 

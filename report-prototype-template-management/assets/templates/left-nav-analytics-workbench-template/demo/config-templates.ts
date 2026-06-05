@@ -155,6 +155,9 @@ export const widgetTemplates = {
         key: 'revenueRows',
       },
       ignoredFilters: ['regionId'],
+      ignoredFilterReasons: {
+        regionId: 'This local-filter demo intentionally shows already loaded rows and does not inherit the global region filter.',
+      },
     },
     localFilters: [
       {
