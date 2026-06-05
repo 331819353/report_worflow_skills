@@ -20,6 +20,7 @@ Self-check dimensions:
    - Check which filters the component uses: direct filters, scoped filters, required filters, ignored filters, implicit parameters, permission scope, and drilldown state.
    - Check whether every used filter is configured successfully: stable `id`, label, default, option source, scope, reset behavior, visible active state, same-name field mapping or explicit `filterFields`.
    - Check mock data completeness for the component: mock rows include all selectable values for every bound filter, including default value, non-default options, cascade children, empty-state combinations, abnormal/risk cases, and permission-limited cases.
+   - Check data variation for primary filters: a non-default view/month/period/organization/industry/status/scenario value must change at least one affected component value, row set, series, total, or state. Selected control state alone is a failed check.
    - Check component configuration and binding: the widget mounts to an existing block, declares `visualType`, uses an existing `data.id` or explicit `dataPolicy`, receives the resolved mock/data prop, declares required fields/formulas/units, and binds to its filter component through the data-source/filter-map contract.
    - For sample/source restoration, check `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`. A visible source module must not be treated as `must-have` unless it directly answers the stated report question.
    - Check interaction configuration and binding: clickable marks, rows, cards, buttons, drawers, modals, jumps, filter mutations, export/download/fullscreen, and close/back flows emit expected actions and target existing configured handlers.
@@ -27,12 +28,14 @@ Self-check dimensions:
    - Check title ownership: the page/block header owns the visible component title. The component body must not render a duplicate chart/table/KPI/custom title unless the component is explicitly standalone.
    - Check peer component distribution: repeated cards/charts/tiles inside one large block use the internal exact `M * N` layout only when `actualTotal > 4`; for `actualTotal <= 4`, they use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs; then check whether the outer block must expand vertically with `heightExpansionRows = ceil(N * 2 / 3)`. If that shape is unreadable, the group is split rather than padded with arbitrary empty slots.
    - Check block size and clipping: the assigned block and component body viewport are large enough after title/action/padding are reserved; no content is compressed, crowded, cropped, hidden behind overflow, or made unreadable.
+   - Check internal fit for composite widgets: summary zones, nested KPI grids, comparison tiles, and small metric cells must fit inside their sub-containers. Long metric titles should wrap to one or two reserved lines; do not accept critical labels/values hidden by `nowrap`, ellipsis, or `overflow:hidden` without disclosure.
    - Any failed component in the Z-shaped audit must be repaired and rechecked before handoff.
 
 2. Data completeness.
    - Required datasets exist and have stable IDs, row grain, dimensions, facts, units, baselines, and formulas.
    - Multi-month, trend, MoM, YoY, quarter, year, and rolling-period views have complete rows for every selectable period, not just the default month.
    - Mock data covers default state, filtered states, empty state, abnormal/risk state, permission scope, and drilldown/detail records.
+   - Mock data or custom resolvers cover every affecting primary filter at the right grain. One default snapshot is acceptable only for explicitly static/invariant content.
    - KPI totals, chart totals, table row counts, drawer records, export rows, and summary text reconcile under the same active filters.
    - Derived values are calculated from source fields or documented formulas; no first-screen card may show unmanaged placeholder data.
 
@@ -40,7 +43,7 @@ Self-check dimensions:
    - Every filter has a stable `id`, label, default value, option source, scope, reset behavior, and visible active state.
    - Data-bearing filter options are derived from dimension data, fact data, or resolvers by default. Static options are limited to stable enums such as status, severity, period granularity, view mode, and yes/no toggles.
    - Every filter maps to a real data field, resolver parameter, or permission scope through same-name fields or explicit `filterFields`.
-   - Widgets that require a filter declare `requiredFilters`; widgets intentionally outside a filter declare `ignoredFilters` and make the scope difference visible.
+   - Widgets that require a filter declare `requiredFilters`; widgets intentionally outside a filter declare `ignoredFilters` and make the scope difference visible. Do not use `ignoredFilters` for a filter that should affect the widget.
    - Cascading filters, disabled options, export/download/share-link state, and permission-limited options are defined when relevant.
 
 4. Interaction usability.
@@ -68,6 +71,7 @@ Self-check dimensions:
    - Run deterministic baseline image diff using Playwright/Cypress or the project visual regression setup when baselines exist; if no baseline exists, save baseline candidates and record `baseline missing`.
    - Run multimodal visual anomaly recognition using the visual/runtime gate from `$quality-gate-validation` when available.
    - Verify there is no layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, title-node collision, critical truncation, low contrast, unreadable chart/table/KPI content, cramped/narrow/tiny components, component overflow outside the component body, blank chart/canvas/table, or broken visual proportion.
+   - Verify composite widget internals: summary copy, nested KPI grids, four-cell metric groups, long metric titles, helper text, units, and action labels are not clipped by narrow sub-columns or forced fixed grids.
    - For flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, capture the stage/layer/lane title band and the first row of nodes in the same screenshot. `L1`/`L2`/`L3` titles, group captions, and lane labels must reserve their own title band and stay at least 16px away from node cards, node borders, child titles, badges, connectors, chart marks, legends, and edge labels.
    - Verify `brandMode`, logo/header placement, sample conclusion placement, global UI token consistency, Chinese `%` metric display, and positive-red-up / negative-green-down change-rate indicators.
    - Record deterministic image-diff failures as `VDIFF-*` findings with baseline/current/diff paths, threshold, viewport/state, severity, component/region, impact, fix direction, and retest criteria.

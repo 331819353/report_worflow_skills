@@ -39,12 +39,14 @@ Check the design across these dimensions:
 
 7. Filter and query logic.
    Filters have defaults, option sources, affected components, query params or data fields, permission scope, cascade behavior, and stale-selection behavior.
+   A primary/global filter is unreasonable when it only changes selected UI state. Affected components must bind the filter through dataset fields, API/provider/query params, `filterFields`, `requiredFilters`, or resolver params, and non-default filter values must visibly change component data unless the component is explicitly invariant. `ignoredFilters` cannot be used to hide missing mock grain, missing field mapping, or missing resolver logic.
 
 8. Interaction and closure.
    Drilldowns, drawers, jumps, exports, refresh, fullscreen, task actions, approvals, and evidence views preserve the same context and support the user's next step.
 
 9. Visual/layout reasonableness.
    Shell, template, grid, first viewport, block spans, density, labels, legends, tables, and complex diagrams fit the content without duplicate component titles, cramped/narrow/tiny components, overlap, clipping, unreadable text, excessive blank space, or title-node collision. Page/block titles are layout-owned; peer component groups use balanced `M * N` layouts when possible; complex diagrams with layer/stage/lane titles must reserve an independent title band and keep titles at least 16px away from the first row of nodes, node borders, child labels, badges, connectors, and edge labels.
+   Outer block/grid validity is not enough for composite widgets. Summary zones, nested KPI grids, small metric cells, comparison tiles, and custom card internals must pass fit inside their real sub-containers. Decision-critical metric titles, labels, values, status text, and actions cannot be clipped by `nowrap`/ellipsis without a disclosure path; prefer reserved one- or two-line wrapping, larger min-height, wider zones, stacking, or fewer visible tiles.
 
 10. Report data-visualization frontend fit.
    Report/BI/dashboard frontends define user purpose, first-screen conclusion, information hierarchy, chart/table choice, metric names/units/precision/口径, filters, linkage, drill-down/drill-through, tooltip/legend/axis semantics, data freshness/quality display, loading/empty/error/no-permission/stale states, component-ready provider mapping, frontend data-volume/performance limits, theme/color/accessibility, and runtime QA evidence. A design that is a flat chart collection, hides the core conclusion, uses misleading chart types, lacks units/口径, fetches broad data for local global filtering, omits edge states, or cannot trace anomalies to detail is a `DESIGN-*` finding.
@@ -103,7 +105,9 @@ Accepted limitations:
 - Every must-have component, filter, interaction, dataset, and API has a reason.
 - Reporting/BI/dashboard data models have explicit business process, grain, layer/type, metric additivity, time口径, quality, and lineage decisions.
 - Report data-visualization frontend behavior is feasible when report UI is in scope: first-screen conclusion, appropriate chart/table choices, metric formatting/口径, filters/linkage/drill-through, state coverage, provider mapping, performance limits, and theme/accessibility are explicit.
+- Affecting filters have field/API/resolver bindings and data-variation evidence for at least one non-default state; selected-state-only filtering is not accepted.
 - Global filter/query behavior is feasible without building or fetching all candidate data before applying scope; component-internal filters are explicitly local to already fetched component data.
+- Composite widget internals fit their sub-containers without hidden critical text, clipped metric titles, or forced fixed grids that make labels unreadable.
 - Report data-service backend behavior is feasible when report APIs are in scope: frontend selects codes only, backend owns metadata/query planning/permission injection/guardrails/cache/export/audit/freshness behavior, and no unsafe SQL/source proxy exists.
 - Database-backed P0/high-volume APIs avoid obvious SQL query-shape risks or record accepted mitigations/gaps.
 - Report integration testing behavior is feasible when report acceptance is in scope: metric口径, golden/baseline data, data-chain reconciliation, API/frontend/filter/permission/cache/export/performance/exception coverage, UAT/smoke/monitoring/rollback, regression, and retest criteria are explicit.

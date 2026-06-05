@@ -37,17 +37,21 @@ Optional inputs: filter design documentation, API documentation, permission rule
 
 5. Verify component binding.
    Build a filter-to-component matrix. Confirm each filter updates intended KPI cards, charts, tables, drawers, drilldowns, exports, and route jumps while unrelated components remain stable.
+   For template/config-driven pages, inspect or request evidence for `filterFields`, `requiredFilters`, API/resolver params, and `ignoredFilters`. An affecting filter listed in `ignoredFilters`, missing field mapping, or single-snapshot mock data is a binding defect.
 
-6. Verify combined cases.
+6. Verify data variation.
+   For each primary filter, choose at least one non-default option and prove that an affected component's visible value, row set, series, total, or empty/no-permission state changes. Selected control state alone is not a pass.
+
+7. Verify combined cases.
    Test default filters, single filter changes, combined filters, reset, all option, empty option, multi-select, date range boundaries, permission-limited values, and repeated changes.
 
-7. Verify state persistence.
+8. Verify state persistence.
    Check whether active filters persist across pagination, sorting, tab switching, drilldown, drawer open/close, refresh, export/download, back navigation, and page jumps according to requirements.
 
-8. Verify display after filtering.
+9. Verify display after filtering.
    Confirm loading, empty, error, no-permission, and stale-selection states render correctly and do not show mixed old/new data.
 
-9. Record production/retest context when applicable.
+10. Record production/retest context when applicable.
    For production-bound validation, record environment/version/account/data seed, permission role, backend/API source mode, evidence paths, defect ID when retesting, and closure criteria. Do not mark filter linkage `pass` when required filter options, backend-supported values, account permissions, or runtime evidence are missing.
 
 ## Required Output
@@ -58,6 +62,7 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Request parameter mapping:
 - Cascade behavior:
 - Filter-to-component matrix:
+- Data variation proof:
 - Combined filter cases:
 - Persistence behavior:
 - Production/retest context:
@@ -68,6 +73,8 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Every filter has valid options, defaults, reset behavior, and documented request mapping.
 - Filter option values are supported by backend APIs and available data or explicitly permission-limited.
 - Changing filters changes the expected backend request and affected components.
+- For every affecting primary filter, at least one visible affected component changes data for a non-default value, or the component is explicitly documented and tested as invariant.
+- `ignoredFilters` is not used for filters that should affect a component.
 - Cascades clear or refresh dependent values correctly.
 - Active filters are preserved or reset consistently across interactions.
 - Production-bound pass includes environment/version/account/permission context, provider/source mode, reproducible evidence, and retest closure when applicable.

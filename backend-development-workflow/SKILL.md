@@ -29,6 +29,16 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 - Read `references/report-data-service-backend-implementation.md` when the backend is a report/BI/dashboard query service, or when production readiness depends on metadata, source/SQL mapping, permission injection, component-ready response shape, async export, audit, cache safety, or slow-report governance.
 - Existing backend document/missing-info references are legacy handoff aids; prefer `$api-documentation-design`, `$gap-ledger-management`, and `$delivery-artifact-template-management` for new standardized artifacts.
 
+## Reinforced Constraints
+
+- Choose exactly one mode before editing: API documentation, backend implementation, or backend repair/debug. Do not enter implementation mode unless the user asks for code, routes, database access, or a running service.
+- Treat API docs as the contract source of truth for downstream frontend/testing. Implemented routes, examples, errors, auth behavior, and docs must stay aligned after every change.
+- When consumer evidence, API docs, models, routes, source samples, env/auth notes, or runtime traces disagree, run `$quality-gate-validation`; run `$api-contract-validation` before and after route or response changes.
+- For report/database endpoints, push global filters, permission scope, sorting, pagination, joins, aggregation, counts, Top/Bottom, and export scope into the source/repository/query layer. Broad load-then-filter behavior is blocked except for tiny static enums or documented component-internal display filters.
+- Mock-derived backend implementation must use a SQLite fixture database with schema, seed rows, indexes, and parameter-varying behavior. JSON or in-memory arrays are examples/assertions only, not the API data source.
+- Missing source, formula, enum, auth, env, permission, quality, or performance facts must be captured through `$gap-ledger-management` or a standard artifact, not hidden in code comments.
+- Production readiness requires source-mode proof, health/smoke evidence, auth/config handling, observability, performance/pagination/export limits, deployment/rollback notes, and testing handoff.
+
 ## Workflow
 
 1. Choose mode: API documentation, backend implementation, or backend repair/debug.
@@ -50,6 +60,7 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 - Contract validation and transformation notes.
 - Auth/SSO behavior when relevant.
 - Gaps, performance limits, observability notes.
+- SQLite fixture/source-mode notes when simulation or mock-derived backend work is used.
 - Verification commands and backend URL or blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
 

@@ -18,6 +18,8 @@ Use for executive conclusions, diagnostic findings, risk explanations, abstracts
 - Prefer 2-3 visible lines for first-screen summaries.
 - Longer explanation moves to expandable text, drawer, or full-width lower section.
 - Main conclusion must not be truncated. Supporting details may clamp only with tooltip or expand action.
+- If a summary block contains small metric cells, the summary text zone and metric grid must both have minimum widths. Do not squeeze summary copy into a narrow strip while forcing metrics into fixed columns.
+- Summary labels and metric titles may wrap to two lines with reserved height; avoid single-line ellipsis for decision-critical wording.
 
 ## Typography
 

@@ -57,7 +57,7 @@ Deliver:
 - Public URL or local preview URL.
 - Screenshot or browser QA when applicable.
 
-Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-prototype-template-management/assets/templates/`: `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` for compact focused reports, `left-nav-analytics-workbench-template` for multi-chapter analytics workbenches, and `frozen-title-sci-fi-cockpit-template` for fixed 1920x1080 cockpit screens. Topbar and left-nav templates may exceed 1080px and scroll vertically. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts` as the base stack; add AntV S2 dependencies only when a generated component actually needs S2.
+Do not treat the word "report" as a single-page constraint. A report may be a one-page summary, a multi-chapter report suite, or a big-screen cockpit. Choose the template by content volume, chapter/view count, interaction density, and display scenario. Use the bundled template assets under `report-prototype-template-management/assets/templates/`: `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` for compact focused reports, `left-nav-analytics-workbench-template` for multi-chapter analytics workbenches, and `frozen-title-sci-fi-cockpit-template` for fixed 1920x1080 cockpit screens. Topbar and left-nav templates may exceed 1080px and scroll vertically. Only select a template with `nav[]` when the content can be redesigned into multiple substantial nav pages; never use a navigation template while populating only the homepage. All bundled implementation paths use `TypeScript + Vue 3 + Vite + Element Plus + ECharts` as the base stack; add AntV S2 dependencies only when a generated component actually needs S2.
 
 ### 4. Review And Repair Mode
 
@@ -335,6 +335,7 @@ Before visual polish or final delivery, require an explicit linkage contract:
 
 - Every component declares its data source, row grain, required fields, formulas, filter dependencies, refresh trigger, and empty state.
 - Every filter maps to a real data field, resolver parameter, or permission scope. If names differ, define an explicit filter-to-field mapping.
+- Every primary/global filter expected to affect a component must prove a visible data change for at least one non-default state. Selected-state-only behavior fails the linkage gate.
 - Filter changes update KPI cards, charts, tables, drawers, exports, downloads, fullscreen views, and jump parameters consistently.
 - Summary counts, table row counts, chart totals, and drawer records reconcile under the same active filters.
 - Selected chart marks, rows, drawers, and drill paths reset or show stale-selection state when the selected object leaves the filtered scope.
@@ -355,7 +356,7 @@ For bundled template implementations, use the template contracts instead of ad h
 - Dynamic filters should return stable `id`/`label` options and may return `disabled`, `reason`, `count`, `parentId`, `level`, `sortOrder`, `permissionScope`, and `meta` for cascades, permissions, and result counts.
 - Widget code should render from the `data` prop and `context`; it should not maintain a separate copy of active filters unless that state is explicitly reset on filter changes.
 - Widget interactions should emit `dashboard-action`; modal, setFilters, navigation, refresh, fullscreen, and URL jumps stay in the shell/action layer.
-- If a component intentionally ignores a global filter, configure `ignoredFilters` and make the scope difference visible in title, subtitle, or helper text.
+- If a component intentionally ignores a global filter, configure `ignoredFilters` and make the scope difference visible in title, subtitle, or helper text. Do not use `ignoredFilters` when the real issue is missing `filterFields`, missing mock grain, or an unimplemented resolver branch.
 - Run `npm run validate:dashboard` before `npm run build`; the bundled templates also run this check automatically inside `build`.
 
 For custom implementations without a bundled template, build the same runtime contract explicitly:
@@ -367,7 +368,7 @@ For custom implementations without a bundled template, build the same runtime co
 
 Template and custom implementations must both pass the same audit:
 
-- Mock data audit: default state, filtered state, empty state, and permission-limited state all have matching component outputs.
+- Mock data audit: default state, filtered state, empty state, and permission-limited state all have matching component outputs. Affecting primary filters require matching rows or resolver logic for non-default options.
 - Filter audit: every primary filter has at least one visible affected component and at least one validation case.
 - Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
 - Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
@@ -460,8 +461,8 @@ Template choice:
 - Report is a content form, not a template decision. A "报告/报表/复盘/诊断" request can use any template after judging content volume and usage.
 - Use `topbar-light-scroll-dashboard-template` for a compact focused office-readable report and detail/query-heavy handoff pages.
 - Use `topbar-dark-scroll-dashboard-template` for a compact focused dark Haier-branded overview or diagnosis cockpit that still scrolls.
-- Use `left-nav-analytics-workbench-template` for enterprise analytics reports, multi-chapter report suites, or dense workbenches with multiple pages/modules.
-- Use `frozen-title-sci-fi-cockpit-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency.
+- Use `left-nav-analytics-workbench-template` for enterprise analytics reports, multi-chapter report suites, or dense workbenches with multiple pages/modules, and populate every `nav[]` page.
+- Use `frozen-title-sci-fi-cockpit-template` for fixed 1920x1080 big-screen cockpit, command-center, exhibition, or leadership presentation screens where full-screen visual impact matters more than daily office efficiency, and populate every retained `nav[]` page.
 - If the existing project already has a framework, follow the existing project patterns instead of forcing a template.
 
 Template selection rules:
@@ -470,18 +471,18 @@ Template selection rules:
 | --- | --- | --- |
 | Primary type is analysis/diagnostic and the user does not explicitly ask for sidebar, multi-page suite, workbench, big screen, or fixed 1920x1080 cockpit | `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` | Analysis pages should default to one focused reading flow; choose light for office readability and dark for cockpit atmosphere. |
 | Compact report: one decision question, usually 1-3 sections, roughly 4-12 components, no persistent page navigation, and users need a direct first-screen answer | `topbar-light-scroll-dashboard-template` or `topbar-dark-scroll-dashboard-template` | A topbar shell keeps the frame light and lets one 8*N content grid carry the report. |
-| Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-workbench-template` | Sidebar navigation can represent report chapters as well as different report modules. |
-| Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-workbench-template` | It is optimized for enterprise work rather than showpiece display. |
-| Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `frozen-title-sci-fi-cockpit-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact. |
+| Large report: one report theme but multiple chapters, more than 3-4 sections, many components/tables, or separate views such as 总览 / 诊断 / 明细 / 任务 / 核对 | `left-nav-analytics-workbench-template` | Sidebar navigation can represent report chapters as well as different report modules, but each nav page must be substantial. |
+| Daily operational analysis, dense tables, repeated filtering, saved workbench behavior, or several related reports in one app | `left-nav-analytics-workbench-template` | It is optimized for enterprise work rather than showpiece display, provided the workbench pages are all populated. |
+| Large screen, monitoring wall, command center, exhibition, leadership cockpit, or presentation scenario | `frozen-title-sci-fi-cockpit-template` | It is optimized for fixed 1920x1080 full-screen viewing and high visual impact; retained nav pages must all be substantial. |
 | The user explicitly asks for 单页 / 顶部栏 / 无侧边栏 | topbar template | Respect the requested shell unless existing code forces another pattern. |
 | The user explicitly asks for 大屏 / 驾驶舱 / 指挥中心 / 科技风 | `frozen-title-sci-fi-cockpit-template` | These terms indicate presentation or monitoring display. |
 
 Selection priority:
 
 1. Existing project framework and user-stated shell.
-2. Display scenario: big-screen/presentation uses `frozen-title-sci-fi-cockpit-template`.
+2. Display scenario: big-screen/presentation uses `frozen-title-sci-fi-cockpit-template` only when its `nav[]` pages can all be meaningful and substantial.
 3. Analysis/diagnostic default: if the primary report type is analysis/diagnostic and the user has not explicitly requested another shell, use a topbar scroll template even when the page needs to scroll beyond 1080px.
-4. Content volume and information architecture: explicit multi-chapter or dense workbench reports use `left-nav-analytics-workbench-template` even if the user calls it one report.
+4. Content volume and information architecture: explicit multi-chapter or dense workbench reports use `left-nav-analytics-workbench-template` only when the content plan has multiple substantial nav pages, even if the user calls it one report.
 5. Standalone compact report uses a topbar scroll template.
 
 Do not choose a template only because it "looks better"; choose by scenario, navigation depth, interaction density, and display environment.
@@ -493,6 +494,8 @@ Implementation must:
 - Declare `brandMode`, `visualMode`, and pass brand asset discovery before changing files.
 - Declare `pageShellPath`; if custom, declare `customDesignPath`.
 - Declare `pageStyleSource`; if no page style and no HTML/source/sample styling is provided, use a bundled template by default.
+- If using a template with `nav[]`, declare the nav-page information architecture before implementation and populate every nav page with distinct widgets, data scope, and relevant interactions. If only a homepage can be populated, switch to a non-nav template.
+- If choosing a bundled template, adapt requirement-document title, filter, navigation, and toolbar requirements into the selected template's existing config and shell slots. Do not implement duplicate shell layers from the original requirement document when they conflict with the template.
 - If implementing a `brandMode: haierBranded` custom shell, configure a real bundled Haier logo before final delivery. For HTML replication, add the Haier logo even if the source HTML lacks it while preserving the source hierarchy.
 - If implementing `brandMode: sampleNative` or `neutral`, record why Haier branding is not required rather than silently omitting the logo.
 - If implementing a custom shell, declare `customLayoutPattern` from the allowed set before changing files.

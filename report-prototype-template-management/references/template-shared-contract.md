@@ -26,8 +26,8 @@ All four template assets share these extension points:
 
 1. Copy `assets/templates/<template-id>/` to the target project.
 2. Install only the dependencies needed by the current component set. Start with the base `package.json`; add `@antv/s2` and `@antv/s2-vue` only when the implementation contains pivot tables, cross tables, wide metric matrices, frozen-header analytical tables, or equivalent S2-class table needs.
-3. Edit `src/config/dashboard.config.ts` incrementally from the copied template baseline. Keep the selected template's native nav/page shape, filter trigger/panel/popover pattern, toolbar placement, theme fields, and shell-owned state unless the user explicitly asks for a template-level redesign.
-4. Put default/offline data in `src/data/dashboard.dataset.json`, or configure `data.id: 'apiData'` / `source.id: 'apiData'` with an `api` block in `dashboard.config.ts`. Register custom API/provider resolvers in `src/dataSources/registry.ts` only for complex providers. Do not add `src/widgets/*Data.ts`, `src/data/*.ts`, or other TS fixture modules for mock rows.
+3. Edit `src/config/dashboard.config.ts` incrementally from the copied template baseline. Keep the selected template's native nav/page shape, filter trigger/panel/popover pattern, toolbar placement, theme fields, and shell-owned state unless the user explicitly asks for a template-level redesign. Map requirement-document title/filter/navigation/toolbar intent into these existing config slots instead of recreating the requirement shell.
+4. Put default/offline data in `src/data/dashboard.dataset.json`, or configure `data.id: 'apiData'` / `source.id: 'apiData'` with an `api` block in `dashboard.config.ts`. Register custom API/provider resolvers in `src/dataSources/registry.ts` for complex providers or filter-driven scenario data that cannot be represented by plain JSON rows. Do not add `src/widgets/*Data.ts`, `src/data/*.ts`, or other TS fixture modules for mock rows.
 5. Add widgets through `components/`, `types.ts`, and `registry.ts`.
 6. Run `npm run validate:dashboard`.
 7. Run `npm run build`.
@@ -39,6 +39,7 @@ Prefer config/data/widget layers:
 
 - Requirements -> `dashboard.config.ts`.
 - Shell navigation/filter changes -> existing `nav`/`page`, `filters`, `screen.controls`, and theme fields in `dashboard.config.ts`; patch or extend them instead of generating a separate nav/filter shell.
+- Requirement-document title/header/filter/navigation/toolbar sketches -> existing template title/logo, `nav`/`page`, `filters`, `screen.controls`, `actions`, and theme slots. Preserve business labels, defaults, options, and behaviors, but adapt the structure to the selected template.
 - Static/mock data -> `dashboard.dataset.json`.
 - Standard API endpoint/query binding -> `widget.data.api` or `filters[].source.api` in `dashboard.config.ts`.
 - Response adapters and custom API/provider resolvers -> `dataSources/registry.ts`.
@@ -59,8 +60,16 @@ Avoid shell replacement in generated projects:
 
 - Do not replace a left-nav template's `nav` array with a single-page `page` object, or replace a topbar template's single `page` object with a new sidebar.
 - Do not implement new persistent filter bars, sidebars, or drawers inside widgets when the template already owns filter invocation.
+- Do not add duplicate title bars, filter regions, navigation layers, sidebars, or toolbars because a requirement document shows a different shell. Use template-level fields and document any adaptation.
 - Do not drop default fields such as `defaultTheme`, `defaultNavOpen`, `defaultFiltersOpen`, `screen.controls`, or the template's logo slot while rewriting business labels.
 - Dark template pages must load Element Plus dark CSS variables and toggle the Element Plus `.dark` class with the template theme, or provide equivalent `--el-*` token overrides. Changing only `screen.defaultTheme` is not enough: update logo variant, `screen.grid.innerBackgroundColor`, card surfaces, and component scoped input/control backgrounds to the same theme tokens.
+
+Filter binding rules:
+
+- If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.
+- Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record the scope reason; do not use it because mock rows lack the filter field or because the resolver is missing.
+- Offline/mock rows or custom resolvers must produce different affected widget data for meaningful non-default filter states such as view, snapshot date, month, organization, industry, or scenario.
+- After binding filters, test at least one non-default option and verify a visible KPI/chart/table/list value changes, not only the filter selected state.
 
 Template assets intentionally exclude `node_modules` and `dist`.
 

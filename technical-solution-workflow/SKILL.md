@@ -24,6 +24,16 @@ Use this workflow before implementation. It defines what should be built and wha
 | Performance constraints | `$performance-optimization` |
 | Version alignment | `$delivery-version-management` |
 
+## Reinforced Constraints
+
+- When requirements, source metadata, metric lists, prototype/mock contracts, previous API plans, or permission notes disagree, run `$quality-gate-validation` before producing final API/model artifacts. Affected rows stay `partial` or `blocked` until the conflict is resolved.
+- Use stable IDs and exact statuses across API清单, 数据模型文件, 缺口台账, version index, and downstream handoffs. Artifact/API readiness values are `ready`, `partial`, or `blocked`.
+- Every API row must trace to a page/module/component need, response model, source/logical model or gap, permission rule when relevant, quality rule when relevant, and performance constraint when relevant.
+- Default to component-aligned APIs. Merge components only when grain, global filters, permission scope, refresh cadence, source dependency, and response lifecycle are coherent.
+- Global filters, permission scope, pagination, sorting, Top/Bottom, aggregation, totals, and export scope must declare source/API execution. Frontend compute exceptions must be bounded and recorded as provider/API gaps.
+- Mock-derived backend handoff requires a SQLite fixture plan that covers parameter-driven behavior, totals, empty states, pagination, drilldowns, sorting, rankings, and permission scope. Do not hand off JSON files as the backend simulation source.
+- Production-bound technical solutions need service/data-flow boundaries, source authority, env/auth/security, observability, performance/capacity, deployment/rollback, and testability notes. API清单 plus 数据模型文件 alone is not production-ready.
+
 ## Workflow
 
 1. Inventory inputs: requirements, source metadata, metric lists, prototype/mock contracts, API candidates, permissions, and previous versions.
@@ -43,6 +53,7 @@ Use this workflow before implementation. It defines what should be built and wha
 - 数据模型文件.
 - 指标治理包, 权限矩阵, 数据质量规则, 性能约束 when in scope.
 - 缺口台账.
+- Source-side execution policy, frontend compute policy, and SQLite/authoritative-source handoff plan when implementation is downstream.
 - Version/handoff index when in scope.
 - Backend/API-documentation handoff status: consumable, partial, or blocked, with exact blockers and next owner actions.
 - Readiness: `ready`, `partial`, or `blocked`, with next-stage owner actions.

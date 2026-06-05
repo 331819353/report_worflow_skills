@@ -16,6 +16,8 @@ Default runnable prototype policy:
 - If the user gives a loose sample/reference without asking for exact restoration, treat it as hierarchy, density, and tone evidence, then choose the closest bundled template.
 - Unless the user specifies another stack or the existing project already uses another stack, implement runnable prototypes with Vue 3 single-file components + TypeScript + Vite + Element Plus + ECharts + AntV S2 + axios.
 - Install/use AntV S2 only for S2-class analytical tables such as pivot tables, cross tables, frozen headers, dense comparison grids, or wide metric matrices.
+- If selecting a template with `nav[]`, such as `left-nav-analytics-workbench-template` or `frozen-title-sci-fi-cockpit-template`, redesign the content into multiple substantial nav pages. Do not choose a navigation template and implement only a homepage.
+- When using a bundled template, map requirement-document title, filter, navigation, toolbar, and shell-layout intent into the template's existing slots and config. Do not recreate the requirement document's shell structure when it conflicts with the selected template.
 
 ## Child Skills
 
@@ -30,6 +32,17 @@ Default runnable prototype policy:
 | Reusable design standards | `$report-design-system-governance` |
 | Quality gates | `$quality-gate-validation` |
 | Runtime visual QA | `$frontend-runtime-qa-validation` |
+
+## Reinforced Constraints
+
+- When multiple artifacts influence the prototype, run `$quality-gate-validation` before locking scope, visual source, API/mock contract, or implementation target. Unresolved high-impact conflicts keep the affected scope `partial` or `blocked`.
+- Before implementation, lock one workflow mode, one primary report type, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
+- The first meaningful viewport must answer one named business question. Every must-have component, dataset, filter, and interaction must appear in the binding matrix before visual polish or code.
+- Template selection and asset copying belong to `$report-prototype-template-management`; page shell/grid fit belongs to `$report-visual-layout-design`; component readability belongs to `$report-component-style-design`.
+- A primary/global filter is not accepted until affected components have filter-field/query/resolver binding and non-default filter values prove visible data changes. Selected-state-only behavior is a failed prototype.
+- Template `8 * N` validation covers outer blocks only. Composite widget internals, summary text areas, nested KPI grids, and small metric cells must pass `$report-component-style-design` fit rules.
+- Missing API, model, field, formula, source, permission, or acceptance facts must be recorded as assumptions or gaps. Do not implement unsupported behavior as final prototype logic.
+- When the prototype feeds technical solution, produce a handoff bundle: component binding, mock/data-source contract, filter contract, interaction payload, data/model assumptions or gaps, and readiness value.
 
 ## Workflow
 
@@ -50,7 +63,8 @@ Default runnable prototype policy:
 - Workflow mode and input inventory.
 - Primary report type and core question.
 - Component/data/filter/interaction binding matrix.
-- Layout plan, `pageShellPath`, selected template/custom reason, and default-stack override reason if any.
+- Layout plan, `pageShellPath`, selected template/custom reason, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
+- Prototype-to-technical handoff bundle when the output will feed API/model/backend/frontend work.
 - Files changed or created when implementation is requested.
 - Quality-gate findings and readiness: `ready`, `partial`, or `blocked`.
 - Verified URL, screenshot/QA evidence, or exact blocker.
@@ -61,5 +75,7 @@ Default runnable prototype policy:
 - Do not start implementation before report type, binding matrix, layout, and template/custom shell decision exist.
 - Do not default to custom development merely because the user omitted visual style; select a bundled template unless a hard custom/restoration/existing-shell/template-limitation reason exists.
 - Do not use a non-Vue3/TypeScript/Vite/Element Plus/ECharts/axios stack for runnable prototypes unless the user specifies it or the existing project requires it.
+- Do not select a navigation/sidebar template unless the content is reorganized into multiple meaningful nav pages, each with enough components, data, and interactions to stand on its own.
+- Do not create a second title area, filter bar, sidebar, navigation layer, or toolbar inside an existing template because the requirement document showed one; adapt labels, options, defaults, and behavior through template config unless a template-level redesign is explicitly requested.
 - Do not keep template engineering inside layout; template work belongs to `$report-prototype-template-management`.
 - Do not claim runnable delivery without build/start/visual evidence or a precise blocker.

@@ -29,6 +29,15 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 
 - Read `references/report-integration-testing-implementation.md` when validating a report/BI/dashboard data chain, frontend/backend pair, export, permission path, cache path, UAT, release smoke, or defect retest closure.
 
+## Reinforced Constraints
+
+- Test basis should include versioned API docs and frontend function description. Missing or conflicting basis artifacts become blockers for affected cases, even if a draft matrix can still be produced.
+- Keep case design, automation generation, runtime execution, and acceptance conclusion separate. Generated scripts or smoke checks cannot turn unexecuted cases into passes.
+- Automation must preserve case IDs and list unsupported, manual-step, selector, account, data, credential, and environment gaps as `blocked`, `manual-step`, or `not run`.
+- Visual/layout judgment requires captured screenshots first; run deterministic baseline diff when baselines exist and record multimodal/browser QA findings when available.
+- Every failure or blocker needs evidence, likely owner workflow, reproduction, expected/actual result, and retest criteria.
+- Production acceptance requires defect closure evidence: `open -> fixed -> retest -> closed`, or a visible `blocked` state. Missing URL, account, data, env, permission, source evidence, or quality threshold prevents `ready`.
+
 ## Workflow
 
 1. Inventory test basis: API docs, frontend function description, permission matrix, data-quality rules, URLs, accounts, env, data, and versions.
@@ -48,6 +57,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 - Automation project path/commands when generated.
 - Evidence summary: screenshots, network/API samples, console logs, traces, or blocker notes.
 - Defect list with severity, owner, reproduction, expected/actual, and retest criteria.
+- Retest/production acceptance closure matrix when acceptance or defect repair is in scope.
 - Acceptance readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate

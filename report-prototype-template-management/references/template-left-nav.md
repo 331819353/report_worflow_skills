@@ -31,6 +31,13 @@ nav: [
 filters: [],
 ```
 
+## `nav[]` Content Gate
+
+- Choose this template only when the report can be reorganized into multiple substantial pages.
+- Every `nav` item must represent a real business chapter/module, not a decorative menu entry.
+- Each nav page must include enough content to stand on its own: a clear page question, component set, dataset scope, filters/interactions when relevant, and non-placeholder mock/API data.
+- Do not populate only `overview` while leaving other nav pages empty, duplicated, or skeletal. If the report is really a single reading flow, use a topbar scroll template instead.
+
 ## Add A Page
 
 1. Add a new item in `nav`.

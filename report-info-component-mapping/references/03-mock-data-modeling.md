@@ -101,6 +101,14 @@ Avoid all numbers being too neat. Use realistic variation, but keep the story le
 
 Filter option mock data should include stable `id`, `label`, optional `count`, `disabled`, `reason`, and `parentId` for cascades. Counts must match filtered rows when displayed.
 
+## Filter Granularity And Scenario Rules
+
+- Mock data must cover every primary/global filter that is expected to change visible data. A filter is not implemented when it only changes selected UI state.
+- For view, snapshot date, month, period, organization, industry, product, status, permission, or scenario filters, affected datasets need rows keyed by those dimensions or a resolver that derives different values for each option.
+- Do not use one default snapshot for all filter states unless every affected component is explicitly static/invariant and documents why.
+- At least one validation case per primary filter should prove a visible KPI/chart/table/list value changes, and another should prove empty or no-permission behavior when relevant.
+- If a global filter maps to a different row field, define the mapping as `filterFields` or equivalent. If the data shape cannot support the filter, mark a data-grain gap instead of adding the filter to `ignoredFilters`.
+
 ## Safety
 
 - Do not use real personal names, phone numbers, identity numbers, bank cards, or confidential contracts.

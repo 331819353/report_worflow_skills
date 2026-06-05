@@ -132,6 +132,8 @@ Force-check rules:
 
 - A runnable prototype must fail validation when a primary filter has no explicit component binding.
 - A widget affected by filters must declare `filterFields`, `requiredFilters`, or equivalent `filterMap`.
+- A widget expected to react to a global/page filter must not declare that same filter in `ignoredFilters`. Use `ignoredFilters` only when the component is intentionally invariant under the filter, and record the reason and visible scope label.
+- Primary filter validation must prove data changed in affected components. Selected-state change alone is not enough.
 - A runnable prototype must fail validation when a global/page-level or permission filter is applied only after building or fetching the full dataset. Component-internal filters must be labeled local and tested against already fetched component data.
 - If a component intentionally ignores a filter, declare that relationship and label the scope difference.
 - Multi-period filters are not acceptable unless affected data includes all selectable periods.

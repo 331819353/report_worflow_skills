@@ -44,11 +44,13 @@ Required changes:
 
 - Copy `assets/templates/<template-id>/` into the project.
 - Edit `src/config/dashboard.config.ts` for title, theme, navigation, `layoutRows`, `widgets`, global filters, and toolbar labels, but preserve the copied template's native nav/page shape, filter trigger/panel/popover pattern, toolbar placement, theme fields, and logo slot.
+- Adapt requirement-document title/filter/navigation/toolbar requirements into the copied template's existing config slots. Do not add a second title area, standalone filter bar, extra sidebar, or duplicate toolbar unless the task is explicitly a template-level redesign.
 - Put mock/static data in `src/data/dashboard.dataset.json`. Do not create generated `src/widgets/*Data.ts`, `src/data/*.ts`, or other TS fixture modules for rows, arrays, or payloads.
 - Register business widgets in `src/widgets/types.ts` and `src/widgets/registry.ts`.
 - Implement visual components under `src/widgets/components/`.
 - Bind widgets through `widget.data.id` and either `widget.data.params.key` for JSON mode or `widget.data.api` for standard API mode.
 - Bind component-title filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run on the component's already loaded data.
+- Bind global/page filters that affect widgets through `widget.data.filterFields`, `requiredFilters`, API query/body params, or resolver params. Do not put an affecting filter in `ignoredFilters`.
 - Configure `actions` only as event forwarding or integration hooks; component-level popup, navigation, drilldown, and detail behavior stays inside the component.
 - Add, remove, or relabel navigation/filter items through the template's existing `nav`/`page` and `filters` arrays. Do not create a new standalone sidebar, top navigation, filter bar, or filter drawer unless the task is explicitly a template-level redesign.
 - When `screen.defaultTheme` is `dark`, the logo variant, grid/card surfaces, Element Plus controls, and component scoped backgrounds must follow the same dark token system as the shell; do not leave default white cards, `ElSelect`/`ElInput`/date-picker surfaces, or popovers in a dark page.
@@ -57,8 +59,9 @@ Data options:
 
 - JSON mode: use built-in `filterData`, `businessData`, or `staticData` resolvers.
 - Standard API mode: use `id: 'apiData'` or `id: 'httpData'`, configure `api.url`, `api.query`, `api.headers`, `api.body`, `api.responsePath`, and optional `api.adapter` directly on `widget.data` or `filters[].source`.
-- Custom provider mode: for signatures, special auth, complex pagination, SDKs, realtime streams, or multi-step requests, add a resolver in `src/dataSources/registry.ts`, adapt the provider payload to component-ready rows, then reference the resolver id in `widget.data.id` or `filters[].source.id`.
-- Field mapping: if a global filter id differs from a row field, use `data.filterFields`; if the widget must respond to a filter, add `requiredFilters`; if it should ignore a global filter, add `ignoredFilters`.
+- Custom provider mode: for signatures, special auth, complex pagination, SDKs, realtime streams, multi-step requests, or scenario data that must change by view/month/organization/status but is not row-filterable, add a resolver in `src/dataSources/registry.ts`, adapt the provider payload to component-ready rows, then reference the resolver id in `widget.data.id` or `filters[].source.id`.
+- Field mapping: if a global filter id differs from a row field, use `data.filterFields`; if the widget must respond to a filter, add `requiredFilters`; if it should ignore a global filter, add `ignoredFilters` only with an intentional invariant-scope reason.
+- Mock/offline data: one default snapshot is not enough for an affecting global filter. Add matching rows or resolver branches for every primary filter option that should visibly change component data.
 
 Verification:
 
@@ -93,6 +96,7 @@ Production handoff should document:
 - JSON sources retained for offline/demo mode, if any;
 - API source ids, provider endpoints, `responsePath`, and adapter names;
 - filter-to-provider input mapping;
+- filter-to-widget response proof, including non-default filter states that change visible data;
 - response adapter mapping to widget rows;
 - component-level local filters and interactions;
 - build/runtime verification evidence and remaining blockers.

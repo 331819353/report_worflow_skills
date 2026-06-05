@@ -36,7 +36,7 @@ Capture the smallest set that can prove the page is visually usable:
 - Header/logo area for Haier or branded pages, including placeholder state when the asset is missing.
 - Full-page screenshot when the page scrolls.
 - Mobile/tablet screenshots when the page is responsive or embedded in variable containers.
-- One screenshot after changing a representative primary filter.
+- One screenshot after changing a representative primary filter, plus the expected visible data-change assertion for affected components when the filter is supposed to change data.
 - One screenshot of opened custom filter popovers/dropdowns when filter visual acceptance is in scope.
 - One screenshot focused on complex flow, Sankey, graph, tree, decomposition, or lineage diagrams when present.
 - For diagrams with layer/stage/lane labels such as `L1/L2/L3`, capture the full diagram header/title band and the first row of nodes in the same screenshot so title-node collisions are visible.
@@ -90,6 +90,7 @@ Ask the multimodal model to inspect screenshots for:
 - Graphic overlap: chart marks, labels, legends, axes, maps, diagrams, table headers, or cards overlap.
 - Text-graphic collision: business-question text, conclusion text, titles, labels, legends, chart marks, tables, cards, diagram nodes, connectors, or controls overlap, stack, or visually merge.
 - Component too small: chart/table/KPI/detail content is compressed, unreadable, or occupies too little of its block.
+- Internal component clipping: summary text, nested KPI grids, submetric tiles, metric titles, values, helper text, or actions are truncated by narrow columns, forced fixed grids, `nowrap`, ellipsis, or hidden overflow without tooltip/focus/drawer disclosure.
 - Crowded component distribution: repeated peer cards/charts/tiles are too narrow, too small, or arranged in an awkward long strip instead of a balanced `M * N` pattern when space allows.
 - Clipping or truncation: important text, values, legends, axes, controls, drawers, modals, or table content is cropped.
 - Nonblank rendering: charts, canvases, maps, icons, logos, images, and tables render with visible content.
@@ -121,8 +122,8 @@ Every visual anomaly must be recorded as:
 
 ## Severity Standard
 
-- `blocker`: the page is blank, core conclusion cannot be read, critical data is hidden, main interaction is unusable, deterministic diff breaks a key acceptance area, text/graphic collision hides core content, title-node collision hides or corrupts a key layer/component title, or the screenshot cannot support acceptance.
-- `major`: a key component is readable only with difficulty, a chart/table/card is visibly distorted, duplicated titles waste meaningful body space, layout is clearly broken, components are cramped when a balanced layout is available, a stage/layer/lane title touches or visually attaches to a card/node/connector, deterministic diff changes important geometry/content, or a normal user may misread the result.
+- `blocker`: the page is blank, core conclusion cannot be read, critical data is hidden, main interaction is unusable, deterministic diff breaks a key acceptance area, text/graphic collision hides core content, title-node collision hides or corrupts a key layer/component title, critical metric title/value text is clipped without disclosure, or the screenshot cannot support acceptance.
+- `major`: a key component is readable only with difficulty, a chart/table/card is visibly distorted, duplicated titles waste meaningful body space, layout is clearly broken, components are cramped when a balanced layout is available, summary/KPI internal cells truncate business labels, a stage/layer/lane title touches or visually attaches to a card/node/connector, deterministic diff changes important geometry/content, or a normal user may misread the result.
 - `minor`: polish issue, secondary spacing issue, non-critical alignment/diff problem, or low-risk text/visual density issue.
 
 ## Feedback Loop

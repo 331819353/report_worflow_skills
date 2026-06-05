@@ -87,6 +87,8 @@ Loading guidance:
 - A filter without affected components is dead UI unless it controls navigation or permissions.
 - Data-bearing filter options must derive from dimension data, fact data, or a resolver unless they are stable enums.
 - Filter IDs must map explicitly to dataset fields or query params.
+- A primary/global filter expected to affect a component must map through `filterMap`, `filterFields`, `requiredFilters`, query params, or resolver params. Do not list that filter in `ignoredFilters`; `ignoredFilters` is only for components whose business scope is intentionally invariant under that filter and must be labeled in the scope notes.
+- Mock/offline data must have the same grain as the affected primary filters. View, month, period, organization, industry, status, or scenario switches need distinct rows or a resolver that returns different component values; one default snapshot plus selected-state changes is not an implementation-ready contract.
 - Filter/query execution must distinguish global/page-level filters from component-internal filters. Global/page-level and permission filters should execute through SQL `WHERE`, source/provider/repository queries, resolver params, Redis/precompute keys, or equivalent source-side scope. Component-internal filters may run locally on the already fetched component dataset. Do not design pages that fetch/build all candidate data and then apply global filters, pagination, ranking, grouping, or aggregation locally.
 - Clickable visual elements must define emitted event, target action, parameters, permission behavior, and stale-state behavior.
 - Drawers, exports, jumps, refresh, and fullscreen views must reuse the same filtered context as the source component.
@@ -134,6 +136,7 @@ Before finalizing, verify:
 - Mock data includes enough time, hierarchy, contrast, and edge cases to prove the story.
 - Each primary filter has a real data-field, resolver-param, permission-scope, and affected-component binding.
 - Each primary filter has an execution-stage contract proving it narrows data before full component/page construction, or a bounded exception is documented.
+- Each primary filter has at least one validation case proving the affected component's data changes, not only the control selected state.
 - Hovering or clicking dense chart marks reveals exact values or meaningful detail.
 - Filtered KPI totals, chart totals, table rows, drawer records, exports, jumps, and refresh share context.
 - Selected objects reset or show stale-selection state when filters remove them from scope.

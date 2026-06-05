@@ -20,6 +20,7 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 | Runtime/browser QA | `$frontend-runtime-qa-validation` |
 | Function handoff docs | `$frontend-function-description-documentation` |
 | Performance | `$performance-optimization` |
+| Production observability | `$production-observability-feedback` |
 | Quality gates | `$quality-gate-validation` |
 
 ## Reference Loading
@@ -27,6 +28,17 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Read `references/mock-to-provider-integration.md` or `references/mock-to-http-integration.md` when replacing mock/static data with provider/API calls.
 - Read `references/provider-gap-ledger.md` when provider fields, auth, environment, or ownership are incomplete.
 - Read `references/report-data-visualization-frontend-implementation.md` when the frontend is a report/BI/dashboard decision interface, or when production readiness depends on first-screen conclusion, chart/table semantics, provider mapping, edge states, freshness/quality display, performance, theme/accessibility, or runtime QA evidence.
+
+## Reinforced Constraints
+
+- Resolve `prototypeSourcePath` and `frontendTargetPath` before file edits. Treat upstream prototype source as read-only unless the user explicitly designates it as the frontend target.
+- Run baseline install/typecheck/lint/test/build when feasible before large edits, and record pre-existing failures so integration work does not hide them.
+- Classify provider/source mode, env/proxy/base path, and auth/SSO behavior before replacing mocks or wiring request clients.
+- Validate provider/API contracts and design adapters before changing production data paths. Missing provider, field, enum, formula, env, auth, permission, deployment, or testing facts must be visible gaps.
+- Global filters, search, permission scope, pagination, sorting, drilldown, refresh, export, rankings, and aggregation must feed provider/API/resolver inputs. Component-internal filters may only operate on an already fetched component dataset.
+- A filter that should affect a component must be wired to provider/API/resolver params, `filterFields`, `requiredFilters`, or an equivalent mapping. Do not leave it in `ignoredFilters`; selected-state-only filter changes are failed integration.
+- Production paths cannot depend on unapproved mocks, offline providers, fake timers, generated rows, or demo-only SDKs. Any retained mock/offline source must be named, scoped, and excluded from `ready` production handoff unless explicitly accepted.
+- Runtime readiness needs build/start evidence and browser QA evidence. Production-bound frontend work also needs monitoring/feedback/SLA notes through `$production-observability-feedback`.
 
 ## Workflow
 
@@ -40,7 +52,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 8. Use `$haier-sso-integration` for Haier account-center login or auth header behavior.
 9. Replace or isolate mock data, wire filters/interactions/pagination/sorting/export/refresh to provider inputs, and keep component view models stable.
 10. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
-11. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
+11. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
+12. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
 
 ## Required Output
 
@@ -50,6 +63,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Env/auth/deployment notes.
 - Files changed and verification commands.
 - Runtime QA and function description.
+- Production observability and retained mock/offline-source notes when production handoff is in scope.
+- Filter binding proof for non-default filter states, including visible data changes or intentionally invariant component scope.
 - Frontend URL or exact blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
 
@@ -58,4 +73,6 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Do not edit upstream prototype source unless explicitly designated as target.
 - Do not leave production paths on unapproved mocks.
 - Do not fetch broad data then apply global filters/pagination/sorting only in components.
+- Do not treat a filter as integrated when it only changes selected UI state and affected component data remains unchanged because of `ignoredFilters`, missing mapping, or single-snapshot mock data.
+- Do not mark production handoff `ready` without provider/source mode, backend/API base, env/auth behavior, runtime QA evidence, retained mock status, and testing/observability handoff.
 - Do not claim handoff readiness without build/runtime evidence or a precise blocker.

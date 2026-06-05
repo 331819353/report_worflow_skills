@@ -162,6 +162,8 @@ Interaction rules:
 - Table detail, drawers, exports, and route jumps should carry the same scope.
 - Local legend toggles, local tabs, and in-component search may filter already fetched component data only when the provider returned the complete component dataset after global filtering.
 - Global filters, permission scope, pagination, sorting, Top/Bottom, grouping, aggregation, and export scope must be sent to the provider/API/resolver before component rendering.
+- A global/page filter is not implemented if it only changes selected control state. Affected components must bind the filter to API/provider/resolver inputs or configured `filterFields`/equivalent mapping, and non-default filter values must visibly change the relevant KPI/chart/table/list data.
+- Use `ignoredFilters` only for intentionally invariant components. Do not use it to compensate for missing provider fields, mock data grain, or resolver branches.
 
 ## Data Freshness, Quality, And Trust
 

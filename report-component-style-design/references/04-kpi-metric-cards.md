@@ -109,6 +109,8 @@ Suggested CSS tokens:
 - Values must not overflow the card width. Use compact notation, controlled precision, or a wider value zone before reducing font size.
 - Large currency values should use consistent units, such as 万元 or 亿元, instead of long raw numbers.
 - If a KPI card contains submetric tiles, calculate whether the main value plus submetric grid fits. If not, reduce visible submetrics, split the group, or move submetrics to drawer.
+- Submetric tiles need their own minimum height and wrapping policy. Do not force four long-titled metrics into two columns when the cell width causes title/value clipping; widen the metric area, wrap to two lines, stack into one column, or show fewer tiles with drilldown.
+- Avoid `nowrap + ellipsis` on metric titles that carry business meaning. If truncation is unavoidable, reserve tooltip/focus disclosure and keep the title readable enough to identify the metric.
 - Nested KPI groups wrap to additional rows or scroll internally with clear affordance. They must not clip lower rows.
 
 ## Mini Trends

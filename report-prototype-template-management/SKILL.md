@@ -17,6 +17,8 @@ Default routing:
 - Choose `pageShellPath: custom` only when the user explicitly asks for custom/free design, explicitly asks for exact screenshot/HTML/source restoration, an existing shell must be preserved, or a documented requirement cannot be met by any bundled template.
 - If the user provides only a loose sample/reference, use it as hierarchy/density/tone evidence and still choose the closest bundled template.
 - Bundled templates use Vue 3 + TypeScript + Vite + Element Plus + ECharts + axios, with AntV S2 added for S2-class analytical tables.
+- If a selected template has `nav[]`, every nav item must map to a substantial business page. Do not ship a navigation template with only the homepage populated.
+- Requirement-document shell details must be adapted into the selected template's existing title/logo, `nav`/`page`, `filters`, controls, toolbar, and action slots. Do not add duplicate shell structures that fight the template.
 
 ## Bundled Assets
 
@@ -50,26 +52,34 @@ All template directories must be copied with their full project structure: `pack
 
 1. Decide whether the task needs a bundled template, an existing project shell, or custom development; default to bundled template unless a hard custom/restoration/existing-shell/template-limitation reason exists.
 2. Select exactly one template when bundled assets are appropriate.
-3. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
-4. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components.
-5. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
-6. Keep mock/offline rows in `src/data/dashboard.dataset.json`; do not create TS fixture modules for data rows.
-7. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
+3. For templates with `nav[]`, define the nav-page content plan before copying or editing: each nav item needs its own question, widgets, dataset scope, filters/interactions, and enough page density.
+4. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
+5. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components.
+6. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
+7. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
+8. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets, never to cover missing data grain.
+9. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
 ## Required Output
 
 - Selected template ID and reason.
+- Nav-page content plan when the selected template has `nav[]`.
+- Shell compatibility decisions for title, filters, navigation, toolbar, and controls.
 - Asset copy/merge path.
 - Files or extension points to edit.
 - Brand/logo asset decision.
 - Data binding mode: JSON, API, custom resolver, or retained offline mode.
+- Filter-to-widget binding decision: `filterFields`, `requiredFilters`, API params, resolver params, or intentionally labeled `ignoredFilters`.
 - Validation and startup commands.
 - Any template limitation or custom-development gap.
 
 ## Quality Gate
 
 - The selected template matches display scenario, navigation depth, density, and fixed/scroll behavior.
+- Templates with `nav[]` are used only when multiple substantial nav pages are implemented; if only one page can be populated, do not choose or retain a nav template.
+- Requirement-document title/filter/navigation/toolbar ideas are mapped into existing template slots instead of implemented as duplicate shell layers.
 - Template project structure remains complete after copying.
 - Native shell navigation, filters, toolbar, theme, and logo slots are preserved unless explicitly redesigned.
 - Validation scripts and start helpers remain available.
 - Template asset paths in workflow or layout skills point to this skill, not to layout skill assets.
+- Primary/global filters that should change business data are not placed in `ignoredFilters`; mock/API/resolver data proves at least one affected widget value changes for non-default filter states.

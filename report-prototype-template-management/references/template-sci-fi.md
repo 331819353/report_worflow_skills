@@ -31,6 +31,13 @@ nav: [
 filters: [],
 ```
 
+## `nav[]` Content Gate
+
+- Choose this template only when the cockpit can be organized into multiple substantial nav pages.
+- Every retained `nav` item must represent a real cockpit view such as 总览, 预警, 产线/区域, 趋势, 指挥调度, or 事件详情.
+- Each nav page must fit a complete 1920*1080 business view: clear page question, high-signal widgets, dataset scope, filter/drawer behavior when relevant, and non-placeholder data.
+- Do not populate only the first cockpit page while leaving other nav pages empty, duplicated, or skeletal. If the content is only one large-screen view, do not choose or retain this nav template.
+
 ## Adjustments
 
 - Keep all primary content visible within 1920*1080.

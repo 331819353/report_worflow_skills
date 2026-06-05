@@ -103,6 +103,8 @@ Minimum columns:
 - Empty states must name the reason: no matching filter result, no permission, loading failed, source not configured, or static placeholder.
 - Additive KPI/chart totals must reconcile with detail rows under the same filters.
 - Non-additive metrics such as rates, scores, and completion rates must recalculate from raw numerator/denominator fields.
+- A primary/global filter that should affect a component must map to a dataset field, query param, resolver param, or required filter. It cannot be hidden in `ignoredFilters`.
+- Mock/offline data must include enough dimension grain or resolver logic for each affected primary filter to return different values when business reality differs. A single static snapshot is allowed only for explicitly invariant/static content.
 - For backend/API handoff, business formulas, aggregations, ranking, grouping, Top/Bottom, filtering, pagination, and chart-series/table shaping should be returned as component-ready response fields. The frontend may do display formatting, enum label display, null handling, local UI sorting of tiny already-returned option lists, and interaction state only.
 - Do not design page/API-level full-materialize-then-filter data paths. Components, stores, adapters, and static helpers must not build/fetch all candidate rows and then apply global filters, permission filters, pagination, ranking, grouping, aggregation, or counts locally. Use `component-local` only for filters over the already fetched component dataset; use `bounded-local` for tiny static enums or confirmed bounded lookups; otherwise use `blocked`.
 - Selected mock objects used by drawers, drilldowns, or jumps must exist in filtered data or produce a stale-selection state.
@@ -118,7 +120,7 @@ For bundled templates:
 - Use `widget.data.requiredFilters` for filters that must affect the dataset.
 - Use `widget.data.requiredParams` for fixed params that must filter `staticData`.
 - Use SQL `WHERE`, source/provider/repository/resolver params, Redis/precompute cache keys, or equivalent source-side scope for high-volume or business-defined global filtering before component data is constructed. `staticData` or component-local filtering is acceptable only for already fetched component datasets, explicitly bounded demo datasets, tiny enums, or lookup options.
-- Use `widget.data.ignoredFilters` for intentionally ignored global filters, and label that scope difference in the UI.
+- Use `widget.data.ignoredFilters` only for intentionally ignored global filters whose component scope is invariant. Do not use it to bypass missing mock grain, mismatched field names, or unimplemented resolver behavior; fix the data with `filterFields`, `requiredFilters`, `requiredParams`, API params, or a custom resolver.
 - Use `widget.filterScope` plus `filters[].scope` for local filter behavior.
 - Business widgets should emit `dashboard-action` and central action config should handle the event.
 - `navigateUrl` should include active filters by default.
@@ -159,6 +161,7 @@ A runnable prototype should fail validation when:
 
 - A primary filter has no explicit component binding.
 - A primary filter only narrows data after full dataset/component construction.
+- A primary filter changes only UI selected state while affected component data stays identical because of `ignoredFilters`, missing `filterFields`, or single-snapshot mock data.
 - A clickable element has no emitted event or configured action.
 - A multi-period filter is backed by single-period data.
 - A first-screen component has no dataset, static policy, or external runtime contract.
