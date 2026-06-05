@@ -10,28 +10,42 @@ Before a workflow finalizes design, API/model contracts, frontend/backend wiring
 
 Before a workflow marks technical architecture, data service/backend, frontend integration, or testing acceptance as production-ready, run `production-closed-loop-readiness.md`. A stage can be document-complete or locally runnable while still only `partial` if source authority, environment, auth, deployment, observability, performance, testability, or defect retest closure is missing.
 
+Whenever data service or data visualization runtime behavior depends on environment configuration, apply `environment-profile-contract.md`. Test and production profiles must be represented by `.env.test` and `.env.production`; a single undifferentiated `.env` is not enough for integration, handoff, or production acceptance.
+
+Whenever a report/BI/dashboard frontend visualization is designed, implemented, integrated, validated, or marked production-ready, apply `report-data-visualization-frontend-implementation.md`. Visualization decisions such as user purpose, first-screen conclusion, chart/table choice, metric formatting and口径, filters/linkage/drill-through, component-ready provider mapping, loading/empty/error/no-permission states, freshness/quality display, frontend performance, theme/accessibility, and runtime QA evidence must be explicit or intentionally out of scope.
+
+Whenever a report/BI/dashboard data chain, frontend/backend pair, export, permission path, cache path, or release candidate is integration-tested, apply `report-integration-testing-implementation.md`. Testing decisions such as metric口径, golden/baseline data, model reconciliation, API contract, frontend binding, filters, permissions, cache isolation, export parity, performance/stability, exception states, UAT, release smoke, monitoring, rollback, regression, and retest closure must be explicit or intentionally out of scope.
+
+Whenever a data service/API is designed, documented, implemented, validated, or marked production-ready, apply `data-service-performance-resilience-contract.md`. Performance and stability decisions such as concurrency model, cache, connection pools, timeouts, retries, rate limits, degradation, health checks, and observability must be explicit or intentionally out of scope.
+
+Whenever a report/BI/dashboard backend data service is designed, documented, implemented, validated, or marked production-ready, apply `report-data-service-backend-implementation.md`. Report query-service decisions such as metadata, permission injection, parameter guardrails, query planning, safe SQL/source generation, component-ready result shape, pagination/count, async export, freshness/quality, audit, cache safety, version/publish/rollback, and slow-report governance must be explicit or intentionally out of scope.
+
+Whenever a database-backed data service/API is designed, documented, implemented, validated, or marked production-ready, apply `sql-query-writing-optimization.md`. Query shape decisions such as projection, predicate sargability, join cardinality, dedup/order necessity, pagination strategy, aggregation/window placement, dynamic optional filters, and plan evidence must be explicit or intentionally out of scope.
+
+Whenever a report/BI/dashboard data model, metric model, source-to-consumer mapping, or OLAP serving model is designed, documented, implemented, validated, or marked production-ready, apply `olap-data-modeling-optimization.md`. Modeling decisions such as business question, subject area, business process, grain, fact/dimension type, metric additivity, time口径, DWD/DIM/DWS/ADS layer, summary/wide-table justification, SCD/history, many-to-many handling, deduplication, late-arriving data, quality rules, and lineage must be explicit or intentionally out of scope.
+
 When a request changes an existing delivered or in-progress artifact, route first through `$change-impact-analysis`. Do not patch one document or code surface while leaving affected metrics, API contracts, data models, frontend bindings, tests, permissions, screenshots, or delivery versions unknown.
 
 When artifacts span more than one iteration, maintain a delivery version chain through `$delivery-version-management`. Every prototype/API/model/backend/frontend/test/release artifact should state which upstream version it consumes and which downstream version validated it.
 
 ## Stage Routing Matrix
 
-All expected user inputs are Chinese. Prefer the Chinese trigger words below when deciding the top-level workflow.
+All expected user inputs are Chinese. Use this matrix before choosing a workflow:
 
 | 中文意图/触发词 | Workflow | Required Inputs | Primary Outputs | Do Not Use For |
 | --- | --- | --- | --- | --- |
-| `原型`、`报表原型`、`页面原型`、`仪表盘原型`、`大屏原型`、`原型设计`、`生成原型`、`搭建原型`、`实现原型`、`还原原型`、`截图还原`、`HTML源码还原`、`优化原型`、`修复原型`、`部署原型`、`启动原型`、`返回访问地址`、`本地预览` | `report-design-workflow` | Requirements, metrics, screenshots/HTML/source when available | Prototype source/spec, binding matrix, mock/data/filter/interaction contract, self-check, URL when runnable | Pure theory or production frontend integration without prototype intent |
-| `技术方案`、`技术架构`、`接口规划`、`接口清单`、`API清单`、`数据建模`、`数据模型`、`数据模型文件`、`数据源映射`、`字段映射`、`指标口径映射`、`原型数据代码分析`、`mock数据转接口`、`待补充数据模型清单`、`需求转API`、`需求转数据模型` | `technical-solution-workflow` | Requirements, data docs, metric list, prototype data code | `API清单`, `数据模型文件`, `待补充数据模型清单` | API document writing or backend implementation |
-| `数据服务`、`后端开发`、`服务端`、`接口文档`、`API文档`、`接口实现`、`接口开发`、`后端接口`、`数据接口`、`接口契约`、`启动后端`、`后端服务`、`Flask服务`、`鉴权中间件`、`SSO后端接入`、`Access-Token校验` | `backend-development-workflow` | `API清单` + `数据模型文件` for docs; API docs/source/env for implementation | `API文档`, backend code when requested, runnable backend URL when possible | Requirement-to-API inventory planning |
-| `前端开发`、`前端联调`、`前端接入接口`、`替换mock`、`去掉mock`、`接真实接口`、`接口对接`、`报表页面联调`、`前端数据接入`、`请求封装`、`响应适配`、`筛选参数联动`、`组件联动`、`代理配置`、`CORS`、`SSO前端接入`、`页面运行`、`启动前端`、`修复编译错误`、`修复请求错误` | `frontend-development-workflow` | Frontend target source or prototype source copied into a frontend target path, plus API docs/provider/env/auth evidence | Provider-integrated frontend source, `前端功能说明`, runnable frontend URL when possible | Business report prototype design from scratch |
-| `测试`、`联调测试`、`集成测试`、`前后端联调验证`、`测试样例`、`测试用例`、`测试结果`、`验收标准`、`冒烟测试`、`URL可用性验证`、`接口连通性验证`、`SSO登录测试`、`鉴权测试`、`权限测试`、`前后端数据一致性`、`筛选联动测试`、`交互测试`、`导出测试`、`缺陷报告`、`问题复现`、`阻塞项` | `testing-integration-workflow` | `API文档`, `前端功能说明`, optional runtime URLs/accounts/data | `测试样例`, `测试结果`, defects/blockers | Building or repairing source code unless defect follow-up is requested |
-| `需求变更`、`变更影响`、`改指标`、`改口径`、`改筛选`、`改权限`、`改接口`、`字段调整`、`回归范围` | `change-impact-analysis` | Change request plus current artifacts/version index when available | Impact matrix, affected artifacts, regression scope, version update plan | New greenfield design without existing artifacts |
-| `指标字典`、`口径版本`、`指标血缘`、`指标权限`、`跨报表一致性`、`同名指标不同口径` | `metric-governance-lineage` | Metric list, data model/source evidence, consuming reports | Metric dictionary, definition versions, lineage, quality rules, consistency findings | One-off chart styling or layout |
-| `交付版本`、`版本链路`、`交付物索引`、`prototype-v1`、`api-v1`、`test-v1`、`发布包清单` | `delivery-version-management` | Artifact paths, versions, release/change IDs | Delivery index, version chain, stale/missing artifact list | Single artifact drafting with no version relationship |
-| `数据质量`、`完整性`、`唯一性`、`及时性`、`准确性`、`异常值`、`重复数据`、`数据延迟`、`口径漂移`、`跨源一致性` | `data-quality-validation` | Source/model/API/data samples, metric rules, SLA | Quality rule matrix, execution result, trust conclusion | Pure API reachability smoke test |
-| `权限矩阵`、`多角色验收`、`字段可见性`、`数据范围`、`操作权限`、`导出权限`、`行级权限`、`列级权限` | `permission-matrix-validation` | Role list, org scopes, pages/APIs/fields/actions | Permission matrix, multi-role test cases, evidence/blockers | Basic SSO login flow only |
-| `报表设计系统`、`视觉规范`、`颜色规范`、`字号`、`间距`、`图表规范`、`空态`、`异常态`、`响应式规范` | `report-design-system-governance` | Existing reports/screens/components/theme rules | Reusable design-system spec and adoption plan | One narrow page bug without reusable standard |
-| `上线后监控`、`接口监控`、`前端错误监控`、`性能监控`、`访问埋点`、`用户反馈`、`异常告警`、`数据刷新SLA` | `production-observability-feedback` | Runtime URLs/APIs/SLA/release version/monitoring platform | Monitoring matrix, instrumentation, alert and feedback loop | Pre-release mock-only testing |
+| 原型、页面原型、报表原型、仪表盘原型、大屏原型、demo、样机、截图/源码还原、可运行URL | `$report-design-workflow` | Business purpose, target user, source materials, expected page type, mock/source data if available | Runnable prototype, component mapping, visual/runtime evidence, design handoff | Backend implementation, formal API contract, final UAT |
+| 技术方案、技术架构、接口规划、数据建模、数据模型、数据源映射、指标字典、权限矩阵 | `$technical-solution-workflow` | Requirement/prototype, source/API hints, metric list, permission expectations | Architecture, API inventory, model/mapping, gap ledger, production readiness | UI polishing, runtime frontend QA |
+| 后端、服务端、数据服务、接口实现、接口开发、Flask、启动后端、本地后端、鉴权中间件 | `$backend-development-workflow` | API docs/inventory, data source, auth/env rules, expected runtime target | Backend/API implementation, docs, smoke/contract evidence, missing info | Frontend layout or visual QA |
+| 前端、页面开发、报表页面、可视化开发、替换mock、接真实接口、接口对接、环境变量、build/preview | `$frontend-development-workflow` | Prototype/source code, API docs/base URL, env/auth details, expected page behavior | Frontend integration, runtime URL/build, QA evidence, function description | Backend contract design |
+| 测试、联调测试、集成测试、验收测试、测试用例、冒烟测试、缺陷报告、回归证据 | `$testing-integration-workflow` | Frontend/backend URLs, accounts, API docs, expected data, acceptance scope | Test matrix, execution evidence, defects, retest closure | New feature implementation unless fixing defects is requested |
+| 需求变更、变更影响、改已有原型/接口/模型/前端/测试 | `$change-impact-analysis` | Existing artifact/version, change request, target stage | Impact matrix, affected artifacts, safe execution order | Fresh greenfield design |
+| 指标字典、指标口径、血缘、计算公式、口径冲突 | `$metric-governance-lineage` | Metric list, formulas, dimensions, source fields | Governed metric dictionary, lineage, conflict log | Runtime UI QA |
+| 交付版本、版本链路、阶段交接、发布包、验收包 | `$delivery-version-management` | Artifact list, stage outputs, version identifiers | Delivery index, version chain, handoff status | Designing individual artifacts |
+| 数据质量、异常数据、缺失值、重复、口径校验、对账规则 | `$data-quality-validation` | Source/model/API samples, quality rules, expected thresholds | Quality rules, validation result, remediation plan | Visual component styling |
+| 权限矩阵、角色权限、数据权限、字段权限、操作权限 | `$permission-matrix-validation` | Role/user matrix, data scope, API/page actions | Permission matrix, cases, gaps | General SSO login flow only |
+| 报表设计系统、组件规范、模板治理、样式一致性 | `$report-design-system-governance` | Existing templates/components, target brand/system | Design tokens, component/template governance, usage rules | Single page business analysis |
+| 上线后监控、反馈闭环、运行问题、指标使用效果、持续优化 | `$production-observability-feedback` | Release/runtime evidence, monitoring/user feedback | Observability plan, feedback log, optimization backlog | Pre-release prototype only |
 
 ## Stage Handoff Requirements
 
@@ -44,6 +58,13 @@ Every stage output must include:
 - `Entry consistency`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `ENTRY-*` IDs when applicable.
 - `Design reasonableness`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `DESIGN-*` IDs when applicable.
 - `Production closed loop`: `ready`, `partial`, `blocked`, or `not needed`, with missing production controls or open retest items when applicable.
+- `Environment profile`: `test`, `production`, `not needed`, or `blocked`, plus the config file loaded (`.env.test` or `.env.production`) when runtime behavior is in scope.
+- `Report data-visualization frontend`: `ready`, `partial`, `blocked`, or `not needed`, with missing purpose/hierarchy/chart-choice/metric-format/filter/interaction/state/provider/performance/theme/runtime-QA decisions when report frontend visualization is in scope.
+- `Report integration testing`: `ready`, `partial`, `blocked`, or `not needed`, with missing metric口径/golden-data/reconciliation/API/frontend/filter/permission/cache/export/performance/UAT/smoke/monitoring/rollback/regression/retest decisions when report integration or production acceptance is in scope.
+- `Performance/resilience`: `ready`, `partial`, `blocked`, or `not needed`, with missing concurrency/cache/pool/timeout/observability decisions when applicable.
+- `Report data-service backend`: `ready`, `partial`, `blocked`, or `not needed`, with missing metadata/query-chain/permission/guardrail/export/audit/freshness/governance decisions when report backend APIs are in scope.
+- `SQL query optimization`: `ready`, `partial`, `blocked`, or `not needed`, with missing projection/predicate/join/pagination/plan-evidence decisions when database-backed APIs are in scope.
+- `Data modeling`: `ready`, `partial`, `blocked`, or `not needed`, with missing business question/process/grain/layer/metric-additivity/history/quality/lineage decisions when OLAP/reporting models are in scope.
 - `Readiness`: one of `ready`, `partial`, or `blocked`.
 - `Assumptions`: accepted temporary assumptions with affected artifacts.
 - `Blockers`: missing item, impact, owner/source needed, and next question.
@@ -65,7 +86,7 @@ Do not mark an artifact `ready` when an unresolved `P0` or `P1` `ENTRY-*` confli
 
 Do not mark an artifact `ready` when an unresolved `P0` `DESIGN-*` finding exists, or when an unresolved `P1` `DESIGN-*` finding would affect user-visible behavior, data correctness, API/model feasibility, permissions, layout comprehension, or testability in the next stage.
 
-Do not mark a production-bound artifact `ready` when required source authority, runtime URL/health, auth/permission, deployment/config, observability, performance/capacity, testing evidence, or blocker/major/high defect retest closure is missing.
+Do not mark a production-bound artifact `ready` when required source authority, runtime URL/health, auth/permission, deployment/config, observability, performance/resilience/capacity, testing evidence, or blocker/major/high defect retest closure is missing.
 
 ## Cross-Stage Artifact Contract
 
@@ -87,8 +108,12 @@ Required handoff bundle:
 
 - `API清单` with API ID, page/module, method/path candidate, purpose, trigger, request params, response model, auth, priority, and status.
 - `数据模型文件` with source/logical/response models, fields, formulas, joins, ownership, freshness, permission and quality rules.
+- OLAP modeling evidence when reporting/BI/dashboard metrics are in scope: business question matrix, subject areas, business processes, model layer/type, one-grain-per-model decision, conformed dimensions, metric additivity, time口径, summary/wide-table decisions, history/SCD, many-to-many, deduplication, late-arriving/backfill, and lineage.
 - `待补充数据模型清单` with `GAP-*` IDs, impact, owner questions, assumptions, and blocked/partial status.
 - Filter/sort/page execution evidence: API rows and models must state whether global filters, sorting, pagination, ranking, grouping, aggregation, Top/Bottom, and counts run in SQL/source/provider/repository/precompute/cache, and must not rely on page/API-level full-materialize-then-filter behavior. Component-internal filters must be separately scoped to already fetched component data.
+- Performance/resilience plan: expected volume/latency, concurrency model, cache/precompute strategy, connection/resource pools, async/offline job strategy for long-running work, timeout/retry/circuit-breaker behavior, rate/concurrency limits, health/readiness, observability, and unresolved risks.
+- Report data-service backend plan when report/BI/dashboard APIs are in scope: report type, metadata/query-chain ownership, parameter guardrails, permission/tenant/field/export behavior, component-ready response rule, pagination/count/export strategy, cache key safety, freshness/quality metadata, audit/monitoring, version/publish/rollback, and unresolved governance gaps.
+- SQL writing plan for database-backed APIs: required columns, sargable predicates, join keys/cardinality, aggregation-before-join needs, dedup/order necessity, pagination/keyset strategy, dynamic optional-filter strategy, and plan-evidence or slow-query gap IDs.
 - Consistency result: every API maps to a response model, and every response field maps to a source/formula/enum/gap.
 - Production architecture readiness when intended for real delivery: runtime topology, frontend/backend/data boundaries, source authority, environment/auth/security assumptions, observability/performance/deployment concerns, testing handoff, and open blockers.
 
@@ -98,9 +123,13 @@ Required handoff bundle:
 
 - `API文档` with base URL, auth headers, endpoint details, request/response examples, errors, empty/no-permission behavior, pagination/sorting/filter rules, filter/sort/page execution stage, default/max page size, and pending items.
 - Runtime backend URL when implementation exists.
+- Environment profile contract: `.env.test` and `.env.production` presence, backend/API base paths, source mode, auth/SSO endpoint, CORS allowlist, health/readiness path, and blockers for missing or sensitive values.
 - Auth/SSO contract: header names, token rules, 401/token-invalid response, 403 response, public allowlist.
 - Backend health/smoke evidence, source-mode proof, environment/config notes, version/API-doc alignment, and deployment/rollback notes when implementation exists.
-- Observability and performance constraints: log/error identifiers, timeout/export limits, expected volume, Redis/cache strategy, database connection-pool behavior, pagination/aggregation constraints, max page size, total-count strategy, source-side/provider-side execution proof, component-local filter boundary, full-materialize-then-filter absence for global scope, and known capacity risks.
+- Observability and performance/resilience constraints: log/error identifiers, timeout/export limits, expected volume/concurrency, Redis/cache strategy, database/upstream/cache connection-pool behavior, pagination/aggregation constraints, max page size, total-count strategy, source-side/provider-side execution proof, component-local filter boundary, full-materialize-then-filter absence for global scope, async/offline job contract for long-running work, timeout/retry/fallback behavior, rate/concurrency limits, and known capacity risks.
+- Report data-service backend constraints when applicable: metadata/report version behavior, dimension/metric/filter/sort whitelists, backend-injected tenant/data permission predicates, parameter guardrails, component-ready result metadata, freshness/quality fields, cache key permission safety, async export lifecycle, query/export/download/config audit, and slow-report governance signals.
+- SQL writing constraints for database-backed endpoints: selected columns, direct/type-consistent predicates, avoided functions/casts/arithmetic on filter/join fields, complete join keys, one-to-many handling, `EXISTS`/`NOT EXISTS` use when applicable, `UNION ALL` vs `UNION`, stable/keyset pagination, `WHERE` before `HAVING`, and `EXPLAIN` or slow-query evidence for risky P0 queries.
+- Resilience controls when implementation exists: bounded concurrency/thread/worker model, async queue/worker/retry/dead-letter behavior for long-running work, upstream timeout/retry/circuit-breaker/fallback behavior, rate/concurrency limits, pool saturation handling, cache stampede protection, health/readiness checks, and observability metrics.
 - Known partial/blocked endpoints and accepted assumptions.
 - Sample responses for frontend adapter validation, plus SQLite fixture/source-mode notes when backend simulation data is used.
 
@@ -109,9 +138,10 @@ Required handoff bundle:
 Required handoff bundle:
 
 - `前端功能说明` with pages/modules, provider mapping, filters, interactions, states, permissions, exports, verification evidence, and known limitations.
+- Report data-visualization frontend evidence: page type, user purpose, first-screen answer, component/chart choice, metric formatting/口径/freshness, filter/linkage/drill-through behavior, component-ready provider mapping, state coverage, frontend performance controls, theme/accessibility, and known visualization limitations.
 - Frontend URL when runnable.
 - Backend/API base URL used by the frontend.
-- Environment/auth/proxy/deployment notes.
+- Environment/auth/proxy/deployment notes, including which profile loaded `.env.test` or `.env.production`, whether frontend and backend point to the same intended environment, and any retained mock/demo mode per profile.
 - Headless browser screenshot evidence, deterministic baseline diff artifacts / `VDIFF-*` findings, and multimodal `VIS-*` visual findings from runtime QA when visual behavior was verified.
 - Known gaps, retained offline/demo sources, and not-yet-verified behaviors.
 
@@ -121,19 +151,21 @@ Required feedback bundle for every defect:
 
 - Defect ID, severity, likely owner workflow: report design, technical solution, backend, frontend, SSO/security, data, environment, or unclear.
 - Expected result, actual result, evidence, reproduction steps, and affected artifact/API/page/component.
+- Report integration testing context when applicable: metric口径, golden/baseline dataset, source/model/API/frontend/export reconciliation evidence, account/role/tenant, active filters, cache hit/miss status, data freshness time, query/task/export ID, and likely chain layer.
 - Screenshot path, baseline/current/diff path when available, deterministic `VDIFF-*` finding, and multimodal `VIS-*` finding when the defect is visual/layout related.
 - Retest criteria and required input to unblock.
 - Status: `open`, `fixed`, `retest`, `closed`, `blocked`, or `accepted`.
-- Retest evidence and environment/version for every closed blocker/major/high defect.
+- Retest evidence and environment profile/config file/version for every closed blocker/major/high defect.
 
 ### Production Closed-Loop Handoff
 
 Required when the delivery target is real production use, release acceptance, or a production-like pilot:
 
-- Technical architecture: confirmed runtime boundaries, source authority, security/auth assumptions, deployment/config approach, observability, performance/capacity risks, and testing strategy.
-- Data service/backend: API doc version, runtime backend URL or deployment target, health/readiness evidence, authoritative source mode, auth/permission behavior, config/env handling, error/log behavior, performance/export limits, and rollback notes.
-- Frontend integration: frontend URL/build, backend base URL, provider mode, SSO/auth behavior, retained mock/demo sources if any, browser/runtime QA evidence, and known gaps.
-- Testing integration: environment/version/account/data used, executed case counts, evidence paths, defect statuses, retest closure matrix, remaining risks, and final readiness.
+- Technical architecture: confirmed runtime boundaries, source authority, security/auth assumptions, deployment/config approach, observability, performance/resilience/capacity risks, and testing strategy.
+- Data service/backend: API doc version, runtime backend URL or deployment target, health/readiness evidence, authoritative source mode, auth/permission behavior, config/env handling, error/log behavior, performance/resilience/export limits, and rollback notes.
+- Report data-service backend: report metadata/query-chain evidence, safe code-to-source query generation, permission/tenant/cache safety, parameter limits, component-ready response/freshness/quality evidence, async export lifecycle, audit/monitoring evidence, and slow-report governance plan when report APIs are in scope.
+- Frontend integration: frontend URL/build, backend base URL, environment profile loaded from `.env.test` or `.env.production`, provider mode, SSO/auth behavior, report data-visualization frontend evidence, retained mock/demo sources if any, browser/runtime QA evidence, and known gaps.
+- Testing integration: environment profile/config file/version/account/data used, golden/baseline dataset, metric/model/API/frontend/export reconciliation evidence, permission/cache/export/performance/exception/UAT/smoke/regression coverage, executed case counts, evidence paths, defect statuses, retest closure matrix, remaining risks, and final readiness.
 
 If any required production handoff item is unknown, mark production closed loop `partial` or `blocked` and name the owner/source needed.
 

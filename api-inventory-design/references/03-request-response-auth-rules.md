@@ -21,6 +21,7 @@ Required filter details:
 - Filter scope: global/page-level, permission-scope, route/drilldown, or component-internal.
 - Source field or SQL predicate shape, such as `org_id = ?`, `biz_date >= ? AND biz_date < ?`, or `status IN (...)`.
 - Index support: indexed / composite-indexed / function-indexed / full-text / unknown / not indexed.
+- SQL query-writing notes for database-backed filters: direct/type-consistent predicate, date/month range rewrite, avoided function/cast/arithmetic, avoided leading-wildcard search, and dynamic optional-filter handling.
 - Execution stage: source/provider/repository query, precompute/cache, or explicitly bounded client/service post-process. Use `TBD(GAP-*)` when unknown.
 - Gap ID if enum/options/default are unknown.
 
@@ -41,6 +42,21 @@ Use stable names unless the project already defines alternatives:
 - `pageSize`
 - `sortBy`
 - `sortOrder`
+
+## Report Data-Service Backend Contract
+
+For report/BI/dashboard APIs, inventory rows must state:
+
+- Report type: fixed, configurable, self-service, detail, summary, dashboard, export, or snapshot.
+- Report metadata or fixed-contract source: report definition, dataset, dimensions, metrics, filters, sort fields, cache policy, timeout, max rows, version/status, or `TBD(GAP-*)`.
+- Frontend input rule: stable codes only. Do not plan APIs where the frontend sends raw SQL, table names, column expressions, arbitrary operators, arbitrary sort strings, unregistered metric formulas, or tenant/data-permission scope.
+- Backend-owned mapping: how dimension/metric/filter/sort codes map to source/SQL expressions and safe parameter binding.
+- Parameter guardrails: required filters, date range, max dimensions, max metrics, max `IN` values, keyword length, default/max page size, max returned rows, and export rows.
+- Permission behavior: menu/report access, row/data scope, field masking/visibility, export permission, tenant isolation, and no-permission response.
+- Result metadata expectation: columns, units, precision, enum labels, page info, freshness, quality status, cache status, query time, and request/trace id.
+- Cache safety: report version, dataset/source version, tenant, permission/user/role scope, filters, sorts, pagination, and locale/unit/format dimensions.
+- Export/audit/governance: async export lifecycle when large, query/export/download audit, report version/publish/rollback, and slow-report monitoring when production-bound.
+- Gap ID when any required report backend decision is unknown.
 
 ## Response Contract At Inventory Level
 
@@ -66,6 +82,7 @@ For list/table APIs:
 - State that global filters, sorting, pagination, ranking, Top/Bottom, counts, and table slicing are applied before response construction. Page/API-level full-materialize-then-filter behavior is not acceptable for list/table APIs except documented component-internal filters over already fetched component data, tiny static enums, or bounded lookups.
 - State whether keyword search is fuzzy, exact, or TBD.
 - State whether each database-backed filter can use a direct indexed predicate. Avoid inventory designs that require `FUNCTION(field) = ?` on indexed columns; rewrite date/month filters to range predicates and mark unknown index support with a `GAP-*`.
+- State optional-filter behavior. Avoid high-volume designs that require universal nullable-OR predicates such as `(:param IS NULL OR col = :param)`; prefer generated predicates with safe parameter binding.
 
 For charts:
 
@@ -89,18 +106,24 @@ Auth/permission must include:
 - Sensitive-field behavior: full value, masked value, field hidden, role-limited, or `TBD(GAP-*)`.
 - Gap ID when unknown.
 
-## Performance Cache SLA
+## Performance Resilience Cache SLA
 
 For every P0 API, state:
 
 - Expected data volume or row count range.
+- Expected QPS/concurrency and peak traffic assumption.
 - Latency target or SLA if known.
+- Concurrency/thread/worker model when the endpoint is production-bound or expensive.
+- Async/offline job strategy when synchronous work may exceed the latency target, including task ID, status/progress, cancellation when allowed, result download/retention, retry/dead-letter behavior, queue/worker limit, and idempotency.
 - Cache, precompute, or real-time expectation.
 - Redis/cache expectation when useful for hot or expensive queries, including cache key dimensions, TTL, invalidation, stampede protection, permission safety, and fallback.
-- Database connection-pool expectation: existing pool / new pool / externally managed, with max size and timeout assumptions.
-- Timeout and retry behavior if relevant.
+- Database/upstream/cache connection-pool expectation: existing pool / new pool / externally managed, with max size and timeout assumptions.
+- Timeout, retry/backoff, circuit-breaker, and fallback/degraded behavior if relevant.
+- Rate limit, concurrency limit, request-size limit, and overload behavior when needed.
 - Export row limit or async threshold when the API can export.
+- Health/readiness and observability expectation, such as latency, error rate, cache hit ratio, pool usage, queue length, and slow-query evidence.
 - Index or precompute requirement for P0 filters, sorts, joins, and aggregations.
+- SQL query-writing strategy for database-backed APIs: selected columns, sargable/type-consistent predicates, complete join keys/cardinality, `EXISTS`/`NOT EXISTS` need, `UNION ALL` vs `UNION`, dedup/order necessity, `WHERE` before `HAVING` when applicable, filter-before-window expectation, and `EXPLAIN` / slow-query evidence for risky queries.
 - Pagination/default page size/maximum page size for every list/table API.
 - Proof that P0 filters, sorts, pagination, ranking, grouping, and aggregations are source-side or provider-side, not full-materialize-then-filter.
 - Gap ID when any required performance decision is unknown.
@@ -114,6 +137,7 @@ State:
 - Sync file stream, async task ID, or download URL.
 - Max row limit if known.
 - Async threshold, timeout, and retry behavior when known.
+- Async lifecycle when applicable: create task, poll status/progress, cancel/retry, download result, expiry/retention, queue/worker limits, and dead-letter behavior.
 - Permission behavior.
 
 ## Action APIs

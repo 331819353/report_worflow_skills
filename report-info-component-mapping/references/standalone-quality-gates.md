@@ -41,10 +41,16 @@ Check these dimensions:
 - Hierarchy: conclusion/status, evidence/breakdown, detail, and action are ordered by priority.
 - Component necessity: every required block answers a named question and avoids duplicate semantics.
 - Metric/data feasibility: formulas, units, grain, baseline, source, dimensions, and gaps support the chosen visual or contract.
+- OLAP data modeling fit: reporting/BI/dashboard models define business question, subject area, business process/object, layer/type, grain, metric additivity, time口径, conformed dimensions, SCD/history, many-to-many handling, quality rules, and lineage when relevant.
 - Filter/query logic: defaults, option source, affected components, request fields, permissions, cascade, and stale-selection behavior are defined.
 - Interaction closure: drilldown, drawer, jump, export, refresh, fullscreen, approval, and evidence views preserve context and support the next step.
 - Visual/layout fit: shell, grid, labels, legends, tables, and diagrams avoid overlap, clipping, unreadable text, and excessive blank space.
-- API/backend feasibility: endpoints, models, transformations, auth, errors, pagination, sorting, and exports support the consumer contract.
+- Report data-visualization frontend fit: report/BI/dashboard frontends define user purpose, first-screen conclusion, chart/table choice, metric units/precision/口径, filters/linkage/drill-through, freshness/quality display, state coverage, provider mapping, frontend performance limits, theme/accessibility, and runtime QA evidence.
+- Report integration testing fit: report/BI/dashboard testing plans define metric口径, golden/baseline data, source/model/API/frontend/export reconciliation, API/frontend/filter/permission/cache/export/performance/exception/UAT/smoke/monitoring/rollback/regression/retest coverage, and do not pass from API 200 or visual render alone.
+- API/backend feasibility: endpoints, models, transformations, auth, errors, pagination, sorting, exports, global source-side filtering, component-local filter scope, and async/offline strategy support the consumer contract.
+- Report data-service backend fit: report/BI/dashboard APIs use a controlled backend query service with metadata or fixed contracts, whitelists, backend-owned SQL/source mapping, parameter guardrails, backend-injected tenant/data/field/export permissions, component-ready results, cache safety, async export, audit, freshness/quality, and slow-report governance.
+- Data-service performance and resilience: production-bound services have bounded concurrency, cache/precompute decisions, connection pools, timeout/retry/fallback behavior, async/offline handling for long-running work, rate/concurrency limits, health/readiness, and observability.
+- SQL query reasonableness: database-backed APIs avoid `SELECT *`, non-sargable predicates, incomplete joins, unbounded pagination, unnecessary dedup/sort, broad nullable-OR optional filters, and missing plan evidence for risky P0/high-volume queries.
 - Testability: pass/fail criteria and empty/error/no-permission/stale edge behavior are checkable.
 
 Record findings as `DESIGN-*` with severity `P0 blocker`, `P1 high`, `P2 medium`, or `P3 low`. Fix `P0` before marking ready. Fix `P1` before implementation unless the user explicitly accepts a `partial` limitation. Do not hide unreasonable structure behind assumptions.
@@ -58,10 +64,15 @@ Check readiness across:
 - Architecture/runtime boundary, dependencies, and data flow.
 - Authoritative source, owner, access path, refresh cadence, quality rule, and sample evidence.
 - API/model contract, transformations, errors, pagination/export, versioning, and backward compatibility.
+- Report data-service backend readiness: report/BI/dashboard APIs document metadata or fixed-contract source, query-chain ownership, whitelists, backend-owned source/SQL mapping, parameter guardrails, permission/tenant/field/export behavior, component-ready result metadata, freshness/quality, cache safety, async export, audit, version/publish/rollback, and slow-report governance.
+- OLAP model readiness: business process, grain, layer/type, metric additivity, time口径, summary/wide-table justification, SCD/history, many-to-many handling, quality rules, and lineage for reporting/BI/dashboard models.
 - Security, SSO/auth, permission, masking, audit, and secret/config handling.
-- Environment/deployment: dev/test/prod URLs, config, proxy/CORS, base path, startup, health, rollback.
+- Environment/deployment: `.env.test` and `.env.production`, dev/test/prod URLs, config, proxy/CORS, base path, startup, health, rollback. A single shared `.env` is not enough for production-bound readiness.
+- Report data-visualization frontend readiness: report/BI/dashboard frontends document user purpose, first-screen conclusion, chart/table rationale, metric formatting/口径, filters/linkage/drill-through, provider mapping, state coverage, freshness/quality, frontend performance controls, theme/accessibility, screenshots, and runtime QA evidence.
+- Report integration testing readiness: report/BI/dashboard testing records metric口径, golden/baseline data, source/model/API/frontend/export reconciliation, filters, permissions, cache isolation, export parity, performance/stability, exception states, UAT/smoke, monitoring/rollback, regression/automation scope, evidence, and blocker/major retest closure.
 - Reliability/observability: logs, request IDs, metrics, traces, timeouts, retries, alerts, and SLA/SLO when needed.
-- Performance/capacity: volume, latency, cache/precompute, export limits, concurrency, and slow-query risk.
+- Performance/resilience/capacity: volume, latency, bounded concurrency, async/offline jobs for long-running work, cache/precompute, connection pools, timeout/retry/fallback, rate/concurrency limits, export limits, observability metrics, and slow-query risk.
+- SQL query readiness for database-backed APIs: projection, sargable predicates, join cardinality, pagination/keyset strategy, aggregation/window placement, dynamic optional-filter generation, and plan evidence for risky P0/high-volume queries.
 - Testability: seed data, accounts/roles, executable cases, smoke, API/display consistency, filters, permissions, exports, and visual evidence.
 - Defect closure: blocker/major defects have owner, reproduction, evidence, fix version, retest criteria, and status.
 
@@ -71,7 +82,7 @@ Readiness values:
 - `partial`: limited, demo, or non-prod scope can proceed with named assumptions or missing controls.
 - `blocked`: a missing or failed readiness item prevents reliable downstream use.
 
-Do not mark production readiness `ready` when authoritative source, P0 metric formula, auth/permission, API version/contract, runtime URL/health, environment config, rollback path, or blocker/major retest criteria are unknown for a production-bound scope.
+Do not mark production readiness `ready` when authoritative source, P0 metric formula, auth/permission, API version/contract, runtime URL/health, `.env.production` profile/config evidence, report integration testing evidence when report acceptance is in scope, performance/resilience decisions, async/offline strategy for long-running work, SQL query readiness for risky database-backed APIs, rollback path, or blocker/major retest criteria are unknown for a production-bound scope.
 
 ## Visual Browser And Multimodal Check
 
@@ -98,11 +109,11 @@ Use severity `blocker`, `major`, or `minor`. Do not report visual pass when requ
 
 When this skill hands results to another stage, include:
 
-- Scope and environment/version used.
+- Scope, environment profile/config file, and version used.
 - Artifacts produced or inspected, with paths or URLs.
 - Readiness: `ready`, `partial`, or `blocked`.
 - Open `ENTRY-*`, `DESIGN-*`, `VDIFF-*`, `VIS-*`, defect, or gap IDs.
 - Owner questions and exact confirmation needed.
 - Retest or acceptance criteria for any repaired or deferred item.
 
-A handoff is not `ready` when downstream work would need to invent source authority, metric formula, API behavior, permission behavior, runtime environment, or closure criteria.
+A handoff is not `ready` when downstream work would need to invent source authority, metric formula, OLAP grain/layer/additivity/history behavior, API behavior, permission behavior, runtime environment profile, report data-visualization frontend behavior, report integration testing behavior, report data-service backend behavior, performance/resilience behavior, SQL query strategy for database-backed APIs, async/offline lifecycle, or closure criteria.

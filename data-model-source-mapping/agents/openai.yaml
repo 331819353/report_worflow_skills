@@ -1,4 +1,4 @@
 interface:
   display_name: "数据模型源映射"
-  short_description: "将数据源、指标、接口和前端字段映射为可追溯数据模型"
-  default_prompt: "Use $data-model-source-mapping to create reusable data model files with source metadata, fields, relationships, metrics, transformations, permissions, and traceability."
+  short_description: "沉淀OLAP模型、指标口径、源映射和血缘"
+  default_prompt: "Use $data-model-source-mapping to create reusable OLAP-aware data model files with business questions, grains, facts, dimensions, metrics, layers, source mappings, permissions, quality rules, and traceability."

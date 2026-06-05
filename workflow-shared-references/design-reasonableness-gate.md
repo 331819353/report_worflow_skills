@@ -34,19 +34,37 @@ Check the design across these dimensions:
 5. Metric and data feasibility.
    Metrics have grain, formula, unit, baseline, time scope, dimensions, source or pending gap. Data is sufficient for the chosen chart/table, trend, ranking, funnel, waterfall, map, or decomposition logic.
 
-6. Filter and query logic.
+6. OLAP data modeling fit.
+   Reporting/BI/dashboard models name business questions, subject areas, business processes, grain, layer/type, fact/dimension/summary/application role, metric additivity, time口径, conformed dimensions, SCD/history need, many-to-many handling, late-arriving/backfill strategy, quality rules, and lineage. A model that starts from fields or source tables without business process/grain, mixes grains, treats ratios as additive, uses current-only dimensions when historical state matters, or builds an unbounded super-wide table is a `DESIGN-*` finding.
+
+7. Filter and query logic.
    Filters have defaults, option sources, affected components, query params or data fields, permission scope, cascade behavior, and stale-selection behavior.
 
-7. Interaction and closure.
+8. Interaction and closure.
    Drilldowns, drawers, jumps, exports, refresh, fullscreen, task actions, approvals, and evidence views preserve the same context and support the user's next step.
 
-8. Visual/layout reasonableness.
+9. Visual/layout reasonableness.
    Shell, template, grid, first viewport, block spans, density, labels, legends, tables, and complex diagrams fit the content without duplicate component titles, cramped/narrow/tiny components, overlap, clipping, unreadable text, excessive blank space, or title-node collision. Page/block titles are layout-owned; peer component groups use balanced `M * N` layouts when possible; complex diagrams with layer/stage/lane titles must reserve an independent title band and keep titles at least 16px away from the first row of nodes, node borders, child labels, badges, connectors, and edge labels.
 
-9. API/backend feasibility.
+10. Report data-visualization frontend fit.
+   Report/BI/dashboard frontends define user purpose, first-screen conclusion, information hierarchy, chart/table choice, metric names/units/precision/口径, filters, linkage, drill-down/drill-through, tooltip/legend/axis semantics, data freshness/quality display, loading/empty/error/no-permission/stale states, component-ready provider mapping, frontend data-volume/performance limits, theme/color/accessibility, and runtime QA evidence. A design that is a flat chart collection, hides the core conclusion, uses misleading chart types, lacks units/口径, fetches broad data for local global filtering, omits edge states, or cannot trace anomalies to detail is a `DESIGN-*` finding.
+
+11. API/backend feasibility.
    API endpoints, response models, data models, transformations, auth, pagination, sorting, exports, and error states can support the UI contract without hidden invention. Global/page-level filters and permission scope execute through SQL `WHERE`, source/provider/repository queries, resolver params, Redis/precompute keys, or equivalent source-side scope wherever feasible; component-internal filters may operate on already fetched component data. A design that depends on page/API-level full-materialize-then-filter behavior is a `DESIGN-*` finding unless explicitly bounded.
 
-10. Testability.
+12. Report data-service backend fit.
+   Report/BI/dashboard backend APIs define a controlled query-service chain: report metadata, dimension/metric/filter/sort whitelist, backend-owned SQL/source expression mapping, parameter guardrails, backend-injected tenant/data/field/export permissions, component-ready result metadata, pagination/count/export strategy, cache key permission safety, data freshness/quality fields, query/export audit, version/publish/rollback, and slow-report governance. A design that lets the frontend send SQL/source expressions, omits permission injection, leaves heavy export synchronous, omits cache permission scope, or cannot explain the report query chain is a `DESIGN-*` finding.
+
+13. Data-service performance and resilience.
+   Production-bound data services have reasonable latency/capacity assumptions, bounded concurrency, cache/precompute design when useful, connection/resource pools, async/offline job strategy for long-running work, timeout/retry/fallback behavior, rate/concurrency limits, health/readiness checks, and observability. A design that relies on unbounded threads/queues, one connection per request, indefinite upstream waits, synchronous handling for long-running work, or no overload behavior for expensive endpoints is a `DESIGN-*` finding.
+
+14. SQL query reasonableness.
+   Database-backed APIs have reasonable query shape: only needed columns are selected, predicates are source-side and sargable, join keys/cardinality are complete, one-to-many multiplication is controlled, dedup/order operations are intentional, pagination is bounded and stable, aggregation/window work happens after early filters when possible, dynamic optional filters avoid broad nullable-OR templates, and risky P0/high-volume queries have plan evidence or a slow-query gap. A design that depends on `SELECT *`, broad in-memory filtering, incomplete joins, deep unbounded pagination, or large unverified sorts is a `DESIGN-*` finding.
+
+15. Report integration testing fit.
+   Report/BI/dashboard testing plans define metric口径, golden/baseline data, source/model/API/frontend/export reconciliation, API contract, frontend binding, filters, permissions, cache isolation, export parity, performance/stability, exception states, UAT, release smoke, monitoring, rollback, regression, automation scope, and retest closure when those paths are in scope. A testing plan that only checks page load or API `200`, lacks golden/baseline data for P0 metrics, skips role/tenant/export/cache safety, or cannot localize data mismatches through the chain is a `DESIGN-*` finding.
+
+16. Testability.
    The design has acceptance criteria, validation cases, sample data or runtime evidence, and clear pass/fail behavior for empty, error, no-permission, stale, and edge states.
 
 ## Finding Severity
@@ -83,7 +101,12 @@ Accepted limitations:
 
 - The design has one clear business question and a matching report type.
 - Every must-have component, filter, interaction, dataset, and API has a reason.
+- Reporting/BI/dashboard data models have explicit business process, grain, layer/type, metric additivity, time口径, quality, and lineage decisions.
+- Report data-visualization frontend behavior is feasible when report UI is in scope: first-screen conclusion, appropriate chart/table choices, metric formatting/口径, filters/linkage/drill-through, state coverage, provider mapping, performance limits, and theme/accessibility are explicit.
 - Global filter/query behavior is feasible without building or fetching all candidate data before applying scope; component-internal filters are explicitly local to already fetched component data.
+- Report data-service backend behavior is feasible when report APIs are in scope: frontend selects codes only, backend owns metadata/query planning/permission injection/guardrails/cache/export/audit/freshness behavior, and no unsafe SQL/source proxy exists.
+- Database-backed P0/high-volume APIs avoid obvious SQL query-shape risks or record accepted mitigations/gaps.
+- Report integration testing behavior is feasible when report acceptance is in scope: metric口径, golden/baseline data, data-chain reconciliation, API/frontend/filter/permission/cache/export/performance/exception coverage, UAT/smoke/monitoring/rollback, regression, and retest criteria are explicit.
 - The first meaningful viewport is useful, not merely attractive.
 - Data, filters, interactions, layout, and tests form one traceable contract.
 - No unresolved `P0` design issue remains; unresolved `P1` issues are fixed or explicitly accepted as `partial`.

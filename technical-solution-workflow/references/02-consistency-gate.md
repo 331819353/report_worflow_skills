@@ -15,9 +15,13 @@ Minimum requirements:
 - Every API ID has a response model.
 - Every response model traces to a logical model and source model, or to a gap ID.
 - Every metric ID appears in a response model, transformation rule, or gap ID.
+- Every reporting/BI/dashboard model has subject area, business process/object, layer/type, grain, key, business time口径, and update mode or a gap ID.
+- Every reusable or core metric has additivity, numerator/denominator where needed, time口径, dedup rule, source dependency, and reconciliation rule or a gap ID.
+- Every summary/wide/ADS model has a query pattern, reuse/application reason, dimensions retained, metric retained, and traceability path or a gap ID.
 - Every dynamic filter option has a source model, static enum, or gap ID.
 - Every sensitive response field has a masking/field-permission rule or a gap ID.
-- Every P0 API has performance/cache/SLA notes or a gap ID.
+- Every P0 API has performance/resilience/cache/SLA notes or a gap ID.
+- Every database-backed P0 API has SQL query-writing notes or a gap ID: projection, predicate shape, join cardinality, pagination strategy, and plan-evidence need.
 
 ## Cross-Artifact Checks
 
@@ -43,8 +47,15 @@ If a check fails:
 - One API returns unrelated page sections with different grains, permissions, or refresh needs.
 - Response fields are copied from mock data but have no source mapping.
 - A metric formula has numerator/denominator names but no filter scope or grain.
+- A metric is a ratio/rate/average but only stores the final value and has no numerator/denominator.
+- A snapshot/semi-additive metric such as inventory or balance is summed across dates without a period rule.
+- A source/logical model has fields but no business process, layer/type, grain, key, or business time口径.
+- A data model mirrors source-system tables directly for reporting without DWD/DIM/DWS/ADS or accepted simplification.
+- A many-to-many relationship is represented by comma-separated IDs or an unqualified join that can duplicate measures.
+- An ADS/wide model tries to serve unrelated domains or has no field block/traceability strategy.
 - A drilldown parameter is present in frontend interactions but absent from API request params.
 - An export API is omitted even though the page has export behavior.
 - Permission is described as "按权限" without user scope, organization scope, or data rule.
-- Performance is described as "正常返回" without latency, volume, cache, export limit, or SLA notes.
+- Performance is described as "正常返回" without latency, volume, concurrency model, async/offline threshold for long-running work, cache/precompute, connection pool, timeout/retry/fallback, rate/concurrency limit, export limit, or SLA notes.
+- Database-backed API rows say only "SQL查询" without selected columns, sargable predicates, join keys/cardinality, pagination/keyset strategy, or plan-evidence gap.
 - Sensitive fields are exposed without masking, field-level permission, or explicit no-sensitive-data decision.
