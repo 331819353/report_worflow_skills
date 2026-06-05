@@ -16,7 +16,9 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 | API documentation | `$api-documentation-design` |
 | Contract validation | `$api-contract-validation` |
 | Data transformation | `$data-transformation-adapter-design` |
+| Standard artifact templates | `$delivery-artifact-template-management` |
 | Gaps and blockers | `$gap-ledger-management` |
+| Data quality | `$data-quality-validation` |
 | Haier SSO | `$haier-sso-integration` |
 | Performance | `$performance-optimization` |
 | Production observability | `$production-observability-feedback` |
@@ -34,11 +36,12 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 3. Run `$quality-gate-validation` when docs, models, routes, source samples, runtime traces, or frontend contracts conflict.
 4. In documentation mode, use `$api-documentation-design` and mark partial/blocked endpoints visibly.
 5. In implementation mode, design transformations with `$data-transformation-adapter-design`, validate contracts with `$api-contract-validation`, and record gaps with `$gap-ledger-management`.
-6. Use `$haier-sso-integration` when Haier IAM/IAMA auth or `Application-Key`/`Access-Token` validation is in scope.
-7. Use `$performance-optimization` for SQL, pagination, cache, connection pool, export, or latency concerns.
-8. Keep API docs, implemented routes, examples, auth behavior, errors, and missing-info notes consistent.
-9. Run focused tests/smoke checks and start the service when a URL is requested.
-10. Use `$production-observability-feedback` for production-bound monitoring and feedback closure.
+6. Use `$data-quality-validation` when real data trust, refresh SLA, completeness, uniqueness, accuracy, anomalies, drift, or cross-source reconciliation affects the backend/API handoff.
+7. Use `$haier-sso-integration` when Haier IAM/IAMA auth or `Application-Key`/`Access-Token` validation is in scope.
+8. Use `$performance-optimization` for SQL, pagination, cache, connection pool, export, or latency concerns.
+9. Keep API docs, implemented routes, examples, auth behavior, errors, and missing-info notes consistent.
+10. Run focused tests/smoke checks and start the service when a URL is requested.
+11. Use `$production-observability-feedback` for production-bound monitoring and feedback closure.
 
 ## Required Output
 

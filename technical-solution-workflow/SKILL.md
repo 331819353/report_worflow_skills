@@ -44,10 +44,12 @@ Use this workflow before implementation. It defines what should be built and wha
 - 指标治理包, 权限矩阵, 数据质量规则, 性能约束 when in scope.
 - 缺口台账.
 - Version/handoff index when in scope.
+- Backend/API-documentation handoff status: consumable, partial, or blocked, with exact blockers and next owner actions.
 - Readiness: `ready`, `partial`, or `blocked`, with next-stage owner actions.
 
 ## Quality Gate
 
 - API inventory, data model, gaps, permissions, metrics, and quality rules must be mutually traceable.
 - Missing source/formula/permission/performance facts cannot be hidden as assumptions.
+- Backend/API-documentation handoff cannot be marked consumable while blocking source, model, permission, formula, data-quality, or performance gaps remain.
 - API/model artifacts cannot be `ready` while blocking gaps or high-impact input conflicts remain.
