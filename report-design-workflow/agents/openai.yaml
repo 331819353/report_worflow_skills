@@ -1,4 +1,4 @@
 interface:
   display_name: "报表原型 Workflow"
-  short_description: "编排报表/仪表盘/大屏原型，从需求、报表类型、组件映射、布局、模板、样式到运行验证和URL交付。"
-  default_prompt: "Use $report-design-workflow to orchestrate report prototype work from requirements through report type, component mapping, layout, template use, implementation, QA, and URL handoff."
+  short_description: "编排报表/仪表盘/大屏原型；默认走内置模板与 Vue3/TS/Element Plus/ECharts/axios 技术栈。"
+  default_prompt: "Use $report-design-workflow to orchestrate report prototype work from requirements through report type, component mapping, layout, default template selection, Vue3/TypeScript implementation, QA, and URL handoff."

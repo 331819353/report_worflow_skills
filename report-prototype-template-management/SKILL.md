@@ -1,6 +1,6 @@
 ---
 name: report-prototype-template-management
-description: "用于管理可运行报表原型模板资产，选择、复制、二开和校验 Vue/Vite 报表模板。用户提到报表模板、页面模板、选择模板、复制模板、模板二开、topbar、left nav、暗色/亮色模板、固定1920大屏、Haier logo、dashboard.config.ts、dashboard.dataset.json、validate-dashboard-contract、启动预览URL时触发；不负责业务报表类型判断或组件视觉细节。"
+description: "用于管理可运行报表原型模板资产，选择、复制、二开和校验 Vue/Vite 报表模板。报表原型默认走内置模板，只有用户明确自定义/精确复刻/保留现有壳或模板无法满足时才走 custom。用户提到报表模板、页面模板、选择模板、复制模板、模板二开、topbar、left nav、暗色/亮色模板、固定1920大屏、Haier logo、dashboard.config.ts、dashboard.dataset.json、validate-dashboard-contract、启动预览URL时触发；不负责业务报表类型判断或组件视觉细节。"
 ---
 
 # Report Prototype Template Management
@@ -10,6 +10,13 @@ description: "用于管理可运行报表原型模板资产，选择、复制、
 Use this skill when the task needs a runnable report prototype template or must modify an existing bundled template. It owns template asset selection, copy strategy, extension points, validation scripts, local startup helpers, and template-specific implementation boundaries.
 
 It does not own report-type business logic, component-level styling, API documentation, or production frontend integration.
+
+Default routing:
+
+- Default to `pageShellPath: template` for runnable report prototypes.
+- Choose `pageShellPath: custom` only when the user explicitly asks for custom/free design, explicitly asks for exact screenshot/HTML/source restoration, an existing shell must be preserved, or a documented requirement cannot be met by any bundled template.
+- If the user provides only a loose sample/reference, use it as hierarchy/density/tone evidence and still choose the closest bundled template.
+- Bundled templates use Vue 3 + TypeScript + Vite + Element Plus + ECharts + axios, with AntV S2 added for S2-class analytical tables.
 
 ## Bundled Assets
 
@@ -41,7 +48,7 @@ All template directories must be copied with their full project structure: `pack
 
 ## Workflow
 
-1. Decide whether the task needs a bundled template, an existing project shell, or custom development.
+1. Decide whether the task needs a bundled template, an existing project shell, or custom development; default to bundled template unless a hard custom/restoration/existing-shell/template-limitation reason exists.
 2. Select exactly one template when bundled assets are appropriate.
 3. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
 4. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components.
