@@ -1,6 +1,6 @@
 ---
 name: api-inventory-design
-description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、快照接口、snapshotDate/dataVersion/loadBatch、接口依赖、页面需要哪些接口、mock转接口、需求转API、方法路径、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
+description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、后端好开发、后端复用、接口复用、快照接口、snapshotDate/dataVersion/loadBatch、接口依赖、页面需要哪些接口、mock转接口、需求转API、方法路径、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
 ---
 
 # API Inventory Design
@@ -28,6 +28,7 @@ Read only the reference files needed for the current task:
 | Produce the exact API清单 table and required columns | `$delivery-artifact-template-management` |
 | Decide endpoint boundaries, common endpoint patterns, and when to split or merge APIs | `references/02-endpoint-patterns-and-splitting.md` |
 | Define inventory-level request params, response model references, auth, pagination, sorting, filters, exports, and actions | `references/03-request-response-auth-rules.md` |
+| Design APIs that make backend implementation simple, efficient, and reusable | `references/05-backend-friendly-api-design.md` |
 | Run API traceability, status, no-invention, and gap-linking checks | `references/04-api-stability-gate.md` |
 | Resolve authority conflicts when requirements, prototype data code, existing APIs, source metadata, or testing evidence disagree | `$quality-gate-validation` |
 | Audit whether endpoint boundaries and API inventory design reasonably support the business question, UI contract, data model, permissions, and tests | `$quality-gate-validation` |
@@ -35,7 +36,7 @@ Read only the reference files needed for the current task:
 Loading guidance:
 
 - For any generated or updated API清单, load the API inventory template from `$delivery-artifact-template-management` plus the three local references below.
-- For a quick endpoint review, read `02-endpoint-patterns-and-splitting.md` and `04-api-stability-gate.md`.
+- For a quick endpoint review, read `02-endpoint-patterns-and-splitting.md`, `05-backend-friendly-api-design.md`, and `04-api-stability-gate.md`.
 - For export, action, permission, pagination, or dynamic filter APIs, `03-request-response-auth-rules.md` is mandatory.
 
 ## Workflow
@@ -51,6 +52,9 @@ Loading guidance:
 
 3. Define endpoint candidates.
    For each API, state method, path, page/module, purpose, trigger, request source, response model, source model dependency, auth need, cache/performance/SLA expectation, priority, and status.
+
+3a. Assign backend reuse patterns.
+   For every production-bound or repeated endpoint, classify the backend implementation family: `metadata`, `filter-options`, `query`, `dashboard/snapshot`, `export`, `action`, or `health/status`. Record which common request model, response envelope, query context, permission service, cache/precompute family, pagination/export flow, or formatter can be reused. Mark `DESIGN-*` when an endpoint would require a one-off controller/query without a clear reason.
 
 4. Define request contracts at inventory level.
    Capture path/query/body params, filters, period format, organization scope, pagination, sorting, keyword search, drilldown params, export params, and default values. Separate client-supplied params from backend-defaulted params and backend-injected permission/data-scope params.
@@ -79,6 +83,7 @@ Loading guidance:
 - Export APIs must state whether they reuse list filters and whether they return file streams, task IDs, or async download links.
 - Mutation/action APIs must define idempotency, permission, success state, failure state, and audit need.
 - Do not create "万能接口" that mixes unrelated grains, permission scopes, or refresh cadences.
+- Do not create one-off endpoint shapes when a reusable backend pattern fits. A custom route is acceptable only when the inventory states why common metadata/filter/query/export/action patterns do not apply.
 - Do not keep an API inventory shape that is traceable but unreasonable. Use `DESIGN-*` findings for endpoint grouping, grain, filter, permission, export, action, or performance choices that would make downstream implementation or frontend integration awkward or incorrect.
 - Do not make one data-bearing API a hidden runtime prerequisite for another. A snapshot/dashboard aggregate API can provide first-screen component data, data-version metadata, and even a canonical shared dataset when the contract says so. Metrics/trends/rankings/tables/drilldowns/exports may reuse that snapshot only when the inventory records the source role, grain, filters, permission scope, data-version params, cache key, and invalidation rule. Shared `snapshotDate/latestPeriod/loadBatch/dataVersion` belongs in request/response/cache context, not in hidden endpoint state.
 - Do not mark data-bearing APIs `ready` when data-version, business filters, or permission scope are response-only metadata. They must drive backend params, source/provider predicates, precompute lookup keys, declared snapshot reuse rules, or Redis/cache keys.
@@ -103,6 +108,7 @@ Use a table with these columns:
 - Request params.
 - Response model.
 - Source model dependency.
+- Backend reuse pattern and common request/response model.
 - Snapshot role, data-version context, backend filter params, and endpoint dependency/reuse rule.
 - Auth/permission.
 - Pagination/sort/filter.
@@ -119,6 +125,7 @@ Use a table with these columns:
 
 - All prototype/mock data consumers are represented by an API or documented as static/offline.
 - API names and paths are stable enough for downstream API documentation, implementation, or validation.
+- Every production-bound API row has a backend reuse pattern or an explicit reason for a custom route/query.
 - API inventory design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected APIs `partial` or `blocked`.
 - Snapshot/latest-period reports declare the snapshot role and shared data-version context; API rows either declare valid snapshot reuse or avoid hidden dependency on undocumented runtime payload, frontend call order, or controller memory.
 - Data-version, business filter, and permission scope values are mapped to backend query params, source-side predicates/precompute lookups, and cache keys for every data-bearing API.

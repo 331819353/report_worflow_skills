@@ -8,6 +8,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - Common conventions are defined before endpoint details.
 - Each endpoint has method, path, purpose, trigger, auth, request parameters, response schema, examples, errors, performance notes, status, and pending items.
 - Each data-bearing endpoint identifies the component or justified component group it serves.
+- Each production-bound endpoint identifies backend reuse pattern, common request model, response envelope/model family, and service-layer mapping, or explains why a custom shape is required.
 - Each response schema traces to implementation, model/source, upstream API, frontend contract, or explicit design decision.
 - Each transformation rule is documented inline, linked to a local transformation note, or marked with `TBD(GAP-*)` plus owner/impact.
 - Each missing decision is recorded in pending items with a stable `GAP-*` ID, owner question, impact, and blocking status.
@@ -37,7 +38,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - `blocked`: missing source, permission, model, auth, environment profile, or business rule prevents reliable implementation/integration.
 - `deprecated`: retained for compatibility but not recommended for new use.
 
-For production-bound delivery, do not use `ready` when source authority, auth/permission, report data-service backend behavior when report APIs are in scope, parameter-driven version/scope filtering for versioned data endpoints, `.env.production` profile/base URL evidence, runtime/health evidence, observability, performance/resilience/export limits, SQL query strategy for database-backed endpoints, version compatibility, or testing handoff is missing.
+For production-bound delivery, do not use `ready` when source authority, auth/permission, backend reuse pattern/model-family mapping, report data-service backend behavior when report APIs are in scope, parameter-driven version/scope filtering for versioned data endpoints, `.env.production` profile/base URL evidence, runtime/health evidence, observability, performance/resilience/export limits, SQL query strategy for database-backed endpoints, version compatibility, or testing handoff is missing.
 
 ## Handoff Summary
 

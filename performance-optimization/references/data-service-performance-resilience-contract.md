@@ -6,6 +6,8 @@ Performance and stability are design concerns, not late implementation details. 
 
 For report/BI/dashboard backends, apply `$backend-development-workflow` alongside this contract so metadata, permissions, parameter guardrails, query planning, component-ready responses, async export, audit, freshness, and slow-report governance are covered in addition to generic performance controls.
 
+When Redis is named, also apply `redis-cache-usage-patterns.md`. Redis decisions must include role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability.
+
 ## Required Design Dimensions
 
 For every production-bound data service, record the applicable decisions below or mark them explicitly out of scope with a reason.
@@ -15,7 +17,7 @@ For every production-bound data service, record the applicable decisions below o
 | Latency and capacity target | Expected QPS/concurrency, p50/p95/p99 latency target, data volume, request size, export size, and peak/normal traffic assumption. |
 | Concurrency model | Thread pool, async/non-blocking IO, worker/process count, queue length, backpressure, and CPU-bound vs IO-bound handling. |
 | Resource pools | Database pool, Redis/cache pool, HTTP/upstream client pool, min/max size, acquire/connect/read timeout, idle timeout, validation, and safe shutdown. |
-| Cache/precompute | Redis/project cache/in-memory bounded cache/precompute choice, key dimensions, TTL, invalidation, warmup, permission/user/tenant safety, stampede protection, stale/fallback behavior, and hit-rate metric. |
+| Cache/precompute | Redis/project cache/in-memory bounded cache/precompute choice, role, key dimensions, TTL, invalidation, warmup, permission/user/tenant safety, stampede protection, stale/fallback behavior, hit-rate metric, and operational fallback. |
 | Query execution | Source-side filtering/sorting/pagination/aggregation, index strategy, total-count strategy, cursor/keyset need, slow-query risk, and no full-materialize-then-filter behavior for global scope. |
 | Async/offline processing | Job/task need, queue/worker owner, job status API, progress, cancellation, retry/dead-letter behavior, result retention, idempotency, timeout, and user notification or download behavior. |
 | Upstream resilience | Timeout, retry with backoff/jitter, circuit breaker, bulkhead/isolation, fallback/degraded response, idempotency, and upstream SLA/owner. |
@@ -53,10 +55,14 @@ For every production-bound data service, record the applicable decisions below o
 - Cache invalidation must name the event, schedule, source version, manual operation, or TTL that makes stale data acceptable.
 - In-memory cache is allowed only for bounded local state or single-instance scope. Production multi-instance services should prefer shared cache or document why local cache is safe.
 - In-memory cache must not become an undocumented cross-endpoint source of truth. Do not optimize by storing an unscoped snapshot/dashboard API payload in memory and having metrics/trend/table/export endpoints read it. Use a declared canonical/shared snapshot, shared cache, precompute, or source query keyed by the data-version context instead.
+- Redis is acceptable for metadata/dictionary cache, permission summaries, result cache, dashboard/widget cache, canonical snapshot cache, rate limiting, distributed lock, idempotency key, and short-lived job progress. For each role, document key template, value type, TTL, invalidation, max value size, miss behavior, fallback, and metrics.
+- Avoid Redis request-path operations that do not scale: unbounded `KEYS`, broad `SCAN`, large value blobs without size limits, infinite TTL for mutable data, and locks without TTL/ownership token.
+- Prefer `MGET`/pipeline for bounded multi-key reads and Lua only for small atomic operations such as counters, token buckets, or conditional unlocks.
 
 ## Resource Pool Rules
 
 - Database-backed APIs must use a connection pool or document that the runtime/framework owns pooling externally.
+- Redis clients must use bounded pools, connect/read/write timeouts, retry/backoff limits, and safe shutdown behavior.
 - Upstream HTTP/API clients should reuse connections and define connect/read/overall timeout.
 - Pool limits must be consistent with database/upstream limits and application worker count; increasing threads without pool limits can reduce stability.
 - Health checks should not exhaust pools or run expensive dependency probes on every request.
@@ -73,14 +79,15 @@ For every production-bound data service, record the applicable decisions below o
 
 - Mark data-service/API design `ready` only when applicable performance and resilience decisions are documented or explicitly out of scope.
 - Mark `partial` when the service can run for local/demo/test scope but lacks confirmed capacity, latency, pool, cache, async/offline, SQL plan, timeout, or observability decisions.
-- Mark `blocked` when a production-bound endpoint may overload the source, uses unbounded concurrency, accepts unbounded async queue growth, lacks source-side filtering/pagination for large data, opens one connection per request, depends on another endpoint's in-memory response payload for correctness, omits data-version/business/permission scope from query or cache keys, has no timeout/failure behavior for required upstream dependencies, or keeps long-running work synchronous without a safe limit.
+- Mark `blocked` when a production-bound endpoint may overload the source, uses unbounded concurrency, accepts unbounded async queue growth, lacks source-side filtering/pagination for large data, opens one connection per request, uses Redis without key/TTL/invalidation/permission-safety/miss/fallback/pool decisions, depends on another endpoint's in-memory response payload for correctness, omits data-version/business/permission scope from query or cache keys, has no timeout/failure behavior for required upstream dependencies, or keeps long-running work synchronous without a safe limit.
 
 ## Handoff Evidence
 
 For implementation, validation, or production acceptance, include:
 
 - Endpoint-level performance/resilience table.
-- Config keys or files for pool, cache, timeout, worker, and rate-limit settings.
+- Config keys or files for pool, Redis/cache, timeout, worker, and rate-limit settings.
+- Redis handoff evidence when used: role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and metrics.
 - Async job contract and evidence when long-running work exists: create/status/cancel/result endpoints, queue/worker limits, retry/dead-letter policy, retention, and sample job lifecycle.
 - Load/smoke evidence when available: request count, latency, error rate, saturation, cache hit ratio, and slow-query sample.
 - Open performance risks with owner, impact, current assumption, and next verification step.

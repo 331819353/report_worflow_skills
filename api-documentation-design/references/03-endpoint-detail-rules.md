@@ -7,11 +7,14 @@ Use this reference when writing each endpoint section.
 - API ID and name:
 - Business module, resource, page, or service:
 - Served component or component group:
+- Backend reuse pattern:
 - Purpose and trigger:
 - Method and path:
 - Auth and permission:
 - Request headers:
+- Request model family:
 - Path/query/body parameters:
+- Response envelope/model family:
 - Response schema:
 - Data/model/source trace:
 - Snapshot role/reuse rule:
@@ -19,6 +22,7 @@ Use this reference when writing each endpoint section.
 - Backend query binding:
 - Endpoint dependency rule:
 - Report data-service backend contract:
+- Service-layer mapping:
 - Backend stack and resource model:
 - Transformation rules:
 - Filter/sort/page execution stage:
@@ -51,6 +55,20 @@ Choose the style before writing the endpoint body:
 - Streaming or SSE: document connection setup, event schema, heartbeat, reconnect, backpressure, timeout, and terminal events.
 - Batch import/export: document file format, encoding, max size, validation errors, partial success, generated artifact retention, and download behavior.
 
+## Backend Reuse Pattern
+
+Classify each production-bound endpoint:
+
+- `metadata`: reusable definitions, dimensions, metrics, fields, filter metadata, or dictionaries.
+- `filter-options`: option data with cascade, permission, or source-driven behavior.
+- `query`: list, table, chart, KPI, ranking, detail, or analytical query using query context.
+- `dashboard/snapshot`: coherent widget group or canonical/shared snapshot data cut.
+- `export`: async or bounded export reusing query/list filters.
+- `action`: mutation/command with idempotency, permission, audit, and status.
+- `health/status`: source freshness, readiness, export/job status, or service health.
+
+Document the reusable backend layer or service family: metadata service, permission service, validator, query planner, repository/source adapter, cache service, formatter, export service, action service, or audit service. If the endpoint needs a custom controller/query/DTO shape, state why the common patterns do not fit.
+
 ## Request Parameters
 
 For each parameter, document:
@@ -62,6 +80,7 @@ For each parameter, document:
 - Database query mapping when the source is database-backed: source column, predicate shape, whether it uses a normal/composite/function/full-text index, type consistency, date/range rewrite, optional-filter generation behavior, and any known non-sargable condition.
 - Execution stage: whether each filter, sort, pagination, ranking, Top/Bottom, grouping, aggregation, and count is handled by source query, repository query, upstream provider, precompute/cache, or an explicitly bounded client/service post-process.
 - Pagination, sorting, export, drilldown, and search behavior when supported. Collection/list/table endpoints must define pagination unless they are provably bounded by a small fixed enum or single-object lookup.
+- Reused request model group when applicable: `QueryContext`, `PageRequest`, `SelectionRequest`, `ExportRequest`, or `ActionRequest`.
 - Whether the response is component-ready or only format-ready for the frontend. Component-ready means KPI totals, chart series, table rows, ranks, pagination metadata, and business formula fields are already returned by the API.
 - For report/BI/dashboard endpoints, document report type, report metadata or fixed-contract source, dimension/metric/filter/sort whitelist source, backend-owned SQL/source expression mapping, parameter guardrails, backend-injected tenant/data/field/export permission behavior, cache key permission safety, result freshness/quality metadata, query/export audit behavior, and slow-report governance expectation.
 - For snapshot/latest-period reports, document whether the endpoint accepts, defaults, injects, or returns `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. A data-bearing endpoint must identify whether it queries its own source/logical/precompute/cache source or derives from a declared canonical/shared snapshot.
@@ -75,6 +94,8 @@ For each response field, document:
 - Array/object nesting, stable ordering, empty-state shape, and omitted-field behavior.
 - Derived fields, aggregation grain, formula, rounding, default fill, and source trace.
 - Whether the field is stable, experimental, deprecated, or pending confirmation.
+
+At response-envelope level, document whether the endpoint uses `Page<T>`, `OptionItem[]`, `KpiCard[]`, `SeriesData`, `TaskStatus`, `ColumnMeta[]`, `Meta`, or a custom envelope. Custom envelopes need a reason so backend serializers and tests do not fragment unnecessarily.
 
 For report/dashboard APIs, document the component-facing view model. Do not leave required component formulas, grouping, ranking, filtering, or chart/table series derivation as implicit frontend work unless the exception is bounded and listed as partial.
 
@@ -109,6 +130,8 @@ Do not mark collection/list/table APIs `ready` when pagination is missing, the m
 
 Do not mark report/BI/dashboard APIs `ready` when the frontend can send raw SQL, table names, column expressions, arbitrary operators, arbitrary sort strings, unregistered metric formulas, or tenant/data-permission scope. Frontend input must select stable codes; backend metadata/config must own source expressions, permission predicates, guardrails, and result formatting.
 
+Do not mark production-bound endpoints `ready` when the backend reuse pattern, reusable request model, response envelope, or service-layer mapping is missing. A one-off controller/query/DTO shape needs an explicit business or technical reason.
+
 Do not mark endpoints `ready` when the documented or implemented path builds or loads a complete candidate dataset/component payload and then applies global filters, permission scope, sorting, pagination, ranking, Top/Bottom, grouping, aggregation, or count logic afterward. Treat page/API-level full-materialize-then-filter as a performance and correctness blocker except for documented component-internal filters over already fetched component data, tiny static enums, or bounded lookup sets.
 
 Do not mark snapshot/latest-period endpoint groups `ready` when metrics, trends, rankings, tables, drilldowns, or exports depend on an undocumented `/snapshot` payload, frontend call order, or application-memory payload. The correct dependency is either a declared canonical/shared snapshot with matching grain/scope/version or a shared data-version context plus request/defaulted/injected params that filter a shared source/logical/precompute/cache layer.
@@ -135,6 +158,8 @@ For database-backed endpoints, also document:
 - Redis/cache use when applicable: cache key dimensions, TTL, invalidation trigger, permission/user/tenant safety, warmup, stampede protection, and stale/fallback behavior.
 - Redis/cache keys for snapshot/latest-period report endpoints include data-version fields such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. Endpoint caches may share invalidation triggers, and a declared canonical snapshot cache may be a source of truth; an undocumented endpoint cached response must not become another endpoint's source of truth.
 - Redis/cache keys for data-bearing endpoints also include every business filter and backend-injected permission/data-scope value that can change the response.
+- When Redis is used, document role and usage pattern: metadata/dictionary cache, permission cache, result/widget cache, canonical snapshot cache, rate limit, distributed lock/singleflight, idempotency key, or job progress. Include key template, value shape/size limit, TTL+jitter, invalidation event, miss behavior, stampede protection, fallback, Redis pool/timeouts, and metrics.
+- Do not document production Redis usage that relies on unbounded `KEYS`, broad request-path `SCAN`, infinite TTL for mutable data, locks without TTL/owner token, or cache keys that omit tenant/permission/scope dimensions.
 
 For production-bound or upstream-dependent endpoints, also document:
 

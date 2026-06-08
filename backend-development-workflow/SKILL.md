@@ -26,17 +26,19 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 
 ## Reference Loading
 
-- Read `references/report-data-service-backend-implementation.md` when the backend is a report/BI/dashboard query service, or when production readiness depends on metadata, source/SQL mapping, permission injection, component-ready response shape, async export, audit, cache safety, or slow-report governance.
+- Read `references/report-data-service-backend-implementation.md` when the backend is a report/BI/dashboard query service, or when production readiness depends on metadata, source/SQL mapping, permission injection, component-ready response shape, async export, audit, cache safety, Redis role, or slow-report governance.
+- Read `$performance-optimization` and its Redis reference when backend/data-service design names Redis, cache, precompute, rate limiting, distributed locks, job progress, or hot-query acceleration.
 - Existing backend document/missing-info references are legacy handoff aids; prefer `$api-documentation-design`, `$gap-ledger-management`, and `$delivery-artifact-template-management` for new standardized artifacts.
 
 ## Reinforced Constraints
 
 - Choose exactly one mode before editing: API documentation, backend implementation, or backend repair/debug. Do not enter implementation mode unless the user asks for code, routes, database access, or a running service.
-- For default backend/data-service work without an authoritative existing stack or user-specified override, use `Python + Flask + database/upstream connection pools + Redis`. Flask owns HTTP routing and service composition; connection pools own database/upstream resource control; Redis owns cache/precompute/session-like transient state, hot query acceleration, stampede protection, and rate/concurrency support when needed.
+- For default backend/data-service work without an authoritative existing stack or user-specified override, use `Python + Flask + database/upstream connection pools + Redis`. Flask owns HTTP routing and service composition; connection pools own database/upstream resource control; Redis owns cache/precompute/session-like transient state, hot query acceleration, stampede protection, distributed locks where appropriate, idempotency keys, job progress, and rate/concurrency support when needed.
 - Treat API docs as the contract source of truth for downstream frontend/testing. Implemented routes, examples, errors, auth behavior, and docs must stay aligned after every change.
 - When consumer evidence, API docs, models, routes, source samples, env/auth notes, or runtime traces disagree, run `$quality-gate-validation`; run `$api-contract-validation` before and after route or response changes.
 - For snapshot/latest-period report services, classify the snapshot role before implementation. Data-bearing endpoints may be independent query-service entry points or may derive from a declared canonical/shared snapshot when the contract proves matching data-version, filters, permission scope, grain, fields, cache key, and invalidation. Do not make metrics/trend/table/export routes depend on undocumented snapshot route responses, controller memory, or frontend call order.
 - Build a backend query context before querying: validated client params, backend-defaulted data-version params, backend-injected tenant/user/role/data-scope params, pagination/sort, and route/drilldown params. Pass that context into repository/source/provider/precompute/cache lookups so the correct data version and scope are enforced by parameters.
+- When Redis is used, document its exact role and operational contract: key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, stale/fallback behavior, connection pool/timeouts, and observability. Do not leave Redis as a generic "cache" note.
 - For report/database endpoints, push global filters, permission scope, sorting, pagination, joins, aggregation, counts, Top/Bottom, and export scope into the source/repository/query layer. Broad load-then-filter behavior is blocked except for tiny static enums or documented component-internal display filters.
 - Before implementing or accepting filter-bound endpoints, prove data completeness first: filter option rows, source/provider rows, required fields, default and non-default request/response states, empty/no-permission states when relevant, and resolver/API branches must exist at the required grain.
 - Mock-derived backend implementation must use a SQLite fixture database with schema, seed rows, indexes, and parameter-varying behavior. JSON or in-memory arrays are examples/assertions only, not the API data source.
@@ -62,6 +64,8 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 
 - Mode, inputs, and project stack.
 - Backend stack decision: Python/Flask, connection-pool ownership, Redis/cache role, and override reason if not using the default stack.
+- Data-service runtime model: sync/async boundary, source and cache pools, Redis role matrix, cache/precompute/invalidation strategy, rate/concurrency limits, timeout/fallback, and observability.
+- Backend-friendly API implementation plan: endpoint families, common request/response models, service-layer mapping, and custom endpoint exceptions.
 - Parameter-driven data-version, scope-filtering, snapshot role/reuse, and endpoint-dependency proof when snapshot/latest-period endpoints exist.
 - API文档 and/or implemented backend changes.
 - Contract validation and transformation notes.
@@ -76,7 +80,9 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 
 - Do not implement backend code when the user only asked for API documentation.
 - Do not leave the backend stack vague or switch to FastAPI/Spring/Express/Node by default; use Python/Flask with connection pools and Redis unless the user or existing project explicitly overrides it.
+- Do not accept a production-bound API handoff that would require one custom controller/query/DTO shape per similar widget unless the custom reason is explicit.
 - Do not implement metrics/trends/rankings/tables/drilldowns/exports by reading an undocumented snapshot API response or app-memory snapshot. Declared canonical/shared snapshot reuse is allowed; hidden response-payload dependency is not.
+- Do not use Redis without key dimensions, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability.
 - Do not return correct-looking version/scope metadata while querying unscoped or default-only data. Data-version, business filters, and permission/data scope must be part of repository/source/precompute/cache parameters.
 - Do not publish broad unbounded list endpoints without pagination/performance notes.
 - Do not claim filter-bound backend/API readiness when the data completeness check was skipped or only a single default snapshot exists for an affecting filter.

@@ -10,6 +10,16 @@ List params by location:
 - `query`: filters, period, org scope, pagination, sorting, keyword search.
 - `body`: complex filters, export config, action payload, batch IDs.
 
+Prefer reusable request model groups when possible:
+
+- `QueryContext`: period/date/version fields, business filters, route/drilldown params, backend-defaulted params, and backend-injected permission/data scope.
+- `PageRequest`: `pageNo`, `pageSize`, `cursor`, `sortBy`, `sortOrder`.
+- `SelectionRequest`: stable metric, dimension, field, and filter codes when the report is configurable.
+- `ExportRequest`: same query/filter params as the list/query endpoint plus export format, fields, async options, and idempotency key when needed.
+- `ActionRequest`: target ID, action type, payload, idempotency key, permission/audit reason, and duplicate-submission behavior.
+
+Do not invent different parameter names for the same concept across endpoints unless the project already has a standard.
+
 Required filter details:
 
 - Param name.
@@ -85,10 +95,13 @@ Do not write full API docs here. State:
 
 - Response model ID/name.
 - Envelope shape if known, such as `data`, `list + total`, or `taskId`.
+- Reusable response envelope when applicable: `Page<T>`, `OptionItem[]`, `KpiCard[]`, `SeriesData`, `TaskStatus`, `ColumnMeta[]`, or `Meta`.
 - Row grain.
 - Required field groups.
 - Empty state behavior.
 - Error behavior only when special.
+
+Prefer reusable envelopes and DTO families so backend serializers, tests, and frontend adapters can be shared. Use a custom response shape only when the business interaction requires it and document why.
 
 ## Pagination, Sort, Filter
 
@@ -131,16 +144,19 @@ Auth/permission must include:
 
 For every P0 API, state:
 
+- Backend reuse pattern: metadata, filter-options, query, dashboard/snapshot, export, action, or health/status.
+- Reused backend layer or service family when known: metadata service, permission service, query planner, repository/source adapter, cache service, formatter, export service, action service, or audit service.
 - Expected data volume or row count range.
 - Expected QPS/concurrency and peak traffic assumption.
 - Latency target or SLA if known.
 - Concurrency/thread/worker model when the endpoint is production-bound or expensive.
 - Async/offline job strategy when synchronous work may exceed the latency target, including task ID, status/progress, cancellation when allowed, result download/retention, retry/dead-letter behavior, queue/worker limit, and idempotency.
 - Cache, precompute, or real-time expectation.
-- Redis/cache expectation when useful for hot or expensive queries, including cache key dimensions, TTL, invalidation, stampede protection, permission safety, and fallback.
+- Redis/cache expectation when useful for hot or expensive queries, including Redis role, key template/dimensions, TTL, invalidation, stampede protection, permission safety, fallback, and observability.
 - Cache keys for related snapshot/latest-period endpoints include the shared data-version context, such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, and source version. Do not use application-memory snapshot state as a cross-endpoint cache dependency in production.
 - Cache/precompute keys for data-bearing endpoints also include business filters and backend-injected permission/data scope whenever they change the response.
 - Database/upstream/cache connection-pool expectation: existing pool / new pool / externally managed, with max size and timeout assumptions.
+- Redis/cache pool expectation when Redis is named: bounded pool, connect/read/write timeouts, retry/backoff, and degraded behavior when Redis is slow or unavailable.
 - Timeout, retry/backoff, circuit-breaker, and fallback/degraded behavior if relevant.
 - Rate limit, concurrency limit, request-size limit, and overload behavior when needed.
 - Export row limit or async threshold when the API can export.

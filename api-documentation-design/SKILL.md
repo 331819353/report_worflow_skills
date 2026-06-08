@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
+description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、后端好开发、接口复用、通用请求响应模型、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
 ---
 
 # API Documentation Design
@@ -18,10 +18,10 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
    When multiple input authorities exist, run `$quality-gate-validation` before documenting endpoint behavior. API inventories, requirements, frontend contracts, source/data models, OpenAPI snippets, implemented routes, and runtime samples must not be merged silently when they conflict; unresolved `P0`/`P1` `ENTRY-*` findings keep the affected endpoint `partial` or `blocked` and require user confirmation only before the affected API document is repaired.
 
-   When the API document will drive frontend, backend, or tests, run `$quality-gate-validation`. Check that endpoint boundaries, response models, pagination/sorting/filter rules, auth, errors, examples, global SQL/source filtering, component-internal local filtering, SQL/index feasibility, Redis/cache decisions, connection-pool behavior, and performance limits reasonably support the consuming business flow.
+   When the API document will drive frontend, backend, or tests, run `$quality-gate-validation`. Check that endpoint boundaries, backend reuse pattern, common request/response model family, pagination/sorting/filter rules, auth, errors, examples, global SQL/source filtering, component-internal local filtering, SQL/index feasibility, Redis/cache decisions, connection-pool behavior, and performance limits reasonably support the consuming business flow. If Redis is named, document role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability.
 
 2. Establish shared conventions.
-   Define base URL, version, auth, headers, response envelope, errors, pagination, sorting, filters, date/time format, enum format, file behavior, default/max page size, global filter execution, component-internal filter scope, Redis/cache expectations, connection-pool expectations, large-result handling, and export limits before documenting endpoint details.
+   Define base URL, version, auth, headers, common request model groups, response envelope, errors, pagination, sorting, filters, date/time format, enum format, file behavior, default/max page size, global filter execution, component-internal local filter scope, Redis/cache expectations, connection-pool expectations, large-result handling, and export limits before documenting endpoint details. Redis/cache expectations must be specific enough for implementation, not a placeholder.
 
    For filter-bearing endpoints, document data completeness before binding: option source, source/provider execution stage, required response fields, row grain, default request/response example, at least one non-default request/response example, empty/no-permission example when relevant, and resolver/API branch behavior. If only one default snapshot exists for an affecting filter, keep the endpoint `partial` or `blocked`.
 
@@ -59,6 +59,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 - API documentation grouped by module, domain, page, resource, or service boundary.
 - Common conventions plus endpoint details.
+- Backend reuse pattern and common request/response model family for production-bound endpoints.
 - Parameter-driven data-version, scope-filtering, snapshot role/reuse, and endpoint-dependency contract when snapshot/latest-period semantics exist.
 - Backend stack/cache/pool notes when the document feeds backend implementation.
 - Dependency trace from endpoint response to the relevant implementation/model/source/contract artifacts.
@@ -71,6 +72,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - Every expected endpoint appears in the API document or is explicitly removed with a reason.
 - Entry conflicts across requirements, API inventories, data/source models, frontend contracts, route code, OpenAPI snippets, and runtime samples are resolved or listed as `ENTRY-*`; unresolved `P0`/`P1` findings keep affected endpoints `partial` or `blocked`.
 - API design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected endpoints `partial` or `blocked`.
+- Production-bound endpoints identify backend reuse pattern, reusable request model, reusable response envelope, and service-layer mapping, or explain why a custom shape is required.
 - Request params cover required filters, drilldowns, pagination, sorting, exports, defaults, and invalid-param behavior.
 - Filter-bearing endpoints include data-completeness evidence before frontend binding: option data, row grain, fields, default/non-default examples, empty/no-permission examples when relevant, and resolver/API branch behavior.
 - Database-backed request params document SQL predicate shape, index support, and SQL pushdown scope for global/page-level filters; unresolved index or non-sargable filter behavior keeps the endpoint `partial` or `blocked`.
@@ -78,6 +80,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - Snapshot/latest-period API docs state shared data-version fields, classify the snapshot role, and prove that metrics/trends/rankings/tables/drilldowns/exports either validly reuse the declared snapshot or avoid undocumented dependency on frontend call order/controller memory.
 - Data-bearing endpoint docs show how data-version, business filters, and backend-injected permission/data scope become source-side predicates, upstream provider params, precompute lookup keys, declared snapshot reuse rules, or Redis/cache key segments. Response-only metadata does not satisfy this check.
 - Default-backend API documents include Python/Flask, connection-pool, and Redis/cache ownership, or a named override reason.
+- Redis-backed endpoint docs include Redis role, key dimensions, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability.
 - Collection/list/table endpoints document default page size, maximum page size, stable sort, total-count behavior, cursor/keyset need when applicable, and large-result handling. Missing pagination/performance behavior keeps production-bound endpoints `partial` or `blocked`.
 - API implementation documents may use JSON only as response examples. If local/mock data is needed for backend/API development, the documented simulation source is SQLite with schema, seed rows, and indexes rather than JSON files.
 - Each data-bearing endpoint identifies the served component/component group and frontend compute policy; broad page-level responses that require frontend business calculation stay `partial` or `blocked`.

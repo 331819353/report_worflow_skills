@@ -1,6 +1,6 @@
 ---
 name: performance-optimization
-description: "用于报表、API、SQL、数据服务和前端可视化性能优化。用户提到接口慢、SQL慢、查询优化、索引、分页、缓存、Redis、连接池、并发、首屏慢、snapshotDate/dataVersion/loadBatch、快照接口优化、图表卡顿、表格大数据、导出慢、渲染性能、ECharts 性能、OLAP 建模、生产性能压测或容量限制时触发。"
+description: "用于报表、API、SQL、数据服务和前端可视化性能优化。用户提到接口慢、SQL慢、查询优化、索引、分页、缓存、Redis、Redis使用技巧、缓存击穿/穿透/雪崩、TTL、分布式锁、限流、连接池、并发、首屏慢、snapshotDate/dataVersion/loadBatch、快照接口优化、图表卡顿、表格大数据、导出慢、渲染性能、ECharts 性能、OLAP 建模、生产性能压测或容量限制时触发。"
 ---
 
 # Performance Optimization
@@ -14,6 +14,7 @@ It owns performance strategy and verification. It does not replace API design, d
 ## Reference Loading
 
 - Data service resilience, cache, pagination, pooling, and capacity: `references/data-service-performance-resilience-contract.md`
+- Redis cache, lock, rate-limit, job-state, and hot-query usage patterns: `references/redis-cache-usage-patterns.md`
 - SQL query writing and index-friendly filters: `references/sql-query-writing-optimization.md`
 - OLAP modeling and analytical aggregation: `references/olap-data-modeling-optimization.md`
 
@@ -22,14 +23,16 @@ It owns performance strategy and verification. It does not replace API design, d
 1. Identify the performance surface: SQL/source, API, backend service, cache, export, frontend fetch/adaptation, chart/table rendering, or deployment runtime.
 2. Define performance target: latency, throughput, first screen, interaction time, export time, row count, concurrency, freshness, or memory budget.
 3. Locate current bottleneck evidence: query plan, network waterfall, API logs, browser performance trace, data volume, component count, or user report.
-4. Apply the smallest appropriate optimization: query/index/range rewrite, pagination/keyset, aggregation pushdown, cache, connection pool, request batching, lazy loading, virtualization, chart sampling, memoization, or worker/off-main-thread processing.
-5. Define verification commands, metrics, before/after evidence, and residual risk.
+4. Select the data-service performance pattern before using Redis or async work: source-side query optimization, precompute/materialized snapshot, Redis cache, stale fallback, request coalescing, rate/concurrency limit, async job, or frontend rendering optimization.
+5. Apply the smallest appropriate optimization: query/index/range rewrite, pagination/keyset, aggregation pushdown, cache, connection pool, request batching, lazy loading, virtualization, chart sampling, memoization, or worker/off-main-thread processing.
+6. Define verification commands, metrics, before/after evidence, and residual risk.
 
 ## Required Output
 
 - Performance surface and target.
 - Bottleneck evidence and hypothesis.
 - Optimization plan or implemented changes.
+- Redis/cache/precompute decision when relevant: key template, TTL/invalidation, permission-safety dimensions, stampede protection, fallback, and observability.
 - Risks around correctness, freshness, permission scope, cache invalidation, and export completeness.
 - Verification result or blocker.
 
@@ -40,4 +43,5 @@ It owns performance strategy and verification. It does not replace API design, d
 - Do not optimize request count by making one data API a hidden runtime source for another. Snapshot/dashboard aggregate APIs, metrics, trends, tables, and exports may share `snapshotDate/latestPeriod/loadBatch/dataVersion`, cache invalidation, and a declared canonical/shared snapshot; undocumented endpoint-payload reuse is the risk, not explicit snapshot reuse.
 - Do not optimize by removing or ignoring backend query params. Data-version, business filters, pagination/sort, and permission/data scope must remain source-side predicates, precompute lookup inputs, or cache-key dimensions.
 - Cache keys must include filters, permission/user/tenant scope, source version, pagination/sort, and locale/unit options when relevant.
+- Redis usage is not ready when key dimensions, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability are unknown.
 - Frontend rendering optimizations must preserve loading, empty, error, and interaction states.

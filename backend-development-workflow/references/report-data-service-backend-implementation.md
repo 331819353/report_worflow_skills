@@ -4,7 +4,8 @@ Use this shared reference whenever a report, BI, dashboard, or data-visualizatio
 
 This reference is about the report backend as a controlled query service. It complements:
 
-- `$performance-optimization` for OLAP business process, grain, fact/dimension, metric, serving-model design, SQL query shape, execution-plan risk, concurrency, cache, pools, async work, timeout, limits, and observability.
+- `$performance-optimization` for OLAP business process, grain, fact/dimension, metric, serving-model design, SQL query shape, execution-plan risk, concurrency, Redis/cache/precompute, pools, async work, timeout, limits, and observability.
+- `../../performance-optimization/references/redis-cache-usage-patterns.md` conceptually for Redis key design, TTL, invalidation, stampede protection, permission safety, fallback, and observability when Redis is named.
 
 ## Core Principle
 
@@ -27,13 +28,15 @@ report definition
 
 Frontends choose report, dimension, metric, filter, sort, page, drilldown, and export options by stable codes. Frontends must not send raw SQL, table names, column expressions, arbitrary operators, or permission scope.
 
+API design should let this query-service chain be reused. A backend-friendly API declares the reuse pattern, common request model, common response envelope, and service-layer mapping before implementation starts.
+
 ## Default Backend Stack
 
 For default report backend/data-service planning or implementation, use `Python + Flask + database/upstream connection pools + Redis` unless the user specifies another stack or an existing project has an authoritative backend stack.
 
 - Flask owns HTTP routing, request validation handoff, service composition, error envelopes, health/readiness endpoints, and auth middleware integration.
 - Database/upstream connection pools own bounded resource usage, acquire timeout, idle/validation behavior, and overload protection.
-- Redis owns cache/precompute, hot query acceleration, dictionary/permission cache where safe, stampede protection, stale fallback, and rate/concurrency support when needed.
+- Redis owns cache/precompute, hot query acceleration, dictionary/permission cache where safe, canonical snapshot cache when declared, stampede protection, stale fallback, rate/concurrency support, idempotency keys, distributed locks, and short-lived job progress when needed.
 - Document an override reason before choosing FastAPI, Spring, Express, Node, or another backend stack by default.
 
 ## Required Backend Responsibilities
@@ -77,6 +80,44 @@ ReportMonitorService
 ```
 
 Implementation packages may differ, but controller-level SQL concatenation, permission checks, cache key construction, export logic, and result formatting should not be mixed into one handler.
+
+## Backend-Friendly API Families
+
+Prefer stable endpoint families that map to reusable backend services:
+
+| API Family | Typical Endpoint | Reused Backend Layers |
+| --- | --- | --- |
+| Metadata | `GET /api/reports/{reportId}/metadata` | metadata service, permission service, dictionary cache, response metadata formatter |
+| Filter options | `GET /api/reports/{reportId}/filters` | metadata service, permission service, option repository, cascade resolver, cache service |
+| Query | `POST /api/reports/{reportId}/query` | validator, query context builder, query planner, SQL/source builder, executor, cache, formatter |
+| Dashboard/snapshot | `GET /api/dashboards/{dashboardId}` or `GET /api/reports/{reportId}/snapshot` | query planner, widget cache, canonical snapshot/precompute, formatter |
+| Detail/drilldown | `GET /api/reports/{reportId}/records/{id}` or query drilldown | permission service, query context, repository, formatter |
+| Export | `POST /api/reports/{reportId}/exports` | query validator, export service, worker queue, file store, audit |
+| Action | `POST /api/reports/{reportId}/actions/{actionName}` | action service, idempotency, permission, audit |
+| Status | `GET /api/report-exports/{taskId}` or health endpoint | task store, source freshness, readiness, observability |
+
+API inventories and API documents should identify the family for each endpoint. A custom endpoint family is acceptable only when the common families cannot express the interaction cleanly.
+
+## Reusable Request And Response Models
+
+Use shared request concepts where possible:
+
+- `QueryContext`: data version, time range, business filters, route/drilldown params, backend-injected permission scope.
+- `PageRequest`: page/cursor, size, sort field, sort order.
+- `SelectionRequest`: stable dimension, metric, field, filter, and sort codes.
+- `ExportRequest`: the same query/filter request plus export format, fields, and async options.
+- `ActionRequest`: target, action, payload, idempotency key, and audit reason.
+
+Use shared response envelopes where possible:
+
+- `Page<T>` for lists and tables.
+- `OptionItem[]` for filters.
+- `ColumnMeta[]` for table/chart metadata.
+- `KpiCard[]` and `SeriesData` for visual data.
+- `TaskStatus` for async work.
+- `Meta` for freshness, quality, cache status, query time, and request ID.
+
+Avoid inventing a different parameter vocabulary, response envelope, or error shape for every widget. Reuse reduces validators, DTOs, serializers, tests, and frontend adapters.
 
 ## Report Types And Execution Strategy
 
@@ -132,6 +173,24 @@ Every query endpoint must have explicit guardrails. Use project-specific limits,
 
 Report permissions normally include menu, report, field, row/data-scope, export, admin/config, and subscription/snapshot permissions.
 
+## Redis Role Matrix
+
+When Redis is used, document one or more explicit roles rather than writing "use Redis cache":
+
+| Redis Role | Good For | Required Contract |
+| --- | --- | --- |
+| Metadata/dictionary cache | Report definitions, dimension labels, enum dictionaries, filter options | Key template, report/source version, TTL, publish/rollback invalidation, stale tolerance. |
+| Permission cache | Menu/report/field/data-scope summaries | Tenant/user/role dimensions, short TTL or permission-change invalidation, no cross-user sharing. |
+| Result/widget cache | Expensive dashboard cards, KPI groups, chart series, table pages | Filter/version/permission/page/sort key dimensions, TTL+jitter, stampede protection, stale fallback, freshness metadata. |
+| Canonical snapshot cache | Declared shared snapshot or materialized data cut | Snapshot role, grain, fields, version, permission scope, invalidation, consumers, and max value/row limits. |
+| Rate/concurrency limit | Route/report/user/tenant throttling | Subject key, window, burst, TTL, overload response, observability. |
+| Distributed lock/singleflight | Expensive cache rebuild or one-at-a-time refresh | Lock key, owner token, TTL, retry/wait behavior, unlock safety, timeout fallback. |
+| Idempotency/job state | Export/report task creation, progress, short-lived status | Request hash, owner, terminal state, TTL, durable-store boundary, replay behavior. |
+
+For every Redis role, also state connection-pool size, connect/read/write timeouts, retry/backoff, failure behavior, and metrics.
+
+Redis should not replace the authoritative database/source for durable facts, audit logs, long-retention export records, or regulated state unless the project explicitly owns Redis persistence, backup, and recovery.
+
 ## Snapshot Role, Version Context, And Reuse
 
 Snapshot/reporting-close semantics should be modeled as an explicit role plus a data-version contract, not guessed from the endpoint name.
@@ -164,6 +223,14 @@ Cache keys for report results and dashboard widgets must include all dimensions 
 - selected dimensions, metrics, filters, sorts, pagination, locale/unit/format, and feature flags
 
 Never share permission-sensitive or tenant-scoped cache entries across users/tenants/roles. Export files also need tenant/user/report/task scoping and expiry.
+
+Redis implementation notes:
+
+- Use TTL jitter, request coalescing, singleflight, short locks, warmup, or precompute for expensive misses.
+- Prefer bounded `MGET`/pipeline for multi-widget reads. Avoid `KEYS` and broad `SCAN` in request paths.
+- Use Lua only for small atomic operations such as token buckets or conditional unlock.
+- Bound serialized value size. Paginate, summarize, or precompute instead of caching huge result blobs.
+- Return `fromCache`, `cacheAge`, `dataFreshnessTime`, `dataVersion`, and `stale` when cache freshness affects user trust.
 
 ## Endpoint Patterns
 
@@ -247,12 +314,16 @@ Typical repairs include cache/precompute, query rewrite, summary table, query li
 
 Treat these as findings unless explicitly scoped to a tiny non-production demo:
 
+- API inventory lacks backend reuse pattern, common request model, response envelope, or service-layer mapping.
 - Controller directly concatenates SQL or implements the full query chain.
+- A new route/controller/DTO is created for every KPI/chart/table even though the metadata/filter/query/export/action family would fit.
 - Frontend sends SQL, table names, column expressions, raw operators, or permission scope.
 - Every report is a one-off controller with duplicated metric/filter/permission logic.
 - All reports, exports, scheduled jobs, and heavy queries run synchronously in the default request pool.
 - No required time/scope filter, unbounded page size, unbounded export, or unlimited `IN` list.
 - Cache key omits tenant, permission scope, report version, dataset/source version, or user/role scope.
+- Redis is mentioned without role, key template, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability.
+- Redis request path uses `KEYS`, unbounded `SCAN`, huge values, infinite TTL for mutable data, or distributed locks without TTL/owner token.
 - Metrics, trends, rankings, tables, exports, or drilldowns read an undocumented snapshot/dashboard API response or application-memory snapshot as their data source instead of using a declared snapshot/source/precompute/shared-cache contract by data-version context.
 - Response metadata echoes `snapshotDate/dataVersion` or scope values, but the repository/source/precompute/cache query did not use those values as params, predicates, or key segments.
 - Query/export opens a new physical database connection per request instead of using a bounded pool.
@@ -274,12 +345,14 @@ Mark report data-service backend readiness:
 Backend/API documentation, implementation notes, and validation reports should include:
 
 - Report type and execution strategy.
+- Backend API family/reuse pattern for each endpoint.
 - Metadata model or explicit reason why a fixed endpoint is acceptable.
 - Query chain ownership and layer mapping.
 - Endpoint list with served component/widget group.
 - Request guardrails and error codes.
 - Permission, tenant, field masking, and export-permission behavior.
 - Cache key dimensions, TTL, invalidation, warmup, stale fallback, and permission safety.
+- Redis role matrix and operational contract when Redis is used.
 - Pagination/count/export strategy.
 - Async export/job lifecycle evidence when applicable.
 - Result metadata for columns, precision, freshness, quality, cache status, and trace id.

@@ -86,6 +86,10 @@ Do not mark an artifact `ready` when filter linkage evidence skipped the data-co
 
 Do not mark an artifact `ready` when snapshot/latest-period API groups lack an explicit snapshot role and data-version contract, when data-version/business/permission scope is not enforced through backend params, source predicates, precompute lookup keys, snapshot reuse rules, or cache keys, or when a metrics/trend/ranking/table/drilldown/export endpoint depends on an undocumented snapshot/dashboard endpoint response, frontend call order, controller memory, or app-memory payload.
 
+Do not mark an artifact `ready` when Redis/cache is required or named for production-bound data services but role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability are missing.
+
+Do not mark an API inventory or API document `ready` for backend implementation when production-bound endpoints lack a backend reuse pattern, common request/response model family, service-layer mapping, or an explicit reason for custom controller/query/DTO shapes.
+
 Do not mark an artifact `ready` when an unresolved `P0` or `P1` `ENTRY-*` conflict affects the next stage's scope, source authority, metric口径, API contract, permission/auth behavior, environment, or runtime data path.
 
 Do not mark an artifact `ready` when an unresolved `P0` `DESIGN-*` finding exists, or when an unresolved `P1` `DESIGN-*` finding would affect user-visible behavior, data correctness, API/model feasibility, permissions, layout comprehension, or testability in the next stage.
@@ -111,13 +115,15 @@ Required handoff bundle when a prototype feeds technical solution:
 Required handoff bundle:
 
 - `API清单` with API ID, page/module, method/path candidate, purpose, trigger, request params, response model, auth, priority, and status.
+- Backend-friendly API design evidence: reuse pattern, common request model, response envelope/model family, service-layer mapping, and custom-shape reason when applicable.
 - `数据模型文件` with source/logical/response models, fields, formulas, joins, ownership, freshness, permission and quality rules.
 - OLAP modeling evidence when reporting/BI/dashboard metrics are in scope: business question matrix, subject areas, business processes, model layer/type, one-grain-per-model decision, conformed dimensions, metric additivity, time口径, summary/wide-table decisions, history/SCD, many-to-many, deduplication, late-arriving/backfill, and lineage.
 - `待补充数据模型清单` with `GAP-*` IDs, impact, owner questions, assumptions, and blocked/partial status.
 - Parameter-driven data-version and snapshot reuse contract when snapshot/latest-period semantics exist: snapshot role, `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report/source version, exposing endpoint or metadata source, consuming/reusing endpoints, backend query params, permission/data-scope params, source predicate/precompute/snapshot lookup mapping, cache-key dimensions, invalidation trigger, and proof that any cross-endpoint reuse is declared rather than hidden runtime payload or application-memory snapshot.
 - Filter/sort/page execution evidence: API rows and models must state whether global filters, sorting, pagination, ranking, grouping, aggregation, Top/Bottom, and counts run in SQL/source/provider/repository/precompute/cache, and must not rely on page/API-level full-materialize-then-filter behavior. Component-internal filters must be separately scoped to already fetched component data.
-- Performance/resilience plan: expected volume/latency, concurrency model, cache/precompute strategy, connection/resource pools, async/offline job strategy for long-running work, timeout/retry/circuit-breaker behavior, rate/concurrency limits, health/readiness, observability, and unresolved risks.
+- Performance/resilience plan: expected volume/latency, concurrency model, cache/precompute strategy, Redis role/key/TTL/invalidation/fallback decisions when used, connection/resource pools, async/offline job strategy for long-running work, timeout/retry/circuit-breaker behavior, rate/concurrency limits, health/readiness, observability, and unresolved risks.
 - Report data-service backend plan when report/BI/dashboard APIs are in scope: report type, metadata/query-chain ownership, parameter guardrails, permission/tenant/field/export behavior, component-ready response rule, pagination/count/export strategy, cache key safety, freshness/quality metadata, audit/monitoring, version/publish/rollback, and unresolved governance gaps.
+- Backend reuse plan when report/BI/dashboard APIs are in scope: metadata/filter/query/dashboard/export/action/status API families, shared request models, shared response envelopes, reusable service layers, and one-off endpoint exceptions.
 - SQL writing plan for database-backed APIs: required columns, sargable predicates, join keys/cardinality, aggregation-before-join needs, dedup/order necessity, pagination/keyset strategy, dynamic optional-filter strategy, and plan-evidence or slow-query gap IDs.
 - Consistency result: every API maps to a response model, and every response field maps to a source/formula/enum/gap.
 - Production architecture readiness when intended for real delivery: runtime topology, frontend/backend/data boundaries, source authority, environment/auth/security assumptions, observability/performance/deployment concerns, testing handoff, and open blockers.
