@@ -36,6 +36,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 - Automation must preserve case IDs and list unsupported, manual-step, selector, account, data, credential, and environment gaps as `blocked`, `manual-step`, or `not run`.
 - Visual/layout judgment requires captured screenshots first; run deterministic baseline diff when baselines exist and record multimodal/browser QA findings when available.
 - Regression scope must include recently discovered delivery defects when relevant: selected-state-only filters, single-snapshot mock/provider data, wrong percentage display terms, and internal KPI/summary/card text clipping.
+- For filter linkage, test data completeness before UI/component binding: option data, default rows, non-default rows or provider responses, required fields, empty/no-permission states, and resolver/API branches must exist before a filter-binding case can pass.
 - Every failure or blocker needs evidence, likely owner workflow, reproduction, expected/actual result, and retest criteria.
 - Production acceptance requires defect closure evidence: `open -> fixed -> retest -> closed`, or a visible `blocked` state. Missing URL, account, data, env, permission, source evidence, or quality threshold prevents `ready`.
 
@@ -46,7 +47,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 3. Design the test matrix with `$integration-test-case-design`, including explicit cases for filter-linked data variation, metric display text, and component internal fit when those surfaces exist.
 4. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
 5. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
-6. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, `$permission-matrix-validation`, and `$data-quality-validation` as applicable.
+6. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$data-quality-validation`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, and `$permission-matrix-validation` as applicable. For filter defects, execute or cite data completeness checks before filter-linkage conclusions.
 7. Use `$frontend-runtime-qa-validation` for visual/layout/browser checks on runnable frontend URLs.
 8. Consolidate results with `$test-evidence-defect-reporting`.
 9. Route defects to owner workflow and define retest criteria.
@@ -55,6 +56,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 
 - Test matrix and coverage map.
 - Regression coverage for filter binding, metric display, and internal component fit when in scope.
+- Data completeness result before filter-binding result when filters are in scope.
 - Runtime environment and execution status.
 - Automation project path/commands when generated.
 - Evidence summary: screenshots, network/API samples, console logs, traces, or blocker notes.
@@ -65,6 +67,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 ## Quality Gate
 
 - Do not claim pass for unexecuted cases.
+- Do not claim filter-linkage pass when data completeness was not checked first or when non-default filter data is missing.
 - Every failure needs evidence and likely owner side.
 - Missing URL/account/data/env/permission is a blocker, not a pass.
 - Production acceptance cannot be `ready` while blocker/high defects are open or fixed without retest evidence.

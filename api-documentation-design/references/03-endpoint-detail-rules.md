@@ -15,6 +15,7 @@ Use this reference when writing each endpoint section.
 - Response schema:
 - Data/model/source trace:
 - Report data-service backend contract:
+- Backend stack and resource model:
 - Transformation rules:
 - Filter/sort/page execution stage:
 - Global filter SQL `WHERE` rules:

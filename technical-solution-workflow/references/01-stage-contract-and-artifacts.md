@@ -11,6 +11,7 @@ Allowed outputs:
 - API清单.
 - 数据模型文件.
 - 待补充数据模型清单.
+- Technology architecture decision: default self-developed frontend stack, default backend/data-service stack, cache and connection-pool model, and override reason when not using defaults.
 - Handoff notes for 数据服务, 前端联调, or 测试集成.
 
 Not allowed by default:
@@ -39,6 +40,15 @@ Rules:
 | API清单 | Endpoint candidates, page/module coverage, request params at inventory level, response model names, source model dependencies, auth/permission notes, global SQL/source filter execution, component-internal local filter scope, SQL query-writing expectations for database-backed APIs, pagination/performance/resilience/cache/SLA notes, concurrency model expectation, Redis/cache/precompute expectation, connection-pool expectation, async/offline job expectation for long-running work, timeout/retry/fallback expectation, rate/concurrency-limit expectation, priority, status, SQLite fixture need when mock-derived implementation is expected | Full JSON schema examples for every response, backend implementation details |
 | 数据模型文件 | Business analysis matrix, subject areas, business processes/objects, source models, logical models, response/view models, layer/type/grain decisions, field mapping, metric formulas/additivity/time口径, transformations, security/masking rules, summary/wide-table decisions, history/SCD rules, many-to-many rules, quality rules, lineage, ownership, freshness | UI layout decisions, backend code |
 | 待补充数据模型清单 | Missing or assumed requirement/source/model/metric/enum/join/sample/permission/security/performance-resilience items, owner questions, impact, status | Completed decisions without source, vague TODOs |
+
+## Default Technology Architecture
+
+Use these defaults unless the user specifies another stack or an existing project has an authoritative stack:
+
+- Self-developed frontend: `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2`. Use AntV S2 for pivot/cross/wide analytical tables, frozen-header grids, and dense metric matrices.
+- Backend/data service: `Python + Flask + database/upstream connection pools + Redis`. Flask owns HTTP service composition; pools own database/upstream resource control; Redis owns cache/precompute, hot query acceleration, stampede protection, and rate/concurrency support when needed.
+
+When a default is overridden, record the source of the override, affected artifacts, and downstream compatibility/test impact.
 
 ## Handoff Meaning
 

@@ -298,7 +298,7 @@ Use `$report-info-component-mapping` when report scope can change by time, organ
 
 Output must include:
 
-- Main filter bar.
+- Main filter surface. For bundled templates, this means template `filters[]` plus the native trigger/panel/popover/drawer, not a standalone visual filter bar.
 - Advanced filters.
 - Defaults.
 - Option schema.
@@ -308,6 +308,8 @@ Output must include:
 - Reset/export/shared-link behavior.
 
 Almost all operational reports need this stage.
+
+Template note: Stage 6 designs filter contracts and placement decisions. It must not force a new filter toolbar into a bundled template that already owns filter invocation.
 
 ### Stage 7: Data Interaction Design
 
@@ -407,7 +409,7 @@ Output must include:
 - Brand asset discovery result, configured logo path, logo variant, or placeholder gap.
 - Page shell choice.
 - Haier logo usage.
-- Header, filter bar, toolbar, sidebar/menu, footer decisions.
+- Header, native/template filter surface or custom filter bar, toolbar, sidebar/menu, footer decisions.
 - 8*N rectangular grid structure.
 - Legal component span matrix and each component's selected `columns * rows` span.
 - Block-height and overflow rule: for scrollable page templates, all resolved blocks are at least 220px tall, and grids taller than 1080px use vertical scrolling. Fixed sci-fi/big-screen templates are exempt.
@@ -496,6 +498,7 @@ Implementation must:
 - Declare `pageStyleSource`; if no page style and no HTML/source/sample styling is provided, use a bundled template by default.
 - If using a template with `nav[]`, declare the nav-page information architecture before implementation and populate every nav page with distinct widgets, data scope, and relevant interactions. If only a homepage can be populated, switch to a non-nav template.
 - If choosing a bundled template, adapt requirement-document title, filter, navigation, and toolbar requirements into the selected template's existing config and shell slots. Do not implement duplicate shell layers from the original requirement document when they conflict with the template.
+- In bundled-template mode, do not implement a standalone filter toolbar/bar for "main filter bar" wording. Implement filter scope through `filters[]`, native template invocation, and data/filter/component binding.
 - If implementing a `brandMode: haierBranded` custom shell, configure a real bundled Haier logo before final delivery. For HTML replication, add the Haier logo even if the source HTML lacks it while preserving the source hierarchy.
 - If implementing `brandMode: sampleNative` or `neutral`, record why Haier branding is not required rather than silently omitting the logo.
 - If implementing a custom shell, declare `customLayoutPattern` from the allowed set before changing files.

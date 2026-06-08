@@ -1,6 +1,6 @@
 ---
 name: frontend-development-workflow
-description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、替换mock、去掉mock、接真实接口、API接入、响应适配、筛选参数联动、指标单位/百分比显示、pt改%、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
+description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、Vue3、TypeScript、ECharts、Element Plus、Axios、AntV S2、替换mock、去掉mock、接真实接口、API接入、响应适配、筛选参数联动、模板筛选复用、指标单位/百分比显示、pt改%、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
 ---
 
 # Frontend Development Workflow
@@ -33,11 +33,14 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 ## Reinforced Constraints
 
 - Resolve `prototypeSourcePath` and `frontendTargetPath` before file edits. Treat upstream prototype source as read-only unless the user explicitly designates it as the frontend target.
+- For self-developed frontend work without an authoritative existing stack or user-specified override, use `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` as the default report frontend stack. Use AntV S2 for pivot tables, cross tables, frozen-header analytical tables, wide metric matrices, and dense comparison grids; use Element Plus for controls/forms/tables/pagination/dialogs; use ECharts for standard charts.
 - Run baseline install/typecheck/lint/test/build when feasible before large edits, and record pre-existing failures so integration work does not hide them.
 - Classify provider/source mode, env/proxy/base path, and auth/SSO behavior before replacing mocks or wiring request clients.
 - Validate provider/API contracts and design adapters before changing production data paths. Missing provider, field, enum, formula, env, auth, permission, deployment, or testing facts must be visible gaps.
+- Before wiring or accepting filter linkage, verify data completeness first: option data, provider/mock/business rows, required fields, default and non-default filter states, empty/no-permission states, and resolver/API branches must exist at the grain required by every affecting filter.
 - Global filters, search, permission scope, pagination, sorting, drilldown, refresh, export, rankings, and aggregation must feed provider/API/resolver inputs. Component-internal filters may only operate on an already fetched component dataset.
 - A filter that should affect a component must be wired to provider/API/resolver params, `filterFields`, `requiredFilters`, or an equivalent mapping. Do not leave it in `ignoredFilters`; selected-state-only filter changes are failed integration.
+- When the target is a bundled report template or copied template project, preserve the template's native filter trigger/panel/popover/drawer and `filters[]` contract. Do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly asks for template-level redesign.
 - Use `$report-component-style-design` for report component fit, KPI/chart/table readability, and metric display semantics. In visible Chinese report UI, rate, completion, variance-rate, YoY, MoM, and change labels display `%`, not `pt`, `p.p.`, or `percentage point`, unless the user explicitly requests that term.
 - Production paths cannot depend on unapproved mocks, offline providers, fake timers, generated rows, or demo-only SDKs. Any retained mock/offline source must be named, scoped, and excluded from `ready` production handoff unless explicitly accepted.
 - Runtime readiness needs build/start evidence and browser QA evidence. Production-bound frontend work also needs monitoring/feedback/SLA notes through `$production-observability-feedback`.
@@ -45,22 +48,24 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 ## Workflow
 
 1. Discover source and target paths. If prototype source is upstream evidence, copy or identify a writable frontend target before editing.
-2. Inspect stack, package manager, env files, router, request utilities, stores/composables, mock/static data, and component consumers.
+2. Inspect stack, package manager, env files, router, request utilities, stores/composables, mock/static data, and component consumers. If this is self-developed work and no existing stack is authoritative, align implementation to the default `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` stack.
 3. Run baseline install/build/test when feasible and record pre-existing failures.
 4. Run `$quality-gate-validation` when source code, API docs, provider samples, env/auth notes, requirements, or runtime traces conflict.
 5. Validate provider/API contract with `$api-contract-validation`.
 6. Design adapters with `$data-transformation-adapter-design` when provider payloads differ from UI view models.
 7. Verify env/proxy/base path/build/deploy behavior with `$frontend-env-deployment-verification`.
 8. Use `$haier-sso-integration` for Haier account-center login or auth header behavior.
-9. Replace or isolate mock data, wire filters/interactions/pagination/sorting/export/refresh to provider inputs, and keep component view models stable.
-10. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
-11. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
-12. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
-13. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
+9. Verify data completeness for filters before linkage: data source mode, option sources, row grain, required fields, default/non-default/empty/permission states, and resolver/API branches.
+10. Replace or isolate mock data, wire filters/interactions/pagination/sorting/export/refresh to provider inputs, preserve template-native filter surfaces when applicable, and keep component view models stable.
+11. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
+12. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
+13. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
+14. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
 
 ## Required Output
 
 - Source/target path decision.
+- Frontend stack decision and override reason if not using the default self-developed stack.
 - Provider mapping and changed data flow.
 - Contract validation and adapter notes.
 - Env/auth/deployment notes.
@@ -68,16 +73,21 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Runtime QA and function description.
 - Component style and metric-display checks, including `%` vs `pt/p.p./percentage point` when Chinese rate/change indicators are present.
 - Production observability and retained mock/offline-source notes when production handoff is in scope.
+- Data completeness proof before filter binding: option data, row grain, required fields, default/non-default data states, and resolver/API coverage.
 - Filter binding proof for non-default filter states, including visible data changes or intentionally invariant component scope.
+- Template filter-surface preservation note when the frontend target is a bundled/copy template.
 - Frontend URL or exact blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
 
 - Do not edit upstream prototype source unless explicitly designated as target.
+- Do not start a self-developed report frontend on an unspecified or ad hoc stack. Use the default stack or document the user/existing-project override before implementation.
 - Do not leave production paths on unapproved mocks.
+- Do not claim filter integration until data completeness has been checked first. Missing option rows, missing fact/business rows, missing provider fields, single-snapshot mock data, or missing resolver/API branches must be recorded as data gaps before binding is judged.
 - Do not fetch broad data then apply global filters/pagination/sorting only in components.
-- Do not treat a filter as integrated when it only changes selected UI state and affected component data remains unchanged because of `ignoredFilters`, missing mapping, or single-snapshot mock data.
+- Do not treat a filter as integrated when it only changes selected UI state and affected component data remains unchanged. Classify `ignoredFilters` or missing mapping as binding gaps after data completeness is proven; classify single-snapshot mock/provider data or missing non-default branches as data gaps first.
+- Do not add a new filter toolbar/bar to a template-based frontend when the template already owns filter invocation; update `filters[]`, native filter UI, and provider bindings instead.
 - Do not claim frontend readiness when visible Chinese rate/change/completion/YoY/MoM/variance-rate indicators still use `pt`, `p.p.`, or `percentage point` instead of `%`, unless the user explicitly requested that wording.
 - Do not mark production handoff `ready` without provider/source mode, backend/API base, env/auth behavior, runtime QA evidence, retained mock status, and testing/observability handoff.
 - Do not claim handoff readiness without build/runtime evidence or a precise blocker.

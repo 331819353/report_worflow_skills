@@ -1,6 +1,6 @@
 ---
 name: automated-test-generation
-description: "用于根据测试矩阵、测试用例表、验收用例、API/页面覆盖矩阵生成可运行自动化测试工程。用户提到自动化测试生成、根据测试矩阵生成API测试、E2E测试、截图回归测试、Playwright/Cypress测试、CI执行脚本、GitHub Actions、把测试样例转成代码、回归测试脚本时触发；不负责人工测试结论。"
+description: "用于根据测试矩阵、测试用例表、验收用例、API/页面覆盖矩阵生成可运行自动化测试工程。用户提到自动化测试生成、根据测试矩阵生成API测试、E2E测试、截图回归测试、Playwright/Cypress测试、筛选前数据完整性断言、CI执行脚本、GitHub Actions、把测试样例转成代码、回归测试脚本时触发；不负责人工测试结论。"
 ---
 
 # Automated Test Generation
@@ -94,6 +94,7 @@ Use `$delivery-artifact-template-management` when the user needs the automation 
 
 7. Use executable regression assertions when matrix intent is specific.
    Supported E2E step DSL includes `expect_text`, `expect_no_text`, `capture_text`, `expect_text_changed`, and `expect_value_change_after_filter`. Prefer these over free-text expectations for metric unit checks and filter-linked value-change checks.
+   For filter-linkage cases, require a data-completeness precondition or API/data case first: default data and at least one non-default filter dataset/response must exist before a value-change E2E assertion can be considered meaningful.
 
 8. Report limitations instead of overstating coverage.
    If matrix steps are natural language and cannot be mapped to the DSL, the generated E2E test records an annotation and can be made strict with `STRICT_E2E_STEPS=true`. Mark these cases as pending/manual in the handoff unless selectors/actions are supplied.
@@ -114,6 +115,7 @@ Use `--run install`, `--run api`, `--run e2e`, `--run visual`, or `--run all`. R
 - API cases include method, path/url, expected status, headers/query/body when available.
 - E2E cases use executable selectors/actions or are clearly annotated as manual/unsupported.
 - Metric display cases use forbidden-text assertions when the expected result says Chinese rate/change labels must not use `pt`, `p.p.`, or `percentage point`.
+- Filter-linkage automation includes or references a data-completeness case before UI value-change assertions; single-snapshot data cannot produce a passing filter-linkage automation result for affecting filters.
 - Filter-linkage cases use a change selector or explicit `capture_text`/`expect_text_changed`/`expect_value_change_after_filter` steps when the expected behavior is visible data change.
 - Visual cases define a route/page and produce deterministic Playwright snapshots.
 - CI workflow uploads Playwright report, test results, screenshots, and traces.

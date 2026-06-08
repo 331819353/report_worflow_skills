@@ -39,6 +39,7 @@ Check the design across these dimensions:
 
 7. Filter and query logic.
    Filters have defaults, option sources, affected components, query params or data fields, permission scope, cascade behavior, and stale-selection behavior.
+   Data completeness must be verified before filter binding is accepted: option data, fact/business rows, required fields, default and non-default states, empty/no-permission states, and resolver/API branches must support each affecting primary/global filter.
    A primary/global filter is unreasonable when it only changes selected UI state. Affected components must bind the filter through dataset fields, API/provider/query params, `filterFields`, `requiredFilters`, or resolver params, and non-default filter values must visibly change component data unless the component is explicitly invariant. `ignoredFilters` cannot be used to hide missing mock grain, missing field mapping, or missing resolver logic.
 
 8. Interaction and closure.
@@ -106,6 +107,7 @@ Accepted limitations:
 - Reporting/BI/dashboard data models have explicit business process, grain, layer/type, metric additivity, time口径, quality, and lineage decisions.
 - Report data-visualization frontend behavior is feasible when report UI is in scope: first-screen conclusion, appropriate chart/table choices, metric formatting/口径, filters/linkage/drill-through, state coverage, provider mapping, performance limits, and theme/accessibility are explicit.
 - Affecting filters have field/API/resolver bindings and data-variation evidence for at least one non-default state; selected-state-only filtering is not accepted.
+- Data completeness was checked before those bindings: filter options, row grain, fields, default/non-default data states, and resolver/API branches are present or documented as blocking gaps.
 - Global filter/query behavior is feasible without building or fetching all candidate data before applying scope; component-internal filters are explicitly local to already fetched component data.
 - Composite widget internals fit their sub-containers without hidden critical text, clipped metric titles, or forced fixed grids that make labels unreadable.
 - Report data-service backend behavior is feasible when report APIs are in scope: frontend selects codes only, backend owns metadata/query planning/permission injection/guardrails/cache/export/audit/freshness behavior, and no unsafe SQL/source proxy exists.

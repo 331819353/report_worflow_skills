@@ -11,6 +11,7 @@
 - Page loads without blocking runtime errors.
 - Console has no blocking errors, repeated warnings, hydration failures, or asset load failures.
 - Network/provider traces do not show full-materialize-then-filter behavior for global/page scope: global filter/search/page/sort UI changes should update request/query/resolver params rather than fetching all candidate rows and narrowing locally. Component-internal filters may stay local when they operate only on already fetched component data.
+- Before filter UI interaction is judged, confirm data completeness evidence exists: filter option data, default rows, at least one non-default filter dataset/response, required fields, and empty/no-permission state when relevant. If a data source has only one default snapshot, filter linkage cannot pass for affecting filters.
 - Static assets, chunks, fonts, images, workers, and downloaded templates resolve under the intended base path.
 - Layout appears at target viewport sizes without obvious clipping or overlap.
 
@@ -23,6 +24,7 @@
 - If no baseline exists, save baseline candidates and record deterministic regression as `baseline missing`, not pass.
 - Send screenshots to a multimodal model using `$quality-gate-validation` when the model/service is available and explanatory visual review is in scope.
 - Record `VIS-*` findings for layout offset, excessive blank area, text overlap, graphic overlap, chart/table/card too small, clipping, unreadable labels, nonblank rendering failures, broken proportions, stale prototype residue, and broken scroll behavior.
+- Record `VIS-*` findings for SVG/canvas/ECharts/custom-graphic distortion: warped curves, stretched maps, elliptical circles/radars, squeezed gauges, non-uniformly scaled icons, or paths whose curvature changes when the container resizes.
 - Record `VIS-*` findings for duplicate component titles, cramped/narrow/tiny components, unbalanced peer-component strips, and text-graphic collisions where business-question text, labels, legends, chart marks, cards, or diagram nodes overlap or visually merge.
 - Record `VIS-*` findings for title-node collisions: section headers, stage/layer/lane titles, group captions, or column labels sitting on top of cards, node cards, connector paths, badges, legends, or child labels. The page cannot pass visual QA when this affects a key diagram or first-viewport component.
 - Re-capture, re-diff, and re-review affected screenshots after repairing `blocker` or `major` `VDIFF-*` or `VIS-*` findings.
@@ -43,6 +45,7 @@
 - Verify hover and `focus-visible` states for interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips. They should preserve geometry and use in-bounds border/outline/glow; clipped borders, cut shadows, or offset/scale animation at grid edges are `VIS-*` defects.
 - Check target desktop and mobile/tablet viewports when the page is responsive or embedded in variable containers.
 - For ECharts, AntV S2, canvas, and virtualized tables, verify nonblank rendering, resize behavior after container changes, and cleanup/dispose behavior after route changes or tab switches.
+- For SVG, canvas, ECharts custom graphics, maps, gauges, radars, graphs, Sankey, and complex diagrams, verify aspect-ratio preservation at target viewports. Shape-sensitive graphics should scale uniformly or relayout responsively, not stretch to fill both axes.
 - For Element Plus controls, verify CSS/theme is loaded, popper overlays attach above the report shell, select/date/cascader dropdowns are not clipped by card overflow, dialogs/drawers preserve filter context, focus states are visible, and disabled/loading/error states render correctly.
 - For Chinese report metrics, verify rate/change/completion labels show `%` rather than `pt`, `p.p.`, or `percentage point` unless explicitly required.
 - Verify change-rate and variance-rate indicators use positive-red-up and negative-green-down SVG/icon+text semantics, with neutral styling for zero.

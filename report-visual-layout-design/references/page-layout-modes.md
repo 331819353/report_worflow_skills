@@ -87,7 +87,8 @@ Rules:
 - Configure the template through its intended fields: title, assets/logo, nav/page, filters, toolbar actions, `layoutRows`, widgets, theme, and data source bindings.
 - Do not redesign the template's global frame unless the task explicitly asks to modify the template.
 - If the template exposes `public/haier-logo.svg`, keep that asset for the light/default logo slot unless a dark theme requires the white logo variant.
-- If the template defines invoked filters, keep that pattern. If it defines persistent filters, keep them compact and aligned with the template's own controls.
+- If the template defines invoked filters, keep that pattern and map filter requirements to `filters[]`, native trigger/panel/popover/drawer, and binding rules. Do not generate a standalone filter toolbar/bar unless the task explicitly approves template-level redesign.
+- If the template defines persistent filters, keep them compact and aligned with the template's own controls instead of adding another filter row.
 - For scrollable templates, keep row/block heights and enable vertical scrolling when the `8 * N` content exceeds the active viewport height.
 - Treat `1920 * 1080` and `1280 * 768` as visible viewport baselines, not full report height limits.
 - For fixed big-screen templates, respect the fixed 1920*1080 canvas and do not force the 220px scrollable-row rule.

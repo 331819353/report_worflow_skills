@@ -39,6 +39,9 @@ Acceptance:
 - The diagram must not expand the page horizontally or vertically.
 - Provide fullscreen when node count, edge count, or label length exceeds the block body.
 - Use minimap only when it helps navigation and does not cover labels.
+- Preserve diagram geometry with a logical coordinate system and uniform scaling. Do not independently stretch x/y coordinates, SVG viewBox, canvas, or ECharts graphic groups to fill a mismatched rectangle.
+- When the viewport aspect ratio differs from the diagram design ratio, use fit-to-screen with letterboxing or recalculate node positions for the new ratio. Do not warp links, arcs, nodes, or labels.
+- For SVG diagrams, set a `viewBox` and `preserveAspectRatio="xMidYMid meet"`. For canvas diagrams, redraw from logical coordinates after measuring the viewport and device pixel ratio.
 
 ## Labels And Nodes
 
@@ -66,3 +69,4 @@ Acceptance:
 
 - If the diagram cannot remain readable at the required size, switch to hierarchy table, expandable tree list, small multiples, or a fullscreen-first view.
 - If exact values are more important than path shape, pair the diagram with a table or detail drawer.
+- If preserving aspect ratio leaves too little readable area in the assigned block, expand the block, split the diagram, or open fullscreen instead of stretching the diagram to fill the block.

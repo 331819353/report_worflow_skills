@@ -11,6 +11,17 @@ Apply these rules to every component before applying component-specific rules.
 - Mount ECharts, AntV S2, SVG, canvas, and custom diagrams only after the viewport has measurable size.
 - Recalculate layout after filters, tabs, drawer state, fullscreen, legend toggles, or grid span changes.
 
+## Aspect Ratio And Geometry Integrity
+
+- Treat charts, SVG, canvas, maps, gauges, paths, icons, and complex diagrams as geometry, not as stretchable backgrounds.
+- Define a canonical design size and coordinate system for any custom graphic: SVG `viewBox`, canvas logical width/height, ECharts graphic group bounds, or diagram layout coordinate range.
+- Preserve that coordinate system with equal scaling. Use `preserveAspectRatio="xMidYMid meet"`, CSS `aspect-ratio`, or an inner fit box where `scale = min(containerWidth / designWidth, containerHeight / designHeight)` and the graphic is centered.
+- Avoid independent X/Y scaling such as CSS `transform: scaleX(...) scaleY(...)`, `object-fit: fill`, stretched `<img>`/`svg` without `viewBox`, or canvas drawing that multiplies x and y coordinates by unrelated scale factors.
+- For canvas, set backing-store size from measured CSS size and `devicePixelRatio`, then redraw from logical coordinates on resize; do not let the browser bitmap-scale a stale canvas.
+- For ECharts or custom diagrams, call resize/re-layout after the real body viewport is measurable. Do not initialize from zero height, hidden tabs, collapsed drawers, or placeholder dimensions and then rely on CSS stretching.
+- If the assigned block aspect ratio is incompatible with the intended shape, center the graphic with safe empty space, switch to a responsive layout variant, or choose a different component. Do not fill the rectangle by warping the shape.
+- Runtime QA must compare the rendered geometry against the intended shape: circles remain circles, gauges keep arc proportions, paths keep curvature, maps do not stretch, and nodes/edges keep their relative spacing.
+
 ## Typography Hierarchy
 
 - Layout-owned title: 16px, weight 600. Component bodies should not add a second visible title when the block already has one.

@@ -43,8 +43,8 @@ For every report requirement or extracted information set:
 1. Normalize the input: theme, audience, scenario, primary question, decision, time scope, organization scope, object, metrics, dimensions, baseline, process stage, rules, risks, tasks, evidence, source, permissions.
 2. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
 3. Map answer atoms to content blocks and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
-4. Define the mock/data model: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, and time coverage.
-5. Define the filter/query model: main filters, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components.
+4. Define and validate the mock/data model before filter binding: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, time coverage, default state, non-default filter states, empty/no-permission states, and resolver/API branch needs.
+5. Define the filter/query model only after the data model can support it: main filter surface, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components. For bundled templates, the main filter surface is the template's native `filters[]` invocation and binding contract, not a new toolbar component.
 6. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, and stale-state behavior.
 7. Produce the binding matrix: component -> dataset -> fields -> formulas -> filters -> interactions -> update triggers -> validation cases.
 8. Route to primary and secondary report-type skills for business logic.
@@ -84,6 +84,7 @@ Loading guidance:
 - First-screen cards and large panels cannot remain unbound "暂无数据" placeholders.
 - Mock data must make KPI totals, chart totals, table rows, drawers, and exports reconcile under the same active filters.
 - Multi-period filters, trends, MoM, YoY, quarter, or rolling-period views require complete matching time rows.
+- Data completeness must be checked before filter binding. Do not finalize `filterMap`, `filterFields`, `requiredFilters`, API params, or resolver params until the underlying option data, row grain, required fields, default/non-default states, and resolver/API support are present or explicitly marked as gaps.
 - A filter without affected components is dead UI unless it controls navigation or permissions.
 - Data-bearing filter options must derive from dimension data, fact data, or a resolver unless they are stable enums.
 - Filter IDs must map explicitly to dataset fields or query params.
@@ -112,7 +113,7 @@ When this skill is used, produce at least:
 3. Component bundle mapping with priority.
    For sample/source restoration, include `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
 4. Mock/data model: datasets, grain, fields, formulas, signals, edge cases.
-5. Filter/query model: filters, option sources, defaults, cascades, permissions, query params.
+5. Filter/query model: filter surface, filters, option sources, defaults, cascades, permissions, query params.
 6. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.
 7. Unified data/filter/component/interaction binding matrix.
 8. Report type routing.

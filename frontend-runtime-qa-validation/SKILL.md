@@ -1,6 +1,6 @@
 ---
 name: frontend-runtime-qa-validation
-description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、hover/focus动效裁切、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
+description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、hover/focus动效裁切、SVG/canvas/ECharts图形变形、比例失真、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
 ---
 
 # Frontend Runtime QA Validation
@@ -30,10 +30,11 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
    After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. Store screenshot paths as QA evidence.
 
 4. Run multimodal visual anomaly recognition.
-   Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
+   Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, SVG/canvas/ECharts geometry distortion, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
 
 5. Check browser console and network.
    Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.
+   Before judging filter binding, verify data completeness evidence: the page has option data, default data, at least one non-default filter state, required fields, and API/resolver/mock branches capable of returning different rows/values or an explicit invariant scope.
 
 6. Exercise page interactions.
    Traverse visible controls page by page: filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, drawers, modals, chart clicks, table row actions, export/download, refresh, fullscreen, and close/back flows.
@@ -59,10 +60,12 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Headless browser screenshots were captured before visual pass/fail judgment, or an explicit blocker explains why screenshots could not be captured.
 - Multimodal visual review was run on the screenshots, with `VIS-*` findings recorded or an explicit no-issue result.
 - Runtime data requests hit expected endpoints, SDKs, files, or configured proxies.
+- Data completeness for filters is checked before linkage: options, provider/mock rows, fields, default/non-default states, and resolver/API branches exist or are recorded as gaps.
 - Filters and interactions update the correct data without stale values.
 - Global filter/search/pagination/sort interactions send scope params to providers before response construction; any all-data request followed by local filtering is a `fail` or `partial` QA finding unless it is explicitly a component-internal filter over already fetched component data.
 - Empty/error/loading/auth states are visible and stable.
 - Hover/focus states preserve geometry and use in-bounds border/outline/glow; no border, shadow, or focus ring is clipped by parent overflow.
+- SVG/canvas/ECharts/custom graphics preserve aspect ratio and geometry; circles, gauges, maps, paths, nodes, and icons are not stretched, squeezed, or warped after resize, tab switch, drawer/fullscreen, or filter update.
 - No stale prototype-only wording remains unless explicitly required.
 - Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
 - HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.

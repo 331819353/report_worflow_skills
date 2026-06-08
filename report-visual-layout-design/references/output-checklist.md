@@ -6,7 +6,7 @@ When asked to design a report visual layout, use this structure:
 
 1. 页面定位: report type, user, core question, usage scenario, custom shell or template-based.
 2. 页面路径、样式来源、品牌模式与视觉模式: declare `pageShellPath`, `pageStyleSource`, exactly one `brandMode`, and exactly one `visualMode`; when custom, declare `customDesignPath` and exactly one `customLayoutPattern`.
-3. 页面外壳: unified title/navigation/filter control area, logo placement, actions, and template mapping if applicable.
+3. 页面外壳: unified title/navigation/filter control surface for custom pages, or the selected template's native title/navigation/filter slots for template-based pages; include logo placement, actions, and template mapping if applicable.
 4. 品牌风格: Haier logo asset discovery result, logo variant or placeholder, Haier blue/white palette, typography, spacing, density, surfaces.
 5. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.
 6. 栅格方案: `8 * N` grid, component spans, row height/scroll strategy, chart/table/container/complex-diagram safety.
@@ -34,6 +34,7 @@ Before finalizing, verify:
 - HTML-replica and custom layouts use global UI tokens for palette, typography, spacing, radius, semantic colors, shadows, and control states unless exact color restoration is explicitly requested.
 - Custom pages use one coherent title/navigation/filter control area when possible, instead of mechanically splitting three independent strips.
 - Template-based pages follow the selected template's shell, logo slot, navigation, filter pattern, and grid mechanics.
+- Template-based pages do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer when the selected template already owns filter invocation. The filter plan maps to `filters[]`, native trigger/panel/popover/drawer, local title-band filters, and binding rules.
 - If a template is used, the chosen template is justified: topbar dark scroll, topbar light scroll, left-nav workbench, or frozen-title sci-fi cockpit.
 - Template adjustment points are named: `dashboard.config.ts`, `dashboard.dataset.json`, `dashboard.loader.ts`, `dataSources/registry.ts`, `demo/config-templates.ts`, widget files, registry/types, actions, styles, and assets as relevant.
 - The first viewport reaches the report's core question.
@@ -55,10 +56,12 @@ Before finalizing, verify:
 - Peer component groups inside one large block use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, they use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M` is columns, `N` is internal rows, `M >= N`, and `M - N` is minimal among valid factor pairs.
 - Blocks with repeated internal subcomponents obey the `actualTotal > 4` threshold, expand the parent block with `heightExpansionRows = ceil(N * 2 / 3)` when more height is needed, and are split, tabbed, paginated, or moved to drawers when the valid factor pair is too dense.
 - Components are not narrow, tiny, crowded, or forced into cramped spans. Increase span/height, split content, add scroll/zoom/fullscreen, or reduce visible labels before accepting the layout.
+- Shape-sensitive visuals such as gauges, radar, maps, pies, SVG/canvas diagrams, flow paths, and custom ECharts graphics use aspect-compatible blocks or centered uniform fit boxes. A warped curve, stretched map, oval radar/circle, or squeezed gauge fails layout QA.
 - Scrollable report pages keep usable row/block heights and support vertical scrolling when content exceeds the first viewport.
 - Navigation is present only when it helps orientation and remains low-intrusion.
 - Filters are easy to invoke and active conditions are visible.
 - Template-based pages preserve the selected template's native navigation/filter mechanism; config changes patch `nav`/`page`, `filters`, toolbar labels, and theme fields instead of replacing the shell.
+- Requirement wording such as "主筛选栏", "筛选工具栏", or "filter bar" is not enough to create a separate visual surface in template mode; it must be adapted into the template's native filter mechanism.
 - Filter changes have visible, layout-safe effects across cards, charts, tables, drawers, and export/fullscreen states.
 - Hover/focus effects are layout-safe: cards, KPI tiles, chart/table containers, nav items, and toolbar controls do not move, scale, or require external shadow space that can be clipped by the grid/container.
 - Interactive block emphasis uses in-bounds border glow, inset glow, outline, or stable color change rather than offset/scale animation when the component sits inside an `overflow: hidden` grid/card.
@@ -71,6 +74,7 @@ Before finalizing, verify:
 - The right edge and bottom edge of every component are checked for clipping.
 - No component crosses into another component's rectangle.
 - Business-question text, titles, labels, legends, chart marks, diagrams, tables, KPI values, controls, and cards do not overlap, stack, or visually merge.
+- SVG/canvas/ECharts/custom graphics preserve proportions after responsive resizing; visual proportion defects are repaired before acceptance.
 - Section headers, group captions, layer labels, stage titles, lane titles, and column captions are checked as independent layout elements. They must not overlap, touch, or visually attach to card borders, node cards, node titles, connector paths, chart marks, legends, or child labels.
 - Complex diagram layer/stage titles reserve a separate top/side title band with at least 16px spacing from the nearest node/card/connector. A screenshot like a title sitting on the top edge of a node card fails visual QA.
 - Flow, Sankey, graph, tree, decomposition, and lineage visuals keep layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges at least 16px apart and reserve rail, title-band, node, label, and edge-bend space.
@@ -87,6 +91,7 @@ Before finalizing, verify:
 - Do not mark a custom page complete with only a logo placeholder.
 - Do not redesign a selected template's shell unless the task explicitly asks for template-level changes.
 - Do not overwrite a template's original navigation/filter shell with newly generated standalone controls.
+- Do not generate a new filter toolbar/bar for a bundled template unless the user explicitly requested template-level redesign and the adaptation is documented.
 - Do not choose a template without explaining why it fits the report scope and usage scenario.
 - Do not force title, navigation, and filters into three separate areas when a unified control area is cleaner.
 - Do not omit the Haier logo from a `brandMode: haierBranded` custom page's title/control area or a template's logo slot.

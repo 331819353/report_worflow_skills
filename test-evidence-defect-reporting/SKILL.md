@@ -1,6 +1,6 @@
 ---
 name: test-evidence-defect-reporting
-description: "用于产出结构化测试证据、缺陷报告和验收结论。用户提到测试报告、缺陷报告、问题单、证据截图、浏览器截图、多模态视觉异常、网络日志、控制台日志、复现步骤、预期/实际结果、通过/失败/部分通过、阻塞项、责任归类、回归证据、验收总结时触发；不设计测试用例或执行测试。"
+description: "用于产出结构化测试证据、缺陷报告和验收结论。用户提到测试报告、缺陷报告、问题单、证据截图、浏览器截图、多模态视觉异常、网络日志、控制台日志、复现步骤、预期/实际结果、通过/失败/部分通过、筛选前数据完整性缺口、阻塞项、责任归类、回归证据、验收总结时触发；不设计测试用例或执行测试。"
 ---
 
 # Test Evidence Defect Reporting
@@ -17,6 +17,7 @@ Use this skill to turn runtime testing into a handoff-ready report. Every failur
 
 - Prefer direct runtime evidence: screenshot, browser console, network request/response, API response sample, visible UI value, storage snapshot, and exact URL.
 - For visual/layout defects, prefer headless browser screenshot paths plus multimodal `VIS-*` findings. Include viewport/state, component/region, anomaly category, severity, and retest criteria.
+- For filter defects, collect data-completeness evidence before binding evidence: option data, default data, non-default data, required fields, resolver/API branch, and empty/no-permission state when relevant. If these are missing, classify the defect as data completeness or data grain first, not frontend binding.
 - Include source/Git evidence only when it explains a runtime issue.
 - Avoid vague statements such as "data is wrong" without expected value, actual value, endpoint, params, and component location.
 - Mark missing accounts, missing API docs, inaccessible backend, unavailable SSO, or absent data as blockers or missing information rather than silently passing.
@@ -29,9 +30,16 @@ Classify each defect into one primary category:
 - SSO/auth: login redirect, token storage, auth headers, backend validation, invalid-token recovery, permission handling, or logout.
 - API contract: endpoint, params, response shape, type, enum, unit, precision, pagination, sorting, error envelope, or transformation mismatch.
 - Frontend binding: wrong API call, stale mock, wrong adapter, display calculation, chart/table binding, empty state, or interaction binding.
-- Filter: option data, default, reset, cascade, request params, component binding, persistence, export/drilldown inheritance.
+- Data completeness: missing option rows, missing business/fact rows, missing provider fields, missing default/non-default/empty/permission states, single-snapshot mock data, or missing resolver/API branch needed before filter linkage.
+- Filter: default, reset, cascade, request params, component binding, persistence, export/drilldown inheritance after data completeness is proven.
 - Layout/data visibility: clipping, overlap, truncation, table ellipsis hiding required values, missing scroll, or unreadable data.
 - Missing information: unavailable account, undocumented rule, unknown field meaning, absent test data, or inaccessible system.
+
+Classification order for filter-related defects:
+
+1. Data completeness/data grain: option data, business/fact rows, provider fields, default/non-default states, empty/no-permission states, resolver/API branches, or mock/provider scenarios are missing.
+2. API/provider contract: data exists but params, response fields, enums, units, or source-side narrowing contract is wrong or ambiguous.
+3. Frontend/filter binding: data and contract are sufficient, but UI state is not passed to provider/API/resolver, `filterFields`/`requiredFilters` are missing, an affecting filter is hidden in `ignoredFilters`, or affected components do not update.
 
 ## Report Template
 
@@ -68,6 +76,9 @@ For each defect:
 - Reproduction steps:
 - Expected result:
 - Actual result:
+- Data completeness checked before filter binding: yes / no / not applicable
+- Data completeness evidence: option rows / default rows / non-default rows / required fields / resolver or API branch / empty or permission state
+- Filter binding evidence: request params / provider params / `filterFields` / `requiredFilters` / `ignoredFilters` / visible value or row-set change
 - Evidence:
 - Screenshot:
 - Visual finding:
@@ -79,6 +90,7 @@ For each defect:
 
 - The report states exactly what was tested and what was not tested.
 - Every failed or blocked case has evidence and reproduction steps.
+- Filter-related defects state the data-completeness result before the filter-binding result.
 - Every `blocker` or `major` visual/layout failure has screenshot evidence, a `VIS-*` finding, likely owner, and retest criteria.
 - The conclusion distinguishes pass, partial pass, fail, and blocked.
 - Defects can be handed to frontend, backend, SSO, data, or environment owners without re-investigation.

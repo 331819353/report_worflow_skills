@@ -82,6 +82,8 @@ Use these values consistently:
 
 Do not mark an artifact `ready` when a P0 metric, API, data source, permission rule, SSO contract, or runtime URL required by the next stage is unknown.
 
+Do not mark an artifact `ready` when filter linkage evidence skipped the data-completeness-first gate. For any affecting primary/global filter, option data, fact/business rows or provider responses, required fields, default/non-default states, and resolver/API branches must be checked before filter binding is accepted.
+
 Do not mark an artifact `ready` when an unresolved `P0` or `P1` `ENTRY-*` conflict affects the next stage's scope, source authority, metric口径, API contract, permission/auth behavior, environment, or runtime data path.
 
 Do not mark an artifact `ready` when an unresolved `P0` `DESIGN-*` finding exists, or when an unresolved `P1` `DESIGN-*` finding would affect user-visible behavior, data correctness, API/model feasibility, permissions, layout comprehension, or testability in the next stage.

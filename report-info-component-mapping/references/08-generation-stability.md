@@ -64,7 +64,7 @@ Use these default bounds to reduce random output drift.
 - First viewport: 3-7 meaningful components.
 - Full report page: 6-14 components unless the user asks for a dense suite.
 - Must-have components: 3-8.
-- Main filter bar: 3-6 filters.
+- Main filter surface: 3-6 global/page filters. In bundled templates this is `filters[]` plus native trigger/panel/popover/drawer, not a visual toolbar.
 - Advanced filters: 0-12 filters.
 - KPI strip: 3-8 cards.
 - Top/Bottom lists: default Top 5 or Top 10; state which one.

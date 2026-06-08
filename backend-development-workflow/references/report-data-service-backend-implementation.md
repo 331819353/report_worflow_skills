@@ -27,6 +27,15 @@ report definition
 
 Frontends choose report, dimension, metric, filter, sort, page, drilldown, and export options by stable codes. Frontends must not send raw SQL, table names, column expressions, arbitrary operators, or permission scope.
 
+## Default Backend Stack
+
+For default report backend/data-service planning or implementation, use `Python + Flask + database/upstream connection pools + Redis` unless the user specifies another stack or an existing project has an authoritative backend stack.
+
+- Flask owns HTTP routing, request validation handoff, service composition, error envelopes, health/readiness endpoints, and auth middleware integration.
+- Database/upstream connection pools own bounded resource usage, acquire timeout, idle/validation behavior, and overload protection.
+- Redis owns cache/precompute, hot query acceleration, dictionary/permission cache where safe, stampede protection, stale fallback, and rate/concurrency support when needed.
+- Document an override reason before choosing FastAPI, Spring, Express, Node, or another backend stack by default.
+
 ## Required Backend Responsibilities
 
 For each production-bound or production-like report data service, document or implement these responsibilities.

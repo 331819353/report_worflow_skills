@@ -8,6 +8,7 @@ Core rule:
 
 - Produce a written self-check report for each cycle.
 - Fix issues found by the report before handoff.
+- Always check data completeness before filter binding. If option data, business rows/API responses, required fields, non-default filter states, or resolver/API branches are missing, classify the issue as a data-completeness gap first and do not mark filter binding as pass.
 - For runnable prototypes, capture headless browser screenshots before judging visual quality, run deterministic baseline image diff when baselines exist, run multimodal visual anomaly recognition when available, and add `VDIFF-*` / `VIS-*` findings to the self-check report.
 - Repeat the cycle until the report has no unresolved issues, or stop after 3 cycles.
 - If unresolved blocker or major issues remain after 3 cycles, do not claim the project is complete; report the remaining issues, evidence, and blocker clearly.
@@ -17,10 +18,10 @@ Self-check dimensions:
 1. Z-shaped component audit.
    - Traverse each rendered page in Z-shaped reading order: start from the top-left first component, move left-to-right across the row, then continue row by row from top to bottom. For multi-page or tabbed prototypes, run the same audit per page/tab.
    - For every component, record component id/name, block id, visual type, data source, displayed metrics, used filters, interaction outputs, and current pass/fail status.
-   - Check which filters the component uses: direct filters, scoped filters, required filters, ignored filters, implicit parameters, permission scope, and drilldown state.
-   - Check whether every used filter is configured successfully: stable `id`, label, default, option source, scope, reset behavior, visible active state, same-name field mapping or explicit `filterFields`.
    - Check mock data completeness for the component: mock rows include all selectable values for every bound filter, including default value, non-default options, cascade children, empty-state combinations, abnormal/risk cases, and permission-limited cases.
    - Check data variation for primary filters: a non-default view/month/period/organization/industry/status/scenario value must change at least one affected component value, row set, series, total, or state. Selected control state alone is a failed check.
+   - Check which filters the component uses: direct filters, scoped filters, required filters, ignored filters, implicit parameters, permission scope, and drilldown state.
+   - Check whether every used filter is configured successfully: stable `id`, label, default, option source, scope, reset behavior, visible active state, same-name field mapping or explicit `filterFields`.
    - Check component configuration and binding: the widget mounts to an existing block, declares `visualType`, uses an existing `data.id` or explicit `dataPolicy`, receives the resolved mock/data prop, declares required fields/formulas/units, and binds to its filter component through the data-source/filter-map contract.
    - For sample/source restoration, check `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`. A visible source module must not be treated as `must-have` unless it directly answers the stated report question.
    - Check interaction configuration and binding: clickable marks, rows, cards, buttons, drawers, modals, jumps, filter mutations, export/download/fullscreen, and close/back flows emit expected actions and target existing configured handlers.
@@ -40,6 +41,7 @@ Self-check dimensions:
    - Derived values are calculated from source fields or documented formulas; no first-screen card may show unmanaged placeholder data.
 
 3. Filter configuration.
+   - Run only after Data completeness has passed or after data gaps are explicitly documented as blockers/partials.
    - Every filter has a stable `id`, label, default value, option source, scope, reset behavior, and visible active state.
    - Data-bearing filter options are derived from dimension data, fact data, or resolvers by default. Static options are limited to stable enums such as status, severity, period granularity, view mode, and yes/no toggles.
    - Every filter maps to a real data field, resolver parameter, or permission scope through same-name fields or explicit `filterFields`.

@@ -25,11 +25,15 @@ Use this template when producing a handoff-ready test report.
 - Reproduction steps:
 - Expected result:
 - Actual result:
+- Data completeness checked before filter binding: yes / no / not applicable.
+- Data completeness evidence: option rows, default rows, non-default rows, required fields, resolver/API branch, empty/no-permission state.
+- Filter binding evidence: request params, provider params, `filterFields`, `requiredFilters`, `ignoredFilters`, visible value/row-set/series/total change.
 - Evidence:
 - Screenshot:
 - Baseline/current/diff artifact:
 - Visual finding:
 - Likely cause:
+- Filter defect classification order: data completeness/data grain -> API/provider contract -> frontend/filter binding.
 - Missing information:
 - Status: open / fixed / retest / closed / blocked / accepted.
 - Suggested fix:

@@ -36,6 +36,17 @@ user role and business question
 -> usage feedback and continuous optimization
 ```
 
+## Default Frontend Stack
+
+For self-developed report frontends, use `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` unless the user specifies another stack or an existing project has an authoritative stack.
+
+- Use Vue 3 single-file components and TypeScript for component contracts, provider models, and adapter output types.
+- Use axios for HTTP/provider calls and keep request params traceable to API/provider contracts.
+- Use Element Plus for filters, forms, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables.
+- Use ECharts for standard KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and dashboard charts.
+- Use AntV S2 for pivot tables, cross tables, frozen-header analytical tables, wide metric matrices, and dense comparison grids.
+- Record an override reason before using another stack.
+
 ## Required Frontend Visualization Decisions
 
 For every production-bound or production-like visualization page, document or implement these decisions.
@@ -147,10 +158,11 @@ Every chart needs enough metadata to be understandable:
 
 Filter rules:
 
-- Keep high-frequency filters visible and put low-frequency filters into advanced filters.
+- Keep high-frequency filters visible through the page's approved filter surface and put low-frequency filters into advanced filters. In bundled/copy templates, the approved surface is the template-native trigger/panel/popover/drawer and `filters[]`, not a newly generated standalone toolbar.
 - Do not show a long row of many filters by default.
 - Do not default to unbounded historical data or all details. Use safe defaults such as recent 7/30 days and current permission scope.
 - Show the active filter summary and support reset.
+- For template-based pages, active filter summary/reset should use the template's existing shell, compact state text, chips, or filter panel affordance instead of adding another header row.
 - Define option source, cascade behavior, stale-selection behavior, and permission filtering.
 - Time filters must state business time, such as order time, payment time, refund time, completion time, or ingestion time.
 
@@ -162,6 +174,7 @@ Interaction rules:
 - Table detail, drawers, exports, and route jumps should carry the same scope.
 - Local legend toggles, local tabs, and in-component search may filter already fetched component data only when the provider returned the complete component dataset after global filtering.
 - Global filters, permission scope, pagination, sorting, Top/Bottom, grouping, aggregation, and export scope must be sent to the provider/API/resolver before component rendering.
+- Data completeness must be checked before filter binding: provider/mock data needs option rows, default rows, non-default filter rows or responses, required fields, and resolver/API branches for every affecting global/page filter.
 - A global/page filter is not implemented if it only changes selected control state. Affected components must bind the filter to API/provider/resolver inputs or configured `filterFields`/equivalent mapping, and non-default filter values must visibly change the relevant KPI/chart/table/list data.
 - Use `ignoredFilters` only for intentionally invariant components. Do not use it to compensate for missing provider fields, mock data grain, or resolver branches.
 

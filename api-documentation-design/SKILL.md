@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权、错误码、分页、筛选、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
+description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
 ---
 
 # API Documentation Design
@@ -22,6 +22,10 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 2. Establish shared conventions.
    Define base URL, version, auth, headers, response envelope, errors, pagination, sorting, filters, date/time format, enum format, file behavior, default/max page size, global filter execution, component-internal filter scope, Redis/cache expectations, connection-pool expectations, large-result handling, and export limits before documenting endpoint details.
+
+   For filter-bearing endpoints, document data completeness before binding: option source, source/provider execution stage, required response fields, row grain, default request/response example, at least one non-default request/response example, empty/no-permission example when relevant, and resolver/API branch behavior. If only one default snapshot exists for an affecting filter, keep the endpoint `partial` or `blocked`.
+
+   When the API document will drive default backend implementation, state the default backend stack as `Python + Flask + database/upstream connection pools + Redis`, including which layer owns routing, pool configuration, Redis cache/precompute, timeout/fallback, and observability. Use another stack only with a user/existing-project override reason.
 
 3. Document endpoint behavior.
    For each endpoint, capture purpose, trigger, method/path, auth, request params/body, response schema, examples, errors, pagination/performance limits, source mode, compatibility notes, and status.
@@ -53,6 +57,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 - API documentation grouped by module, domain, page, resource, or service boundary.
 - Common conventions plus endpoint details.
+- Backend stack/cache/pool notes when the document feeds backend implementation.
 - Dependency trace from endpoint response to the relevant implementation/model/source/contract artifacts.
 - Design reasonableness status with `DESIGN-*` findings when endpoint design affects downstream usability.
 - Production closed-loop readiness when the API document is production-bound.
@@ -64,8 +69,10 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - Entry conflicts across requirements, API inventories, data/source models, frontend contracts, route code, OpenAPI snippets, and runtime samples are resolved or listed as `ENTRY-*`; unresolved `P0`/`P1` findings keep affected endpoints `partial` or `blocked`.
 - API design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected endpoints `partial` or `blocked`.
 - Request params cover required filters, drilldowns, pagination, sorting, exports, defaults, and invalid-param behavior.
+- Filter-bearing endpoints include data-completeness evidence before frontend binding: option data, row grain, fields, default/non-default examples, empty/no-permission examples when relevant, and resolver/API branch behavior.
 - Database-backed request params document SQL predicate shape, index support, and SQL pushdown scope for global/page-level filters; unresolved index or non-sargable filter behavior keeps the endpoint `partial` or `blocked`.
 - API docs state where global filters, component-internal filters, sorting, pagination, ranking, Top/Bottom, and aggregation execute. Page/API-level full-materialize-then-filter behavior keeps the endpoint `partial` or `blocked` unless it is a documented component-internal filter over already fetched component data, tiny static enum, or bounded lookup.
+- Default-backend API documents include Python/Flask, connection-pool, and Redis/cache ownership, or a named override reason.
 - Collection/list/table endpoints document default page size, maximum page size, stable sort, total-count behavior, cursor/keyset need when applicable, and large-result handling. Missing pagination/performance behavior keeps production-bound endpoints `partial` or `blocked`.
 - API implementation documents may use JSON only as response examples. If local/mock data is needed for backend/API development, the documented simulation source is SQLite with schema, seed rows, and indexes rather than JSON files.
 - Each data-bearing endpoint identifies the served component/component group and frontend compute policy; broad page-level responses that require frontend business calculation stay `partial` or `blocked`.

@@ -10,6 +10,16 @@ Use for standard charts built with ECharts: bar, line, area, pie, radar, scatter
 - Use page-level semantic palette. Do not rely on default random chart colors.
 - Keep tooltip complete enough to recover hidden labels and exact values.
 - Resize charts on container resize, tab activation, drawer open/close, fullscreen, and legend toggles.
+- Initialize and resize from the measured chart body viewport. Do not use CSS transforms or stretched parent boxes to scale a previously rendered chart.
+- Preserve geometry for charts whose shape carries meaning, including pie/donut/rose, radar, gauge, map, graph, Sankey, funnel, custom paths, and pictorial/custom series.
+
+## Proportional Geometry
+
+- Use an aspect-safe inner plot box for shape-sensitive charts. For square or near-square graphics such as pie, radar, gauge, map symbols, and custom path diagrams, use the smaller of width/height as the geometry baseline and center the chart in the remaining space.
+- Do not force shape-sensitive charts to fill both width and height of a non-square container. Extra horizontal or vertical breathing space is preferable to warped arcs, paths, circles, symbols, or maps.
+- For ECharts `graphic`, custom series, pictorial paths, or hand-authored SVG overlays, define a logical design box and map it to the body viewport with uniform scale. Avoid separate x-scale/y-scale factors unless the graphic is intentionally a data-coordinate chart.
+- If a graphic uses an image or SVG asset, keep the asset aspect ratio. Use `contain`/letterbox behavior, not `fill` stretching.
+- Verify at both the design viewport and at least one narrower/wider container. If a gauge, radar, map, or custom path changes shape instead of only changing size, it fails visual QA.
 
 ## Axis Labels
 
@@ -57,6 +67,7 @@ Use for standard charts built with ECharts: bar, line, area, pie, radar, scatter
 - Keep indicator names short. Abbreviate long names and show full text in tooltip.
 - Reserve separate zones for radar labels and legend.
 - Set `axisName`, `nameGap`, `radar.center`, and `radar.radius` deliberately.
+- Keep the radar coordinate system circular. Do not let the radar stretch into an ellipse because the container is wide or tall.
 - If radar labels collide with title, edge, or legend, reduce radius, move legend, increase span, or switch chart type.
 
 ## Scatter, Bubble, Heatmap, Map
@@ -64,6 +75,7 @@ Use for standard charts built with ECharts: bar, line, area, pie, radar, scatter
 - Label only selected, outlier, high-risk, or major region points/cells.
 - Use tooltip, visualMap, brush, zoom, and selection for detail.
 - Dense maps and heatmaps should show exact value on hover and avoid permanent labels in every cell.
+- Maps and symbol maps must preserve geography/symbol aspect ratio. If the container aspect ratio differs, center and scale uniformly; do not stretch to fit.
 
 ## Funnel, Waterfall, Contribution
 

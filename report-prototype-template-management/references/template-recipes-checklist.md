@@ -33,11 +33,12 @@ Use this file for common adjustments and final verification after changing a tem
 
 1. Create/register the widget.
 2. Add static/mock rows in `src/data/dashboard.dataset.json`, configure `widget.data.id: 'apiData'` with `widget.data.api`, or register a custom API/provider resolver in `dataSources/registry.ts` for complex providers. Do not create TS fixture modules for mock rows.
-3. Configure `widget.data`.
-4. Add `filterFields`, `requiredFilters`, API params, resolver params, or `requiredParams` for every affecting global/page filter. Use `ignoredFilters` plus `ignoredFilterReasons` only for filters the widget intentionally does not consume.
-5. If mock/offline mode is used, ensure non-default filter values return different rows or values when the business state should change; add a custom resolver when plain rows cannot model the scenario.
-6. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
-7. Render from the `data` prop inside the widget.
+3. Verify data completeness before binding filters: every affecting primary/global filter has option rows, matching business rows or API/resolver support, required fields, default and non-default states, and empty/no-permission coverage when relevant.
+4. Configure `widget.data`.
+5. Add `filterFields`, `requiredFilters`, API params, resolver params, or `requiredParams` for every affecting global/page filter. Use `ignoredFilters` plus `ignoredFilterReasons` only for filters the widget intentionally does not consume.
+6. If mock/offline mode is used, ensure non-default filter values return different rows or values when the business state should change; add a custom resolver when plain rows cannot model the scenario.
+7. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
+8. Render from the `data` prop inside the widget.
 
 ### Add Component Interaction
 
@@ -64,6 +65,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Standard API endpoints are configured with `apiData` / `httpData`; custom resolvers are reserved for complex providers.
 - Every widget has `visualType`.
 - Widgets without data have `dataPolicy`.
+- Data completeness is verified before filter binding: filter option rows, business/API rows, required fields, default/non-default states, and resolver/API branches exist or are documented as gaps.
 - Filter scope and data field mapping are explicit.
 - Affecting filters are bound through `filterFields`, `requiredFilters`, API params, or resolver params; `ignoredFilters` is used only for intentionally invariant widgets and each ignored filter has `ignoredFilterReasons`.
 - Non-default primary filter states visibly change affected widget data in JSON/API/resolver mode, or the widget is clearly labeled static/invariant.

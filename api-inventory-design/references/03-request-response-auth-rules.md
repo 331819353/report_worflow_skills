@@ -47,6 +47,7 @@ Use stable names unless the project already defines alternatives:
 
 For report/BI/dashboard APIs, inventory rows must state:
 
+- Default backend stack when no authoritative project stack overrides it: `Python + Flask + database/upstream connection pools + Redis`.
 - Report type: fixed, configurable, self-service, detail, summary, dashboard, export, or snapshot.
 - Report metadata or fixed-contract source: report definition, dataset, dimensions, metrics, filters, sort fields, cache policy, timeout, max rows, version/status, or `TBD(GAP-*)`.
 - Frontend input rule: stable codes only. Do not plan APIs where the frontend sends raw SQL, table names, column expressions, arbitrary operators, arbitrary sort strings, unregistered metric formulas, or tenant/data-permission scope.

@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "用于报表组件级视觉样式、响应式和可读性设计/评审/修复。用户提到KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip、hover/focus动效、边框发光、复杂图形、树/漏斗/流程、组件溢出、对齐、缩放、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
+description: "用于报表组件级视觉样式、响应式和可读性设计/评审/修复。用户提到KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip、hover/focus动效、边框发光、复杂图形、树/漏斗/流程、SVG/canvas图形变形、比例失真、组件溢出、对齐、缩放、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
 ---
 
 # Report Component Style Design
@@ -34,7 +34,7 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 
 1. Identify every component type, its data density, viewport size, interaction needs, and business priority.
 2. Load `references/00-component-reference-index.md` plus the smallest matching reference set.
-3. Reserve stable component dimensions before styling: header, actions, legend, body viewport, footer, pagination, and state messages.
+3. Reserve stable component dimensions before styling: header, actions, legend, body viewport, footer, pagination, state messages, and aspect-ratio boxes for SVG/canvas/custom geometry.
 4. Apply shared fit rules first, then component-specific rules. If rules conflict, use the stricter no-duplicate-title/no-overlap/no-truncation/no-hidden-critical-data rule.
 5. Run design reasonableness checks when a component choice may weaken the business answer, hide exact values, duplicate another component, overload the container, or block the next action.
 6. Define overflow and exact-value disclosure: tooltip, drawer, fullscreen, zoom/pan, scroll, table fallback, or label sampling.
@@ -47,6 +47,8 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not accept a polished component that is unreasonable for the task. Use `DESIGN-*` findings when a chart should be a table, a dense component needs drilldown/fullscreen, a component duplicates another message, or the style hides the user's decision-critical value.
 - Do not hide decision-critical labels, units, warnings, or values without a hover/focus/click disclosure path.
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable container.
+- Do not stretch SVG, canvas, ECharts custom graphics, gauges, maps, radar, flow paths, or generated decorative geometry with independent X/Y scaling. Preserve geometry with a canonical `viewBox`, `preserveAspectRatio="xMidYMid meet"`, CSS `aspect-ratio`, or a measured inner fit box using `scale = min(containerWidth / designWidth, containerHeight / designHeight)`.
+- Do not use CSS `transform: scaleX/scaleY`, `object-fit: fill`, or raw `width: 100%; height: 100%` SVG/canvas stretching when the graphic shape has business meaning. Center/letterbox inside the assigned viewport or redesign the graphic for the actual aspect ratio.
 - For ECharts line, area, bar, and other category-axis charts, the x-axis categories must be ordered explicitly. Time/period axes default to ascending chronological order unless the user or business rule explicitly requires reverse/custom order.
 - Do not sort only x-axis labels, categories, or `xAxis.data` while series values still map the unsorted source rows. Sort the row tuples first, then derive `xAxis.data`, every `series.data`, tooltip payloads, and click payloads from the same ordered rows.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
@@ -79,7 +81,7 @@ When using this skill, provide:
 4. Fit decisions: label density, overflow, exact-value disclosure, scroll/zoom/fullscreen/drawer/table fallback.
 5. Design reasonableness status and any `DESIGN-*` findings that affected component choice or fit.
 6. Implementation notes for ECharts/S2/DOM/CSS behavior where relevant.
-7. Self-check result: overlap, clipping, truncation, contrast, resize, hover/focus/touch, loading/empty/error states.
+7. Self-check result: overlap, clipping, truncation, contrast, resize, aspect-ratio/geometry integrity, hover/focus/touch, loading/empty/error states.
 
 ## Quality Checklist
 
@@ -87,6 +89,7 @@ When using this skill, provide:
 - Component titles are layout-owned by default; chart/table/KPI bodies do not duplicate the block/page title.
 - Component choice is reasonable for the business task and data shape; unresolved `P0`/`P1` `DESIGN-*` findings are not styled over.
 - Component size is sufficient for the selected visual type and data density; cramped/narrow/small components are enlarged, split, scrolled, zoomed, or moved to fullscreen/drawer before pass.
+- SVG/canvas/ECharts/custom graphics preserve their intended aspect ratio; curves, gauges, maps, nodes, and icons are not squeezed, stretched, or warped by the container.
 - Nested summary/KPI/tile layouts pass internal fit for long labels, values, units, helper text, and action text; no decision-critical content is clipped by nowrap/ellipsis without disclosure.
 - Line, area, bar, and other category-axis charts have an explicitly sorted x-axis, and labels/points/values/tooltips are derived from the same sorted row order.
 - Repeated peer cards/charts/tiles use internal exact `M * N` distribution only when `actualTotal > 4`; prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs; parent blocks pass the height-capacity check with `heightExpansionRows = ceil(N * 2 / 3)`.
@@ -103,7 +106,7 @@ When using this skill, provide:
 - Text summaries and conclusions inherit the surrounding layout tokens and do not look like unrelated inserted bands.
 - Change-rate indicators pass positive-red-up / negative-green-down semantics and use `%` in Chinese UI.
 - Loading, empty, error, no-permission, and stale states preserve geometry.
-- Runtime resize or visual verification is performed when the component is implemented.
+- Runtime resize or visual verification is performed when the component is implemented, including at least one viewport/container size different from the design baseline for graphics that use SVG, canvas, ECharts custom paths, maps, gauges, or complex diagrams.
 
 ## Avoid
 

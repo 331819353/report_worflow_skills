@@ -1,6 +1,6 @@
 ---
 name: frontend-backend-data-consistency-test
-description: "用于核对前端页面展示数据与后端/API返回是否一致。用户提到前后端数据一致性、页面数据核对、接口返回与图表/表格不一致、字段映射、响应适配、单位精度、日期格式、汇总口径、合计、排序、TopN、筛选后数据、mock残留、组件绑定错误、联调验收时触发；不负责通用契约设计。"
+description: "用于核对前端页面展示数据与后端/API返回是否一致。用户提到前后端数据一致性、页面数据核对、接口返回与图表/表格不一致、字段映射、响应适配、单位精度、日期格式、汇总口径、合计、排序、TopN、筛选前数据完整性、筛选后数据、mock残留、组件绑定错误、联调验收时触发；不负责通用契约设计。"
 ---
 
 # Frontend Backend Data Consistency Test
@@ -38,13 +38,16 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 5. Compare component output.
    Check value equality or documented tolerance, ordering, grouping, series/category alignment, legend labels, color/category semantics, pagination counts, and table totals.
 
-6. Prove filter-bound data changes.
+6. Verify filter data completeness before binding.
+   Before judging a filter as correctly or incorrectly bound, confirm the API/mock/provider evidence can actually support that filter: option rows, default response, at least one non-default response or row set, required response fields, empty/no-permission states when relevant, and resolver/API branches for scenario filters. If only one default snapshot exists, classify the finding as a data-completeness or data-grain gap first.
+
+7. Prove filter-bound data changes.
    For every primary/global filter that should affect a component, capture a default and non-default state. Selected control state alone is not a pass; visible value, row set, series, total, API payload, or adapter output must change or the component must be documented as invariant.
 
-7. Check mock residue.
+8. Check mock residue.
    Verify API-backed components do not display stale static mock values, hardcoded demo data, placeholder metric names, or prototype-only copy.
 
-8. Check edge states.
+9. Check edge states.
    Validate zero, null, empty array, partial data, error response, timeout, and no-permission responses show the expected frontend state.
 
 ## Required Output
@@ -55,6 +58,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Expected display calculations:
 - Matched values:
 - Mismatched values:
+- Data completeness before filter binding:
 - Filter-state proof:
 - Mock residue:
 - Edge-state result:
@@ -65,6 +69,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Every API-backed component has a known endpoint, request params, response fields, and display mapping.
 - Frontend values match backend values after documented transformations.
 - Units, precision, percentages, date formats, sorting, and totals are consistent.
+- Filter data completeness is checked before binding: option data, default/non-default rows or responses, required fields, and resolver/API branches are present or recorded as data gaps.
 - Visible Chinese report rate/change/completion labels use `%`, not `pt`, `p.p.`, or `percentage point`, unless that wording is explicitly required.
 - Affected components show real data variation for non-default filter states, or are explicitly scoped as invariant.
 - No stale mock or hardcoded demo value appears in API-backed components.

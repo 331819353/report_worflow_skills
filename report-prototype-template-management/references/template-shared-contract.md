@@ -61,6 +61,7 @@ Avoid shell replacement in generated projects:
 - Do not replace a left-nav template's `nav` array with a single-page `page` object, or replace a topbar template's single `page` object with a new sidebar.
 - Do not implement new persistent filter bars, sidebars, or drawers inside widgets when the template already owns filter invocation.
 - Do not add duplicate title bars, filter regions, navigation layers, sidebars, or toolbars because a requirement document shows a different shell. Use template-level fields and document any adaptation.
+- Do not create standalone `FilterToolbar`, `FilterBar`, persistent header filter rows, or extra filter drawers for bundled templates. A requirement that says "主筛选栏", "筛选工具栏", or "filter bar" maps to template `filters[]` plus the native trigger/panel/popover/drawer unless the user explicitly approves a template-level redesign.
 - Do not drop default fields such as `defaultTheme`, `defaultNavOpen`, `defaultFiltersOpen`, `screen.controls`, or the template's logo slot while rewriting business labels.
 - Dark template pages must load Element Plus dark CSS variables and toggle the Element Plus `.dark` class with the template theme, or provide equivalent `--el-*` token overrides. Changing only `screen.defaultTheme` is not enough: update logo variant, `screen.grid.innerBackgroundColor`, card surfaces, and component scoped input/control backgrounds to the same theme tokens.
 
@@ -73,6 +74,7 @@ Layout design rules:
 
 Filter binding rules:
 
+- Template filter UI is shell-owned. Add, remove, relabel, source, and scope global/page filters through `filters[]`; bind component-local title-band controls through `localFilters[]`.
 - If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.
 - Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record each scope reason in `widget.data.ignoredFilterReasons`; do not use it because mock rows lack the filter field or because the resolver is missing.
 - Offline/mock rows or custom resolvers must produce different affected widget data for meaningful non-default filter states such as view, snapshot date, month, organization, industry, or scenario.

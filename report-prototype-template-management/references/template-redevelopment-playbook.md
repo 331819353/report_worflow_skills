@@ -29,6 +29,7 @@ Use this file when building a new business report from a copied template or heav
    - Use built-in JSON resolvers (`filterData`, `businessData`, `staticData`) for offline data.
    - Use built-in standard API resolvers (`apiData`, `httpData`) for ordinary REST/BFF endpoints.
    - Register custom API/provider resolvers in `src/dataSources/registry.ts` only for signatures, special auth, complex pagination, SDKs, realtime streams, or multi-step requests.
+   - Verify data completeness before filter binding: option rows, business rows/API response, required fields, default/non-default filter states, empty/no-permission states, and resolver/API branches.
    - Map filters with same-name fields or `filterFields`.
    - Use `requiredFilters` when a widget must respond to a filter.
    - Use `ignoredFilters` when a widget intentionally ignores a global filter.

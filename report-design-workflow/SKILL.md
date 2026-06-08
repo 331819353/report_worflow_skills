@@ -18,6 +18,7 @@ Default runnable prototype policy:
 - Install/use AntV S2 only for S2-class analytical tables such as pivot tables, cross tables, frozen headers, dense comparison grids, or wide metric matrices.
 - If selecting a template with `nav[]`, such as `left-nav-analytics-workbench-template` or `frozen-title-sci-fi-cockpit-template`, redesign the content into multiple substantial nav pages. Do not choose a navigation template and implement only a homepage.
 - When using a bundled template, map requirement-document title, filter, navigation, toolbar, and shell-layout intent into the template's existing slots and config. Do not recreate the requirement document's shell structure when it conflicts with the selected template.
+- When using a bundled template with filter functionality, do not generate a separate filter toolbar, persistent filter bar, or extra filter drawer. A requested "main filter bar" becomes template `filters[]`, native trigger/panel/popover/drawer behavior, local title-band filters, and filter-to-widget/API/resolver bindings.
 
 ## Child Skills
 
@@ -39,7 +40,9 @@ Default runnable prototype policy:
 - Before implementation, lock one workflow mode, one primary report type, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
 - The first meaningful viewport must answer one named business question. Every must-have component, dataset, filter, and interaction must appear in the binding matrix before visual polish or code.
 - Template selection and asset copying belong to `$report-prototype-template-management`; page shell/grid fit belongs to `$report-visual-layout-design`; component readability belongs to `$report-component-style-design`.
+- Data completeness is checked before filter binding after implementation or repair. Required rows/options/fields/default and non-default states/resolver branches must exist before `filterFields`, `requiredFilters`, API params, or resolver params can be accepted as working.
 - A primary/global filter is not accepted until affected components have filter-field/query/resolver binding and non-default filter values prove visible data changes. Selected-state-only behavior is a failed prototype.
+- In template mode, filter design is a shell-config and binding problem, not permission to add a new filter toolbar. Only explicit template-level redesign may add a new persistent filter surface.
 - Template `8 * N` validation covers outer blocks only. Composite widget internals, summary text areas, nested KPI grids, and small metric cells must pass `$report-component-style-design` fit rules.
 - Missing API, model, field, formula, source, permission, or acceptance facts must be recorded as assumptions or gaps. Do not implement unsupported behavior as final prototype logic.
 - When the prototype feeds technical solution, produce a handoff bundle: component binding, mock/data-source contract, filter contract, interaction payload, data/model assumptions or gaps, and readiness value.
@@ -52,7 +55,7 @@ Default runnable prototype policy:
 4. Use `$report-type-design` to choose one primary report type and any secondary local blocks.
 5. Use `$report-info-component-mapping` to produce answer atoms, component bundles, datasets, filters, interactions, and binding matrix.
 6. Declare `pageShellPath` as `template` or `custom`; default to `template` when no hard custom/restoration/existing-shell reason exists.
-7. Use `$report-visual-layout-design` for page shell, header/navigation/filter area, `8 * N` grid, block sizing, and responsive layout.
+7. Use `$report-visual-layout-design` for page shell, header/navigation/native filter surface, `8 * N` grid, block sizing, and responsive layout.
 8. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
 9. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
 10. Implement or repair the prototype in the selected target path when requested.
@@ -63,7 +66,7 @@ Default runnable prototype policy:
 - Workflow mode and input inventory.
 - Primary report type and core question.
 - Component/data/filter/interaction binding matrix.
-- Layout plan, `pageShellPath`, selected template/custom reason, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
+- Layout plan, `pageShellPath`, selected template/custom reason, filter surface mapping, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
 - Prototype-to-technical handoff bundle when the output will feed API/model/backend/frontend work.
 - Files changed or created when implementation is requested.
 - Quality-gate findings and readiness: `ready`, `partial`, or `blocked`.
@@ -77,5 +80,7 @@ Default runnable prototype policy:
 - Do not use a non-Vue3/TypeScript/Vite/Element Plus/ECharts/axios stack for runnable prototypes unless the user specifies it or the existing project requires it.
 - Do not select a navigation/sidebar template unless the content is reorganized into multiple meaningful nav pages, each with enough components, data, and interactions to stand on its own.
 - Do not create a second title area, filter bar, sidebar, navigation layer, or toolbar inside an existing template because the requirement document showed one; adapt labels, options, defaults, and behavior through template config unless a template-level redesign is explicitly requested.
+- Do not satisfy "筛选工具栏" or "主筛选栏" by rendering a new visual bar in bundled templates. Use the template's native filter entry and `filters[]` contract.
+- Do not claim filter linkage is implemented when data completeness was not checked first, or when the only available data is a single default snapshot for an affecting filter.
 - Do not keep template engineering inside layout; template work belongs to `$report-prototype-template-management`.
 - Do not claim runnable delivery without build/start/visual evidence or a precise blocker.

@@ -51,9 +51,11 @@ Required changes:
 - Implement visual components under `src/widgets/components/`.
 - Bind widgets through `widget.data.id` and either `widget.data.params.key` for JSON mode or `widget.data.api` for standard API mode.
 - Bind component-title filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run on the component's already loaded data.
+- Before binding global/page filters, prove data completeness: options, business/API rows, required fields, default and non-default states, empty/no-permission states, and resolver/API branches exist for every affecting filter.
 - Bind global/page filters that affect widgets through `widget.data.filterFields`, `requiredFilters`, API query/body params, or resolver params. Do not put an affecting filter in `ignoredFilters`.
 - Configure `actions` only as event forwarding or integration hooks; component-level popup, navigation, drilldown, and detail behavior stays inside the component.
 - Add, remove, or relabel navigation/filter items through the template's existing `nav`/`page` and `filters` arrays. Do not create a new standalone sidebar, top navigation, filter bar, or filter drawer unless the task is explicitly a template-level redesign.
+- Treat "筛选工具栏", "主筛选栏", and "filter bar" wording as a filter contract request, not a visual-surface request. Implement it through `filters[]`, native template filter invocation, local title-band filters, and filter-to-widget binding.
 - When `screen.defaultTheme` is `dark`, the logo variant, grid/card surfaces, Element Plus controls, and component scoped backgrounds must follow the same dark token system as the shell; do not leave default white cards, `ElSelect`/`ElInput`/date-picker surfaces, or popovers in a dark page.
 
 Data options:

@@ -7,13 +7,13 @@ description: "用于报表页面视觉布局设计、评审和修复。用户提
 
 ## Positioning
 
-Use this skill to design the report page shell and visual layout. It owns page organization: header, navigation, filter/control area, toolbar, brand position, `8 * N` content grid, block sizing, first-viewport hierarchy, responsive behavior, and layout defect repair.
+Use this skill to design the report page shell and visual layout. It owns page organization: header, navigation, filter/control surface, toolbar, brand position, `8 * N` content grid, block sizing, first-viewport hierarchy, responsive behavior, and layout defect repair.
 
 It does not own report-type business logic, template project assets, component-level styling, API/model design, or runtime QA.
 
 When a runnable template is needed, hand off to `$report-prototype-template-management`. When a card/chart/table/diagram needs detailed visual treatment, hand off to `$report-component-style-design`.
 
-For template-based pages, use `$report-prototype-template-management` `references/template-layout-design-system.md` as the source of truth for shared template spacing, block inner/outer padding, card radius, title-band geometry, widget viewport, and hover/focus layout behavior.
+For template-based pages, use `$report-prototype-template-management` `references/template-layout-design-system.md` as the source of truth for shared template spacing, block inner/outer padding, card radius, title-band geometry, widget viewport, and hover/focus layout behavior. If the selected template owns filter invocation, design the native filter surface and binding contract; do not add a separate filter toolbar or persistent filter bar.
 
 ## Reference Loading
 
@@ -30,7 +30,7 @@ For template-based pages, use `$report-prototype-template-management` `reference
 1. Identify page purpose, user, primary report question, expected density, and display scenario.
 2. Declare shell intent: topbar, left-nav, unified header/control area, fixed cockpit, existing project shell, or custom shell.
 3. Declare `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
-4. Place page title, navigation, filters, toolbar actions, logo, and status/refresh/export/fullscreen controls.
+4. Place page title, navigation, filters, toolbar actions, logo, and status/refresh/export/fullscreen controls. For template-based pages, map filters to the template's native `filters[]` trigger/panel/popover/drawer or local title-band filters.
 5. Plan the first meaningful viewport: primary conclusion or action entry first, then evidence, breakdown, detail, and action areas.
 6. Lay out content blocks in a rectangular `8 * N` grid. Let `N` grow; scroll or split content instead of compressing dense rows.
 7. Size every block by its content needs: KPI, text summary, chart, table, complex diagram, task list, evidence panel, drawer trigger, or detail area.
@@ -44,6 +44,8 @@ For template-based pages, use `$report-prototype-template-management` `reference
 - Treat `1920 * 1080` and `1280 * 768` as viewport baselines, not maximum report height.
 - Do not divide viewport height by row count to make everything fit; increase rows, split sections, scroll, tab, drawer, or fullscreen.
 - Filters, toolbar, legends, table headers, labels, chart marks, and diagram nodes must not overlap or clip.
+- Template-based pages must not introduce a standalone filter toolbar, persistent filter bar, or extra filter drawer when the selected template already has a filter trigger/panel/popover/drawer. Treat "筛选工具栏" requirements as `filters[]` and filter-binding work unless the user explicitly requests template-level redesign.
+- Shape-sensitive visuals such as gauges, radar, maps, pies, flow paths, SVG/canvas diagrams, and custom ECharts graphics need an aspect-compatible block or fullscreen/fit-box strategy. Do not allocate them to a mismatched rectangle and rely on non-uniform stretching.
 - Hover/focus effects in fixed `8 * N` blocks must not move, scale, or visually escape components. Prefer in-bounds border glow/inset glow and route component-level motion details to `$report-component-style-design`.
 - Complex diagrams need reserved title bands and at least 16px safe spacing between titles, nodes, labels, and connectors.
 - Main filter controls should use the project design system or Element Plus-style controls; naked native selects are not final visual surfaces.
@@ -54,6 +56,7 @@ For template-based pages, use `$report-prototype-template-management` `reference
 - Page shell choice and layout rationale.
 - Brand mode and logo placement.
 - Header/navigation/filter/toolbar structure.
+- Filter surface mapping: template-native filter trigger/panel/popover/drawer, local title-band filter, custom filter bar, or explicit redesign exception.
 - First-viewport hierarchy.
 - `8 * N` block grid with component spans and sizing notes.
 - Template layout-token family and deviations when template-based: `contentGap`, `cellPadding`, card padding/radius, title band, content range, and row height.
@@ -66,6 +69,8 @@ For template-based pages, use `$report-prototype-template-management` `reference
 - Every block has a purpose, a size rationale, and a visible state plan.
 - Dense components have enough room or an overflow/fullscreen/drawer strategy.
 - No title, label, legend, chart, table, card, node, connector, filter, or toolbar element overlaps or clips.
+- Template filter surfaces are reused instead of duplicated; no standalone filter toolbar/bar appears in a template-based layout without a named redesign decision.
+- Shape-sensitive charts and diagrams are assigned aspect-compatible spans or use centered uniform scaling/fullscreen; they are not warped to fill a block.
 - Hover/focus states for cards, blocks, navigation, and toolbar controls preserve geometry and are not clipped at block edges.
 - Template-based layout tokens follow `$report-prototype-template-management` `template-layout-design-system.md`; deviations are deliberate and documented.
 - Template engineering details are routed to `$report-prototype-template-management`, not embedded here.

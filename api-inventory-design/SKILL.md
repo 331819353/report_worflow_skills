@@ -1,6 +1,6 @@
 ---
 name: api-inventory-design
-description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、页面需要哪些接口、mock转接口、需求转API、方法路径、请求参数、响应模型、筛选分页排序、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
+description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、页面需要哪些接口、mock转接口、需求转API、方法路径、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
 ---
 
 # API Inventory Design
@@ -55,13 +55,16 @@ Loading guidance:
 4. Define request contracts at inventory level.
    Capture path/query/body params, filters, period format, organization scope, pagination, sorting, keyword search, drilldown params, export params, and default values.
 
-5. Define response contracts at inventory level.
+5. Define filter data support at inventory level.
+   Before marking filter-bearing APIs ready for downstream implementation, capture option source, source/provider execution stage, required fields, row grain, default state, non-default state, empty/no-permission state when relevant, and resolver/API branch need. Record a `GAP-*` when the planned API can only produce one default snapshot for an affecting filter.
+
+6. Define response contracts at inventory level.
    Reference a response model name and summarize required field groups, grain, list/envelope shape, empty state, and error behavior. Do not duplicate the full API document here.
 
-6. Mark gaps.
+7. Mark gaps.
    If an endpoint depends on unknown data models, formulas, enums, filter options, permission rules, or owner decisions, record the gap in the pending column with a stable `GAP-*` ID, impact, owner question, and blocking status.
 
-7. Run the design reasonableness gate.
+8. Run the design reasonableness gate.
    Check whether endpoint boundaries, split/merge choices, response model references, request params, dynamic options, exports, actions, auth, and performance notes reasonably support the consuming page and tests. Record unreasonable API inventory choices as `DESIGN-*` findings.
 
 ## Hard Constraints
@@ -78,6 +81,8 @@ Loading guidance:
 - Do not mark a P0 API `ready` when performance/cache/SLA, expected volume, or export limit is unknown and undocumented.
 - Do not mark collection/list/table APIs `ready` without pagination, maximum page size, stable sort, and large-result handling.
 - Do not mark APIs `ready` when global/page-level filters, sorting, pagination, ranking, Top/Bottom, grouping, aggregation, or counts require page/API-level full-materialize-then-filter behavior. The inventory must push global narrowing to SQL/source/provider/repository/cache stage, or mark a `GAP-*`. Component-internal filters must be separately scoped to already fetched component data.
+- Do not mark filter-bearing APIs `ready` until data completeness is proven before filter binding: option source, source/provider rows, required fields, default/non-default states, empty/no-permission states when relevant, and resolver/API branch behavior are present or linked to `GAP-*`.
+- When the inventory feeds default backend/API implementation, assume `Python + Flask + database/upstream connection pools + Redis` and record cache/pool expectations. Use another backend stack only when the user or existing project explicitly overrides it.
 - Do not plan JSON files as the simulation data source for backend/API implementation. Use SQLite schema, seed rows, and indexes for mock-derived local APIs.
 - Do not leave required table cells blank. Use `none` when intentionally not applicable, or `TBD(GAP-*)` when unknown.
 
@@ -95,8 +100,10 @@ Use a table with these columns:
 - Source model dependency.
 - Auth/permission.
 - Pagination/sort/filter.
+- Filter data support: option source, row grain, default/non-default states, resolver/API branch need.
 - Filter/sort/page execution stage.
 - Performance/cache/SLA.
+- Backend stack/cache/pool expectation and override reason when not using the default backend stack.
 - Priority.
 - Status.
 - Pending questions.
@@ -108,6 +115,7 @@ Use a table with these columns:
 - API names and paths are stable enough for downstream API documentation, implementation, or validation.
 - API inventory design reasonableness is checked; unresolved `P0`/`P1` `DESIGN-*` findings keep affected APIs `partial` or `blocked`.
 - Request params cover all required filters, drilldowns, pagination, sorting, exports, and actions.
+- Filter-bearing APIs prove data completeness before downstream binding; missing non-default data, option rows, fields, or resolver/API branches are visible `GAP-*` items.
 - List/table APIs have bounded pagination and documented default/max page size.
 - API rows do not depend on page/API-level full-materialize-then-filter behavior; global SQL/source/provider/repository/cache execution and component-internal local filter scope are explicit or linked to a `GAP-*`.
 - Response model names match the 数据模型文件.

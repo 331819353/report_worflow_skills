@@ -4,7 +4,7 @@ Use this reference to design report filters, filter option data, defaults, casca
 
 ## Filter Principles
 
-- Put high-frequency filters in the main filter bar.
+- Put high-frequency filters in the main filter surface. In bundled templates, this means the template `filters[]` plus native trigger/panel/popover/drawer, not a new standalone filter bar.
 - Move low-frequency or field-heavy filters into advanced filters.
 - Provide strong defaults so the first screen is useful.
 - Make active filters visible as chips or compact state text.
@@ -27,13 +27,15 @@ Use this reference to design report filters, filter option data, defaults, casca
 - Keyword: object name, code, document number, customer, project, comment.
 - Saved view: common filter schemes, personal favorites, meeting presets.
 
-## Main Bar Vs Advanced Filter
+## Main Filter Surface Vs Advanced Filter
 
-Use the main filter bar for time period, organization scope, primary object/business line, status/severity when it changes the whole report, and keyword search for detail-heavy reports.
+Use the main filter surface for time period, organization scope, primary object/business line, status/severity when it changes the whole report, and keyword search for detail-heavy reports.
 
 Use advanced filters for amount ranges, low-frequency statuses, secondary dimensions, owner/creator/approver/source, tags, custom fields, data version, and audit filters.
 
 Avoid more than 5-7 controls in the first row. Collapse or group the rest.
+
+For bundled templates, do not allocate a new visual first row just because the filter model has main filters. The selected template's existing filter trigger, popover, drawer, panel, active chips, or compact state text is the visual surface. A literal persistent filter bar is allowed only for custom shells or explicit template-level redesign.
 
 ## Defaults
 
@@ -95,6 +97,7 @@ Do not use display names as query keys if names can change.
 
 For bundled templates:
 
+- Treat `filters[]` as the main filter surface contract. Add, remove, relabel, source, and scope filters there instead of generating a standalone filter toolbar.
 - Prefer `filters[].source` for data-derived options.
 - Use `filters[].options` only for static enums or clearly marked early shell placeholders.
 - Time options should come from `dim_time` or fact periods.

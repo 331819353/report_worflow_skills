@@ -57,5 +57,5 @@ Do not switch to a custom shell merely because the user omitted page style or pr
 
 - Requirement-document title, filter, navigation, toolbar, and shell-layout sketches are inputs to adapt, not authority to duplicate the shell.
 - When a bundled template is selected, map title text to `screen.title` and template title/logo assets; map filters to the template `filters` array and data-source/filter-field contracts; map navigation requests to existing `nav[]` or `page` structures; map toolbar actions to `screen.controls` or `actions`.
-- Do not add a second header/title band, separate filter bar, extra sidebar, extra top navigation, or ad hoc toolbar just because the requirement document drew one.
+- Do not add a second header/title band, separate filter bar, filter toolbar, extra sidebar, extra top navigation, or ad hoc toolbar just because the requirement document drew one. A requested "main filter bar" is interpreted as the selected template's native filter trigger/panel/popover/drawer plus `filters[]` config.
 - If a requirement shell element is incompatible with the selected template, preserve the business intent through the nearest template slot and document the adaptation. Only redesign the template shell when the user explicitly asks for template-level redesign.

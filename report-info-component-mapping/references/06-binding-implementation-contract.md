@@ -113,6 +113,7 @@ Minimum columns:
 
 For bundled templates:
 
+- Global/page filters must be declared in `filters[]` and invoked through the selected template's native filter trigger/panel/popover/drawer. Do not generate a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly requests template-level redesign.
 - Offline/mock filter options and business rows must live in `src/data/dashboard.dataset.json` and be loaded through `src/data/dashboard.loader.ts` plus the data-source registry. Do not create generated TS files for fixture rows, arrays, or payloads.
 - `widget.data.params.key` must point to a real dataset in `dashboardData`.
 - Use `filters[].source` for data-derived filter options and `filters[].options` for static enums.
@@ -161,7 +162,7 @@ A runnable prototype should fail validation when:
 
 - A primary filter has no explicit component binding.
 - A primary filter only narrows data after full dataset/component construction.
-- A primary filter changes only UI selected state while affected component data stays identical because of `ignoredFilters`, missing `filterFields`, or single-snapshot mock data.
+- A primary filter changes only UI selected state while affected component data stays identical. Treat `ignoredFilters` or missing `filterFields` as binding gaps after data completeness is proven; treat single-snapshot mock data, missing non-default rows, or missing resolver/API branches as data-completeness gaps first.
 - A clickable element has no emitted event or configured action.
 - A multi-period filter is backed by single-period data.
 - A first-screen component has no dataset, static policy, or external runtime contract.

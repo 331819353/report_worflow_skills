@@ -57,6 +57,7 @@ Legacy standalone gates have been absorbed into the primary shared gates above. 
 
 - Do not use this skill as a dumping ground for domain logic.
 - Do not mark `ready` when high-impact conflicts, missing production controls, or untested required runtime behavior remain.
+- Do not mark `ready` when filter linkage was tested before data completeness, or when affecting filter option data, fact rows, resolver/API branches, field grain, or non-default data variation evidence is missing.
 - Do not mark `ready` when an affecting filter only changes selected UI state, is hidden by `ignoredFilters`, lacks provider/resolver grain, or has no evidence for non-default data variation.
 - Do not mark `ready` when visible Chinese report rate/change/completion indicators use `pt`, `p.p.`, or `percentage point` instead of `%`, unless that wording is explicitly accepted in the contract.
 - Do not mark `ready` when KPI/summary/card internals hide critical labels or values through nowrap, ellipsis, overflow clipping, or too-small internal columns without a tested expansion/scroll/wrap behavior.

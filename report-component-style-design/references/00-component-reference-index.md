@@ -13,15 +13,15 @@ Use this index to load only the component rules needed for the current task.
 
 | Component type | Read this reference | Use when |
 | --- | --- | --- |
-| Shared containers, titles, labels, units, badges, empty states | `01-shared-foundation.md` | Any component style task |
+| Shared containers, titles, labels, units, badges, empty states, aspect-ratio integrity | `01-shared-foundation.md` | Any component style task, especially SVG/canvas/custom graphics that may deform |
 | Filters, query bars, filter chips, advanced filter popovers | `02-filter-controls.md` | Date, organization, status, owner, metric, baseline, or advanced filters |
 | Text summaries, conclusion blocks, insight cards | `03-text-summary.md` | Executive conclusion, diagnosis, risk explanation, recommendation |
 | KPI cards, pyramid KPI cards, metric groups, comparison tiles, mini trends | `04-kpi-metric-cards.md` | KPI, target attainment, YoY/MoM, target, sparkline, status, submetric tile |
-| ECharts charts, axes, legends, data labels, tooltips | `05-echarts-charts.md` | Bar, line, pie, radar, scatter, map, heatmap, funnel, waterfall |
+| ECharts charts, axes, legends, data labels, tooltips, proportional geometry | `05-echarts-charts.md` | Bar, line, pie, radar, scatter, map, heatmap, funnel, waterfall, gauge, custom path |
 | AntV S2 and analytical tables | `06-analytical-tables.md` | Pivot table, cross table, metric matrix, detail table, financial grid |
 | Cards, lists, task cards, anomaly cards, status badges | `07-cards-lists-tasks.md` | Object cards, ranking lists, alert cards, task boards, status chips |
 | Drawers, modals, detail panels, evidence panels | `08-drawers-detail-panels.md` | Row detail, evidence, logs, source trace, object profile |
-| Complex diagrams, trees, decomposition, Sankey, flows | `09-complex-diagrams.md` | Tree, path, process, DuPont, attribution, relation, flow diagrams |
+| Complex diagrams, trees, decomposition, Sankey, flows, aspect-safe scaling | `09-complex-diagrams.md` | Tree, path, process, DuPont, attribution, relation, flow diagrams, SVG/canvas diagrams |
 | In-component capsule switches and dropdowns | `10-in-component-controls.md` | Component-level view mode, metric switch, period switch, dimension select, ranking scope, chart/table mode |
 
 ## Mandatory Decision Record
@@ -33,4 +33,5 @@ For every component style output, state:
 - The visible labels or values that remain permanent.
 - The hidden labels or values and how users inspect them, such as hover tooltip, focus tooltip, click drawer, fullscreen, table fallback, or internal scroll.
 - The overflow strategy for long text, long labels, many marks, wide tables, or dense diagrams.
+- The aspect-ratio strategy for SVG/canvas/ECharts custom graphics, maps, gauges, radar, pies, paths, and complex diagrams.
 - The in-component controls used, their placement, selected state, dropdown behavior, and what content each control changes.
