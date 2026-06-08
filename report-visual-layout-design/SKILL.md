@@ -1,6 +1,6 @@
 ---
 name: report-visual-layout-design
-description: "用于报表页面视觉布局设计、评审和修复。用户提到页面布局、页面壳、顶部栏、左侧导航、标题区、筛选区、工具栏、8*N网格、区块排布、首屏层级、响应式、Haier品牌位置、图表/表格容器尺寸、空态/加载/错误态位置、元素重叠、溢出、布局不好看时触发；不负责模板工程复制、业务报表类型选择或组件细节样式。"
+description: "用于报表页面视觉布局设计、评审和修复。用户提到页面布局、页面壳、顶部栏、左侧导航、标题区、筛选区、工具栏、8*N网格、区块排布、首屏层级、响应式、Haier品牌位置、图表/表格容器尺寸、hover动效裁切、空态/加载/错误态位置、元素重叠、溢出、布局不好看时触发；不负责模板工程复制、业务报表类型选择或组件细节样式。"
 ---
 
 # Report Visual Layout Design
@@ -12,6 +12,8 @@ Use this skill to design the report page shell and visual layout. It owns page o
 It does not own report-type business logic, template project assets, component-level styling, API/model design, or runtime QA.
 
 When a runnable template is needed, hand off to `$report-prototype-template-management`. When a card/chart/table/diagram needs detailed visual treatment, hand off to `$report-component-style-design`.
+
+For template-based pages, use `$report-prototype-template-management` `references/template-layout-design-system.md` as the source of truth for shared template spacing, block inner/outer padding, card radius, title-band geometry, widget viewport, and hover/focus layout behavior.
 
 ## Reference Loading
 
@@ -42,6 +44,7 @@ When a runnable template is needed, hand off to `$report-prototype-template-mana
 - Treat `1920 * 1080` and `1280 * 768` as viewport baselines, not maximum report height.
 - Do not divide viewport height by row count to make everything fit; increase rows, split sections, scroll, tab, drawer, or fullscreen.
 - Filters, toolbar, legends, table headers, labels, chart marks, and diagram nodes must not overlap or clip.
+- Hover/focus effects in fixed `8 * N` blocks must not move, scale, or visually escape components. Prefer in-bounds border glow/inset glow and route component-level motion details to `$report-component-style-design`.
 - Complex diagrams need reserved title bands and at least 16px safe spacing between titles, nodes, labels, and connectors.
 - Main filter controls should use the project design system or Element Plus-style controls; naked native selects are not final visual surfaces.
 - Haier-branded pages must reserve a visible logo slot and use a correct light/dark logo asset supplied by the project or `$report-prototype-template-management`.
@@ -53,6 +56,7 @@ When a runnable template is needed, hand off to `$report-prototype-template-mana
 - Header/navigation/filter/toolbar structure.
 - First-viewport hierarchy.
 - `8 * N` block grid with component spans and sizing notes.
+- Template layout-token family and deviations when template-based: `contentGap`, `cellPadding`, card padding/radius, title band, content range, and row height.
 - Responsive and state layout plan.
 - Layout risks, gaps, and downstream handoffs.
 
@@ -62,4 +66,6 @@ When a runnable template is needed, hand off to `$report-prototype-template-mana
 - Every block has a purpose, a size rationale, and a visible state plan.
 - Dense components have enough room or an overflow/fullscreen/drawer strategy.
 - No title, label, legend, chart, table, card, node, connector, filter, or toolbar element overlaps or clips.
+- Hover/focus states for cards, blocks, navigation, and toolbar controls preserve geometry and are not clipped at block edges.
+- Template-based layout tokens follow `$report-prototype-template-management` `template-layout-design-system.md`; deviations are deliberate and documented.
 - Template engineering details are routed to `$report-prototype-template-management`, not embedded here.

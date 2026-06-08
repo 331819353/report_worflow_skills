@@ -22,11 +22,12 @@ Use this file for common adjustments and final verification after changing a tem
 1. Edit `layoutRows`.
 2. Keep 8 columns per row unless the template explicitly supports another grid.
 3. Keep repeated characters rectangular.
-4. Calculate the actual block width/height with `$report-visual-layout-design`.
-5. Verify each span can hold its chart/table/KPI/composite content at the target viewport size.
-6. Keep or add vertical scrolling when the report needs more rows than the first viewport can show.
-7. Rename widget keys to match changed block ids.
-8. Run `npm run validate:dashboard`.
+4. Read `template-layout-design-system.md` when changing `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, or content range.
+5. Calculate the actual block width/height with `$report-visual-layout-design`.
+6. Verify each span can hold its chart/table/KPI/composite content at the target viewport size.
+7. Keep or add vertical scrolling when the report needs more rows than the first viewport can show.
+8. Rename widget keys to match changed block ids.
+9. Run `npm run validate:dashboard`.
 
 ### Add A Data-Bound Widget
 
@@ -50,6 +51,7 @@ Use this file for common adjustments and final verification after changing a tem
 
 - Shell-level changes go in `src/styles.css`.
 - Widget-level changes go in the widget scoped style.
+- Shared template layout style such as block gap, card radius, block title band, cell padding, and hover/focus feedback follows `template-layout-design-system.md`.
 - Keep Haier blue/white as the primary style for ordinary report pages.
 - For sci-fi, keep a dark cockpit theme with controlled semantic colors.
 
@@ -66,6 +68,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Affecting filters are bound through `filterFields`, `requiredFilters`, API params, or resolver params; `ignoredFilters` is used only for intentionally invariant widgets and each ignored filter has `ignoredFilterReasons`.
 - Non-default primary filter states visibly change affected widget data in JSON/API/resolver mode, or the widget is clearly labeled static/invariant.
 - Block spans match the size and component-count constraints from `$report-visual-layout-design`.
+- Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and 32px block title band.
 - Outer block validation does not replace component-internal fit checks. Composite widgets must be reviewed with `$report-component-style-design` for summary columns, nested KPI grids, text wrapping, min-height, and no critical nowrap/ellipsis clipping.
 - `1920 * 1080` and `1280 * 768` are used as viewport checks, not total report height caps.
 - Layout blocks do not clip titles, legends, charts, tables, empty states, or controls.

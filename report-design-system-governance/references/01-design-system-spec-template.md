@@ -5,6 +5,11 @@
 | Token type | Token name | Value | Usage | Accessibility/contrast note | Status |
 | --- | --- | --- | --- | --- | --- |
 
+## Template Layout Token Rule
+
+| Template family | Design frame | Shell frame | Content range | Grid gap/row height | Cell padding | Card padding/radius | Title band | Widget viewport rule |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
 ## Component Rule
 
 | Component | Anatomy | Size/density | States | Data behavior | Interaction | Responsive rule | Do / Avoid |
@@ -18,6 +23,11 @@
 ## Internal Fit Rule
 
 | Component | Long text surface | Wrap/line clamp | Min size | Tooltip/expand/scroll rule | Critical text that must remain visible | Regression viewport |
+| --- | --- | --- | --- | --- | --- | --- |
+
+## Interaction Feedback Rule
+
+| Surface | Hover/focus style | Motion allowed | Glow/focus token | Overflow/clipping guard | Reduced-motion behavior | Regression check |
 | --- | --- | --- | --- | --- | --- | --- |
 
 ## Visualization Rule

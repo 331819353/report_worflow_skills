@@ -58,6 +58,9 @@ Apply these rules to every component before applying component-specific rules.
 - Every hidden or abbreviated value must be inspectable.
 - Tooltip must show full name, exact value, unit, period/dimension, comparison value, and status when relevant.
 - Hover emphasis may reveal one temporary label, but it must not move surrounding layout.
+- In fixed grid blocks, KPI cards, chart/table containers, and compact controls, hover/focus feedback should use stable border color, outline, inset glow, or an in-bounds pseudo-element. Avoid hover `translate`, `scale`, or outer shadows that can be clipped by `overflow: hidden` or shift visual alignment.
+- If a parent block clips overflow, keep the glow inside the component bounds with `box-shadow: inset ...` or `outline-offset: -1px`; do not rely on an outside shadow to communicate interactivity.
+- `focus-visible` should mirror the hover glow so keyboard users get the same non-shifting state.
 - Touch devices need click, tap, or focus alternatives to hover.
 
 ## Empty, Loading, Error

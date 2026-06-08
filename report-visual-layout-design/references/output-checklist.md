@@ -60,6 +60,8 @@ Before finalizing, verify:
 - Filters are easy to invoke and active conditions are visible.
 - Template-based pages preserve the selected template's native navigation/filter mechanism; config changes patch `nav`/`page`, `filters`, toolbar labels, and theme fields instead of replacing the shell.
 - Filter changes have visible, layout-safe effects across cards, charts, tables, drawers, and export/fullscreen states.
+- Hover/focus effects are layout-safe: cards, KPI tiles, chart/table containers, nav items, and toolbar controls do not move, scale, or require external shadow space that can be clipped by the grid/container.
+- Interactive block emphasis uses in-bounds border glow, inset glow, outline, or stable color change rather than offset/scale animation when the component sits inside an `overflow: hidden` grid/card.
 - Toolbar actions are grouped by frequency and importance.
 - Tables, charts, cards, and drawers each have a clear job.
 - ECharts and AntV S2 containers have stable dimensions and resize against the body viewport.

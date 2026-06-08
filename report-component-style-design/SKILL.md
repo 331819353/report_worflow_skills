@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "用于报表组件级视觉样式、响应式和可读性设计/评审/修复。用户提到KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip、复杂图形、树/漏斗/流程、组件溢出、对齐、缩放、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
+description: "用于报表组件级视觉样式、响应式和可读性设计/评审/修复。用户提到KPI卡、指标卡、文本总结、筛选控件、按钮/标签/弹窗/抽屉、ECharts、AntV S2、表格、图例、标签过密、tooltip、hover/focus动效、边框发光、复杂图形、树/漏斗/流程、组件溢出、对齐、缩放、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
 ---
 
 # Report Component Style Design
@@ -59,6 +59,8 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - For repeated peer cards/charts/tiles inside a component or large block, use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, use a small-group layout based on content and block shape. When the algorithm applies, calculate from `layoutTotal`: normally `layoutTotal = actualTotal`; when `actualTotal` is prime, use `layoutTotal = actualTotal + 1`; then choose columns `M >= N`, and the smallest `M - N` among valid factor pairs where `layoutTotal = M * N`. After the internal matrix is chosen, the outer component or large block uses `heightExpansionRows = ceil(N * 2 / 3)` as the height expansion baseline; expand the outer block instead of squeezing child tiles. Do not add arbitrary empty slots; the only allowed spare cell is the single prime-balancing cell created when the algorithm applies to a prime count, and it must not create fake metrics or mock data. Split the group if the matrix becomes unreadable.
 - Text summaries, conclusions, and insight blocks must inherit the surrounding page shell tokens for surface, spacing, typography, radius, and semantic colors. Do not introduce a new standalone visual surface, grid rhythm, or density that conflicts with adjacent sections.
 - In `sampleRestore`, added conclusions must sit inside an existing sample-equivalent region and reuse its spacing, border, typography, and surface tokens; a new standalone horizontal band fails style QA unless the sample already has one.
+- In fixed-grid report cards, KPI cards, chart/table containers, and compact controls, hover/focus feedback should use border color, outline, inset glow, or stable box-shadow. Do not use hover `translate`, `scale`, or outer-shadow effects when the parent container may clip borders/shadows or when the effect changes perceived block alignment.
+- Hover/focus glow must not require extra layout space. Prefer `box-shadow: inset 0 0 0 1px ...`, subtle inner glow, or an absolutely positioned pseudo-element inside the component bounds. `focus-visible` should share the same non-shifting feedback as hover.
 - Rate/change indicators in Chinese report UI display `%`, not `pt`, `p.p.`, or `percentage point`, unless the user explicitly requests that term.
 - Change-rate and variance-rate indicators use positive-red-up / negative-green-down semantics with icon+text pairing: positive value = red text plus upward SVG/icon; negative value = green text plus downward SVG/icon; zero = neutral.
 - Do not use naked native `<select>` controls as the final visual surface for primary filters.
@@ -97,6 +99,7 @@ When using this skill, provide:
 - Complex diagrams keep layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges at least 16px apart and reserve rail, title-band, and edge-bend space.
 - Primary filters use Element Plus or project design-system select/dropdown/date/cascader controls, or a fully styled native select only for baseline prototype acceptance.
 - Controls inside components have clear selected/hover/disabled/loading states and do not resize the block.
+- Hover/focus states for cards, KPI tiles, chart/table containers, and compact controls do not move, scale, or visually escape the assigned viewport; border glow or inset glow is preferred over offset animation.
 - Text summaries and conclusions inherit the surrounding layout tokens and do not look like unrelated inserted bands.
 - Change-rate indicators pass positive-red-up / negative-green-down semantics and use `%` in Chinese UI.
 - Loading, empty, error, no-permission, and stale states preserve geometry.

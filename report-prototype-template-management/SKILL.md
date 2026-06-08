@@ -1,6 +1,6 @@
 ---
 name: report-prototype-template-management
-description: "用于管理可运行报表原型模板资产，选择、复制、二开和校验 Vue/Vite 报表模板。报表原型默认走内置模板，只有用户明确自定义/精确复刻/保留现有壳或模板无法满足时才走 custom。用户提到报表模板、页面模板、选择模板、复制模板、模板二开、topbar、left nav、暗色/亮色模板、固定1920大屏、Haier logo、dashboard.config.ts、dashboard.dataset.json、validate-dashboard-contract、启动预览URL时触发；不负责业务报表类型判断或组件视觉细节。"
+description: "用于管理可运行报表原型模板资产，选择、复制、二开和校验 Vue/Vite 报表模板。报表原型默认走内置模板，只有用户明确自定义/精确复刻/保留现有壳或模板无法满足时才走 custom。用户提到报表模板、页面模板、模板布局token、分块内外间距、圆角、标题带/标题位置、选择模板、复制模板、模板二开、topbar、left nav、暗色/亮色模板、固定1920大屏、Haier logo、hover/focus模板动效、dashboard.config.ts、dashboard.dataset.json、validate-dashboard-contract、启动预览URL时触发；不负责业务报表类型判断或组件视觉细节。"
 ---
 
 # Report Prototype Template Management
@@ -41,6 +41,7 @@ All template directories must be copied with their full project structure: `pack
 
 - Choose a template: `references/template-routing.md`
 - Copy/edit extension points: `references/template-shared-contract.md`
+- Shared layout, spacing, radius, block title, and template design tokens: `references/template-layout-design-system.md`
 - Topbar template details: `references/template-single-page.md`
 - Left-nav template details: `references/template-left-nav.md`
 - Fixed cockpit template details: `references/template-sci-fi.md`
@@ -58,7 +59,8 @@ All template directories must be copied with their full project structure: `pack
 6. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
 7. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
 8. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
-9. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
+9. When changing layout spacing, block padding, radius, title band, row height, or hover/focus surfaces, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
+10. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
 ## Required Output
 
@@ -70,6 +72,7 @@ All template directories must be copied with their full project structure: `pack
 - Brand/logo asset decision.
 - Data binding mode: JSON, API, custom resolver, or retained offline mode.
 - Filter-to-widget binding decision: `filterFields`, `requiredFilters`, API params, resolver params, or intentionally labeled `ignoredFilters` with `ignoredFilterReasons`.
+- Template layout-token decisions when changed: `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, content range, and hover/focus feedback.
 - Validation and startup commands.
 - Any template limitation or custom-development gap.
 
@@ -80,6 +83,8 @@ All template directories must be copied with their full project structure: `pack
 - Requirement-document title/filter/navigation/toolbar ideas are mapped into existing template slots instead of implemented as duplicate shell layers.
 - Template project structure remains complete after copying.
 - Native shell navigation, filters, toolbar, theme, and logo slots are preserved unless explicitly redesigned.
+- Shared template layout tokens from `template-layout-design-system.md` are reused instead of rediscovered from source code or changed ad hoc.
+- Template shell hover/focus feedback for cards, toolbar buttons, nav items, and filter chips preserves geometry. Prefer in-bounds border glow or inset glow; do not use hover translate/scale that can clip borders/shadows in fixed grid or overflow-hidden containers.
 - Validation scripts and start helpers remain available.
 - Template asset paths in workflow or layout skills point to this skill, not to layout skill assets.
 - Primary/global filters that should change business data are not placed in `ignoredFilters`; mock/API/resolver data proves at least one affected widget value changes for non-default filter states.

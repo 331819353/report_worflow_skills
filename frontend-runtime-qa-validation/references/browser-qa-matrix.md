@@ -40,6 +40,7 @@
 - Business-question text, conclusion text, labels, legends, chart marks, table cells, cards, diagrams, and controls do not overlap, stack, or visually merge.
 - Section headers, group captions, layer/stage/lane labels, and column titles reserve independent title bands and maintain at least 16px safe spacing from the nearest card, node, connector, chart mark, legend, or child label.
 - Verify dense data, long text, empty states, and loading states do not resize fixed-format UI unexpectedly.
+- Verify hover and `focus-visible` states for interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips. They should preserve geometry and use in-bounds border/outline/glow; clipped borders, cut shadows, or offset/scale animation at grid edges are `VIS-*` defects.
 - Check target desktop and mobile/tablet viewports when the page is responsive or embedded in variable containers.
 - For ECharts, AntV S2, canvas, and virtualized tables, verify nonblank rendering, resize behavior after container changes, and cleanup/dispose behavior after route changes or tab switches.
 - For Element Plus controls, verify CSS/theme is loaded, popper overlays attach above the report shell, select/date/cascader dropdowns are not clipped by card overflow, dialogs/drawers preserve filter context, focus states are visible, and disabled/loading/error states render correctly.

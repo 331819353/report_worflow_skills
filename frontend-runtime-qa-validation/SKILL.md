@@ -1,6 +1,6 @@
 ---
 name: frontend-runtime-qa-validation
-description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
+description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、hover/focus动效裁切、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
 ---
 
 # Frontend Runtime QA Validation
@@ -37,6 +37,7 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
 
 6. Exercise page interactions.
    Traverse visible controls page by page: filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, drawers, modals, chart clicks, table row actions, export/download, refresh, fullscreen, and close/back flows.
+   For interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips, check hover and `focus-visible` states. A hover/focus state that moves/scales the element and clips borders/shadows at a grid/card edge is a visual defect.
 
 7. Check data states.
    Confirm loading, empty, error, no-permission, token-invalid, stale-selection, and retry states render without layout breakage or stale data.
@@ -61,6 +62,7 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Filters and interactions update the correct data without stale values.
 - Global filter/search/pagination/sort interactions send scope params to providers before response construction; any all-data request followed by local filtering is a `fail` or `partial` QA finding unless it is explicitly a component-internal filter over already fetched component data.
 - Empty/error/loading/auth states are visible and stable.
+- Hover/focus states preserve geometry and use in-bounds border/outline/glow; no border, shadow, or focus ring is clipped by parent overflow.
 - No stale prototype-only wording remains unless explicitly required.
 - Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
 - HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.

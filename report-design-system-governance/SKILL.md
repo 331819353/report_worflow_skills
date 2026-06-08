@@ -1,6 +1,6 @@
 ---
 name: report-design-system-governance
-description: "用于沉淀和评审可复用报表设计系统规范。用户提到报表设计系统、视觉规范、颜色/字号/间距/tokens、图表规范、表格规范、指标单位/百分比显示、卡片文本适配、空态/loading/错误态、交互规范、响应式规范、多报表风格一致、长期复用产品化规范时触发；不处理单个组件修复或单页模板复制。"
+description: "用于沉淀和评审可复用报表设计系统规范。用户提到报表设计系统、视觉规范、颜色/字号/间距/tokens、图表规范、表格规范、指标单位/百分比显示、卡片文本适配、hover/focus动效、边框发光、空态/loading/错误态、交互规范、响应式规范、多报表风格一致、长期复用产品化规范时触发；不处理单个组件修复或单页模板复制。"
 ---
 
 # Report Design System Governance
@@ -16,7 +16,7 @@ It complements `$report-visual-layout-design` and `$report-component-style-desig
 - Existing report screenshots, design files, frontend components, CSS/theme tokens, charts, tables, forms, layouts, brand constraints, accessibility requirements, or inconsistency examples.
 - Optional: target device sizes, chart library, component library, brand colors, dark/light mode, and legacy exceptions.
 
-Read `references/01-design-system-spec-template.md` when producing a reusable spec.
+Read `references/01-design-system-spec-template.md` when producing a reusable spec. When the reusable standard is based on bundled report templates, also inspect `$report-prototype-template-management` `references/template-layout-design-system.md` so spacing, radius, title-band, and hover/focus rules stay aligned with the actual template assets.
 
 ## Workflow
 
@@ -27,7 +27,7 @@ Read `references/01-design-system-spec-template.md` when producing a reusable sp
    Specify color roles, typography scale, spacing/grid, radius, border, shadow, density, icon size, z-index, and responsive breakpoints.
 
 3. Define component rules.
-   For each report component, specify anatomy, states, data density, label/tooltip behavior, overflow, loading/empty/error behavior, accessibility, interaction expectations, and internal fit rules for KPI/summary/card titles and values.
+   For each report component, specify anatomy, states, data density, label/tooltip behavior, overflow, loading/empty/error behavior, accessibility, interaction expectations, hover/focus feedback, and internal fit rules for KPI/summary/card titles and values.
 
 4. Define visualization rules.
    Specify chart selection, axis/legend/tooltip/data-label rules, color semantics, metric unit wording, percentage/rate display conventions, comparison baselines, threshold/alert styling, drilldown behavior, and screenshot regression requirements.
@@ -42,7 +42,9 @@ Read `references/01-design-system-spec-template.md` when producing a reusable sp
 
 - Design-system scope and principles for report products.
 - Token specification: color, typography, spacing, grid, radius, border, state, breakpoint.
+- Template layout-token specification when report templates are in scope: design frame, shell frame, content range, block gap, row height, cell padding, card padding/radius, title band, and widget viewport.
 - Component specification: filters, KPI cards, charts, tables, detail views, actions, feedback states.
+- Interaction feedback specification: hover/focus/active/selected/disabled motion limits, border glow, focus ring, and reduced-motion behavior.
 - Visualization specification: chart choice, semantics, legends, labels, tooltips, thresholds, interaction.
 - Metric display specification: raw vs display scale, percent/rate wording, rounding, trend icon semantics, and forbidden legacy terms.
 - Responsive and accessibility rules.
@@ -56,5 +58,6 @@ Read `references/01-design-system-spec-template.md` when producing a reusable sp
 - Empty/error/loading/no-permission states are specified.
 - Dense enterprise-report needs are prioritized over marketing-style layouts.
 - KPI/summary/card internals have wrapping, min-height, tooltip/expand, or scroll rules for long labels and values; critical metric text is not hidden by ellipsis-only treatment.
+- Hover/focus feedback preserves component geometry and stays inside component bounds. Border glow, inset glow, and outline are preferred; offset/scale animation needs explicit overflow and viewport proof.
 - Chinese report rate/change/completion labels use `%` by default; exceptions require named legacy/product rationale.
 - Design-system version and adoption checklist are explicit.

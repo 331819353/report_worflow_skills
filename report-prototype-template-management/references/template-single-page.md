@@ -23,6 +23,7 @@ Use these assets for standalone, compact, single-theme reports:
 screen: {
   title: 'Monthly Overview',
   defaultTheme: 'light',
+  layout: { topbarHeight: 72, contentGap: 14 },
   grid: { rowHeight: 316 },
 },
 assets: {
@@ -34,6 +35,13 @@ page: {
 },
 filters: [],
 ```
+
+## Shared Layout Contract
+
+- This family follows `template-layout-design-system.md`; change shared spacing/radius/title placement there first, then apply it consistently to both light and dark assets.
+- Default content range is `88 -> 1064`; topbar height is `72px`; block gap is `contentGap: 14`.
+- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- Card padding and card radius are both `8px`; `cellPadding` is `0` for the clean enterprise-card surface.
 
 ## Adjustments
 

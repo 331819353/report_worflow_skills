@@ -228,8 +228,8 @@ button {
   box-shadow: none;
   transition:
     opacity 0.2s ease,
-    transform 0.2s ease,
-    filter 0.2s ease;
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .title-tool::before {
@@ -314,8 +314,8 @@ button {
 }
 
 .title-tool:hover {
-  transform: scale(1.03);
   filter: brightness(1.22);
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--title-dominant-color) 26%, transparent);
 }
 
 .title-crown {
@@ -447,7 +447,7 @@ button {
     color 0.2s ease,
     background 0.2s ease,
     border-color 0.2s ease,
-    transform 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
 .nav-item:hover,
@@ -455,10 +455,9 @@ button {
   color: var(--text-strong);
   border-color: var(--line);
   background: var(--accent-soft);
-}
-
-.nav-item.active {
-  transform: translateX(4px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--title-dominant-color) 34%, transparent),
+    inset 0 0 16px color-mix(in srgb, var(--title-dominant-color) 14%, transparent);
 }
 
 .filter-group {

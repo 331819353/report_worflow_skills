@@ -64,12 +64,25 @@ Avoid shell replacement in generated projects:
 - Do not drop default fields such as `defaultTheme`, `defaultNavOpen`, `defaultFiltersOpen`, `screen.controls`, or the template's logo slot while rewriting business labels.
 - Dark template pages must load Element Plus dark CSS variables and toggle the Element Plus `.dark` class with the template theme, or provide equivalent `--el-*` token overrides. Changing only `screen.defaultTheme` is not enough: update logo variant, `screen.grid.innerBackgroundColor`, card surfaces, and component scoped input/control backgrounds to the same theme tokens.
 
+Layout design rules:
+
+- Use `template-layout-design-system.md` for shared page layout, block spacing, block inner padding, radius, title band, hover/focus, and template-token decisions.
+- Change layout tokens through `dashboard.config.ts` first: `contentGap`, `contentStartY`, `contentEndY`, `rowHeight`, `cellPadding`, `dominantTitleColor`, and `innerBackgroundColor`.
+- Keep the common block anatomy: `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- Do not solve business-widget density by rewriting template shell padding, title band height, or card radius. Route component fit to `$report-component-style-design`.
+
 Filter binding rules:
 
 - If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.
 - Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record each scope reason in `widget.data.ignoredFilterReasons`; do not use it because mock rows lack the filter field or because the resolver is missing.
 - Offline/mock rows or custom resolvers must produce different affected widget data for meaningful non-default filter states such as view, snapshot date, month, organization, industry, or scenario.
 - After binding filters, test at least one non-default option and verify a visible KPI/chart/table/list value changes, not only the filter selected state.
+
+Interaction feedback rules:
+
+- Template-level hover/focus styles for cards, blocks, toolbar buttons, nav items, filter options, and local chips should preserve geometry.
+- Prefer border-color changes, inset glow, in-bounds pseudo-elements, or stable background changes.
+- Do not use hover `translate`, `scale`, or outside-only shadows in fixed `8 * N` blocks, overflow-hidden cells, or compact shell controls unless screenshots prove the effect is not clipped.
 
 Template assets intentionally exclude `node_modules` and `dist`.
 

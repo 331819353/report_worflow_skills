@@ -43,6 +43,7 @@ Use when:
 Required changes:
 
 - Copy `assets/templates/<template-id>/` into the project.
+- Use `template-layout-design-system.md` before changing template-level spacing, block padding, card radius, block title placement, content range, or shell hover/focus behavior.
 - Edit `src/config/dashboard.config.ts` for title, theme, navigation, `layoutRows`, `widgets`, global filters, and toolbar labels, but preserve the copied template's native nav/page shape, filter trigger/panel/popover pattern, toolbar placement, theme fields, and logo slot.
 - Adapt requirement-document title/filter/navigation/toolbar requirements into the copied template's existing config slots. Do not add a second title area, standalone filter bar, extra sidebar, or duplicate toolbar unless the task is explicitly a template-level redesign.
 - Put mock/static data in `src/data/dashboard.dataset.json`. Do not create generated `src/widgets/*Data.ts`, `src/data/*.ts`, or other TS fixture modules for rows, arrays, or payloads.
