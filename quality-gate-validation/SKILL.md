@@ -1,6 +1,6 @@
 ---
 name: quality-gate-validation
-description: "用于执行跨阶段质量门禁和一致性检查。用户提到质量检查、输入材料冲突、入口一致性、设计合理性、筛选绑定断裂、指标单位/百分比显示冲突、生产就绪、验收门禁、可交付性、不要凭空假设、需求/API/模型/前端/后端/测试不一致、ready/partial/blocked 判定时触发；不替代具体实现 skill。"
+description: "用于执行跨阶段质量门禁和一致性检查。用户提到质量检查、输入材料冲突、入口一致性、设计合理性、筛选绑定断裂、快照接口依赖、snapshotDate/dataVersion/loadBatch、指标单位/百分比显示冲突、生产就绪、验收门禁、可交付性、不要凭空假设、需求/API/模型/前端/后端/测试不一致、ready/partial/blocked 判定时触发；不替代具体实现 skill。"
 ---
 
 # Quality Gate Validation
@@ -58,6 +58,8 @@ Legacy standalone gates have been absorbed into the primary shared gates above. 
 - Do not use this skill as a dumping ground for domain logic.
 - Do not mark `ready` when high-impact conflicts, missing production controls, or untested required runtime behavior remain.
 - Do not mark `ready` when filter linkage was tested before data completeness, or when affecting filter option data, fact rows, resolver/API branches, field grain, or non-default data variation evidence is missing.
+- Do not mark `ready` when a data-bearing API depends on an undocumented runtime response, frontend call order, controller memory, or application-memory snapshot for correctness. Snapshot/latest-period reports must declare whether snapshot data is overview-only, canonical/shared, or local/demo, and must use explicit `snapshotDate/latestPeriod/loadBatch/dataVersion` context plus source/precompute/cache/snapshot-backed data rather than hidden endpoint state.
+- Do not mark `ready` when data-version, business filters, or permission/data scope are only returned or echoed as metadata but are not used as backend params, source/provider predicates, precompute lookup keys, declared snapshot reuse rules, or Redis/cache key dimensions.
 - Do not mark `ready` when an affecting filter only changes selected UI state, is hidden by `ignoredFilters`, lacks provider/resolver grain, or has no evidence for non-default data variation.
 - Do not mark `ready` when visible Chinese report rate/change/completion indicators use `pt`, `p.p.`, or `percentage point` instead of `%`, unless that wording is explicitly accepted in the contract.
 - Do not mark `ready` when KPI/summary/card internals hide critical labels or values through nowrap, ellipsis, overflow clipping, or too-small internal columns without a tested expansion/scroll/wrap behavior.

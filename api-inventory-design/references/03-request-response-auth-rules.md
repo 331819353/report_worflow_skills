@@ -25,6 +25,19 @@ Required filter details:
 - Execution stage: source/provider/repository query, precompute/cache, or explicitly bounded client/service post-process. Use `TBD(GAP-*)` when unknown.
 - Gap ID if enum/options/default are unknown.
 
+Required data-version details when a report has snapshot/latest-period semantics:
+
+- Snapshot role: overview-only payload, canonical/shared snapshot dataset, bounded component-group response, local/demo artifact, or `TBD(GAP-*)`.
+- Version field name: `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, source partition, or project-specific equivalent.
+- Source of truth: filter-options endpoint, health endpoint, metadata endpoint, source table partition, release/snapshot table, or `TBD(GAP-*)`.
+- Consumer/reuse endpoints: snapshot/dashboard aggregate, metrics/trend, ranking, table, drilldown, export, and health.
+- Defaulting rule when the client omits the version.
+- Param ownership: client-supplied, backend-defaulted, backend-injected from auth/permission, or `TBD(GAP-*)`.
+- Query binding: source column/predicate, upstream provider param, precompute lookup key, Redis/cache key segment, or `TBD(GAP-*)`.
+- Reuse rule: whether other endpoints/components may derive from the snapshot response/materialized snapshot, and if so the required grain, fields, filters, permission scope, version params, cache key, and invalidation behavior.
+- Cache-key dimensions and invalidation trigger.
+- Rule that data-bearing endpoints either share the version context through their own query/cache inputs or explicitly reuse a declared canonical snapshot; they must not depend on undocumented response payloads or controller memory.
+
 ## Common Params
 
 Use stable names unless the project already defines alternatives:
@@ -42,6 +55,10 @@ Use stable names unless the project already defines alternatives:
 - `pageSize`
 - `sortBy`
 - `sortOrder`
+- `snapshotDate`
+- `latestPeriod`
+- `loadBatch`
+- `dataVersion`
 
 ## Report Data-Service Backend Contract
 
@@ -50,12 +67,15 @@ For report/BI/dashboard APIs, inventory rows must state:
 - Default backend stack when no authoritative project stack overrides it: `Python + Flask + database/upstream connection pools + Redis`.
 - Report type: fixed, configurable, self-service, detail, summary, dashboard, export, or snapshot.
 - Report metadata or fixed-contract source: report definition, dataset, dimensions, metrics, filters, sort fields, cache policy, timeout, max rows, version/status, or `TBD(GAP-*)`.
+- Data-version contract: how `snapshotDate/latestPeriod/loadBatch/dataVersion` is exposed, supplied or defaulted, validated, mapped to source/provider predicates or precompute lookup keys, included in cache keys, and reused by related endpoints without creating endpoint-to-endpoint runtime dependency.
 - Frontend input rule: stable codes only. Do not plan APIs where the frontend sends raw SQL, table names, column expressions, arbitrary operators, arbitrary sort strings, unregistered metric formulas, or tenant/data-permission scope.
 - Backend-owned mapping: how dimension/metric/filter/sort codes map to source/SQL expressions and safe parameter binding.
 - Parameter guardrails: required filters, date range, max dimensions, max metrics, max `IN` values, keyword length, default/max page size, max returned rows, and export rows.
 - Permission behavior: menu/report access, row/data scope, field masking/visibility, export permission, tenant isolation, and no-permission response.
+- Scope filtering: which tenant/org/user/role/data-scope values the backend injects from auth/permission, and which source/provider predicate or cache key segment they map to.
 - Result metadata expectation: columns, units, precision, enum labels, page info, freshness, quality status, cache status, query time, and request/trace id.
 - Cache safety: report version, dataset/source version, tenant, permission/user/role scope, filters, sorts, pagination, and locale/unit/format dimensions.
+- Endpoint dependency/reuse rule: metrics/trend/table/export endpoints either query their own source/precompute/cache by params or explicitly derive from a declared canonical snapshot. App-memory snapshot state is not an authoritative source unless the scope is explicitly local/demo.
 - Export/audit/governance: async export lifecycle when large, query/export/download audit, report version/publish/rollback, and slow-report monitoring when production-bound.
 - Gap ID when any required report backend decision is unknown.
 
@@ -118,6 +138,8 @@ For every P0 API, state:
 - Async/offline job strategy when synchronous work may exceed the latency target, including task ID, status/progress, cancellation when allowed, result download/retention, retry/dead-letter behavior, queue/worker limit, and idempotency.
 - Cache, precompute, or real-time expectation.
 - Redis/cache expectation when useful for hot or expensive queries, including cache key dimensions, TTL, invalidation, stampede protection, permission safety, and fallback.
+- Cache keys for related snapshot/latest-period endpoints include the shared data-version context, such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, and source version. Do not use application-memory snapshot state as a cross-endpoint cache dependency in production.
+- Cache/precompute keys for data-bearing endpoints also include business filters and backend-injected permission/data scope whenever they change the response.
 - Database/upstream/cache connection-pool expectation: existing pool / new pool / externally managed, with max size and timeout assumptions.
 - Timeout, retry/backoff, circuit-breaker, and fallback/degraded behavior if relevant.
 - Rate limit, concurrency limit, request-size limit, and overload behavior when needed.

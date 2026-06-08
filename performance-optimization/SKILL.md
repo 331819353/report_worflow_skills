@@ -1,6 +1,6 @@
 ---
 name: performance-optimization
-description: "用于报表、API、SQL、数据服务和前端可视化性能优化。用户提到接口慢、SQL慢、查询优化、索引、分页、缓存、Redis、连接池、并发、首屏慢、图表卡顿、表格大数据、导出慢、渲染性能、ECharts 性能、OLAP 建模、生产性能压测或容量限制时触发。"
+description: "用于报表、API、SQL、数据服务和前端可视化性能优化。用户提到接口慢、SQL慢、查询优化、索引、分页、缓存、Redis、连接池、并发、首屏慢、snapshotDate/dataVersion/loadBatch、快照接口优化、图表卡顿、表格大数据、导出慢、渲染性能、ECharts 性能、OLAP 建模、生产性能压测或容量限制时触发。"
 ---
 
 # Performance Optimization
@@ -37,5 +37,7 @@ It owns performance strategy and verification. It does not replace API design, d
 
 - Do not optimize by changing metric口径, permission scope, or business totals.
 - Do not fetch broad result sets and filter/sort/page globally in memory for database-backed data.
+- Do not optimize request count by making one data API a hidden runtime source for another. Snapshot/dashboard aggregate APIs, metrics, trends, tables, and exports may share `snapshotDate/latestPeriod/loadBatch/dataVersion`, cache invalidation, and a declared canonical/shared snapshot; undocumented endpoint-payload reuse is the risk, not explicit snapshot reuse.
+- Do not optimize by removing or ignoring backend query params. Data-version, business filters, pagination/sort, and permission/data scope must remain source-side predicates, precompute lookup inputs, or cache-key dimensions.
 - Cache keys must include filters, permission/user/tenant scope, source version, pagination/sort, and locale/unit options when relevant.
 - Frontend rendering optimizations must preserve loading, empty, error, and interaction states.

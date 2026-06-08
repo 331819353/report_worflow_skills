@@ -132,10 +132,33 @@ Every query endpoint must have explicit guardrails. Use project-specific limits,
 
 Report permissions normally include menu, report, field, row/data-scope, export, admin/config, and subscription/snapshot permissions.
 
+## Snapshot Role, Version Context, And Reuse
+
+Snapshot/reporting-close semantics should be modeled as an explicit role plus a data-version contract, not guessed from the endpoint name.
+
+- Snapshot/dashboard aggregate endpoints may return component-ready first-screen data for one data cut, expose a canonical/shared snapshot dataset, or both.
+- The shared context is metadata such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, source version, tenant, permission hash, and filter values.
+- Metrics, trends, rankings, tables, drilldowns, exports, and health endpoints may read from source queries, repository queries, precompute tables, Redis/cache entries, or a declared canonical snapshot filtered by that context.
+- Declared snapshot reuse is valid when the contract documents matching grain, fields, filters, permission scope, version params, cache key, and invalidation behavior.
+- Do not implement "call `/snapshot`, keep an undocumented payload in memory, then let `/metrics` read it" for production or production-like services.
+- Application memory may hold bounded static definitions, whitelists, local ephemeral cache, or declared local/demo payloads only when the scope and correctness boundary are explicit. Production business data used across endpoints should be source-backed, precomputed, or stored in shared cache with explicit keys and invalidation.
+
+## Parameter-Driven Query Context
+
+Every data-bearing route should build a query context before reading business data:
+
+- client-supplied stable params: report id, date/version filters, business filters, route/drilldown params, pagination, sorting, and keyword;
+- backend-defaulted params: latest available snapshot date, latest period, load batch, data version, source partition, or report version when the client omits them;
+- backend-injected scope: tenant id, user id, role/data-permission hash, organization/data-range predicates, field visibility, masking, and export permission;
+- validated guardrails: allowed values, max date range, max page size, max `IN` size, sortable/filterable whitelist, and invalid-param behavior.
+
+The query context must be passed into the repository/source/provider/precompute/cache layer. For database-backed endpoints, data-version, business filters, and permission scope map to SQL predicates or joins before aggregation, ranking, pagination, totals, and export. For precomputed or Redis-backed endpoints, the same values map to lookup keys or cache-key segments. Response metadata should echo the executed context; it must not be invented after an unscoped query.
+
 Cache keys for report results and dashboard widgets must include all dimensions that can change the response:
 
 - report id/code and report version
 - dataset/source version or freshness partition
+- snapshot date, latest period, load batch, data version, or equivalent data-cut identifier when relevant
 - tenant id
 - user/role/data-permission hash when data scope differs
 - selected dimensions, metrics, filters, sorts, pagination, locale/unit/format, and feature flags
@@ -162,6 +185,8 @@ GET  /api/admin/report-monitor/slow-reports
 ```
 
 Dashboard endpoints may return a coherent widget group when widgets share filter scope, permission scope, refresh cadence, and lifecycle. Use widget-level cache internally when possible. Do not force the frontend to call many endpoints that repeatedly load the same metadata, permissions, dictionaries, or source data unless the split has a clear lifecycle or ownership reason.
+
+If a dashboard endpoint is named `snapshot`, do not infer the role from the name alone. It may be a widget-group response, a canonical shared data cut used by trend/metric/table/export endpoints, or both. If other endpoints reuse it, document the reuse contract; otherwise those endpoints should receive or default the same version/scope params and query their own source/precompute/cache data.
 
 ## Result Shape
 
@@ -228,6 +253,8 @@ Treat these as findings unless explicitly scoped to a tiny non-production demo:
 - All reports, exports, scheduled jobs, and heavy queries run synchronously in the default request pool.
 - No required time/scope filter, unbounded page size, unbounded export, or unlimited `IN` list.
 - Cache key omits tenant, permission scope, report version, dataset/source version, or user/role scope.
+- Metrics, trends, rankings, tables, exports, or drilldowns read an undocumented snapshot/dashboard API response or application-memory snapshot as their data source instead of using a declared snapshot/source/precompute/shared-cache contract by data-version context.
+- Response metadata echoes `snapshotDate/dataVersion` or scope values, but the repository/source/precompute/cache query did not use those values as params, predicates, or key segments.
 - Query/export opens a new physical database connection per request instead of using a bounded pool.
 - Export loads all rows into memory before writing.
 - Core metrics are recalculated differently by each report.
@@ -238,9 +265,9 @@ Treat these as findings unless explicitly scoped to a tiny non-production demo:
 
 Mark report data-service backend readiness:
 
-- `ready`: metadata, query chain, permissions, parameter guardrails, source mapping, API/result contract, cache/export, audit, freshness/quality, SQL strategy, performance/resilience, environment, and production handoff decisions are confirmed, documented or implemented, and testable for the stated scope.
+- `ready`: metadata, parameter-driven query context, query chain, snapshot role/reuse rule, data-version context, permissions, parameter guardrails, source mapping, API/result contract, cache/export, audit, freshness/quality, SQL strategy, performance/resilience, environment, and production handoff decisions are confirmed, documented or implemented, and testable for the stated scope.
 - `partial`: local/demo/test scope can proceed with named limitations, or production scope lacks non-blocking controls such as complete monitoring, warmup, snapshot, subscription, or slow-report governance.
-- `blocked`: the service would accept unsafe SQL/source inputs, has unknown source authority or metric口径, lacks permission/tenant isolation, lacks bounded pagination/export, keeps risky heavy work synchronous, has no cache-permission safety, lacks required audit for sensitive data, or cannot document how global filters/query limits execute before response construction.
+- `blocked`: the service would accept unsafe SQL/source inputs, has unknown source authority or metric口径, relies on undocumented data-bearing endpoint-to-endpoint runtime dependencies, lacks data-version context or snapshot reuse rules for snapshot/latest-period semantics, cannot show how data-version/business/permission scope params constrain source/precompute/cache/snapshot queries, lacks permission/tenant isolation, lacks bounded pagination/export, keeps risky heavy work synchronous, has no cache-permission safety, lacks required audit for sensitive data, or cannot document how global filters/query limits execute before response construction.
 
 ## Handoff Evidence
 

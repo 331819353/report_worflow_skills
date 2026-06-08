@@ -16,6 +16,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - Pagination, sorting, filtering, export, and drilldown rules use stable names and defaults.
 - Global/page-level filters for database-backed endpoints are mapped to SQL `WHERE` or equivalent source/provider predicates; component-internal local filters are explicitly scoped to already fetched component datasets.
 - Report/BI/dashboard endpoints document report type, metadata or fixed-contract source, dimension/metric/filter/sort whitelists, frontend-code-only input rule, backend-owned SQL/source mapping, parameter guardrails, backend-injected tenant/data/field/export permissions, component-ready result metadata, freshness/quality, cache key permission safety, async export lifecycle, query/export/download audit, and slow-report governance when relevant.
+- Snapshot/latest-period and other versioned data endpoints document snapshot role/reuse and parameter-driven version/scope filtering: request/defaulted/injected params, declared reusable snapshot source when applicable, source/provider predicates or precompute lookup keys, Redis/cache key dimensions, and proof that response metadata is based on the executed query context.
 - Database-backed endpoints document SQL pushdown scope, selected-column/projection rule, direct/type-consistent predicate mapping, index support, join keys/cardinality, dedup/order necessity, pagination/keyset strategy, aggregation/window placement, dynamic optional-filter behavior, plan-evidence need, and any non-sargable filter blockers.
 - Endpoints document the execution stage for filters, sorting, pagination, ranking, Top/Bottom, grouping, aggregation, and counts; any full-materialize-then-filter behavior is `partial` or `blocked` unless the input is a documented tiny static enum or bounded lookup.
 - Database-backed implementation handoff documents connection-pool behavior or confirms the runtime/project already owns pooling.
@@ -36,7 +37,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - `blocked`: missing source, permission, model, auth, environment profile, or business rule prevents reliable implementation/integration.
 - `deprecated`: retained for compatibility but not recommended for new use.
 
-For production-bound delivery, do not use `ready` when source authority, auth/permission, report data-service backend behavior when report APIs are in scope, `.env.production` profile/base URL evidence, runtime/health evidence, observability, performance/resilience/export limits, SQL query strategy for database-backed endpoints, version compatibility, or testing handoff is missing.
+For production-bound delivery, do not use `ready` when source authority, auth/permission, report data-service backend behavior when report APIs are in scope, parameter-driven version/scope filtering for versioned data endpoints, `.env.production` profile/base URL evidence, runtime/health evidence, observability, performance/resilience/export limits, SQL query strategy for database-backed endpoints, version compatibility, or testing handoff is missing.
 
 ## Handoff Summary
 

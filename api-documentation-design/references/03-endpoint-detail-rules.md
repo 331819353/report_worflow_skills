@@ -14,6 +14,10 @@ Use this reference when writing each endpoint section.
 - Path/query/body parameters:
 - Response schema:
 - Data/model/source trace:
+- Snapshot role/reuse rule:
+- Data-version context:
+- Backend query binding:
+- Endpoint dependency rule:
 - Report data-service backend contract:
 - Backend stack and resource model:
 - Transformation rules:
@@ -60,6 +64,8 @@ For each parameter, document:
 - Pagination, sorting, export, drilldown, and search behavior when supported. Collection/list/table endpoints must define pagination unless they are provably bounded by a small fixed enum or single-object lookup.
 - Whether the response is component-ready or only format-ready for the frontend. Component-ready means KPI totals, chart series, table rows, ranks, pagination metadata, and business formula fields are already returned by the API.
 - For report/BI/dashboard endpoints, document report type, report metadata or fixed-contract source, dimension/metric/filter/sort whitelist source, backend-owned SQL/source expression mapping, parameter guardrails, backend-injected tenant/data/field/export permission behavior, cache key permission safety, result freshness/quality metadata, query/export audit behavior, and slow-report governance expectation.
+- For snapshot/latest-period reports, document whether the endpoint accepts, defaults, injects, or returns `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. A data-bearing endpoint must identify whether it queries its own source/logical/precompute/cache source or derives from a declared canonical/shared snapshot.
+- For every data-bearing endpoint, map data-version fields, business filters, route/drilldown params, pagination/sort params, and backend-injected permission/data-scope values to source predicates, upstream provider params, precompute lookup keys, or Redis/cache key segments.
 
 ## Response Schema
 
@@ -73,6 +79,16 @@ For each response field, document:
 For report/dashboard APIs, document the component-facing view model. Do not leave required component formulas, grouping, ranking, filtering, or chart/table series derivation as implicit frontend work unless the exception is bounded and listed as partial.
 
 Also document column/result metadata when applicable: field code, display name, type, unit, precision, format, enum label source, sensitivity/masking, sort/filter capability, data freshness time, data delay, data quality status, cache status, query time, and request/trace id.
+
+For snapshot/dashboard aggregate responses, distinguish clearly between:
+
+- component data returned for first-screen rendering, such as KPI summaries, cards, and widget groups;
+- shared data-version metadata, such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version.
+- reusable canonical snapshot data when the response is intentionally a shared source for other endpoints or components.
+
+Metadata may always align related endpoint requests. Business payload may also be reused when the API document declares it as a canonical/shared snapshot or bounded component-group payload, including consumer list, grain, fields, filters, permission scope, version params, cache key, and invalidation behavior. Other endpoints must not consume an undocumented snapshot response payload as hidden state.
+
+For data-bearing endpoints, response metadata must reconcile with the executed query context. If the response returns `snapshotDate`, `dataVersion`, tenant/org scope, or filter echoes, document whether they came from request params, backend defaults, auth/permission injection, or source metadata.
 
 ## Examples
 
@@ -95,6 +111,10 @@ Do not mark report/BI/dashboard APIs `ready` when the frontend can send raw SQL,
 
 Do not mark endpoints `ready` when the documented or implemented path builds or loads a complete candidate dataset/component payload and then applies global filters, permission scope, sorting, pagination, ranking, Top/Bottom, grouping, aggregation, or count logic afterward. Treat page/API-level full-materialize-then-filter as a performance and correctness blocker except for documented component-internal filters over already fetched component data, tiny static enums, or bounded lookup sets.
 
+Do not mark snapshot/latest-period endpoint groups `ready` when metrics, trends, rankings, tables, drilldowns, or exports depend on an undocumented `/snapshot` payload, frontend call order, or application-memory payload. The correct dependency is either a declared canonical/shared snapshot with matching grain/scope/version or a shared data-version context plus request/defaulted/injected params that filter a shared source/logical/precompute/cache layer.
+
+Do not mark data-bearing endpoints `ready` when the document only echoes version/scope values in response metadata but does not show how those values constrain source-side filtering, upstream provider calls, precompute lookup, or cache keys.
+
 Component-internal local filtering is allowed only when the endpoint has already applied global/page-level SQL `WHERE` filters and the returned component dataset is intentionally complete for that component's local interaction scope. Document the difference so frontend teams do not turn global filters into local filtering.
 
 For database-backed endpoints, also document:
@@ -113,6 +133,8 @@ For database-backed endpoints, also document:
 - Required indexes, composite indexes, generated/normalized columns, full-text indexes, or precompute tables when direct predicates cannot support the requested filter at expected volume.
 - Connection-pool owner/config, pool min/max, acquire timeout, idle timeout, validation query/health behavior, and whether pooling is managed by the framework/runtime.
 - Redis/cache use when applicable: cache key dimensions, TTL, invalidation trigger, permission/user/tenant safety, warmup, stampede protection, and stale/fallback behavior.
+- Redis/cache keys for snapshot/latest-period report endpoints include data-version fields such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. Endpoint caches may share invalidation triggers, and a declared canonical snapshot cache may be a source of truth; an undocumented endpoint cached response must not become another endpoint's source of truth.
+- Redis/cache keys for data-bearing endpoints also include every business filter and backend-injected permission/data-scope value that can change the response.
 
 For production-bound or upstream-dependent endpoints, also document:
 

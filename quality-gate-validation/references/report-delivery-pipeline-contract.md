@@ -84,6 +84,8 @@ Do not mark an artifact `ready` when a P0 metric, API, data source, permission r
 
 Do not mark an artifact `ready` when filter linkage evidence skipped the data-completeness-first gate. For any affecting primary/global filter, option data, fact/business rows or provider responses, required fields, default/non-default states, and resolver/API branches must be checked before filter binding is accepted.
 
+Do not mark an artifact `ready` when snapshot/latest-period API groups lack an explicit snapshot role and data-version contract, when data-version/business/permission scope is not enforced through backend params, source predicates, precompute lookup keys, snapshot reuse rules, or cache keys, or when a metrics/trend/ranking/table/drilldown/export endpoint depends on an undocumented snapshot/dashboard endpoint response, frontend call order, controller memory, or app-memory payload.
+
 Do not mark an artifact `ready` when an unresolved `P0` or `P1` `ENTRY-*` conflict affects the next stage's scope, source authority, metric口径, API contract, permission/auth behavior, environment, or runtime data path.
 
 Do not mark an artifact `ready` when an unresolved `P0` `DESIGN-*` finding exists, or when an unresolved `P1` `DESIGN-*` finding would affect user-visible behavior, data correctness, API/model feasibility, permissions, layout comprehension, or testability in the next stage.
@@ -112,6 +114,7 @@ Required handoff bundle:
 - `数据模型文件` with source/logical/response models, fields, formulas, joins, ownership, freshness, permission and quality rules.
 - OLAP modeling evidence when reporting/BI/dashboard metrics are in scope: business question matrix, subject areas, business processes, model layer/type, one-grain-per-model decision, conformed dimensions, metric additivity, time口径, summary/wide-table decisions, history/SCD, many-to-many, deduplication, late-arriving/backfill, and lineage.
 - `待补充数据模型清单` with `GAP-*` IDs, impact, owner questions, assumptions, and blocked/partial status.
+- Parameter-driven data-version and snapshot reuse contract when snapshot/latest-period semantics exist: snapshot role, `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report/source version, exposing endpoint or metadata source, consuming/reusing endpoints, backend query params, permission/data-scope params, source predicate/precompute/snapshot lookup mapping, cache-key dimensions, invalidation trigger, and proof that any cross-endpoint reuse is declared rather than hidden runtime payload or application-memory snapshot.
 - Filter/sort/page execution evidence: API rows and models must state whether global filters, sorting, pagination, ranking, grouping, aggregation, Top/Bottom, and counts run in SQL/source/provider/repository/precompute/cache, and must not rely on page/API-level full-materialize-then-filter behavior. Component-internal filters must be separately scoped to already fetched component data.
 - Performance/resilience plan: expected volume/latency, concurrency model, cache/precompute strategy, connection/resource pools, async/offline job strategy for long-running work, timeout/retry/circuit-breaker behavior, rate/concurrency limits, health/readiness, observability, and unresolved risks.
 - Report data-service backend plan when report/BI/dashboard APIs are in scope: report type, metadata/query-chain ownership, parameter guardrails, permission/tenant/field/export behavior, component-ready response rule, pagination/count/export strategy, cache key safety, freshness/quality metadata, audit/monitoring, version/publish/rollback, and unresolved governance gaps.
@@ -124,6 +127,7 @@ Required handoff bundle:
 Required handoff bundle:
 
 - `API文档` with base URL, auth headers, endpoint details, request/response examples, errors, empty/no-permission behavior, pagination/sorting/filter rules, filter/sort/page execution stage, default/max page size, and pending items.
+- Snapshot/latest-period endpoint docs when applicable: snapshot role, shared data-version fields, defaulting rules, source of truth, request/defaulted/injected params, source predicate/precompute/snapshot lookup mapping, cache-key dimensions, invalidation, and endpoint dependency/reuse rules.
 - Runtime backend URL when implementation exists.
 - Environment profile contract: `.env.test` and `.env.production` presence, backend/API base paths, source mode, auth/SSO endpoint, CORS allowlist, health/readiness path, and blockers for missing or sensitive values.
 - Auth/SSO contract: header names, token rules, 401/token-invalid response, 403 response, public allowlist.

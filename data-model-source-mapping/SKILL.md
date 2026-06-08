@@ -1,6 +1,6 @@
 ---
 name: data-model-source-mapping
-description: "用于创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、逻辑模型、响应模型、视图模型、指标/字段口径、维度关系、筛选前数据完整性、筛选数据粒度、原型mock字段、数据血缘、刷新频率、权限、质量规则时触发；不负责API文档或代码实现。"
+description: "用于创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、逻辑模型、响应模型、视图模型、指标/字段口径、维度关系、snapshotDate/dataVersion/loadBatch、数据版本、筛选前数据完整性、筛选数据粒度、原型mock字段、数据血缘、刷新频率、权限、质量规则时触发；不负责API文档或代码实现。"
 ---
 
 # Data Model Source Mapping
@@ -56,19 +56,22 @@ Loading guidance:
 4. Define response/view models.
    Map prototype/API-facing fields to logical/source fields. Include display labels, field types, units, precision, enum labels, sorting, empty-state behavior, and whether the field is calculated.
 
-5. Define filter-supporting data completeness.
+5. Define data-version and snapshot semantics.
+   When the report needs current/latest/snapshot behavior, document the snapshot role, business time field, `snapshotDate` or `latestPeriod`, `loadBatch`, `dataVersion`, source partition, report version, freshness timestamp, and invalidation/backfill rule. Clarify which response models expose version metadata, which fact/logical/precompute/snapshot models are queried or reused by each endpoint, and which source fields or partitions those params filter. If an API response is intentionally the canonical/shared snapshot for other components, model it as a named snapshot/precompute/view model with grain, fields, scope, and reuse rules instead of treating it as an incidental response.
+
+6. Define filter-supporting data completeness.
    When consuming pages or APIs have filters, document the filter option source, fact/business row grain, required fields, default state, at least one non-default state, empty/no-permission state when relevant, and resolver/API branch dependency before declaring the response/view model filter-ready. Single default snapshots are not enough for affecting filters unless the component is explicitly invariant.
 
-6. Define metric formulas.
+7. Define metric formulas.
    For each metric, document formula, numerator, denominator, filter scope, period logic, baseline, threshold, direction, unit, precision, and reconciliation rule.
 
-7. Define transformation notes.
+8. Define transformation notes.
    Capture date conversion, period aggregation, unit conversion, enum mapping, rounding, default fill, hierarchy rollup, deduplication, and permission filtering.
 
-8. Mark gaps.
+9. Mark gaps.
    Record unresolved source, field, formula, enum, join, sample, owner, refresh, or permission gaps in this skill's pending model items with stable `GAP-*` IDs, impact, owner question, current assumption, and downstream blocking status.
 
-9. Run the design reasonableness gate.
+10. Run the design reasonableness gate.
    Check whether the model grain, joins, response/view models, metric formulas, transformation strategy, permissions, freshness, and quality rules reasonably support the consuming APIs, UI components, filters, and tests. Record unreasonable model structures as `DESIGN-*` findings.
 
 ## Hard Constraints
@@ -76,6 +79,7 @@ Loading guidance:
 - Every response/view field must trace to a source field, formula, static enum, or `GAP-*` item.
 - Do not resolve contradictory source/model/API/frontend evidence by preference or convenience; unresolved `P0`/`P1` conflicts keep affected models `partial` or `blocked`.
 - Every metric must have formula, grain, dimensions, period logic, source dependency, and precision, or a `GAP-*` item.
+- Snapshot/latest-period response models must trace to source/logical/precompute/cache/snapshot models through explicit data-version fields and source/filter predicates. Do not define one response model as the authoritative source for another response model unless it is explicitly modeled as a canonical/shared snapshot with grain, fields, scope, and reuse rules.
 - Filterable response/view models must prove data completeness before filter binding: option dimensions, matching fact/business rows, required fields, default/non-default states, empty/no-permission states when relevant, and resolver/API branch coverage. Missing evidence is a `GAP-*`, not a frontend binding assumption.
 - Source ownership, refresh cadence, and permission must be explicit, assumed, or blocked.
 - Joins and hierarchy rollups must be documented before API documentation starts.
@@ -94,18 +98,21 @@ Use this structure for the 数据模型文件:
 3. Source models: physical fields and metadata.
 4. Logical models: business objects, keys, relationships, grain, joins.
 5. Response/view models: API/frontend fields, types, units, null rules, examples.
-6. Filter-support completeness: option source, row grain, fields, default/non-default states, empty/permission states, resolver/API branches.
-7. Metrics: formulas, dimensions, baselines, thresholds, reconciliation.
-8. Transformation mapping: source -> logical -> response.
-9. Security rules: sensitivity, masking, field-level permission, no-permission behavior.
-10. Data-quality rules: uniqueness, completeness, enum validation, range checks, freshness.
-11. Pending model items: linked `GAP-*` IDs or summary.
-12. Design reasonableness status: linked `DESIGN-*` IDs, repairs, or accepted limitations.
+6. Data-version/snapshot semantics: snapshot role, business time, snapshotDate/latestPeriod, loadBatch, dataVersion, freshness, invalidation/backfill, exposing response metadata, source fields/partitions, filter predicate mapping, and reuse rules when canonical/shared.
+7. Filter-support completeness: option source, row grain, fields, default/non-default states, empty/permission states, resolver/API branches.
+8. Metrics: formulas, dimensions, baselines, thresholds, reconciliation.
+9. Transformation mapping: source -> logical -> response.
+10. Security rules: sensitivity, masking, field-level permission, no-permission behavior.
+11. Data-quality rules: uniqueness, completeness, enum validation, range checks, freshness.
+12. Pending model items: linked `GAP-*` IDs or summary.
+13. Design reasonableness status: linked `DESIGN-*` IDs, repairs, or accepted limitations.
 
 ## Quick Quality Gate
 
 - Every response/view field traces to a source field, formula, or pending item.
 - Every metric in the indicator list has formula, grain, dimensions, and source dependency.
+- Data-version and snapshot semantics are explicit when current/latest/snapshot endpoints exist.
+- Data-version and scope params map to source fields, partitions, logical filters, precompute keys, or cache keys before response/view models are declared ready.
 - Filter-support completeness is documented before downstream `filterFields`, query params, or resolver params are accepted.
 - Source ownership, refresh cadence, and permission are explicit.
 - Model IDs and API response model names are stable for downstream API inventory, documentation, frontend integration, and testing artifacts.

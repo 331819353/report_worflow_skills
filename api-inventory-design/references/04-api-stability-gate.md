@@ -10,8 +10,12 @@ Every API row must trace:
 - Concrete component or component group served by the API.
 - Trigger.
 - Request params.
+- Snapshot role and reuse rule when snapshot/latest-period semantics exist.
+- Data-version context when snapshot/latest-period semantics exist.
 - Response model.
 - Source/logical model dependency.
+- Endpoint dependency/reuse rule: whether the API reads source/logical/precompute/cache directly or derives from a declared canonical snapshot.
+- Backend query binding: which request/defaulted/injected params constrain source predicates, upstream params, precompute lookup keys, or Redis/cache keys.
 - Auth/permission rule.
 - Performance/resilience/cache/SLA rule.
 - Report data-service backend rule when report/BI/dashboard APIs are in scope.
@@ -38,6 +42,9 @@ Create a `GAP-*` item instead of inventing:
 - Expected volume, concurrency model, export limit, timeout, retry/backoff, circuit-breaker, fallback, rate/concurrency limit, or observability behavior when it affects implementation or validation.
 - Pagination, maximum page size, stable sort, total-count behavior, or cursor/keyset need for list/table APIs.
 - Source/provider/repository execution stage for filters, sorting, pagination, ranking, Top/Bottom, grouping, aggregation, and counts; do not invent this when it is unknown.
+- Data-version source and cache-key behavior for snapshot/latest-period reports, including `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version.
+- Source predicate, upstream provider param, precompute lookup key, or Redis/cache key mapping for any data-version, business filter, or permission/data-scope value that changes the result.
+- Snapshot reuse role. Do not invent or accept a design where metrics, trends, rankings, tables, drilldowns, or exports depend on an undocumented snapshot/dashboard API response, controller memory, or frontend call order. Declared canonical snapshot reuse is valid when grain, scope, fields, params, cache key, and invalidation are clear.
 - SQLite fixture source plan when backend/API implementation needs mock data.
 - Action success/failure behavior.
 
@@ -61,9 +68,9 @@ Keep paths stable, lowercase, and noun-led. Do not mix Chinese and English path 
 
 Mark an API:
 
-- `ready`: response model, source dependency, request params, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior, async/offline strategy when needed, and priority are clear.
+- `ready`: response model, source or declared snapshot dependency, request params, data-version context when applicable, backend query binding, endpoint dependency/reuse rule, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior, async/offline strategy when needed, and priority are clear.
 - `partial`: assumptions exist but are linked to gaps and do not block API documentation.
-- `blocked`: missing source, model, formula, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior, async/offline strategy for long-running work, SQLite fixture source plan for mock-derived implementation, or interaction rule prevents reliable API documentation.
+- `blocked`: missing source, model, formula, snapshot reuse rule when relevant, data-version context for snapshot/latest-period semantics, backend query binding for data-version/business/permission scope, endpoint dependency/reuse rule, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior, async/offline strategy for long-running work, SQLite fixture source plan for mock-derived implementation, or interaction rule prevents reliable API documentation.
 
 If any P0 API is `blocked`, the overall API清单 is not ready for downstream API documentation, implementation, integration, or validation.
 

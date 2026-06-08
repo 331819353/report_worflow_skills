@@ -46,10 +46,13 @@ For every production-bound data service, record the applicable decisions below o
 ## Cache Rules
 
 - Cache keys must include every value that changes the response: global filters, permission scope, user/tenant/role when relevant, pagination/sort, source version, locale/unit, and feature flags.
+- For snapshot/latest-period report APIs, cache keys must include the shared data cut such as `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version.
+- Business filters and backend-injected permission/data scope must be included in precompute lookup keys or cache-key dimensions whenever they change the returned data.
 - Permission-sensitive or personalized data must not be shared across users/tenants/roles through cache keys.
 - Expensive cache misses need stampede protection such as lock, singleflight, request coalescing, jittered TTL, warmup, or precompute.
 - Cache invalidation must name the event, schedule, source version, manual operation, or TTL that makes stale data acceptable.
 - In-memory cache is allowed only for bounded local state or single-instance scope. Production multi-instance services should prefer shared cache or document why local cache is safe.
+- In-memory cache must not become an undocumented cross-endpoint source of truth. Do not optimize by storing an unscoped snapshot/dashboard API payload in memory and having metrics/trend/table/export endpoints read it. Use a declared canonical/shared snapshot, shared cache, precompute, or source query keyed by the data-version context instead.
 
 ## Resource Pool Rules
 
@@ -62,13 +65,15 @@ For every production-bound data service, record the applicable decisions below o
 
 - For database-backed APIs, apply `sql-query-writing-optimization.md` alongside this contract.
 - Global/page-level filters, permission scope, sorting, pagination, grouping, aggregation, Top/Bottom, and counts should execute at the source/provider/repository/precompute/cache stage rather than after full materialization in application memory.
+- Endpoint batching, dashboard snapshots, and request-count reductions must preserve explicit dependency contracts. Shared data-version context, shared precompute tables, and declared canonical snapshots are acceptable; hidden endpoint-to-endpoint payload dependency is not.
+- Data-version, business filters, and permission/data scope must remain explicit query inputs. Optimizing by using a default snapshot, broad cache entry, or response metadata echo without parameterized filtering is a correctness regression.
 - Risky P0 or high-volume queries need SQL query-shape notes and plan evidence or an explicit slow-query gap.
 
 ## Readiness Rules
 
 - Mark data-service/API design `ready` only when applicable performance and resilience decisions are documented or explicitly out of scope.
 - Mark `partial` when the service can run for local/demo/test scope but lacks confirmed capacity, latency, pool, cache, async/offline, SQL plan, timeout, or observability decisions.
-- Mark `blocked` when a production-bound endpoint may overload the source, uses unbounded concurrency, accepts unbounded async queue growth, lacks source-side filtering/pagination for large data, opens one connection per request, has no timeout/failure behavior for required upstream dependencies, or keeps long-running work synchronous without a safe limit.
+- Mark `blocked` when a production-bound endpoint may overload the source, uses unbounded concurrency, accepts unbounded async queue growth, lacks source-side filtering/pagination for large data, opens one connection per request, depends on another endpoint's in-memory response payload for correctness, omits data-version/business/permission scope from query or cache keys, has no timeout/failure behavior for required upstream dependencies, or keeps long-running work synchronous without a safe limit.
 
 ## Handoff Evidence
 

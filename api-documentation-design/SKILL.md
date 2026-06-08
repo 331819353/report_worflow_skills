@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
+description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
 ---
 
 # API Documentation Design
@@ -26,6 +26,8 @@ Do not implement backend code merely because this skill is triggered. Produce do
    For filter-bearing endpoints, document data completeness before binding: option source, source/provider execution stage, required response fields, row grain, default request/response example, at least one non-default request/response example, empty/no-permission example when relevant, and resolver/API branch behavior. If only one default snapshot exists for an affecting filter, keep the endpoint `partial` or `blocked`.
 
    When the API document will drive default backend implementation, state the default backend stack as `Python + Flask + database/upstream connection pools + Redis`, including which layer owns routing, pool configuration, Redis cache/precompute, timeout/fallback, and observability. Use another stack only with a user/existing-project override reason.
+
+   For snapshot/latest-period reports, document the snapshot role and shared data-version context before endpoint details: `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. Related data-bearing endpoints must consume that context through request params, backend-defaulted params, backend-injected scope, or an explicitly declared canonical/shared snapshot dataset before querying or deriving results, and include it in source/provider predicates, precompute lookups, and cache keys. A snapshot/dashboard aggregate endpoint may be reused by metrics, trends, rankings, tables, drilldowns, or exports only when the document states the matching grain, filters, permission scope, fields, cache key, and invalidation behavior.
 
 3. Document endpoint behavior.
    For each endpoint, capture purpose, trigger, method/path, auth, request params/body, response schema, examples, errors, pagination/performance limits, source mode, compatibility notes, and status.
@@ -57,6 +59,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 - API documentation grouped by module, domain, page, resource, or service boundary.
 - Common conventions plus endpoint details.
+- Parameter-driven data-version, scope-filtering, snapshot role/reuse, and endpoint-dependency contract when snapshot/latest-period semantics exist.
 - Backend stack/cache/pool notes when the document feeds backend implementation.
 - Dependency trace from endpoint response to the relevant implementation/model/source/contract artifacts.
 - Design reasonableness status with `DESIGN-*` findings when endpoint design affects downstream usability.
@@ -72,6 +75,8 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - Filter-bearing endpoints include data-completeness evidence before frontend binding: option data, row grain, fields, default/non-default examples, empty/no-permission examples when relevant, and resolver/API branch behavior.
 - Database-backed request params document SQL predicate shape, index support, and SQL pushdown scope for global/page-level filters; unresolved index or non-sargable filter behavior keeps the endpoint `partial` or `blocked`.
 - API docs state where global filters, component-internal filters, sorting, pagination, ranking, Top/Bottom, and aggregation execute. Page/API-level full-materialize-then-filter behavior keeps the endpoint `partial` or `blocked` unless it is a documented component-internal filter over already fetched component data, tiny static enum, or bounded lookup.
+- Snapshot/latest-period API docs state shared data-version fields, classify the snapshot role, and prove that metrics/trends/rankings/tables/drilldowns/exports either validly reuse the declared snapshot or avoid undocumented dependency on frontend call order/controller memory.
+- Data-bearing endpoint docs show how data-version, business filters, and backend-injected permission/data scope become source-side predicates, upstream provider params, precompute lookup keys, declared snapshot reuse rules, or Redis/cache key segments. Response-only metadata does not satisfy this check.
 - Default-backend API documents include Python/Flask, connection-pool, and Redis/cache ownership, or a named override reason.
 - Collection/list/table endpoints document default page size, maximum page size, stable sort, total-count behavior, cursor/keyset need when applicable, and large-result handling. Missing pagination/performance behavior keeps production-bound endpoints `partial` or `blocked`.
 - API implementation documents may use JSON only as response examples. If local/mock data is needed for backend/API development, the documented simulation source is SQLite with schema, seed rows, and indexes rather than JSON files.

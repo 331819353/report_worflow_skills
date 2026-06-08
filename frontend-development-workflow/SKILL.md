@@ -1,6 +1,6 @@
 ---
 name: frontend-development-workflow
-description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、Vue3、TypeScript、ECharts、Element Plus、Axios、AntV S2、替换mock、去掉mock、接真实接口、API接入、响应适配、筛选参数联动、模板筛选复用、指标单位/百分比显示、pt改%、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
+description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、Vue3、TypeScript、ECharts、Element Plus、Axios、AntV S2、替换mock、去掉mock、接真实接口、API接入、snapshotDate/dataVersion/loadBatch、响应适配、筛选参数联动、模板筛选复用、指标单位/百分比显示、pt改%、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
 ---
 
 # Frontend Development Workflow
@@ -39,6 +39,7 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Validate provider/API contracts and design adapters before changing production data paths. Missing provider, field, enum, formula, env, auth, permission, deployment, or testing facts must be visible gaps.
 - Before wiring or accepting filter linkage, verify data completeness first: option data, provider/mock/business rows, required fields, default and non-default filter states, empty/no-permission states, and resolver/API branches must exist at the grain required by every affecting filter.
 - Global filters, search, permission scope, pagination, sorting, drilldown, refresh, export, rankings, and aggregation must feed provider/API/resolver inputs. Component-internal filters may only operate on an already fetched component dataset.
+- For snapshot/latest-period API groups, frontend may read `snapshotDate/latestPeriod/loadBatch/dataVersion` from filters, health, metadata, or snapshot response metadata and pass that context into metrics/trend/table/export requests. The backend remains responsible for using those params plus backend-injected permission/data scope to filter the source/precompute/cache/snapshot query. Frontend may reuse snapshot business payload arrays only when the API contract explicitly labels the payload as a reusable canonical snapshot or bounded component-group payload for those components.
 - A filter that should affect a component must be wired to provider/API/resolver params, `filterFields`, `requiredFilters`, or an equivalent mapping. Do not leave it in `ignoredFilters`; selected-state-only filter changes are failed integration.
 - When the target is a bundled report template or copied template project, preserve the template's native filter trigger/panel/popover/drawer and `filters[]` contract. Do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly asks for template-level redesign.
 - Use `$report-component-style-design` for report component fit, KPI/chart/table readability, and metric display semantics. In visible Chinese report UI, rate, completion, variance-rate, YoY, MoM, and change labels display `%`, not `pt`, `p.p.`, or `percentage point`, unless the user explicitly requests that term.
@@ -86,6 +87,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Do not leave production paths on unapproved mocks.
 - Do not claim filter integration until data completeness has been checked first. Missing option rows, missing fact/business rows, missing provider fields, single-snapshot mock data, or missing resolver/API branches must be recorded as data gaps before binding is judged.
 - Do not fetch broad data then apply global filters/pagination/sorting only in components.
+- Do not replace missing metrics/trend/table APIs by deriving them from an undocumented snapshot response payload. Declared canonical/shared snapshot or bounded component-group payload reuse is valid; accidental frontend-side derivation is not.
+- Do not treat version/scope display metadata as frontend-side correctness. If a filter or version changes business data, the frontend must send the stable params required by the API contract and verify the backend response reflects that query context.
 - Do not treat a filter as integrated when it only changes selected UI state and affected component data remains unchanged. Classify `ignoredFilters` or missing mapping as binding gaps after data completeness is proven; classify single-snapshot mock/provider data or missing non-default branches as data gaps first.
 - Do not add a new filter toolbar/bar to a template-based frontend when the template already owns filter invocation; update `filters[]`, native filter UI, and provider bindings instead.
 - Do not claim frontend readiness when visible Chinese rate/change/completion/YoY/MoM/variance-rate indicators still use `pt`, `p.p.`, or `percentage point` instead of `%`, unless the user explicitly requested that wording.

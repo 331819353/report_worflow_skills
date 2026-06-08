@@ -36,10 +36,21 @@ Use this reference to decide API boundaries.
 - The response model remains understandable.
 - The backend/API response is already component-ready, so the frontend does not need business aggregation, ranking, formula calculation, or cross-component data reshaping.
 
+## Snapshot Role And Data-Version Rules
+
+- A snapshot/dashboard aggregate API can be a component-ready view for a particular data cut, a canonical materialized/shared snapshot dataset, or both. Do not assume the name `snapshot` alone decides the role.
+- `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, source version, permission scope, and report version may be shared across endpoints as request params, response metadata, or cache-key dimensions.
+- Metrics, trends, rankings, tables, drilldowns, and exports must build their own response from source/logical models, repository queries, precompute tables, or Redis/cache entries filtered by that shared data-version context and the correct business/permission scope.
+- Metrics, trends, rankings, tables, drilldowns, and exports may instead reuse a declared canonical snapshot response or materialized snapshot when the API inventory records matching grain, filters, permission scope, data-version params, fields, cache key, and invalidation behavior.
+- For each data-bearing endpoint, inventory the query params that constrain data: version/date params, business filters, route/drilldown params, pagination/sort params, and backend-injected tenant/user/role/data-scope params. These params must map to source predicates, precompute lookup keys, or cache-key dimensions.
+- Do not merge or split APIs in a way that requires undocumented frontend call order such as "call snapshot first, then metrics reads whatever payload happens to be in memory".
+
 ## Forbidden Shortcuts
 
 - Do not make one API for an entire complex report unless the page is truly static and small.
 - Do not create separate APIs for every tiny visual mark when one coherent model supports them.
 - Do not merge several independent components into one API merely to reduce request count when doing so moves business calculation, filtering, grouping, ranking, or response splitting into the frontend.
+- Do not treat one data-bearing API response as the hidden in-memory data source for another endpoint. Declared snapshot reuse is acceptable; undocumented app-memory reuse is not.
+- Do not treat version and scope fields as response decoration only. If they affect correctness, they must constrain the backend query or cache lookup.
 - Do not hide dynamic filter option data inside unrelated business data.
 - Do not treat export as a frontend-only action when server-side permission, volume, or async generation is needed.
