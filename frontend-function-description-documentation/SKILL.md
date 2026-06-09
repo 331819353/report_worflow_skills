@@ -17,6 +17,8 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 - Use `$delivery-artifact-template-management` to choose the frontend function description output structure.
 - Read `references/feature-inventory-fields.md` for page/module and provider-binding fields.
 - Read `references/handoff-quality-checklist.md` before finalizing the document.
+- Read `$haier-enterprise-app-ui-design-spec` when documenting common enterprise application pages so testers can verify page shell, standard components, states, feedback, and cross-platform behavior against the company UI baseline.
+- Read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and relevant report guideline reference(s) when documenting report/dashboard/BI/data-screen/analysis pages so testers can verify metric口径, layout hierarchy, chart/table formatting, filters, states, performance, export, and acceptance.
 
 ## Inputs
 
@@ -30,19 +32,22 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 1. Identify scope.
    List pages, routes, menus, tabs, drawers, modals, exports, and major components included in the current frontend delivery.
 
-2. Extract functional behavior.
+2. Classify the UI/design baseline.
+   Mark each page/module as common enterprise app, report/dashboard, or mixed, and record the matching baseline as part of the test and acceptance basis.
+
+3. Extract functional behavior.
    For each page/module, describe user purpose, visible controls, filters, data display, interactions, drilldowns, refresh, export/download, empty/error/loading states, and permission behavior.
 
-3. Map data providers to features.
+4. Map data providers to features.
    Link each functional module to endpoint names/paths, SDK calls, static files, GraphQL operations, data-source IDs, request params, response adapter, displayed fields, raw/display value rules, and metric units. Do not repeat the whole provider document; reference it and summarize the frontend binding.
 
-4. Record data and filter behavior.
+5. Record data and filter behavior.
    Explain data completeness before filter binding, then filter behavior. For every affecting filter, record option sources, default data, non-default data or response branch, required fields, empty/no-permission state when relevant, cascades, reset behavior, pagination, sorting, search, cross-component linkage, state persistence, and which visible component values/rows/series should change for non-default filters. Mark invariant components and retained mock/offline data explicitly.
 
-5. Record interaction behavior.
+6. Record interaction behavior.
    Cover chart clicks, KPI/card clicks, table row actions, drawer/modal content, page jumps, parameter passing, back behavior, fullscreen, download, and refresh.
 
-6. Record verification and limitations.
+7. Record verification and limitations.
    Include commands run, URL verified, browser/runtime checks, known blockers, intentionally retained mock/offline data, and features not covered.
 
 ## Required Output
@@ -53,6 +58,7 @@ Produce the function description using the standard frontend function document s
 
 - Testers can derive test cases from the function description without rereading source code.
 - Each data-backed feature names its provider, source file, SDK call, endpoint, or document section.
+- Each page/module states whether the common enterprise app baseline, report development baseline, or both are the acceptance basis.
 - Filters, interactions, permissions, edge states, and exports are not omitted.
 - Displayed metric units, percentage/rate scaling, rounding, and forbidden display terms are documented when KPI/chart/table values contain rates or changes.
 - Filter documentation states data completeness before binding: option rows, default/non-default data, required fields, and provider/API/resolver branch coverage.

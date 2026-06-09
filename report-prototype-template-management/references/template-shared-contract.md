@@ -70,6 +70,7 @@ Layout design rules:
 - Use `template-layout-design-system.md` for shared page layout, block spacing, block inner padding, radius, title band, hover/focus, and template-token decisions.
 - Change layout tokens through `dashboard.config.ts` first: `contentGap`, `contentStartY`, `contentEndY`, `rowHeight`, `cellPadding`, `dominantTitleColor`, and `innerBackgroundColor`.
 - Keep the common block anatomy: `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- For composite parent blocks, keep the same outer anatomy and define internal sub-blocks inside `widget-renderer`; use `padding: 5px` for parent-to-sub-block inset and `gap: 5px` between sub-blocks. Do not create additional `layoutRows` cells or nested card shells for sub-blocks.
 - Do not solve business-widget density by rewriting template shell padding, title band height, or card radius. Route component fit to `$report-component-style-design`.
 
 Filter binding rules:

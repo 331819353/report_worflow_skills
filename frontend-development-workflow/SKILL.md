@@ -18,6 +18,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 | Env/proxy/build/deploy verification | `$frontend-env-deployment-verification` |
 | Haier SSO | `$haier-sso-integration` |
 | Component style and metric display | `$report-component-style-design` |
+| Common enterprise app UI baseline | `$haier-enterprise-app-ui-design-spec` |
+| Report development UI baseline | `$report-design-system-governance` |
 | Runtime/browser QA | `$frontend-runtime-qa-validation` |
 | Function handoff docs | `$frontend-function-description-documentation` |
 | Performance | `$performance-optimization` |
@@ -29,6 +31,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Read `references/mock-to-provider-integration.md` or `references/mock-to-http-integration.md` when replacing mock/static data with provider/API calls.
 - Read `references/provider-gap-ledger.md` when provider fields, auth, environment, or ownership are incomplete.
 - Read `references/report-data-visualization-frontend-implementation.md` when the frontend is a report/BI/dashboard decision interface, or when production readiness depends on first-screen conclusion, chart/table semantics, provider mapping, edge states, freshness/quality display, performance, theme/accessibility, or runtime QA evidence.
+- For common enterprise application pages, read `$haier-enterprise-app-ui-design-spec` as the full-process UI baseline before implementation, visual repair, runtime QA handoff, or acceptance notes. This applies to forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, workbench pages, and cross-platform adaptation even when the user did not say "规范".
+- For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis frontends, read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the smallest relevant report guideline references before styling, data display formatting, state handling, performance handoff, QA, or acceptance.
 
 ## Reinforced Constraints
 
@@ -43,6 +47,7 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - A filter that should affect a component must be wired to provider/API/resolver params, `filterFields`, `requiredFilters`, or an equivalent mapping. Do not leave it in `ignoredFilters`; selected-state-only filter changes are failed integration.
 - When the target is a bundled report template or copied template project, preserve the template's native filter trigger/panel/popover/drawer and `filters[]` contract. Do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly asks for template-level redesign.
 - Use `$report-component-style-design` for report component fit, KPI/chart/table readability, and metric display semantics. In visible Chinese report UI, rate, completion, variance-rate, YoY, MoM, and change labels display `%`, not `pt`, `p.p.`, or `percentage point`, unless the user explicitly requests that term.
+- Classify the frontend surface as common enterprise app, report/dashboard, or mixed before implementation. Apply `$haier-enterprise-app-ui-design-spec` for common app surfaces and `$report-design-system-governance` for report surfaces as baseline references throughout implementation and handoff.
 - Production paths cannot depend on unapproved mocks, offline providers, fake timers, generated rows, or demo-only SDKs. Any retained mock/offline source must be named, scoped, and excluded from `ready` production handoff unless explicitly accepted.
 - Runtime readiness needs build/start evidence and browser QA evidence. Production-bound frontend work also needs monitoring/feedback/SLA notes through `$production-observability-feedback`.
 
@@ -50,18 +55,19 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 
 1. Discover source and target paths. If prototype source is upstream evidence, copy or identify a writable frontend target before editing.
 2. Inspect stack, package manager, env files, router, request utilities, stores/composables, mock/static data, and component consumers. If this is self-developed work and no existing stack is authoritative, align implementation to the default `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` stack.
-3. Run baseline install/build/test when feasible and record pre-existing failures.
-4. Run `$quality-gate-validation` when source code, API docs, provider samples, env/auth notes, requirements, or runtime traces conflict.
-5. Validate provider/API contract with `$api-contract-validation`.
-6. Design adapters with `$data-transformation-adapter-design` when provider payloads differ from UI view models.
-7. Verify env/proxy/base path/build/deploy behavior with `$frontend-env-deployment-verification`.
-8. Use `$haier-sso-integration` for Haier account-center login or auth header behavior.
-9. Verify data completeness for filters before linkage: data source mode, option sources, row grain, required fields, default/non-default/empty/permission states, and resolver/API branches.
-10. Replace or isolate mock data, wire filters/interactions/pagination/sorting/export/refresh to provider inputs, preserve template-native filter surfaces when applicable, and keep component view models stable.
-11. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
-12. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
-13. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
-14. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
+3. Classify the UI baseline: common enterprise app, report/dashboard, or mixed. Load `$haier-enterprise-app-ui-design-spec` and/or `$report-design-system-governance` according to the surface before implementation decisions.
+4. Run baseline install/build/test when feasible and record pre-existing failures.
+5. Run `$quality-gate-validation` when source code, API docs, provider samples, env/auth notes, requirements, design baseline, or runtime traces conflict.
+6. Validate provider/API contract with `$api-contract-validation`.
+7. Design adapters with `$data-transformation-adapter-design` when provider payloads differ from UI view models.
+8. Verify env/proxy/base path/build/deploy behavior with `$frontend-env-deployment-verification`.
+9. Use `$haier-sso-integration` for Haier account-center login or auth header behavior.
+10. Verify data completeness for filters before linkage: data source mode, option sources, row grain, required fields, default/non-default/empty/permission states, and resolver/API branches.
+11. Replace or isolate mock data, wire filters/interactions/pagination/sorting/export/refresh to provider inputs, preserve template-native filter surfaces when applicable, and keep component view models stable.
+12. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
+13. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
+14. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
+15. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
 
 ## Required Output
 
@@ -73,6 +79,7 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Files changed and verification commands.
 - Runtime QA and function description.
 - Component style and metric-display checks, including `%` vs `pt/p.p./percentage point` when Chinese rate/change indicators are present.
+- UI baseline applied: common enterprise app baseline, report development baseline, or mixed, with loaded reference names and any deliberate exceptions.
 - Production observability and retained mock/offline-source notes when production handoff is in scope.
 - Data completeness proof before filter binding: option data, row grain, required fields, default/non-default data states, and resolver/API coverage.
 - Filter binding proof for non-default filter states, including visible data changes or intentionally invariant component scope.
@@ -92,5 +99,6 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Do not treat a filter as integrated when it only changes selected UI state and affected component data remains unchanged. Classify `ignoredFilters` or missing mapping as binding gaps after data completeness is proven; classify single-snapshot mock/provider data or missing non-default branches as data gaps first.
 - Do not add a new filter toolbar/bar to a template-based frontend when the template already owns filter invocation; update `filters[]`, native filter UI, and provider bindings instead.
 - Do not claim frontend readiness when visible Chinese rate/change/completion/YoY/MoM/variance-rate indicators still use `pt`, `p.p.`, or `percentage point` instead of `%`, unless the user explicitly requested that wording.
+- Do not claim frontend readiness when a common enterprise app page or report page ignores its matching UI/design baseline, unless the exception is explicitly scoped and accepted.
 - Do not mark production handoff `ready` without provider/source mode, backend/API base, env/auth behavior, runtime QA evidence, retained mock status, and testing/observability handoff.
 - Do not claim handoff readiness without build/runtime evidence or a precise blocker.

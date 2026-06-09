@@ -48,9 +48,21 @@ Use this gate when SQLite simulates an interface built from prototype data struc
 Use this gate when real table/view structure is available:
 
 - Each target response field maps to a real source field, SQL expression, view column, formula, enum dictionary, permission rule, or explicit constant.
+- If the real source replaces another source, existing target response fields stay stable. Confirm field name, nesting, type, unit, precision, enum meaning, nullability, formula, grain, and empty/no-permission behavior did not drift.
 - Joins, grouping keys, period conversion, filters, sorting, pagination, and permission predicates can run in SQL/repository queries.
 - Field quality, nullability, enum coverage, date format, unit, precision, and duplicate behavior are confirmed or captured as gaps.
 - The real source path can replace SQLite as the default service source after contract, data quality, permission, and performance checks pass.
+
+## Source Replacement Adapter Rules
+
+Use these rules when old source and new source do not have the same physical fields:
+
+- Freeze the target API contract before designing mappings.
+- Map old-to-new at the field level: target field -> old source/formula -> new source/formula -> transform/default/null rule -> verification evidence.
+- Prefer explicit SQL aliases, DTO serializers, and backend response adapters over changing response field names.
+- Keep new source-only fields internal unless they are intentionally added as additive API fields with conventional names and documentation.
+- Mark the adapter `blocked` when an existing required target field cannot be produced by the new source without an approved business default or formula.
+- Mark the adapter `partial` when compatibility depends on a temporary default, changed null rule, incomplete enum mapping, or unverified sample.
 
 ## Source Quality Gate
 

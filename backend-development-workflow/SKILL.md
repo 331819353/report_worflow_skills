@@ -1,6 +1,6 @@
 ---
 name: backend-development-workflow
-description: "运行数据服务/后端阶段，把API清单和数据模型转成API文档，或在用户明确要求时实现后端接口和本地服务。用户提到后端、服务端、数据服务、接口实现、接口开发、API文档、默认后端技术栈、Python、Flask、连接池、Redis、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、筛选前数据完整性、数据库/上游API接入、鉴权中间件、Haier IAMA、启动后端、本地后端URL时触发。"
+description: "运行数据服务/后端阶段，把API清单和数据模型转成API文档，或在用户明确要求时实现后端接口和本地服务。用户提到后端、服务端、数据服务、接口实现、接口开发、API文档、默认后端技术栈、Python、Flask、连接池、Redis、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、筛选前数据完整性、数据库/上游API接入、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、鉴权中间件、Haier IAMA、启动后端、本地后端URL时触发。"
 ---
 
 # Backend Development Workflow
@@ -16,6 +16,7 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 | API documentation | `$api-documentation-design` |
 | Contract validation | `$api-contract-validation` |
 | Data transformation | `$data-transformation-adapter-design` |
+| Change impact | `$change-impact-analysis` |
 | Standard artifact templates | `$delivery-artifact-template-management` |
 | Gaps and blockers | `$gap-ledger-management` |
 | Data quality | `$data-quality-validation` |
@@ -36,6 +37,8 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 - For default backend/data-service work without an authoritative existing stack or user-specified override, use `Python + Flask + database/upstream connection pools + Redis`. Flask owns HTTP routing and service composition; connection pools own database/upstream resource control; Redis owns cache/precompute/session-like transient state, hot query acceleration, stampede protection, distributed locks where appropriate, idempotency keys, job progress, and rate/concurrency support when needed.
 - Treat API docs as the contract source of truth for downstream frontend/testing. Implemented routes, examples, errors, auth behavior, and docs must stay aligned after every change.
 - When consumer evidence, API docs, models, routes, source samples, env/auth notes, or runtime traces disagree, run `$quality-gate-validation`; run `$api-contract-validation` before and after route or response changes.
+- Treat the API response model as the external compatibility contract. When replacing a database table, upstream API, SQLite fixture, or data source path, keep existing response field names, nesting, types, units, precision, enum meanings, nullability, grain, formulas, empty/no-permission behavior, and display semantics stable unless an approved versioned breaking change is documented. Source column/table names must be absorbed by the mapping/adapter layer, not leaked into existing API fields.
+- New response fields are additive by default and must follow the existing project naming convention; if none exists, use stable English lowerCamel field codes. Document source, meaning, type, unit, nullability, permission/sensitivity, and compatibility status before exposing them. Do not rename an old field to a better new name without deprecation/versioning.
 - For snapshot/latest-period report services, classify the snapshot role before implementation. Data-bearing endpoints may be independent query-service entry points or may derive from a declared canonical/shared snapshot when the contract proves matching data-version, filters, permission scope, grain, fields, cache key, and invalidation. Do not make metrics/trend/table/export routes depend on undocumented snapshot route responses, controller memory, or frontend call order.
 - Build a backend query context before querying: validated client params, backend-defaulted data-version params, backend-injected tenant/user/role/data-scope params, pagination/sort, and route/drilldown params. Pass that context into repository/source/provider/precompute/cache lookups so the correct data version and scope are enforced by parameters.
 - When Redis is used, document its exact role and operational contract: key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, stale/fallback behavior, connection pool/timeouts, and observability. Do not leave Redis as a generic "cache" note.
@@ -52,6 +55,7 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 3. Run `$quality-gate-validation` when docs, models, routes, source samples, runtime traces, or frontend contracts conflict.
 4. In documentation mode, use `$api-documentation-design` and mark partial/blocked endpoints visibly.
 5. In implementation mode, design transformations with `$data-transformation-adapter-design`, validate contracts with `$api-contract-validation`, and record gaps with `$gap-ledger-management`.
+5a. When a source table/upstream/fixture is replaced, create a compatibility mapping before route changes: existing response field -> old source -> new source -> transformation/default/null rule -> verification evidence. Route source mapping questions to `$data-model-source-mapping`; route breaking/API-field decisions to `$change-impact-analysis` and `$api-documentation-design`.
 6. For filter-bearing endpoints, run or cite data-completeness checks before binding or route acceptance. Add SQLite seed rows, query branches, resolver branches, or upstream samples for default and non-default states before treating filter linkage as ready.
 7. Use `$data-quality-validation` when real data trust, refresh SLA, completeness, uniqueness, accuracy, anomalies, drift, or cross-source reconciliation affects the backend/API handoff.
 8. Use `$haier-sso-integration` when Haier IAM/IAMA auth or `Application-Key`/`Access-Token` validation is in scope.
@@ -66,6 +70,7 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 - Backend stack decision: Python/Flask, connection-pool ownership, Redis/cache role, and override reason if not using the default stack.
 - Data-service runtime model: sync/async boundary, source and cache pools, Redis role matrix, cache/precompute/invalidation strategy, rate/concurrency limits, timeout/fallback, and observability.
 - Backend-friendly API implementation plan: endpoint families, common request/response models, service-layer mapping, and custom endpoint exceptions.
+- Source/table replacement compatibility matrix when source changes: old source, new source, unchanged response fields, additive fields, transforms/defaults, and breaking-change/versioning decisions.
 - Parameter-driven data-version, scope-filtering, snapshot role/reuse, and endpoint-dependency proof when snapshot/latest-period endpoints exist.
 - API文档 and/or implemented backend changes.
 - Contract validation and transformation notes.
@@ -81,6 +86,8 @@ Use this workflow for data-service/backend work. Default mode is API documentati
 - Do not implement backend code when the user only asked for API documentation.
 - Do not leave the backend stack vague or switch to FastAPI/Spring/Express/Node by default; use Python/Flask with connection pools and Redis unless the user or existing project explicitly overrides it.
 - Do not accept a production-bound API handoff that would require one custom controller/query/DTO shape per similar widget unless the custom reason is explicit.
+- Do not change existing API response field names, nesting, type/unit/precision/enum/nullability semantics, formulas, grain, or empty/no-permission behavior just because the backend source table, upstream API, or fixture changed. Use an adapter/mapping repair or versioned deprecation plan instead.
+- Do not expose newly discovered source columns as API fields until they are named by the project convention, documented as additive fields, traced to source/model, and covered by contract validation.
 - Do not implement metrics/trends/rankings/tables/drilldowns/exports by reading an undocumented snapshot API response or app-memory snapshot. Declared canonical/shared snapshot reuse is allowed; hidden response-payload dependency is not.
 - Do not use Redis without key dimensions, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability.
 - Do not return correct-looking version/scope metadata while querying unscoped or default-only data. Data-version, business filters, and permission/data scope must be part of repository/source/precompute/cache parameters.

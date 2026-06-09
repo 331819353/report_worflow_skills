@@ -12,6 +12,16 @@ Use this reference for detailed contract checks.
 - Empty-state shape, no-data shape, no-permission-scoped shape, and omitted-field behavior.
 - Derived fields, aggregation values, totals, subtotals, and reconciliation with detail rows.
 
+## Source Replacement Compatibility Checks
+
+Run these checks whenever backend implementation changes the data source, source table/view, upstream API, SQLite fixture schema, precompute table, or serving model:
+
+- Compare the new response against the previous API document, OpenAPI/schema, frontend adapter expectation, or golden runtime sample.
+- Existing fields remain present and keep names, casing, nesting, types, units, precision, enum meanings, nullability, formulas, grain, ordering/export meaning, empty/no-permission behavior, and display semantics.
+- New fields are additive, conventionally named, source-traced, typed, permission/sensitivity-reviewed, and optional/ignorable for existing consumers unless the contract explicitly versions a new required field.
+- Renamed, removed, moved, retyped, rescaled, re-enumed, re-nullable, re-formulated, or re-grained fields are breaking findings unless a versioned migration and deprecation plan exists.
+- The verification evidence includes at least one default sample and one affected non-default/filter or permission sample when the endpoint supports those states.
+
 ## Request Checks
 
 - Path, query, header, and body parameter names.

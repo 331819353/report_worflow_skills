@@ -28,6 +28,8 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 ## Reference Loading
 
 - Read `references/report-integration-testing-implementation.md` when validating a report/BI/dashboard data chain, frontend/backend pair, export, permission path, cache path, UAT, release smoke, or defect retest closure.
+- Read `$haier-enterprise-app-ui-design-spec` when the test target includes common enterprise application UI surfaces such as forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, or cross-platform adaptation.
+- Read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) when the test target includes report/dashboard/BI/data-screen/analysis pages.
 
 ## Reinforced Constraints
 
@@ -36,6 +38,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 - Automation must preserve case IDs and list unsupported, manual-step, selector, account, data, credential, and environment gaps as `blocked`, `manual-step`, or `not run`.
 - Visual/layout judgment requires captured screenshots first; run deterministic baseline diff when baselines exist and record multimodal/browser QA findings when available.
 - Regression scope must include recently discovered delivery defects when relevant: selected-state-only filters, single-snapshot mock/provider data, wrong percentage display terms, and internal KPI/summary/card text clipping.
+- Acceptance scope must include the matching UI baseline by page type: common enterprise app baseline for app pages, report development baseline for report/dashboard/analysis pages, or both for mixed pages.
 - For filter linkage, test data completeness before UI/component binding: option data, default rows, non-default rows or provider responses, required fields, empty/no-permission states, and resolver/API branches must exist before a filter-binding case can pass.
 - Every failure or blocker needs evidence, likely owner workflow, reproduction, expected/actual result, and retest criteria.
 - Production acceptance requires defect closure evidence: `open -> fixed -> retest -> closed`, or a visible `blocked` state. Missing URL, account, data, env, permission, source evidence, or quality threshold prevents `ready`.
@@ -43,19 +46,21 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 ## Workflow
 
 1. Inventory test basis: API docs, frontend function description, permission matrix, data-quality rules, URLs, accounts, env, data, and versions.
-2. Run `$quality-gate-validation` when test basis, runtime URLs, data, env/auth notes, screenshots, or source evidence conflict.
-3. Design the test matrix with `$integration-test-case-design`, including explicit cases for filter-linked data variation, metric display text, and component internal fit when those surfaces exist.
-4. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
-5. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
-6. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$data-quality-validation`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, and `$permission-matrix-validation` as applicable. For filter defects, execute or cite data completeness checks before filter-linkage conclusions.
-7. Use `$frontend-runtime-qa-validation` for visual/layout/browser checks on runnable frontend URLs.
-8. Consolidate results with `$test-evidence-defect-reporting`.
-9. Route defects to owner workflow and define retest criteria.
+2. Classify the UI baseline for each test target: common enterprise app, report/dashboard, or mixed, then load the matching baseline references.
+3. Run `$quality-gate-validation` when test basis, runtime URLs, data, env/auth notes, screenshots, baseline expectations, or source evidence conflict.
+4. Design the test matrix with `$integration-test-case-design`, including explicit cases for filter-linked data variation, metric display text, component internal fit, and matching UI baseline acceptance when those surfaces exist.
+5. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
+6. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
+7. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$data-quality-validation`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, and `$permission-matrix-validation` as applicable. For filter defects, execute or cite data completeness checks before filter-linkage conclusions.
+8. Use `$frontend-runtime-qa-validation` for visual/layout/browser checks on runnable frontend URLs.
+9. Consolidate results with `$test-evidence-defect-reporting`.
+10. Route defects to owner workflow and define retest criteria.
 
 ## Required Output
 
 - Test matrix and coverage map.
 - Regression coverage for filter binding, metric display, and internal component fit when in scope.
+- UI baseline coverage: common enterprise app baseline, report development baseline, or mixed, with acceptance cases or blocker notes.
 - Data completeness result before filter-binding result when filters are in scope.
 - Runtime environment and execution status.
 - Automation project path/commands when generated.

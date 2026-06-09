@@ -26,6 +26,8 @@ Whenever a report/BI/dashboard data model, metric model, source-to-consumer mapp
 
 When a request changes an existing delivered or in-progress artifact, route first through `$change-impact-analysis`. Do not patch one document or code surface while leaving affected metrics, API contracts, data models, frontend bindings, tests, permissions, screenshots, or delivery versions unknown.
 
+When backend implementation replaces a data source, source table/view, upstream API, SQLite fixture, precompute table, or serving model, preserve the API response model as the downstream contract. Existing response fields must remain stable in name, nesting, type, unit, precision, enum meaning, nullability, formula, grain, and empty/no-permission behavior. New fields must be additive, named by convention, source-traced, and contract-validated. Any unavoidable drift is a breaking API/model change that needs versioning, deprecation/migration notes, change-impact analysis, and regression scope before the affected artifact can be `ready`.
+
 When artifacts span more than one iteration, maintain a delivery version chain through `$delivery-version-management`. Every prototype/API/model/backend/frontend/test/release artifact should state which upstream version it consumes and which downstream version validated it.
 
 ## Stage Routing Matrix
@@ -35,8 +37,8 @@ All expected user inputs are Chinese. Use this matrix before choosing a workflow
 | 中文意图/触发词 | Workflow | Required Inputs | Primary Outputs | Do Not Use For |
 | --- | --- | --- | --- | --- |
 | 原型、页面原型、报表原型、仪表盘原型、大屏原型、demo、样机、截图/源码还原、可运行URL | `$report-design-workflow` | Business purpose, target user, source materials, expected page type, mock/source data if available | Runnable prototype, component mapping, visual/runtime evidence, design handoff | Backend implementation, formal API contract, final UAT |
-| 技术方案、技术架构、接口规划、数据建模、数据模型、数据源映射、指标字典、权限矩阵 | `$technical-solution-workflow` | Requirement/prototype, source/API hints, metric list, permission expectations | Architecture, API inventory, model/mapping, gap ledger, production readiness | UI polishing, runtime frontend QA |
-| 后端、服务端、数据服务、接口实现、接口开发、Flask、启动后端、本地后端、鉴权中间件 | `$backend-development-workflow` | API docs/inventory, data source, auth/env rules, expected runtime target | Backend/API implementation, docs, smoke/contract evidence, missing info | Frontend layout or visual QA |
+| 技术方案、技术架构、接口规划、数据建模、数据模型、数据源映射、指标字典、权限矩阵、更换数据源/数据表规划 | `$technical-solution-workflow` | Requirement/prototype, source/API hints, metric list, permission expectations | Architecture, API inventory, model/mapping, gap ledger, production readiness | UI polishing, runtime frontend QA |
+| 后端、服务端、数据服务、接口实现、接口开发、Flask、启动后端、本地后端、鉴权中间件、更换数据源/数据表实现 | `$backend-development-workflow` | API docs/inventory, data source, auth/env rules, expected runtime target | Backend/API implementation, docs, smoke/contract evidence, missing info | Frontend layout or visual QA |
 | 前端、页面开发、报表页面、可视化开发、替换mock、接真实接口、接口对接、环境变量、build/preview | `$frontend-development-workflow` | Prototype/source code, API docs/base URL, env/auth details, expected page behavior | Frontend integration, runtime URL/build, QA evidence, function description | Backend contract design |
 | 测试、联调测试、集成测试、验收测试、测试用例、冒烟测试、缺陷报告、回归证据 | `$testing-integration-workflow` | Frontend/backend URLs, accounts, API docs, expected data, acceptance scope | Test matrix, execution evidence, defects, retest closure | New feature implementation unless fixing defects is requested |
 | 需求变更、变更影响、改已有原型/接口/模型/前端/测试 | `$change-impact-analysis` | Existing artifact/version, change request, target stage | Impact matrix, affected artifacts, safe execution order | Fresh greenfield design |
@@ -86,6 +88,8 @@ Do not mark an artifact `ready` when filter linkage evidence skipped the data-co
 
 Do not mark an artifact `ready` when snapshot/latest-period API groups lack an explicit snapshot role and data-version contract, when data-version/business/permission scope is not enforced through backend params, source predicates, precompute lookup keys, snapshot reuse rules, or cache keys, or when a metrics/trend/ranking/table/drilldown/export endpoint depends on an undocumented snapshot/dashboard endpoint response, frontend call order, controller memory, or app-memory payload.
 
+Do not mark an artifact `ready` when a source/table/upstream/fixture replacement silently changes existing API response fields or behavior, or when new response fields are not additive, named by convention, source-traced, permission-aware, and contract-validated.
+
 Do not mark an artifact `ready` when Redis/cache is required or named for production-bound data services but role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability are missing.
 
 Do not mark an API inventory or API document `ready` for backend implementation when production-bound endpoints lack a backend reuse pattern, common request/response model family, service-layer mapping, or an explicit reason for custom controller/query/DTO shapes.
@@ -117,6 +121,7 @@ Required handoff bundle:
 - `API清单` with API ID, page/module, method/path candidate, purpose, trigger, request params, response model, auth, priority, and status.
 - Backend-friendly API design evidence: reuse pattern, common request model, response envelope/model family, service-layer mapping, and custom-shape reason when applicable.
 - `数据模型文件` with source/logical/response models, fields, formulas, joins, ownership, freshness, permission and quality rules.
+- Source replacement/API response compatibility plan when source changes are possible: unchanged response fields, old/new source-field mapping, additive fields, naming convention, transformation/default/null rules, version/deprecation decisions, and contract validation scope.
 - OLAP modeling evidence when reporting/BI/dashboard metrics are in scope: business question matrix, subject areas, business processes, model layer/type, one-grain-per-model decision, conformed dimensions, metric additivity, time口径, summary/wide-table decisions, history/SCD, many-to-many, deduplication, late-arriving/backfill, and lineage.
 - `待补充数据模型清单` with `GAP-*` IDs, impact, owner questions, assumptions, and blocked/partial status.
 - Parameter-driven data-version and snapshot reuse contract when snapshot/latest-period semantics exist: snapshot role, `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report/source version, exposing endpoint or metadata source, consuming/reusing endpoints, backend query params, permission/data-scope params, source predicate/precompute/snapshot lookup mapping, cache-key dimensions, invalidation trigger, and proof that any cross-endpoint reuse is declared rather than hidden runtime payload or application-memory snapshot.
@@ -133,6 +138,7 @@ Required handoff bundle:
 Required handoff bundle:
 
 - `API文档` with base URL, auth headers, endpoint details, request/response examples, errors, empty/no-permission behavior, pagination/sorting/filter rules, filter/sort/page execution stage, default/max page size, and pending items.
+- API response compatibility evidence for any source/table/upstream/fixture replacement: preserved existing fields, additive/new fields, naming compliance, transformation/default/null mapping, and breaking/versioning notes.
 - Snapshot/latest-period endpoint docs when applicable: snapshot role, shared data-version fields, defaulting rules, source of truth, request/defaulted/injected params, source predicate/precompute/snapshot lookup mapping, cache-key dimensions, invalidation, and endpoint dependency/reuse rules.
 - Runtime backend URL when implementation exists.
 - Environment profile contract: `.env.test` and `.env.production` presence, backend/API base paths, source mode, auth/SSO endpoint, CORS allowlist, health/readiness path, and blockers for missing or sensitive values.

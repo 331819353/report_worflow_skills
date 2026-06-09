@@ -7,9 +7,10 @@ All report content display areas must use an `8 * N` rectangular block grid:
 - The content display area is divided into 8 equal columns and N rows.
 - N is flexible and grows with page length.
 - `1920 * 1080` and `1280 * 768` are viewport baselines, not report height limits.
-- Every top-level content block occupies one or more complete grid blocks.
+- Every top-level content block occupies one or more complete page-grid cells and acts as a parent block.
 - Every top-level content block's occupied area must be rectangular.
-- A top-level content block may contain multiple internal subcomponents, but those subcomponents do not count as page-grid blocks. See `block-composition.md`.
+- A top-level parent block may contain multiple internal sub-blocks, and each sub-block may contain one component or a tightly related micro-group. Internal sub-blocks do not count as page-grid blocks. See `block-composition.md`.
+- Internal sub-block layouts always reserve `5px` from the parent block body edge and `5px` between sibling sub-blocks.
 - Major sections may occupy full-width 8-column rows.
 - Dense work surfaces may use 2-column, 4-column, or mixed spans, but all spans must align to the 8-column grid.
 - Drawers and modals are overlays and do not count as content-grid blocks.
@@ -43,27 +44,27 @@ Use these common spans before detailed size checks:
 - Table or task list: usually 8 columns and at least 4 rows.
 - Secondary cards: 2 or 4 columns.
 
-Use `block-size-constraints.md` before finalizing dense blocks, composite widgets, tables, or any block containing repeated visible subcomponents.
+Use `block-size-constraints.md` before finalizing dense parent blocks, composite widgets, tables, or any block containing repeated visible sub-blocks/components.
 
-For peer component groups inside one large block, use an internal exact `M * N` distribution where `M` means columns and `N` means internal rows:
+For peer component groups or repeated sub-blocks inside one large parent block, use an internal exact `M * N` distribution where `M` means local columns and `N` means local rows:
 
 1. Let `total` be the actual number of peer cards/charts/tiles shown together.
-2. If `total <= 4`, do not apply this factor algorithm; use a small-group layout based on content and the outer block shape.
+2. If `total <= 4`, do not apply this factor algorithm; use a small-group layout based on content and the parent block shape.
 3. If `total > 4` and `total` is prime, set `layoutTotal = total + 1`; otherwise set `layoutTotal = total`.
 4. Find integer factor pairs where `layoutTotal = M * N`.
 5. Keep only pairs where `M >= N`.
 6. Choose the pair with the smallest `M - N`.
-7. Use this pair as the subcomponent matrix inside the large block, then check whether the outer large block needs more page-grid rows with `heightExpansionRows = ceil(N * 2 / 3)`.
-8. Do not add arbitrary empty placeholders to force a prettier matrix. The only allowed spare cell is the single prime-balancing cell created by `layoutTotal = total + 1`; it must not create fake metrics or mock data. If the pair creates an unreadable strip, split the group by business meaning, tabs, pagination, drawer, or another block.
+7. Use this pair as the internal sub-block matrix inside the large parent block, reserve `5px` inset/gaps, then check whether the parent block needs more page-grid rows with `heightExpansionRows = ceil(N * 2 / 3)`.
+8. Do not add arbitrary empty placeholders to force a prettier matrix. The only allowed spare cell is the single prime-balancing cell created by `layoutTotal = total + 1`; it must not create fake metrics or mock data. If the pair creates an unreadable strip, split the group by business meaning, tabs, pagination, drawer, or another parent block.
 
-Example: when an outer large block such as `8 * 2` contains 8 peer subcomponents, the internal peer matrix is `4 * 2`; then verify whether the `8 * 2` outer block has enough body height under `heightExpansionRows = ceil(2 * 2 / 3) = 2`. If not, expand the outer block row span instead of compressing the 8 child components.
+Example: when a parent block such as `8 * 2` contains 8 peer sub-blocks, the internal matrix is `4 * 2`; then verify whether the `8 * 2` parent block has enough body height under `heightExpansionRows = ceil(2 * 2 / 3) = 2`. If not, expand the parent block row span instead of compressing the 8 child components.
 
 Examples: 1-4 peers -> small-group layout, not this algorithm; 5 peers -> calculate as 6 -> `3 * 2`; 6 peers -> `3 * 2`; 7 peers -> calculate as 8 -> `4 * 2`; 8 peers -> `4 * 2`; 9 peers -> `3 * 3`; 10 peers -> `5 * 2`; 11 peers -> calculate as 12 -> `4 * 3`; 12 peers -> `4 * 3`.
 - Avoid one long strip or one narrow column unless the component is explicitly a timeline, KPI strip, or navigation.
 
 ## 4. Default Span Distribution
 
-Start with the default span distribution below. When one block contains multiple subcomponents, choose the row by the dominant or most layout-demanding subcomponent.
+Start with the default span distribution below. When one parent block contains multiple sub-blocks/components, choose the row by the dominant or most layout-demanding internal component, then validate every sub-block viewport.
 
 | Component type | Default candidate spans |
 | --- | --- |
@@ -83,7 +84,7 @@ Rules:
 - If it does not fit, try the next larger candidate span in the same row.
 - If no candidate span fits, split the content, use tabs, move details to drawer/fullscreen, or change the component type.
 - Do not shrink text, hide overflow, or overlap legends to force a too-small span.
-- Composite widgets with multiple subcomponents must still declare one `visualType`; use the dominant visual type, or `other` only when no supported visual type dominates.
+- Composite parent blocks with multiple sub-blocks must still declare one dominant `visualType` for template sizing; use the dominant visual type, or `other` only when no supported visual type dominates. Individual sub-blocks may carry their own component type in implementation metadata.
 
 ## 5. Block Internal Anatomy
 
@@ -91,7 +92,7 @@ Each content block separates frame from component body:
 
 - Block frame: unified card background, radius, shadow, safe padding, optional actions.
 - Header/title area: title, subtitle, unit, status tag, small actions.
-- Component body: the only viewport where charts, tables, KPI groups, text, empty states, diagrams, and business components render.
+- Component body: the parent viewport where charts, tables, KPI groups, text, empty states, diagrams, business components, and optional internal sub-blocks render.
 - Optional footer: source, pagination, note, or legend only when reserved height exists.
 
 Rules:
@@ -104,8 +105,8 @@ Rules:
 - Component body must fill the body rectangle and not create an unnecessary inner moat.
 - The body viewport must have explicit `min-width: 0`, `min-height: 0`, and a defined overflow strategy.
 - ECharts and AntV S2 instances must mount and resize against the body viewport, not the whole card frame.
-- If the body contains multiple internal subcomponents, each subcomponent needs its own stable internal viewport and must remain visually subordinate to the block title.
-- Internal subcomponents may use legends, axis names, column names, chips, or short labels, but not duplicate block-level titles.
+- If the body contains internal sub-blocks, each sub-block needs its own stable internal viewport, local label/control area when needed, `5px` inset/gap spacing, and explicit overflow rule. It must remain visually subordinate to the parent block title.
+- Internal sub-blocks may use section labels, legends, axis names, column names, chips, or short labels, but not duplicate parent block-level titles or introduce nested card shadows.
 - Empty/loading/no-permission states stay centered inside the body viewport and must not replace the title area.
 
 ## 6. Overflow Rules

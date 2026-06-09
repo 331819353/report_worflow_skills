@@ -484,38 +484,52 @@ Do not keep a wide 256px sidebar permanently open on a 1280-wide work surface un
 
 ## 8. Composite Block Checks
 
-When one block contains multiple subcomponents, check the outer block against the most demanding subcomponent plus added internal spacing, headers, dividers, controls, and legends.
+When one parent block contains internal sub-blocks, check the parent block against the most demanding sub-block plus the required `5px` parent-to-sub-block inset, `5px` sibling sub-block gaps, headers, dividers, controls, legends, and state surfaces. Then check every sub-block against the component it owns.
 
-Split into separate grid blocks, tabs, drawer, fullscreen, or drilldown when:
+For composed parent blocks:
 
-- subcomponents answer different business questions;
-- each subcomponent needs an independent title, filter, action, or drilldown path;
-- any subcomponent's final validated span cannot be safely represented inside the outer block;
-- there are more than four analytical subcomponents visible at once;
+```text
+subBlockInset = 5px
+subBlockGap = 5px
+usableSubBlockAreaWidth = parentBodyWidth - subBlockInset * 2
+usableSubBlockAreaHeight = parentBodyHeight - subBlockInset * 2
+```
+
+If the internal layout has multiple columns or rows, subtract `subBlockGap * (columnCount - 1)` from the width axis and `subBlockGap * (rowCount - 1)` from the height axis before calculating each sub-block viewport.
+
+Split into separate parent grid blocks, tabs, drawer, fullscreen, or drilldown when:
+
+- sub-blocks answer different business questions;
+- each sub-block needs an independent block-level title, filter, action, or drilldown path;
+- any sub-block's final validated size cannot be safely represented inside the parent block;
+- there are more than four analytical sub-blocks visible at once unless they are repeated peers that pass the internal `M * N` and parent-height checks;
 - internal scrolling becomes the main way to understand the block.
 
-KPI/status peers should use the exact internal layout rule only when `actualTotal > 4`; for `actualTotal <= 4`, use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs. Every tile still needs pixel validation; split the group when the factor pair is unreadable.
+KPI/status peers should use the exact internal sub-block layout rule only when `actualTotal > 4`; for `actualTotal <= 4`, use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs. Every tile/sub-block still needs pixel validation; split the group when the factor pair is unreadable.
 
-For a composite large block, the internal matrix feeds the parent height decision. If the internal peer layout has `N` rows, calculate the outer block height expansion with:
+For a composed large parent block, the internal matrix feeds the parent height decision. If the internal peer layout has `N` rows, calculate the parent block height expansion with:
 
 ```text
 heightExpansionRows = ceil(N * 2 / 3)
 ```
 
-Then calculate the outer block body height needed as:
+Then calculate the parent block body height needed as:
 
 ```text
-requiredOuterBodyHeight =
-  heightExpansionRows * childMinOuterHeight
-  + max(0, heightExpansionRows - 1) * innerGap
+requiredParentBodyHeight =
+  subBlockInset * 2
+  + heightExpansionRows * childMinOuterHeight
+  + max(0, heightExpansionRows - 1) * subBlockGap
   + internalControlsOrDividerReserve
 ```
 
-If the current outer body height is smaller, expand the large block's row span until it passes. In practical terms, a block that could carry one row of child tiles uses roughly `N * 2 / 3` as the height expansion baseline when the internal matrix has `N` rows; convert fractional results to whole page-grid rows by rounding up. Do not reduce row height, padding, title height, or child chart/table body height to make the current outer block pass.
+If the current parent body height is smaller, expand the parent block's row span until it passes. In practical terms, a block that could carry one row of child tiles uses roughly `N * 2 / 3` as the height expansion baseline when the internal matrix has `N` rows; convert fractional results to whole page-grid rows by rounding up. Do not reduce row height, padding, title height, or child chart/table body height to make the current parent block pass.
 
 ## 9. Layout Rules
 
-- The page-grid span belongs to the top-level block; internal subcomponents must not create nested page grids.
+- The page-grid span belongs to the top-level parent block; internal sub-blocks must not create nested page grids.
+- Internal sub-blocks are local layout regions inside the parent body. They may use local grid/flex tracks, but they must have explicit min size, gap, overflow, and state behavior.
+- Internal sub-blocks use `5px` inset from the parent body and `5px` sibling gaps. Do not silently collapse these gaps to make a cramped block pass.
 - Do not treat `1920 * 1080` or `1280 * 768` as the report's maximum height.
 - Do not reduce `N`, row height, title space, chart body height, or table body height to force the full report into one viewport.
 - Do not divide available viewport height by `N` to create smaller rows.
@@ -532,15 +546,16 @@ If the current outer body height is smaller, expand the large block's row span u
 ## 10. Selection Steps
 
 1. Choose the business question for the block.
-2. Decide whether the block is single-component or composite.
-3. Pick a default candidate span from `grid-containers.md`.
-4. Classify the component with the detailed size table.
-5. Apply base minimum size and complexity expansion.
-6. Compute actual outer/body pixel size.
-7. Keep the default span if it passes; otherwise try the next larger candidate span or redesign the block.
-8. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
-9. If the block still fails any constraint, either:
+2. Decide whether the parent block is single-component or internally sub-blocked.
+3. If internally sub-blocked, define sub-blocks, component owner, local tracks, `5px` parent inset, `5px` sibling gap, and state behavior.
+4. Pick a default candidate parent span from `grid-containers.md`.
+5. Classify the dominant component with the detailed size table and validate every sub-block component against its own minimum.
+6. Apply base minimum size and complexity expansion.
+7. Compute actual parent outer/body pixel size and sub-block viewport sizes.
+8. Keep the default span if it passes; otherwise try the next larger candidate span or redesign the block.
+9. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
+10. If the block still fails any constraint, either:
    - increase the span,
-   - switch simultaneous subcomponents to tabs/segmented views,
+   - switch simultaneous sub-blocks/components to tabs/segmented views,
    - move details to a drawer/modal,
    - or split into separate `8 * N` blocks.

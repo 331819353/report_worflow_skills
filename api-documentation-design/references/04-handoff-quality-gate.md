@@ -10,6 +10,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - Each data-bearing endpoint identifies the component or justified component group it serves.
 - Each production-bound endpoint identifies backend reuse pattern, common request model, response envelope/model family, and service-layer mapping, or explains why a custom shape is required.
 - Each response schema traces to implementation, model/source, upstream API, frontend contract, or explicit design decision.
+- When source table/view/upstream/fixture replacement is planned or has occurred, existing response fields remain stable and new fields are additive, conventionally named, source-traced, permission-aware, and documented with compatibility status.
 - Each transformation rule is documented inline, linked to a local transformation note, or marked with `TBD(GAP-*)` plus owner/impact.
 - Each missing decision is recorded in pending items with a stable `GAP-*` ID, owner question, impact, and blocking status.
 - Endpoint examples are usable by frontend integration and integration-test case design.
@@ -38,7 +39,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - `blocked`: missing source, permission, model, auth, environment profile, or business rule prevents reliable implementation/integration.
 - `deprecated`: retained for compatibility but not recommended for new use.
 
-For production-bound delivery, do not use `ready` when source authority, auth/permission, backend reuse pattern/model-family mapping, report data-service backend behavior when report APIs are in scope, parameter-driven version/scope filtering for versioned data endpoints, `.env.production` profile/base URL evidence, runtime/health evidence, observability, performance/resilience/export limits, SQL query strategy for database-backed endpoints, version compatibility, or testing handoff is missing.
+For production-bound delivery, do not use `ready` when source authority, auth/permission, backend reuse pattern/model-family mapping, report data-service backend behavior when report APIs are in scope, response-field compatibility for source/table replacement, parameter-driven version/scope filtering for versioned data endpoints, `.env.production` profile/base URL evidence, runtime/health evidence, observability, performance/resilience/export limits, SQL query strategy for database-backed endpoints, version compatibility, or testing handoff is missing.
 
 ## Handoff Summary
 

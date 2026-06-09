@@ -116,6 +116,23 @@ Examples:
 
 Do not mix Chinese field names and English field names in the same response model unless the existing prototype/API contract already does so.
 
+## Source Replacement Compatibility
+
+When a source table, upstream API, fixture schema, or serving model changes, the response/view model remains the consumer-facing contract.
+
+For each affected response model, add or update a compatibility mapping:
+
+| Response field | Old source/formula | New source/formula | Transform/default/null rule | Behavior stable? | Evidence | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+
+Rules:
+
+- Keep existing response field codes, casing, nesting, types, units, precision, enum meanings, nullability, formulas, grain, and empty/no-permission behavior unchanged.
+- Do not rename response fields to match new source columns. Use source aliases or adapter mapping.
+- New fields must be additive, named by the project convention, and documented with source trace, business meaning, type, unit, precision, nullability, sensitivity/permission, and compatibility status.
+- If a response field cannot be produced by the new source, create a `GAP-*` item and keep the affected model `partial` or `blocked`.
+- If the business intentionally changes a response field, mark it as a breaking model/API change and route to API documentation, change-impact analysis, and contract validation.
+
 ## Blank Cell Rule
 
 For model tables, fill non-applicable cells with `none` and unknown cells with `TBD(GAP-*)`. Do not leave blanks for type, unit, precision, null rule, sensitivity, mapping, permission, owner, refresh cadence, or status.

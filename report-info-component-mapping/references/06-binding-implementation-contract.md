@@ -17,6 +17,11 @@ type ComponentMapping = {
   answerAtom: string;
   semanticRole: string;
   block: string;
+  // Top-level page-grid occupant. Uses the report page `8 * N` grid.
+  parentBlockId?: string;
+  // Optional local region inside the parent block body. Not a page-grid block.
+  subBlockId?: string;
+  subBlockRole?: 'summary' | 'evidence' | 'detail' | 'control' | 'peer' | 'state' | 'microGroup';
   componentType: 'card' | 'chart' | 'table' | 'text-summary' | 'drawer' | 'task' | 'action' | 'custom';
   visualType: string;
   chartSubtype?: string;
@@ -38,6 +43,8 @@ type ComponentMapping = {
   actionPayload?: string[];
   stateKeys?: string[];
   updateTriggers: string[];
+  parentLayoutSpan?: string;
+  subBlockLayout?: string;
   layoutSpan: string;
   emptyState: string;
   validationCases: string[];
@@ -49,6 +56,8 @@ Rules:
 - Use stable IDs such as `attritionTrend`, `riskEmployeeTable`, or `revenueGapWaterfall`.
 - For sample/source restoration, set `sampleModuleRole`. Only `businessRequired` modules should become `must-have`; `sampleStructure` preserves visible sample structure, and `optionalEnhancement` must be labeled as an enhancement.
 - `visualType` must match runnable template/widget capability where a template is used.
+- `parentBlockId` groups components that live in the same top-level `8 * N` parent block. `subBlockId` identifies the internal sub-block viewport that owns the component. Leave `subBlockId` empty only for single-component parent blocks.
+- `parentLayoutSpan` is the top-level `columns * rows` span. `subBlockLayout` describes local grid/flex placement such as `area:evidence`, `local:2x1`, `track:minmax(240px,1fr)`, or `tab:trend`, and must preserve `subBlockInset:5px` plus `subBlockGap:5px` when sub-blocks exist.
 - `filterMap` must map UI filter IDs to dataset fields or query params.
 - `filterExecutionStage` must show where filters, sorting, pagination, ranking, grouping, and aggregation execute when implementation or handoff is in scope. Use `sql-where` for global/page-level database filters, `component-local` for filters over the already fetched component dataset, and `blocked` when the current design depends on page/API-level full-materialize-then-filter behavior.
 - `apiId`/`apiEndpoint` should identify the API that serves this component when the output feeds API planning or frontend integration. Default to one component or coherent component group per API.
@@ -74,9 +83,10 @@ Every mapping must produce a binding matrix before implementation or final speci
 
 Minimum columns:
 
-- Component ID and layout/block title metadata.
+- Component ID, parent block ID, optional sub-block ID, and layout/block title metadata.
 - Priority.
-- Component type, `visualType`, and planned `columns * rows` span.
+- Component type, `visualType`, planned parent `columns * rows` span, and sub-block layout when present.
+- Sub-block spacing: `subBlockInset:5px` and `subBlockGap:5px` when the component lives inside a composed parent block.
 - Business question, answer atom, and semantic role.
 - Data source or dataset.
 - API ID/path and frontend compute policy when an API/backend handoff is in scope.
@@ -113,6 +123,7 @@ Minimum columns:
 
 For bundled templates:
 
+- One template widget normally represents one top-level parent block. When the parent block contains multiple sub-blocks, implement them inside that widget with local CSS grid/flex or a typed `subBlocks[]` view model; do not create fake page-grid blocks for internal sub-blocks.
 - Global/page filters must be declared in `filters[]` and invoked through the selected template's native filter trigger/panel/popover/drawer. Do not generate a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly requests template-level redesign.
 - Offline/mock filter options and business rows must live in `src/data/dashboard.dataset.json` and be loaded through `src/data/dashboard.loader.ts` plus the data-source registry. Do not create generated TS files for fixture rows, arrays, or payloads.
 - `widget.data.params.key` must point to a real dataset in `dashboardData`.

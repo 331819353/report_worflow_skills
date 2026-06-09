@@ -17,36 +17,41 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
 - Read `references/data-interaction-state-checks.md` for provider, filter, interaction, and edge-state checks.
 - Read `references/qa-note-template.md` when producing the QA result.
 - Read `$quality-gate-validation` before visual pass/fail judgment for any runnable page.
+- For common enterprise application pages, read `$haier-enterprise-app-ui-design-spec` as the runtime visual and interaction baseline for layout, component states, copy, feedback, and cross-platform fit.
+- For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis pages, read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) for layout, chart/table formatting, filters, states, permissions, performance, and acceptance expectations.
 
 ## Workflow
 
 1. Start from build/runtime basics.
    Run available typecheck, lint, tests, build, and dev/preview startup commands. Record skipped commands only when they are not defined or blocked by an external dependency.
 
-2. Open the target page.
+2. Classify the runtime UI baseline.
+   Determine whether the page is common enterprise app, report/dashboard, or mixed. Load and apply the matching common app and/or report baseline before judging visual/runtime defects, even when the user only asked for QA or URL验收.
+
+3. Open the target page.
    Use a local verified URL. Check that the page loads without blocking runtime errors and that core layout appears.
 
-3. Capture headless browser screenshots.
+4. Capture headless browser screenshots.
    After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. Store screenshot paths as QA evidence.
 
-4. Run multimodal visual anomaly recognition.
+5. Run multimodal visual anomaly recognition.
    Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, SVG/canvas/ECharts geometry distortion, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
 
-5. Check browser console and network.
+6. Check browser console and network.
    Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.
    Before judging filter binding, verify data completeness evidence: the page has option data, default data, at least one non-default filter state, required fields, and API/resolver/mock branches capable of returning different rows/values or an explicit invariant scope.
 
-6. Exercise page interactions.
+7. Exercise page interactions.
    Traverse visible controls page by page: filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, drawers, modals, chart clicks, table row actions, export/download, refresh, fullscreen, and close/back flows.
    For interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips, check hover and `focus-visible` states. A hover/focus state that moves/scales the element and clips borders/shadows at a grid/card edge is a visual defect.
 
-7. Check data states.
+8. Check data states.
    Confirm loading, empty, error, no-permission, token-invalid, stale-selection, and retry states render without layout breakage or stale data.
 
-8. Check copy and prototype residue.
+9. Check copy and prototype residue.
    Search visible source text and UI for stale wording such as `原型`, `mock`, `demo`, `示例`, placeholder titles, wrong metric names, malformed units, and irrelevant explanatory copy.
 
-9. Feed visual findings into repair or QA conclusion.
+10. Feed visual findings into repair or QA conclusion.
    For self-check tasks, repair all actionable `blocker` and `major` visual findings, then re-capture affected screenshots and rerun multimodal inspection. For reporting-only tasks, include findings, screenshot evidence, likely owner, and retest criteria in the QA note.
 
 ## Required Output
@@ -60,6 +65,7 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Headless browser screenshots were captured before visual pass/fail judgment, or an explicit blocker explains why screenshots could not be captured.
 - Multimodal visual review was run on the screenshots, with `VIS-*` findings recorded or an explicit no-issue result.
 - Runtime data requests hit expected endpoints, SDKs, files, or configured proxies.
+- Matching common app or report UI baseline was applied for visual/runtime judgment, or a scoped exception is documented.
 - Data completeness for filters is checked before linkage: options, provider/mock rows, fields, default/non-default states, and resolver/API branches exist or are recorded as gaps.
 - Filters and interactions update the correct data without stale values.
 - Global filter/search/pagination/sort interactions send scope params to providers before response construction; any all-data request followed by local filtering is a `fail` or `partial` QA finding unless it is explicitly a component-internal filter over already fetched component data.

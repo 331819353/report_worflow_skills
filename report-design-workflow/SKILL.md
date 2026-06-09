@@ -31,6 +31,7 @@ Default runnable prototype policy:
 | Runnable template assets | `$report-prototype-template-management` |
 | Component visual details | `$report-component-style-design` |
 | Reusable design standards | `$report-design-system-governance` |
+| Haier enterprise app UI standard | `$haier-enterprise-app-ui-design-spec` |
 | Quality gates | `$quality-gate-validation` |
 | Runtime visual QA | `$frontend-runtime-qa-validation` |
 
@@ -40,10 +41,12 @@ Default runnable prototype policy:
 - Before implementation, lock one workflow mode, one primary report type, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
 - The first meaningful viewport must answer one named business question. Every must-have component, dataset, filter, and interaction must appear in the binding matrix before visual polish or code.
 - Template selection and asset copying belong to `$report-prototype-template-management`; page shell/grid fit belongs to `$report-visual-layout-design`; component readability belongs to `$report-component-style-design`.
+- For every report, dashboard, cockpit, BI, data-screen, or analysis prototype workflow, load `$report-design-system-governance` report guideline references as the report-specific baseline before page layout, component styling, frontend implementation, QA, or acceptance planning. This applies even when the user did not say "规范".
+- When the report prototype also contains common enterprise app shell, navigation, forms, dialogs, or cross-platform application surfaces, load `$haier-enterprise-app-ui-design-spec` as the company-level token/component/layout baseline. Do not duplicate those tokens inside report-specific skills.
 - Data completeness is checked before filter binding after implementation or repair. Required rows/options/fields/default and non-default states/resolver branches must exist before `filterFields`, `requiredFilters`, API params, or resolver params can be accepted as working.
 - A primary/global filter is not accepted until affected components have filter-field/query/resolver binding and non-default filter values prove visible data changes. Selected-state-only behavior is a failed prototype.
 - In template mode, filter design is a shell-config and binding problem, not permission to add a new filter toolbar. Only explicit template-level redesign may add a new persistent filter surface.
-- Template `8 * N` validation covers outer blocks only. Composite widget internals, summary text areas, nested KPI grids, and small metric cells must pass `$report-component-style-design` fit rules.
+- Template `8 * N` validation covers top-level parent blocks only. A parent block may contain internal sub-blocks and components; those internals, summary text areas, nested KPI grids, chart/table sub-blocks, and small metric cells must pass `$report-visual-layout-design` composition rules and `$report-component-style-design` fit rules.
 - Missing API, model, field, formula, source, permission, or acceptance facts must be recorded as assumptions or gaps. Do not implement unsupported behavior as final prototype logic.
 - When the prototype feeds technical solution, produce a handoff bundle: component binding, mock/data-source contract, filter contract, interaction payload, data/model assumptions or gaps, and readiness value.
 
@@ -58,15 +61,17 @@ Default runnable prototype policy:
 7. Use `$report-visual-layout-design` for page shell, header/navigation/native filter surface, `8 * N` grid, block sizing, and responsive layout.
 8. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
 9. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
-10. Implement or repair the prototype in the selected target path when requested.
-11. Run build/start/visual QA when a runnable URL is requested and route findings through `$frontend-runtime-qa-validation`.
+10. Apply `$report-design-system-governance` report guideline references as the default report baseline for metrics, charts, tables, filters, states, engineering handoff, and acceptance.
+11. Apply `$haier-enterprise-app-ui-design-spec` when the prototype also includes common enterprise app UI tokens, component rules, scene templates, or cross-platform adaptation.
+12. Implement or repair the prototype in the selected target path when requested.
+13. Run build/start/visual QA when a runnable URL is requested and route findings through `$frontend-runtime-qa-validation`.
 
 ## Required Output
 
 - Workflow mode and input inventory.
 - Primary report type and core question.
-- Component/data/filter/interaction binding matrix.
-- Layout plan, `pageShellPath`, selected template/custom reason, filter surface mapping, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
+- Parent-block/sub-block/component/data/filter/interaction binding matrix.
+- Layout plan, parent `8 * N` grid, internal sub-block plan when used, `pageShellPath`, selected template/custom reason, filter surface mapping, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
 - Prototype-to-technical handoff bundle when the output will feed API/model/backend/frontend work.
 - Files changed or created when implementation is requested.
 - Quality-gate findings and readiness: `ready`, `partial`, or `blocked`.

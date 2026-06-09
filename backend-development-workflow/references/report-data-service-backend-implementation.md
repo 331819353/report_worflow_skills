@@ -119,6 +119,24 @@ Use shared response envelopes where possible:
 
 Avoid inventing a different parameter vocabulary, response envelope, or error shape for every widget. Reuse reduces validators, DTOs, serializers, tests, and frontend adapters.
 
+## Source Replacement And API Field Compatibility
+
+When a report backend changes from mock/SQLite to real data, or replaces a table, view, upstream API, fixture schema, precompute table, or serving model, treat the existing API response model as the downstream compatibility contract.
+
+Required compatibility work:
+
+- Preserve existing response field names, casing, nesting, types, units, precision, enum meanings, nullability, formulas, grain, sort/export meaning, empty/no-permission behavior, and display semantics.
+- Put source-field/table changes inside repository mapping, SQL aliases, DTO serializers, or response adapters. Do not expose raw new table or upstream column names by renaming existing API fields.
+- Produce a compatibility matrix: endpoint/model, existing response field, old source field/formula, new source field/formula, transform/default/null rule, verification sample/test, and status.
+- Add new response fields only as additive fields. Follow the project naming convention; if none exists, use stable English lowerCamel field codes. Document source, business meaning, type, unit, precision, nullability, permission/sensitivity, and compatibility status.
+- Treat unavoidable renames, removals, type/unit/precision/enum/nullability/formula/grain changes, or empty/no-permission behavior changes as breaking. They require API versioning, deprecation/migration notes, downstream frontend/test impact, and rollback/compatibility plan before implementation is accepted.
+
+Good implementation patterns:
+
+- Use explicit SQL aliases or serializer mapping such as `new_table.completed_pct AS completionRate` to keep response codes stable.
+- Keep frontend component field usage and API examples as regression fixtures for backend response mapping.
+- Add contract tests that compare old expected response schema with the new source-backed route for default, filtered, empty, and permission-limited states.
+
 ## Report Types And Execution Strategy
 
 Classify the report before selecting API and execution behavior.

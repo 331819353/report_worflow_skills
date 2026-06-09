@@ -95,6 +95,13 @@ For each response field, document:
 - Derived fields, aggregation grain, formula, rounding, default fill, and source trace.
 - Whether the field is stable, experimental, deprecated, or pending confirmation.
 
+When the endpoint uses or may later use a different source table/view/upstream/fixture, document response compatibility:
+
+- Existing response fields are stable contracts and must not be renamed, removed, moved, retyped, rescaled, re-enumed, re-nullable, re-formulated, or re-grained simply because the source changed.
+- Source-field changes are represented by `Data/model/source trace`, `Transformation rules`, SQL aliases, DTO serializers, or response adapter mappings.
+- New response fields are additive by default. Use the project naming convention; if none exists, use stable English lowerCamel field codes. Document source, meaning, type, unit, precision, nullability, sensitivity/permission, compatibility status, and whether existing clients may ignore the field.
+- Breaking response changes require API version, deprecation/migration notes, downstream consumer impact, and regression scope in `Compatibility notes`.
+
 At response-envelope level, document whether the endpoint uses `Page<T>`, `OptionItem[]`, `KpiCard[]`, `SeriesData`, `TaskStatus`, `ColumnMeta[]`, `Meta`, or a custom envelope. Custom envelopes need a reason so backend serializers and tests do not fragment unnecessarily.
 
 For report/dashboard APIs, document the component-facing view model. Do not leave required component formulas, grouping, ranking, filtering, or chart/table series derivation as implicit frontend work unless the exception is bounded and listed as partial.

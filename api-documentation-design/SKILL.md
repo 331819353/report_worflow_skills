@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、后端好开发、接口复用、通用请求响应模型、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
+description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、后端好开发、接口复用、通用请求响应模型、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、更换数据源/数据表后响应字段保持不变、新增字段规范命名、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
 ---
 
 # API Documentation Design
@@ -26,6 +26,8 @@ Do not implement backend code merely because this skill is triggered. Produce do
    For filter-bearing endpoints, document data completeness before binding: option source, source/provider execution stage, required response fields, row grain, default request/response example, at least one non-default request/response example, empty/no-permission example when relevant, and resolver/API branch behavior. If only one default snapshot exists for an affecting filter, keep the endpoint `partial` or `blocked`.
 
    When the API document will drive default backend implementation, state the default backend stack as `Python + Flask + database/upstream connection pools + Redis`, including which layer owns routing, pool configuration, Redis cache/precompute, timeout/fallback, and observability. Use another stack only with a user/existing-project override reason.
+
+   Define response-field compatibility conventions before endpoint details. Existing response field names, nesting, types, units, precision, enum meanings, nullability, formulas, grain, and empty/no-permission behavior are stable across source/table/upstream replacement. New fields are additive by default and must follow the project naming convention; if no convention exists, use stable English lowerCamel field codes. Breaking changes require versioning, deprecation/migration notes, and downstream impact.
 
    For snapshot/latest-period reports, document the snapshot role and shared data-version context before endpoint details: `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. Related data-bearing endpoints must consume that context through request params, backend-defaulted params, backend-injected scope, or an explicitly declared canonical/shared snapshot dataset before querying or deriving results, and include it in source/provider predicates, precompute lookups, and cache keys. A snapshot/dashboard aggregate endpoint may be reused by metrics, trends, rankings, tables, drilldowns, or exports only when the document states the matching grain, filters, permission scope, fields, cache key, and invalidation behavior.
 
@@ -60,6 +62,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - API documentation grouped by module, domain, page, resource, or service boundary.
 - Common conventions plus endpoint details.
 - Backend reuse pattern and common request/response model family for production-bound endpoints.
+- Response compatibility rules for source/table replacement: unchanged fields, additive fields, naming convention, deprecation/versioning, and compatibility notes.
 - Parameter-driven data-version, scope-filtering, snapshot role/reuse, and endpoint-dependency contract when snapshot/latest-period semantics exist.
 - Backend stack/cache/pool notes when the document feeds backend implementation.
 - Dependency trace from endpoint response to the relevant implementation/model/source/contract artifacts.
@@ -85,6 +88,8 @@ Do not implement backend code merely because this skill is triggered. Produce do
 - API implementation documents may use JSON only as response examples. If local/mock data is needed for backend/API development, the documented simulation source is SQLite with schema, seed rows, and indexes rather than JSON files.
 - Each data-bearing endpoint identifies the served component/component group and frontend compute policy; broad page-level responses that require frontend business calculation stay `partial` or `blocked`.
 - Response schemas include field names, types, nullability, units, precision, enums, nesting, empty states, and examples.
+- Response schemas preserve existing field contracts across source/table/upstream replacement. Any rename, removal, type/unit/precision/enum/nullability/formula/grain drift, or empty/no-permission behavior change is documented as a breaking change with version/deprecation/migration notes before `ready`.
+- Newly added response fields are additive, conventionally named, source-traced, typed, permission/sensitivity-aware, and documented as stable/experimental/deprecated/pending before handoff.
 - Auth, permission, no-data, invalid-param, unauthorized, no-permission, and upstream/backend failure behavior are documented when relevant.
 - Production-bound API documents include source authority, runtime/environment notes, auth/permission behavior, Redis/cache and connection-pool behavior when relevant, observability/performance constraints, version compatibility, and testing handoff before `ready`.
 - Pending items remain visible and do not masquerade as confirmed API behavior.

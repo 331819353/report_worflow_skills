@@ -1,6 +1,6 @@
 ---
 name: api-inventory-design
-description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、后端好开发、后端复用、接口复用、快照接口、snapshotDate/dataVersion/loadBatch、接口依赖、页面需要哪些接口、mock转接口、需求转API、方法路径、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
+description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、后端好开发、后端复用、接口复用、快照接口、snapshotDate/dataVersion/loadBatch、接口依赖、页面需要哪些接口、mock转接口、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、需求转API、方法路径、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
 ---
 
 # API Inventory Design
@@ -68,6 +68,9 @@ Loading guidance:
 7. Define response contracts at inventory level.
    Reference a response model name and summarize required field groups, grain, list/envelope shape, empty state, and error behavior. Do not duplicate the full API document here.
 
+7a. Define response compatibility for source replacement.
+   If an API may move from mock/SQLite to real source, or from one table/upstream to another, record that existing response field codes and behavior remain stable and that source-field changes are handled by the model/adapter layer. Additive fields must be named by convention and linked to source/model. Required renames, removals, type/unit/precision/enum/nullability/formula/grain changes, or empty/no-permission behavior changes are breaking and need versioning plus impact analysis.
+
 8. Mark gaps.
    If an endpoint depends on unknown data models, formulas, enums, filter options, permission rules, or owner decisions, record the gap in the pending column with a stable `GAP-*` ID, impact, owner question, and blocking status.
 
@@ -79,6 +82,8 @@ Loading guidance:
 - Each API must trace to a visible page need, interaction, export, dynamic option, or system action.
 - Do not turn conflicting artifacts into endpoint assumptions; unresolved `P0`/`P1` authority conflicts keep affected APIs `partial` or `blocked`.
 - Each API must trace to one response model and at least one source/logical model unless explicitly pending.
+- Existing response model fields must remain stable across mock-to-source, table-to-table, or upstream replacement. The API inventory must not rename, remove, or reshape existing response fields simply because the backend source changed.
+- New response fields are additive by default and must follow the project naming convention, or stable English lowerCamel when no convention exists, with source/model trace and compatibility status.
 - Filter option APIs are first-class APIs when options are dynamic, permission-limited, cascaded, or source-driven.
 - Export APIs must state whether they reuse list filters and whether they return file streams, task IDs, or async download links.
 - Mutation/action APIs must define idempotency, permission, success state, failure state, and audit need.
@@ -108,6 +113,7 @@ Use a table with these columns:
 - Request params.
 - Response model.
 - Source model dependency.
+- Response compatibility: preserved existing fields, additive fields, naming convention, and breaking/versioning notes.
 - Backend reuse pattern and common request/response model.
 - Snapshot role, data-version context, backend filter params, and endpoint dependency/reuse rule.
 - Auth/permission.
@@ -134,4 +140,5 @@ Use a table with these columns:
 - List/table APIs have bounded pagination and documented default/max page size.
 - API rows do not depend on page/API-level full-materialize-then-filter behavior; global SQL/source/provider/repository/cache execution and component-internal local filter scope are explicit or linked to a `GAP-*`.
 - Response model names match the 数据模型文件.
+- Source replacement plans preserve existing response fields and document additive/new field naming before downstream API documentation or backend implementation.
 - Missing model/source/formula/enum/permission items are visible instead of hidden in notes.

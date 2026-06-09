@@ -1,6 +1,6 @@
 ---
 name: api-contract-validation
-description: "用于校验 API 契约是否与文档、前端期望、后端路由、mock、OpenAPI、数据库/上游样例、运行响应一致。用户提到接口契约校验、前后端字段不一致、响应字段缺失、类型/单位/枚举/精度错误、百分比/比例值口径、请求参数、分页排序筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口依赖、空态错误态、鉴权头、mock替换前验证、联调问题定位时触发；不生成完整 API 文档或实现代码。"
+description: "用于校验 API 契约是否与文档、前端期望、后端路由、mock、OpenAPI、数据库/上游样例、运行响应一致。用户提到接口契约校验、前后端字段不一致、响应字段缺失、类型/单位/枚举/精度错误、百分比/比例值口径、更换数据源/数据表后返回字段变化、新增字段命名、请求参数、分页排序筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口依赖、空态错误态、鉴权头、mock替换前验证、联调问题定位时触发；不生成完整 API 文档或实现代码。"
 ---
 
 # API Contract Validation
@@ -29,6 +29,7 @@ It validates behavior and records differences. It does not design a new API inve
 5. Compare data-version, snapshot role, and endpoint dependency contract.
    For snapshot/latest-period API groups, verify `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version is exposed/defaulted consistently and included in request/query/cache context where needed. Verify business filters and permission/data scope are applied as backend params, source/provider predicates, precompute lookup keys, declared snapshot reuse rules, or Redis/cache key segments before response construction. Confirm metrics, trends, rankings, tables, drilldowns, and exports either validly reuse a declared canonical/shared snapshot or avoid dependency on undocumented snapshot responses, frontend call order, or controller-memory snapshots.
 6. Compare response contract: envelope, fields, nesting, types, units, precision, enum values, dates, totals, empty states, errors, and no-permission states. For rate/percentage fields, identify whether the API returns a raw ratio (`0.744`), percent number (`74.4`), or display-ready string (`74.4%`), and record display owner and rounding rules.
+6a. When a backend source table/upstream/fixture has changed, compare old and new runtime or fixture responses against the same API contract. Existing fields must remain present and behavior-compatible; newly added fields must be additive, conventionally named, documented, and safe for consumers to ignore.
 7. Compare runtime/source behavior when available: mock vs fixture vs DB/upstream vs live API.
 8. Classify each finding as pass, mismatch, missing, ambiguous, blocked, or not tested.
 
@@ -36,6 +37,7 @@ It validates behavior and records differences. It does not design a new API inve
 
 - Contract evidence inventory and authority decision.
 - Field/request/state comparison matrix.
+- Source/table replacement compatibility result when applicable: preserved fields, changed fields, additive fields, missing mapping, and version/deprecation need.
 - Filter data-completeness result before binding readiness.
 - Parameter-driven data-version, snapshot role/reuse, scope-filtering, and endpoint-dependency result when snapshot/latest-period semantics exist.
 - Findings with severity, expected, actual, evidence, owner side, and suggested repair.
@@ -47,6 +49,8 @@ It validates behavior and records differences. It does not design a new API inve
 - Do not mark pass when required evidence is absent.
 - Do not silently merge contradictory API docs, mocks, route code, and runtime samples.
 - Every mismatch includes field/path/state, expected value, actual value, and evidence source.
+- Source/table replacement validation is not ready when existing response fields are renamed, removed, moved, type-shifted, unit/precision/enum/nullable-shifted, formula-shifted, or grain-shifted without an approved versioned breaking change and downstream migration plan.
+- New response fields are not ready when naming, source trace, type, unit, nullability, permission/sensitivity, or additive compatibility status is missing.
 - Frontend-facing readiness includes loading, empty, error, auth, no-permission, and partial data states.
 - Frontend-facing rate/change/completion contracts are not ready until raw value scale, display scale/unit, rounding, and owner are explicit. Visible Chinese report labels should use `%` unless the contract explicitly and intentionally requires `pt`, `p.p.`, or `percentage point`.
 - Filter/search/sort/page params are not ready until data completeness is proven before binding: option values, source/provider rows, required fields, default/non-default runtime or fixture samples, and resolver/API branches exist or are marked blocked.

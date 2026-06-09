@@ -39,8 +39,8 @@ Use this file when building a new business report from a copied template or heav
    - Render only inside the body viewport.
    - Use `width: 100%; height: 100%; min-width: 0; min-height: 0;`.
    - Mount ECharts/S2 against the widget body, not the card frame.
-   - If one block needs multiple subcomponents, implement one composite widget and keep internal subcomponent labels subordinate to the block title.
-   - If the composite needs 2/4/6/8 visible subcomponents, follow the count limits from `$report-visual-layout-design`.
+   - If one parent block needs multiple components, implement one composite widget with internal sub-blocks, keep `5px` parent inset and `5px` sibling gap, and keep sub-block labels subordinate to the block title.
+   - If the composite needs 2/4/6/8 visible sub-blocks/components, follow the count limits from `$report-visual-layout-design`.
 7. Add interactions:
    - Emit `dashboard-action` from widgets.
    - Configure `actions` in widget config.

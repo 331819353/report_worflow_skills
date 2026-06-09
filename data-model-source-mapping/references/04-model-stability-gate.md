@@ -45,6 +45,8 @@ Create a gap instead of inventing:
 - State one grain per fact/logical/summary/response model.
 - Keep layer and model type explicit: ODS, DWD, DIM, DWS, ADS; fact, dimension, bridge, summary, wide, application.
 - Avoid duplicate response field definitions across models unless the models intentionally differ.
+- Preserve existing response field names, casing, nesting, type, unit, precision, enum meaning, nullability, formula, grain, and empty/no-permission behavior when a source table/upstream/fixture changes.
+- Add new response fields only as additive, conventionally named fields with source trace, type, unit, nullability, sensitivity/permission, and compatibility status.
 - Use the same model names later in API清单.
 - Do not leave required table cells blank. Use `none` when intentionally not applicable, or `TBD(GAP-*)` when unknown.
 - A row with `TBD(GAP-*)` cannot be `ready`.
@@ -64,6 +66,8 @@ Mark the model file:
 ## Model Design Red Flags
 
 - A model/table is created before business question, subject area, business process/object, and grain are defined.
+- A source/table/upstream replacement changes response field codes or behavior instead of updating mapping/adapter rules.
+- New source columns are exposed as API/response fields without naming convention, source trace, type/unit/nullability, or permission review.
 - One table/model mixes multiple grains without a bridge or summary strategy.
 - The model mirrors source-system tables directly for governed reporting without DWD/DIM/DWS/ADS reasoning.
 - A shared metric is recalculated separately in multiple ADS/report models instead of being governed in a reusable layer.

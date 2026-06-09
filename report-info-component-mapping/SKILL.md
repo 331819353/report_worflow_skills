@@ -42,11 +42,11 @@ For every report requirement or extracted information set:
 
 1. Normalize the input: theme, audience, scenario, primary question, decision, time scope, organization scope, object, metrics, dimensions, baseline, process stage, rules, risks, tasks, evidence, source, permissions.
 2. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
-3. Map answer atoms to content blocks and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
+3. Map answer atoms to parent content blocks, optional internal sub-blocks, and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
 4. Define and validate the mock/data model before filter binding: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, time coverage, default state, non-default filter states, empty/no-permission states, and resolver/API branch needs.
 5. Define the filter/query model only after the data model can support it: main filter surface, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components. For bundled templates, the main filter surface is the template's native `filters[]` invocation and binding contract, not a new toolbar component.
 6. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, and stale-state behavior.
-7. Produce the binding matrix: component -> dataset -> fields -> formulas -> filters -> interactions -> update triggers -> validation cases.
+7. Produce the binding matrix: parent block -> sub-block when present -> component -> dataset -> fields -> formulas -> filters -> interactions -> update triggers -> validation cases.
 8. Route to primary and secondary report-type skills for business logic.
 9. Apply local layout and visual constraints from `references/07-routing-layout-quality.md`, including grid fit, component density, exact-value access, and visual QA notes.
 10. Validate that KPI totals, chart totals, table rows, drawers, exports, filters, and jumps share the same context.
@@ -74,6 +74,7 @@ Loading guidance:
 - For interaction-heavy tasks, read `05-interaction-state-flow.md` and `06-binding-implementation-contract.md`.
 - For final report design/spec output, always read `06-binding-implementation-contract.md`, `07-routing-layout-quality.md`, and `08-generation-stability.md`.
 - For any task that will generate files, widget config, mock data, API-facing contracts, or reusable specifications, `08-generation-stability.md` is mandatory.
+- For every report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis mapping task, also use `$report-design-system-governance` `references/04-report-requirements-metrics-layout-guidelines.md` as the report baseline for requirement fields, metric dictionary, calculation口径, page hierarchy, and module priority.
 
 ## Hard Constraints
 
@@ -101,6 +102,7 @@ Loading guidance:
 - Dense analytical tables, pivot tables, cross tables, and wide metric matrices should use AntV S2.
 - Every implementation mapping must declare data source, grain, required fields, formulas, filter mapping, interaction state, update triggers, and validation cases.
 - Every layout must fit the local `8 * N` rectangular grid and legal span rules documented in `references/07-routing-layout-quality.md`.
+- The top-level `8 * N` grid maps to parent blocks. A parent block may define internal sub-blocks, and components are placed in those sub-blocks when the components answer one shared business question. Sub-block composition always preserves `5px` parent inset and `5px` sibling gap. Do not flatten every component into its own top-level block when a composed parent block is clearer and passes fit checks.
 - Generated IDs, dataset names, filter IDs, `visualType`, action types, and matrix columns must follow the controlled vocabulary and naming rules in `08-generation-stability.md`.
 - When information is missing, use the documented fallback rule and mark the assumption; do not invent unsupported component types, visual types, filters, or actions.
 
@@ -110,12 +112,12 @@ When this skill is used, produce at least:
 
 1. Report theme, primary question, business decision, and user scenario.
 2. Answer atom decomposition.
-3. Component bundle mapping with priority.
+3. Parent block, sub-block, and component bundle mapping with priority.
    For sample/source restoration, include `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
 4. Mock/data model: datasets, grain, fields, formulas, signals, edge cases.
 5. Filter/query model: filter surface, filters, option sources, defaults, cascades, permissions, query params.
 6. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.
-7. Unified data/filter/component/interaction binding matrix.
+7. Unified parent-block/sub-block/data/filter/component/interaction binding matrix.
 8. Report type routing.
 9. Layout and style constraints.
 10. Missing information, assumptions, and removed decorative components.
@@ -129,6 +131,7 @@ Before finalizing, verify:
 - Every key business concern maps to at least one visible block or interaction.
 - There is one primary answer area, not a flat wall of equal-weight charts.
 - Every component has a distinct semantic role, dimension, grain, or workflow purpose.
+- Parent blocks and sub-blocks are explicit when one `8 * N` block contains multiple components.
 - Exact-value tasks have table/card support.
 - Cause-analysis tasks have decomposition support.
 - Process/conversion tasks prove ordered stage logic before using funnel.

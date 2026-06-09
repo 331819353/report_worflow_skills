@@ -21,7 +21,8 @@ All template families use the same conceptual layers:
 5. Block frame: `.placeholder-cell` reserves `cellPadding` around the block.
 6. Block card: `.placeholder-cell-inner` owns the visible card/frame surface, title band, body viewport, radius, shadow, and theme surface.
 7. Block title band: `.placeholder-cell-title` is a 32px reserved band for the block title and optional local filter tools.
-8. Widget viewport: `.placeholder-cell-body > .widget-renderer` fills the remaining area and gives the business component a stable `100% * 100%` viewport.
+8. Widget viewport: `.placeholder-cell-body > .widget-renderer` fills the remaining area and gives the business component or composite parent widget a stable `100% * 100%` viewport.
+9. Optional internal sub-blocks: when a parent widget contains multiple components, the widget defines local grid/flex sub-blocks inside `.widget-renderer`; these are not page-grid blocks. The sub-block grid uses `5px` inset from the parent widget viewport and `5px` gap between sibling sub-blocks.
 
 ## 2. Config-Owned Tokens
 
@@ -71,6 +72,11 @@ placeholder-cell
       border: 0
       border-radius: 0
       widget-renderer fills 100%
+        optional widget-owned sub-block grid/flex
+          padding: 5px
+          gap: 5px
+          sub-block viewport
+            component
 ```
 
 Rules:
@@ -78,14 +84,16 @@ Rules:
 - Block/page titles are layout-owned. Widgets should not duplicate a visible internal title when the block title exists.
 - The 32px block title band is a reserved layout region, not optional decoration.
 - Local filter chips in the title band use compact pill controls, normally `24px` high, `0 8px` padding, and `999px` radius.
-- The body viewport has no extra padding by default. Component-level padding belongs inside the widget when the component needs it.
+- The body viewport has no extra padding by default for single-component widgets. For composite parent widgets, the widget-owned sub-block grid adds `padding: 5px` and `gap: 5px`.
 - `WidgetRenderer` keeps `min-width: 0`, `min-height: 0`, `width: 100%`, `height: 100%`, and overflow policy. Table visuals may use internal scroll; charts/canvas/SVG must fill a measurable viewport.
+- If the widget contains internal sub-blocks, each sub-block keeps `min-width: 0`, `min-height: 0`, a declared local track/area, `5px` sibling gap through the parent sub-block grid, overflow policy, and state behavior.
 
 ## 5. Spacing And Radius Rules
 
 - Use `8px` as the default card radius across template blocks and compact panels.
 - Use `8px` as the default card/frame padding inside `.placeholder-cell-inner`.
 - Use `8px` gap between the title band and body viewport.
+- Use `5px` as the fixed spacing inside composite parent widgets: parent viewport to sub-block edge is `5px`, and sub-block to sub-block spacing is `5px`.
 - Use `999px` radius only for chips, badges, and pill controls.
 - Keep block-to-block spacing in `contentGap`; do not simulate it with widget margins.
 - Keep block-internal spacing in `cardPadding`, title/body gap, and component scoped styles; do not change `cellPadding` to solve widget-level density.
@@ -115,6 +123,7 @@ Rules:
 | Change minimum row height | `screen.grid.rowHeight` in scroll templates | Shrinking widget internals below fit rules. |
 | Change block accent/surface | `dominantTitleColor`, `innerBackgroundColor`, theme tokens | One-off colors per block without design-system reason. |
 | Change business component padding | Widget scoped style | `placeholder-cell-body` padding. |
+| Add internal sub-blocks inside one parent block | Widget scoped CSS/config view model with `padding: 5px; gap: 5px` | Extra page-grid blocks, nested card shadows, or collapsed sub-block gaps. |
 | Change block title behavior | Template shell only when redesigning the template | Adding chart/table/KPI internal duplicate titles. |
 
 ## 9. Review Checklist
@@ -123,6 +132,8 @@ Rules:
 - `layoutRows` remains rectangular and every row is compatible with the `8 * N` grid.
 - `contentGap`, `rowHeight`, `cellPadding`, card padding, radius, and title band height are not changed ad hoc.
 - Block title, local filter, and body viewport have reserved geometry.
-- Widgets receive a stable measurable viewport and do not depend on the outer block title for internal component labels.
+- Widgets receive a stable measurable viewport and do not depend on the parent block title for internal component labels.
+- Composite widgets declare internal sub-blocks and component ownership; sub-blocks do not pretend to be top-level `layoutRows` cells.
+- Composite widgets preserve `5px` parent-to-sub-block inset and `5px` sibling sub-block gaps.
 - Hover/focus feedback stays inside component bounds and is not clipped.
 - Any deviation from the family defaults is documented as a template-level design decision, not hidden in component code.

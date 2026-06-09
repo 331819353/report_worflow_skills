@@ -1,6 +1,6 @@
 ---
 name: data-model-source-mapping
-description: "用于创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、逻辑模型、响应模型、视图模型、指标/字段口径、维度关系、snapshotDate/dataVersion/loadBatch、数据版本、筛选前数据完整性、筛选数据粒度、原型mock字段、数据血缘、刷新频率、权限、质量规则时触发；不负责API文档或代码实现。"
+description: "用于创建或修正数据模型文件和数据源到消费端映射。用户提到数据模型、字段模型、数据源映射、源表、元数据、逻辑模型、响应模型、视图模型、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、指标/字段口径、维度关系、snapshotDate/dataVersion/loadBatch、数据版本、筛选前数据完整性、筛选数据粒度、原型mock字段、数据血缘、刷新频率、权限、质量规则时触发；不负责API文档或代码实现。"
 ---
 
 # Data Model Source Mapping
@@ -56,6 +56,9 @@ Loading guidance:
 4. Define response/view models.
    Map prototype/API-facing fields to logical/source fields. Include display labels, field types, units, precision, enum labels, sorting, empty-state behavior, and whether the field is calculated.
 
+4a. Preserve response contract compatibility during source replacement.
+   When the source table, upstream API, fixture schema, or serving model changes, keep existing response/view field codes and behavior stable. Produce a before/after mapping: response field -> old source field/formula -> new source field/formula -> transformation/default/null rule -> verification evidence. New response fields must be additive and named by the project convention; if absent, use stable English lowerCamel field codes. Any required rename, type/unit/precision/enum/nullability/formula/grain change is a breaking `DESIGN-*` or `GAP-*` item until versioning and downstream impact are explicit.
+
 5. Define data-version and snapshot semantics.
    When the report needs current/latest/snapshot behavior, document the snapshot role, business time field, `snapshotDate` or `latestPeriod`, `loadBatch`, `dataVersion`, source partition, report version, freshness timestamp, and invalidation/backfill rule. Clarify which response models expose version metadata, which fact/logical/precompute/snapshot models are queried or reused by each endpoint, and which source fields or partitions those params filter. If an API response is intentionally the canonical/shared snapshot for other components, model it as a named snapshot/precompute/view model with grain, fields, scope, and reuse rules instead of treating it as an incidental response.
 
@@ -77,6 +80,8 @@ Loading guidance:
 ## Hard Constraints
 
 - Every response/view field must trace to a source field, formula, static enum, or `GAP-*` item.
+- Response/view field names, nesting, types, units, precision, enum meanings, nullability, formulas, grain, and empty/no-permission behavior are stable compatibility contracts across source/table replacement. Source names may change; response contracts may not drift silently.
+- New response/view fields must follow the project naming convention, or stable English lowerCamel when no convention exists, and must declare source, meaning, type, unit, nullability, permission/sensitivity, compatibility status, and downstream consumers.
 - Do not resolve contradictory source/model/API/frontend evidence by preference or convenience; unresolved `P0`/`P1` conflicts keep affected models `partial` or `blocked`.
 - Every metric must have formula, grain, dimensions, period logic, source dependency, and precision, or a `GAP-*` item.
 - Snapshot/latest-period response models must trace to source/logical/precompute/cache/snapshot models through explicit data-version fields and source/filter predicates. Do not define one response model as the authoritative source for another response model unless it is explicitly modeled as a canonical/shared snapshot with grain, fields, scope, and reuse rules.
@@ -98,6 +103,7 @@ Use this structure for the 数据模型文件:
 3. Source models: physical fields and metadata.
 4. Logical models: business objects, keys, relationships, grain, joins.
 5. Response/view models: API/frontend fields, types, units, null rules, examples.
+5a. Source replacement compatibility: old source, new source, unchanged response fields, additive fields, transform/default/null rules, and breaking/versioning decisions.
 6. Data-version/snapshot semantics: snapshot role, business time, snapshotDate/latestPeriod, loadBatch, dataVersion, freshness, invalidation/backfill, exposing response metadata, source fields/partitions, filter predicate mapping, and reuse rules when canonical/shared.
 7. Filter-support completeness: option source, row grain, fields, default/non-default states, empty/permission states, resolver/API branches.
 8. Metrics: formulas, dimensions, baselines, thresholds, reconciliation.
@@ -110,6 +116,8 @@ Use this structure for the 数据模型文件:
 ## Quick Quality Gate
 
 - Every response/view field traces to a source field, formula, or pending item.
+- Existing response/view contracts remain stable when source tables or data sources change; any drift is blocked unless explicitly versioned.
+- Additive fields are named and documented by convention before downstream API/front-end/test use.
 - Every metric in the indicator list has formula, grain, dimensions, and source dependency.
 - Data-version and snapshot semantics are explicit when current/latest/snapshot endpoints exist.
 - Data-version and scope params map to source fields, partitions, logical filters, precompute keys, or cache keys before response/view models are declared ready.

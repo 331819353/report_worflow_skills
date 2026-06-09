@@ -9,7 +9,7 @@ The same business input should produce the same:
 - Primary report type and secondary report-type routing.
 - Answer atoms and component priorities.
 - Sample/source module roles when restoration input exists.
-- Component IDs, dataset IDs, filter IDs, and action names.
+- Component IDs, parent block IDs, sub-block IDs, dataset IDs, filter IDs, and action names.
 - `visualType`, layout span category, row grain, and required fields.
 - Binding matrix columns and validation cases.
 
@@ -42,12 +42,15 @@ Use these values unless the target project explicitly defines a different vocabu
 - `filterExecutionStage`: `sql-where`, `source-query`, `provider-query`, `repository-query`, `resolver-param`, `redis-cache`, `precompute-cache`, `component-local`, `bounded-local`, `blocked`.
 - `dataPolicy`: `bound`, `static`, `external`. Prefer `bound`.
 - `sampleModuleRole`: `businessRequired`, `sampleStructure`, `optionalEnhancement`.
+- `subBlockRole`: `summary`, `evidence`, `detail`, `control`, `peer`, `state`, `microGroup`.
 
 Do not create near-synonyms such as `trendLine`, `line-chart`, `metricCard`, or `dataTable` in contract fields. Put display labels in titles, not enum fields.
 
 ## Naming Rules
 
 - Component IDs: lowerCamelCase, semantic and stable, such as `attritionTrend`, `riskEmployeeTable`, `revenueGapWaterfall`.
+- Parent block IDs: lowerCamelCase ending with `Block`, such as `attritionOverviewBlock` or `riskEvidenceBlock`.
+- Sub-block IDs: lowerCamelCase ending with `SubBlock`, such as `trendChartSubBlock` or `topRiskListSubBlock`.
 - Dataset IDs: lower_snake_case with prefixes: `dim_`, `fact_`, `agg_`, `ref_`, `log_`.
 - Filter IDs: lowerCamelCase and scope-oriented, such as `period`, `orgId`, `jobFamily`, `severity`, `ownerId`.
 - Action event names: lowerCamelCase plus event type, such as `barClick`, `rowClick`, `stageClick`, `taskSubmit`.
@@ -111,6 +114,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 - Do not mix Chinese labels into IDs or query params.
 - State assumptions in one section; do not hide assumptions inside component titles.
 - Every `must-have` component must have a dataset, fields, filters, interaction state, update trigger, and validation case.
+- Every component inside a composed parent block must declare `parentBlockId`, `subBlockId`, `subBlockRole`, local sub-block layout, `subBlockInset:5px`, and `subBlockGap:5px`.
 - Every primary filter must list affected components.
 - Every primary/global filter must state whether it narrows data through SQL/source/provider/repository/resolver/precompute/cache before component construction; every component-internal filter must state the already fetched component dataset it operates on.
 - Every clickable component must list event name, payload fields, target action, and stale-state behavior.

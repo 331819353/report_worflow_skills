@@ -34,6 +34,8 @@ Load references only when their scenario is relevant. Do not bulk-load every ref
 - Read `references/object-model-and-acceptance.md` when object fields, acceptance criteria, or implementation task lists need more detail than the core output skeleton.
 - Route to `$change-impact-analysis` immediately when the input is a change to an existing metric,口径, filter, permission, API, page, field, model, test case, or delivery document.
 - Route to `$metric-governance-lineage`, `$permission-matrix-validation`, `$data-quality-validation`, `$delivery-version-management`, or `$production-observability-feedback` when those concerns are the primary deliverable rather than just supporting context.
+- Use `$haier-enterprise-app-ui-design-spec` as the common enterprise application UI baseline when the requirement includes forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, workbench pages, or cross-platform app adaptation.
+- Use `$report-design-system-governance` as the report development/design baseline when the requirement includes reports, dashboards, cockpits, BI, data screens, business analysis, detail queries, topic analysis, KPI, charts, tables, filters, metric口径, export, performance, or acceptance.
 
 ## Input Adaptation
 
@@ -60,28 +62,31 @@ Use this sequence for every requirement transformation:
 2. Judge the scenario.
    Pick one primary scenario and optional secondary scenarios. If scenario choice is not obvious, read `references/scenario-routing.md`.
 
-3. Extract facts, assumptions, and missing inputs.
+3. Classify UI/design baseline when the deliverable contains pages.
+   Mark the requirement as common enterprise app, report/dashboard, or mixed, then route the matching baseline into downstream prototype, technical solution, frontend, testing, and acceptance work even when the user did not say "规范".
+
+4. Extract facts, assumptions, and missing inputs.
    Facts come from the user or provided files. Assumptions are safe inferences. Missing inputs are items that may affect scope, data, permission, acceptance, or delivery.
 
-4. Identify users, stakeholders, and usage moments.
+5. Identify users, stakeholders, and usage moments.
    Capture target users, maintainers, data owners, reviewers, approvers, external systems, and when/why they use the delivered result.
 
-5. Convert goals into problem statements.
+6. Convert goals into problem statements.
    Split vague goals into `theme -> business/technical problem -> expected decision/action/result`.
 
-6. Define scope and boundaries.
+7. Define scope and boundaries.
    List in-scope capabilities, out-of-scope items, phase boundaries, dependencies, and delivery order.
 
-7. Build the object model.
+8. Build the object model.
    Identify business objects, data objects, system objects, UI objects, process objects, and test objects. Capture grain, owner, source, status, relationship, lifecycle, permission, and acceptance when relevant.
 
-8. Load the relevant scenario playbook.
+9. Load the relevant scenario playbook.
    Use only the reference files that match the selected scenario and requested deliverable.
 
-9. Convert to tasks and acceptance criteria.
+10. Convert to tasks and acceptance criteria.
    Write requirements as capability statements with measurable acceptance criteria, data/API dependencies, permission behavior, error/empty states, and test evidence.
 
-10. Route to downstream skills.
+11. Route to downstream skills.
     Recommend the next skill/workflow only after the requirement package is clear enough for that skill to act.
 
     Include governance routes when relevant: `$metric-governance-lineage` for指标口径, `$permission-matrix-validation` for multi-role/data-scope rules, `$data-quality-validation` for real data trust, `$delivery-version-management` for artifact versions, and `$production-observability-feedback` for上线后闭环.
@@ -102,8 +107,9 @@ When transforming a requirement, use this structure. Keep small inputs concise, 
 10. 交互/流程/状态需求: filters, jumps, approval/task flow, lifecycle state, error/empty/loading/no-permission/stale states.
 11. 非功能需求: performance, freshness, reliability, observability, compatibility, deployment, rollback.
 12. 测试与验收标准: acceptance criteria, test cases, evidence, data consistency checks, integration smoke tests.
-13. 后续调用建议: exact downstream skills/workflows and why.
-14. 风险与待确认问题: unresolved risks, questions, decisions needed before implementation.
+13. UI/设计基线: common enterprise app baseline, report development baseline, or mixed, with downstream skills that must apply it.
+14. 后续调用建议: exact downstream skills/workflows and why.
+15. 风险与待确认问题: unresolved risks, questions, decisions needed before implementation.
 
 For implementation-ready tasks, add `开发任务清单`: task name, target file/module or artifact, dependency, and acceptance condition. Read `references/object-model-and-acceptance.md` for the detailed object and acceptance model.
 
@@ -131,6 +137,7 @@ Before finalizing, verify:
 - Objects include grain, owner/source, status, relationships, and permission when relevant.
 - Scenario-specific requirements are detailed enough for the selected downstream skill.
 - Data, API, UI, permission, process, nonfunctional, and test needs are separated.
+- Page requirements identify whether the common enterprise app baseline, report development baseline, or both must be applied downstream.
 - Acceptance criteria are measurable and tied to tests or evidence.
 - Recommended downstream skills are specific and minimal.
 - Remaining risks and questions are not hidden.

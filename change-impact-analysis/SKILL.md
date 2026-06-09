@@ -1,6 +1,6 @@
 ---
 name: change-impact-analysis
-description: "用于需求、指标、口径、筛选、权限、接口、字段、模型、页面或测试变更后的影响分析。用户提到变更影响分析、改指标、改口径、改接口、字段调整、筛选前数据完整性、需求变更评审、哪些页面/API/模型/前端组件/测试用例/文档受影响、回归范围时触发；不直接修改受影响资产。"
+description: "用于需求、指标、口径、筛选、权限、接口、字段、模型、页面或测试变更后的影响分析。用户提到变更影响分析、改指标、改口径、改接口、字段调整、更换数据源/数据表、API返回字段是否保持不变、新增字段规范命名、筛选前数据完整性、需求变更评审、哪些页面/API/模型/前端组件/测试用例/文档受影响、回归范围时触发；不直接修改受影响资产。"
 ---
 
 # Change Impact Analysis
@@ -22,7 +22,7 @@ Read `references/01-impact-matrix-template.md` when producing a reusable matrix.
 ## Workflow
 
 1. Classify the change.
-   Identify whether it is metric口径, field/schema, source lineage, API contract, filter, permission, UI/interaction, export, data quality, SLA, or acceptance change. Mark breaking vs compatible.
+   Identify whether it is metric口径, field/schema, source lineage, source table/upstream replacement, API contract, filter, permission, UI/interaction, export, data quality, SLA, or acceptance change. Mark breaking vs compatible. A source replacement is compatible only when existing API response fields and behavior remain stable and new fields are additive/named by convention.
 
 2. Establish baseline.
    List the current artifact versions and source of truth. If a delivery index exists, use it to anchor which prototype/API/backend/frontend/test/report versions are affected.
@@ -48,6 +48,7 @@ Read `references/01-impact-matrix-template.md` when producing a reusable matrix.
 - Baseline artifact inventory: artifact, version, path/source, owner, status.
 - Impact matrix: changed object -> affected page/component/API/model/metric/test/doc, severity, action, owner workflow, status.
 - Compatibility and data risk: breaking contracts, historical data/backfill need, cache impact, permission/export impact, rollout/rollback note.
+- API response compatibility: preserved fields, additive fields, renamed/removed/reshaped fields, naming compliance, deprecation/versioning, and downstream migration need.
 - Regression matrix: case IDs or test categories to run, automation/manual status, evidence needed.
 - Filter data-completeness impact before filter-binding impact when filters are changed.
 - Version and documentation plan: which artifacts need new versions and delivery index update.
@@ -58,6 +59,7 @@ Read `references/01-impact-matrix-template.md` when producing a reusable matrix.
 - Every affected item is traceable to a changed object.
 - API/model/frontend/test/doc impacts are not merged into vague wording.
 - Breaking changes name downstream consumers and migration strategy.
+- Source/table replacement is not a breaking API change by itself; it becomes breaking only when response fields, types, units, precision, enum/null behavior, formulas, grain, or empty/no-permission behavior change without a compatibility layer.
 - Regression scope includes data, permission, visual, export, and automation when relevant.
 - Filter changes include data-completeness regression before UI/component binding regression.
 - No artifact is marked ready while a required source-of-truth decision is unresolved.

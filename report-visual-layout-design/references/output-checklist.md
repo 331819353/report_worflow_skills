@@ -9,8 +9,8 @@ When asked to design a report visual layout, use this structure:
 3. 页面外壳: unified title/navigation/filter control surface for custom pages, or the selected template's native title/navigation/filter slots for template-based pages; include logo placement, actions, and template mapping if applicable.
 4. 品牌风格: Haier logo asset discovery result, logo variant or placeholder, Haier blue/white palette, typography, spacing, density, surfaces.
 5. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.
-6. 栅格方案: `8 * N` grid, component spans, row height/scroll strategy, chart/table/container/complex-diagram safety.
-7. 关键组件: KPI cards, charts, tables, text summaries, drawers/popovers, toolbar actions.
+6. 栅格方案: `8 * N` parent block grid, parent spans, internal sub-block plan when used, row height/scroll strategy, chart/table/container/complex-diagram safety.
+7. 关键组件: parent block -> sub-block -> component placement for KPI cards, charts, tables, text summaries, drawers/popovers, toolbar actions.
 8. 模板路由: chosen template and config files to adjust.
 9. 交互与状态: filters, drilldown, drawer/modal, refresh/export/fullscreen, empty/loading/error/no-permission, responsive behavior.
 10. 设计校验: first-viewport value, sample fidelity when applicable, brand correctness, grid correctness, visual restraint, no clipping/overlap.
@@ -48,13 +48,15 @@ Before finalizing, verify:
 - Change-rate and variance-rate indicators use positive-red-up / negative-green-down icon semantics.
 - Redundant information, decorative elements, and visual noise are removed.
 - The content area uses an `8 * N` rectangular grid.
-- Every component occupies complete rectangular grid blocks.
+- Every top-level parent block occupies complete rectangular page-grid cells.
+- Components may be placed inside internal sub-blocks of a parent block; sub-blocks are local layout regions and do not count as page-grid cells.
 - Page, section, and block titles are owned by the layout layer. Component bodies do not duplicate those titles through chart/table/card internal title options.
 - Every chosen block span has been checked against `1920 * 1080` or `1280 * 768` practical viewport constraints.
 - `1920 * 1080` and `1280 * 768` are not treated as total report height limits.
-- If one grid block contains multiple subcomponents, it has one clear block-level business title and the internal subcomponents remain visually subordinate.
+- If one parent grid block contains multiple sub-blocks/components, it has one clear block-level business title and the internal sub-block labels/components remain visually subordinate.
+- Every sub-block has a declared purpose, component owner, local size, `5px` parent inset, `5px` sibling gap, state behavior, and overflow rule.
 - Peer component groups inside one large block use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, they use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M` is columns, `N` is internal rows, `M >= N`, and `M - N` is minimal among valid factor pairs.
-- Blocks with repeated internal subcomponents obey the `actualTotal > 4` threshold, expand the parent block with `heightExpansionRows = ceil(N * 2 / 3)` when more height is needed, and are split, tabbed, paginated, or moved to drawers when the valid factor pair is too dense.
+- Blocks with repeated internal sub-blocks/components obey the `actualTotal > 4` threshold, expand the parent block with `heightExpansionRows = ceil(N * 2 / 3)` when more height is needed, and are split, tabbed, paginated, or moved to drawers when the valid factor pair is too dense.
 - Components are not narrow, tiny, crowded, or forced into cramped spans. Increase span/height, split content, add scroll/zoom/fullscreen, or reduce visible labels before accepting the layout.
 - Shape-sensitive visuals such as gauges, radar, maps, pies, SVG/canvas diagrams, flow paths, and custom ECharts graphics use aspect-compatible blocks or centered uniform fit boxes. A warped curve, stretched map, oval radar/circle, or squeezed gauge fails layout QA.
 - Scrollable report pages keep usable row/block heights and support vertical scrolling when content exceeds the first viewport.
@@ -106,7 +108,8 @@ Before finalizing, verify:
 - Do not use naked native `<select>` controls as the final visual surface for primary filters.
 - Do not use masonry, staggered, irregular, diagonal, or non-rectangular component layouts.
 - Do not duplicate a block/page title inside the component body.
-- Do not make components too narrow, too small, or crowded when `actualTotal > 4` and an internal exact `M * N` distribution plus parent-block expansion can carry the content.
+- Do not force every component into its own top-level `8 * N` block when a parent block with clear internal sub-blocks better answers one business question.
+- Do not make components too narrow, too small, or crowded when internal sub-block layout plus parent-block expansion can carry the content.
 - Do not let section/stage/layer/lane titles collide with or sit on top of component cards, node cards, connector lines, or child labels.
 - Do not let business-question text, labels, legends, chart marks, cards, or diagram nodes overlap, stack, or visually merge.
 - Do not create a marketing-style hero for operational reports.
