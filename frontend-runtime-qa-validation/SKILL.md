@@ -32,10 +32,10 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
    Use a local verified URL. Check that the page loads without blocking runtime errors and that core layout appears.
 
 4. Capture headless browser screenshots.
-   After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. Store screenshot paths as QA evidence.
+   After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. For report/dashboard pages, do not stop at full-page screenshots: crop component-level evidence for every in-scope donut/pie chart, trend chart, KPI card/group, and table/analytical grid. Store screenshot paths as QA evidence.
 
 5. Run multimodal visual anomaly recognition.
-   Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, SVG/canvas/ECharts geometry distortion, broken proportions, stale prototype residue, and broken scroll behavior. Convert all findings into structured `VIS-*` items.
+   Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, SVG/canvas/ECharts geometry distortion, broken proportions, stale prototype residue, and broken scroll behavior. Component crops must be reviewed against verifiable checklist items such as legend-axis distance, donut legend/label fit, KPI value-zone height/centering, and complex table header usage; do not record only vague judgments such as "视觉舒适". Convert all findings into structured `VIS-*` items.
 
 6. Check browser console and network.
    Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.
@@ -66,6 +66,7 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Build/startup succeeds or a concrete external blocker is documented.
 - Browser reaches the target page without blocking console/runtime failures.
 - Headless browser screenshots were captured before visual pass/fail judgment, or an explicit blocker explains why screenshots could not be captured.
+- Report/dashboard QA includes component-level cropped screenshots for donut/pie charts, trend charts, KPI cards/groups, and tables/analytical grids when present; full-page screenshots alone are insufficient.
 - Multimodal visual review was run on the screenshots, with `VIS-*` findings recorded or an explicit no-issue result.
 - Runtime data requests hit expected endpoints, SDKs, files, or configured proxies.
 - Matching common app or report UI baseline was applied for visual/runtime judgment, or a scoped exception is documented.
@@ -75,9 +76,14 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Empty/error/loading/auth states are visible and stable.
 - Hover/focus states preserve geometry and use in-bounds border/outline/glow; no border, shadow, or focus ring is clipped by parent overflow.
 - Standard ECharts charts are rendered through ECharts instance/wrapper and data-driven `option`/`series`; no import-only ECharts chart is hand-drawn with SVG/HTML/CSS/canvas marks.
+- Trend/cartesian ECharts charts with visible x-axis labels and bottom legends pass the cropped screenshot and option check: `grid.containLabel = true`, `grid.bottom >= 56px`, and legend-to-axis-label distance is clear.
+- Donut/pie chart crops pass the small-card fit check when applicable: legend zone reserved, radius reduced, label max width/wrapping or disclosure defined, `hideOverlap` enabled, edge/bleed margins configured where supported, and no legend/label/center/title collision.
+- KPI card/group crops pass the value-anchor check: core value zone is centered in the body, takes at least 40% of the main visual height, and title/description content does not leave a large empty lower area.
+- Table/analytical-grid crops pass the header-structure check: more than 8 visible columns or naturally grouped fields use complex/grouped headers, or a documented exception exists.
 - SVG/canvas/ECharts/custom graphics preserve aspect ratio and geometry; circles, gauges, maps, paths, nodes, and icons are not stretched, squeezed, or warped after resize, tab switch, drawer/fullscreen, or filter update.
 - Composite block no-data masks use the correct scope: whole parent only when all child sub-blocks are no-data; otherwise affected child sub-block masks include child title/control plus component body.
 - No stale prototype-only wording remains unless explicitly required.
 - Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
 - HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.
 - Final answer includes the verified URL when startup succeeds.
+- QA findings use verifiable criteria and evidence paths. Avoid pass/fail language based only on "视觉舒适", "看起来还行", or other subjective wording without measurable or inspectable checks.

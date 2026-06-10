@@ -6,6 +6,7 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 
 - Required zones: label, value, unit, status/trend, and optional baseline/target.
 - The value is the visual anchor. Status and trend support the value without competing with it.
+- The core value zone must be visually centered in the card body and occupy at least 40% of the card's main visual height. Do not stack title, subtitle, notes, or helper copy at the top in a way that leaves a large empty middle/lower area.
 - Cards in the same group share height, padding, value baseline, unit placement, and status position.
 - Clickable KPI cards need hover, active, selected, loading, and disabled states when applicable.
 
@@ -36,6 +37,8 @@ Layout rules:
 
 Fit and overflow rules:
 
+- Main KPI value, unit, and primary trend/status must sit in a centered value group. If the card has a header/title, reserve it separately and keep the value group centered within the remaining body viewport.
+- A KPI card fails fit QA when the title/description cluster consumes the top while the core number is small, off-center, or visually below 40% of the card body height.
 - Apex value, unit, and status badge must never overlap. If the value is long, reduce precision, switch unit, or widen the card before shrinking below readable size.
 - `同比`, `环比`, and `目标` labels stay permanently visible. Long helper text moves to tooltip.
 - Comparison values use compact signed notation such as `+8.2%`, `-3.1%`, `达成 96%`, or `差 320万`.

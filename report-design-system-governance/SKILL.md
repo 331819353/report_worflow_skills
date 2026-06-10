@@ -101,6 +101,10 @@ If Haier enterprise UI tokens are the required source of truth, read `$haier-ent
 - Empty/error/loading/no-permission states are specified.
 - Dense enterprise-report needs are prioritized over marketing-style layouts.
 - KPI/summary/card internals have wrapping, min-height, tooltip/expand, or scroll rules for long labels and values; critical metric text is not hidden by ellipsis-only treatment.
+- KPI cards center the core value zone in the card body and reserve at least 40% of the main visual height for the primary value area; title/description clusters must not create a top-heavy card with large unused blank space.
+- ECharts charts with x-axis labels and bottom legends reserve a safe legend/axis distance; ECharts options use `grid.containLabel = true` and `grid.bottom >= 56px`.
+- Small-card donut charts reserve legend width/band, reduce radius, constrain labels with max width/wrapping or disclosure, enable overlap hiding, and configure edge/bleed margins before acceptance.
+- Tables with more than 8 visible columns or natural grouped fields use complex/grouped headers by default.
 - Hover/focus feedback preserves component geometry and stays inside component bounds. Border glow, inset glow, and outline are preferred; offset/scale animation needs explicit overflow and viewport proof.
 - Chinese report rate/change/completion labels use `%` by default; exceptions require named legacy/product rationale.
 - Design-system version and adoption checklist are explicit.

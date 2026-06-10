@@ -55,10 +55,10 @@ A dual-readable artifact should use this order unless a specialized template ove
 ## Artifact-Specific Guidance
 
 - Requirement and prototype artifacts: open with business question, target users, page/module scope, and key visual/data decisions; then provide binding matrix and mock/filter/interaction contracts.
-- Technical-solution artifacts: open with architecture and delivery decisions; then provide API清单, 数据模型文件, gap ledger, and readiness tables.
+- Technical-solution artifacts: open with business goal, architecture blueprint, technology selection/ADR, implementation roadmap, runtime/security/production-readiness decisions; then provide API清单, 数据模型文件, gap/risk ledger, and readiness tables.
 - API documentation: open with conventions and endpoint overview; keep endpoint details structured, but summarize each endpoint's purpose and consumer before schemas.
 - Frontend function descriptions: open with pages and user workflows; then list feature inventory, provider mapping, filters, interactions, states, verification, and known limitations.
-- Backend/API implementation notes: open with service scope and runtime behavior; then list routes, transforms, auth, errors, health, logs, and operational notes.
+- Data-service/backend artifacts: open with service boundary, layered architecture, query-service chain, runtime/security/observability decisions, and readiness; then list API families/routes, transformations, auth, errors, health, logs, deployment, and operational notes.
 - Testing artifacts: open with test objective and verdict; then provide case matrix, evidence, defects, retest criteria, and readiness.
 
 ## Quality Gate

@@ -140,6 +140,7 @@ For negative indicators such as complaint volume, overdue rate, and cost rate, d
 - Similar shares are hard to compare; avoid pie.
 - Donut center can show total or key conclusion.
 - Empty data uses empty state, not broken pie.
+- In small cards, donut charts must reserve legend width/band before radius is chosen. Reduce radius, set label maximum width/wrap or truncation disclosure, enable overlap hiding, and configure edge/bleed margins so labels, legend, center text, and title do not collide.
 
 ### Scatter / Heat Scatter
 
@@ -216,6 +217,7 @@ Legend:
 - Full legend when series count is small.
 - Scroll, filter, or interaction-hide when many series.
 - Legend labels use business names, not API fields.
+- For charts with x-axis labels and bottom legends, reserve a clear safe distance between legend and axis labels. In ECharts implementations, require `grid.containLabel = true` and `grid.bottom >= 56px`.
 
 Axis:
 
@@ -268,6 +270,7 @@ Layout:
 | Operation column | Center or right by scenario |
 | Horizontal scroll | Allowed when many fields |
 | Fixed operation column | Float/fix operation column in first visible area when many fields |
+| Complex/grouped header | Required by default when visible columns exceed 8 or fields naturally group by subject, period, metric family, amount/rate/count, target/actual/variance, current/YoY/MoM, region/channel/product |
 
 Column contract:
 

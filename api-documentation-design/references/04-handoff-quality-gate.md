@@ -29,6 +29,7 @@ Use this reference before delivering the API document or handing it to frontend,
 - Collection/list/table endpoints document bounded pagination, default/max page size, stable sorting, total-count behavior, and large-result/export handling.
 - Backend/API implementation handoff that needs mock data uses SQLite fixture databases for simulation; JSON files are response examples only, not data sources.
 - Frontend compute policy is explicit. APIs should return component-ready values, series, rows, totals, ranks, and formula fields; any frontend-side business calculation exception is bounded and documented.
+- Data-vs-presentation boundary is explicit. Data APIs should avoid backend-assembled display copy, business conclusion paragraphs, HTML/Markdown, combined value+unit strings, or style-implied labels; return structured facts, metadata, codes, `messageKey`, and `messageParams` unless a server-owned text exception is documented.
 - Async jobs, callbacks, webhooks, streams, imports, or exports have lifecycle, status/progress, cancellation when allowed, queue/worker limits, retry/dead-letter behavior, idempotency, retention/expiry, result download/callback behavior, and failure behavior documented when relevant.
 - Production-bound documents include source authority, runtime environment profile notes, auth/permission behavior, health/runtime evidence, observability, performance/resilience/export limits, version compatibility, and testing handoff.
 

@@ -19,6 +19,7 @@
 
 - Use a headless browser or browser automation tool to capture screenshots before declaring layout status.
 - Capture first viewport and full page for the primary route.
+- For report/dashboard pages, capture component-level crops in addition to full-page screenshots. Required crops when present: donut/pie chart, trend/cartesian chart, KPI card or KPI group, and table/analytical grid.
 - Capture additional screenshots after representative filter changes, tab switches, drawer/modal opening, drilldown, fullscreen, export preview, and relevant empty/error/auth states.
 - Run deterministic baseline image diff when approved baselines exist. Record baseline path, current screenshot path, diff path, thresholds, masked regions, and `VDIFF-*` findings.
 - If no baseline exists, save baseline candidates and record deterministic regression as `baseline missing`, not pass.
@@ -26,6 +27,7 @@
 - Record `VIS-*` findings for layout offset, excessive blank area, text overlap, graphic overlap, chart/table/card too small, clipping, unreadable labels, nonblank rendering failures, broken proportions, stale prototype residue, and broken scroll behavior.
 - Record `VIS-*` findings for SVG/canvas/ECharts/custom-graphic distortion: warped curves, stretched maps, elliptical circles/radars, squeezed gauges, non-uniformly scaled icons, or paths whose curvature changes when the container resizes.
 - Record `VIS-*` findings for duplicate component titles, cramped/narrow/tiny components, unbalanced peer-component strips, and text-graphic collisions where business-question text, labels, legends, chart marks, cards, or diagram nodes overlap or visually merge.
+- Record `VIS-*` findings from component crops when verifiable rules fail: trend chart bottom legend crowds x-axis labels, donut legend/labels collide or clip, KPI core value is not centered or occupies less than 40% of body height, or tables with more than 8 columns/natural groups use a flat header without reason.
 - Record `VIS-*` findings for title-node collisions: section headers, stage/layer/lane titles, group captions, or column labels sitting on top of cards, node cards, connector paths, badges, legends, or child labels. The page cannot pass visual QA when this affects a key diagram or first-viewport component.
 - Re-capture, re-diff, and re-review affected screenshots after repairing `blocker` or `major` `VDIFF-*` or `VIS-*` findings.
 
@@ -48,9 +50,19 @@
 - Check target desktop and mobile/tablet viewports when the page is responsive or embedded in variable containers.
 - For ECharts, AntV S2, canvas, and virtualized tables, verify nonblank rendering, resize behavior after container changes, and cleanup/dispose behavior after route changes or tab switches.
 - For components mapped or labeled as ECharts standard charts, verify chart-engine fidelity: source/runtime uses an ECharts instance or approved wrapper, visible marks come from data-driven ECharts `option`/`series`, and tooltip/legend/emphasis behavior is available when relevant. Import-only ECharts paired with hand-authored SVG/HTML/CSS/canvas bars, lines, pies, gauges, maps, axes, or legends is a `VIS-*`/implementation QA failure.
+- For trend/cartesian ECharts charts with visible x-axis labels and bottom legends, inspect option/config and crop: `grid.containLabel` is `true`, `grid.bottom >= 56px`, and the legend has clear safe distance from axis labels.
+- For donut/pie charts in small cards or compact sub-blocks, inspect option/config and crop: legend width/band is reserved, radius is reduced to fit, labels have max width/wrapping or truncation disclosure, `hideOverlap` is enabled, `bleedMargin` and `edgeDistance` are configured where supported, and no title/legend/label/center collision exists.
+- For KPI card crops, verify the core value zone is visually centered and occupies at least 40% of the card body height; title/subtitle/helper copy must not crowd the top while leaving a large unused blank area.
+- For table/analytical-grid crops, verify more than 8 visible columns or natural field groups use complex/grouped headers; otherwise record the flat-header exception.
 - For SVG, canvas, ECharts custom graphics, maps, gauges, radars, graphs, Sankey, and complex diagrams, verify aspect-ratio preservation at target viewports. Shape-sensitive graphics should scale uniformly or relayout responsively, not stretch to fill both axes.
 - For Element Plus controls, verify CSS/theme is loaded, popper overlays attach above the report shell, select/date/cascader dropdowns are not clipped by card overflow, dialogs/drawers preserve filter context, focus states are visible, and disabled/loading/error states render correctly.
 - For Chinese report metrics, verify rate/change/completion labels show `%` rather than `pt`, `p.p.`, or `percentage point` unless explicitly required.
 - Verify change-rate and variance-rate indicators use positive-red-up and negative-green-down SVG/icon+text semantics, with neutral styling for zero.
 - For HTML-replica or custom layouts, verify the page uses global UI tokens for palette, typography, spacing, radius, shadows, semantic states, and control styling instead of copied one-off inline colors.
 - Check keyboard focus, visible focus states, close/back escape behavior, and basic screen-reader labels for custom controls when those controls are part of the delivered workflow.
+
+## Evidence Quality
+
+- QA notes must list the screenshot path for every full-page and component crop used in judgment.
+- Findings must reference verifiable criteria, such as exact option fields, pixel/spacing requirement, collision/clipping evidence, column count, or crop path.
+- Do not use only subjective wording such as "视觉舒适", "比较协调", or "看着正常" as a pass/fail basis.

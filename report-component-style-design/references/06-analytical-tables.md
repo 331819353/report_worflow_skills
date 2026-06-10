@@ -11,6 +11,7 @@ Use for AntV S2, pivot tables, cross tables, wide metric matrices, financial gri
 
 ## Columns And Width
 
+- Use complex/grouped headers by default when a table has more than 8 visible columns or when fields naturally group by subject, period, metric family, amount/rate/count, region/channel/product, target/actual/variance, or current/YoY/MoM. A flat header is acceptable only when columns are few and have no meaningful grouping.
 - Freeze key identifier columns when horizontal scroll is needed.
 - Text/name columns get more width and may wrap to two lines.
 - Numeric, percent, status, date, and action columns use stable compact widths.

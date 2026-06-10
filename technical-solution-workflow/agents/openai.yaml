@@ -1,4 +1,4 @@
 interface:
   display_name: "技术方案 Workflow"
-  short_description: "编排技术方案阶段，产出 API 清单、数据模型、指标治理、权限矩阵、质量规则、缺口台账、性能约束和版本链路。"
-  default_prompt: "Use $technical-solution-workflow to orchestrate technical solution artifacts: API inventory, data model, metric governance, permissions, quality rules, gaps, performance constraints, and version handoff."
+  short_description: "编排专业技术方案阶段，产出技术架构、技术选型/ADR、实现路径、运行时与生产准备、API 清单、数据模型、权限、质量、缺口、风险和版本链路。"
+  default_prompt: "Use $technical-solution-workflow to produce a professional technical solution: architecture blueprint, technology selection/ADR, implementation roadmap, runtime and production readiness, API inventory, data model, metric governance, permissions, quality rules, gaps, risks, and version handoff."

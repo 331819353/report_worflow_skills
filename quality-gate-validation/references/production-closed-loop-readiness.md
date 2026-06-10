@@ -2,15 +2,15 @@
 
 Use this reference for technical architecture, data-service/backend, frontend integration, and testing-integration workflows when artifacts are expected to support real production delivery rather than only a prototype, demo, or one-off document.
 
-The goal is to make the architecture -> data service -> frontend integration -> testing -> defect repair -> retest loop explicit and usable in production.
+The goal is to make the architecture/technology decision/implementation roadmap -> data service -> frontend integration -> testing -> defect repair -> retest loop explicit and usable in production.
 
 ## Closed Loop Model
 
 Production delivery is closed only when these links are traceable:
 
 1. Requirement/prototype contract -> technical architecture.
-2. Technical architecture -> API inventory, data model, source strategy, and risk/gap ledger.
-3. API inventory + data model -> API documentation and backend implementation.
+2. Technical architecture -> technology selection/ADR, implementation roadmap, API inventory, data model, source strategy, runtime/security decisions, and risk/gap ledger.
+3. API inventory + data model -> data-service design, API documentation, and backend implementation.
 4. Backend implementation -> contract validation, runtime URL, health/smoke evidence, and consumer examples.
 5. Frontend integration -> function description, runtime URL, API base, environment profile, auth/env notes, and visual/runtime QA evidence.
 6. Testing integration -> executable cases, evidence-backed results, defects routed to owner workflows.
@@ -25,7 +25,7 @@ Check these dimensions before marking a technical solution, data service, or tes
 - Architecture decision: selected runtime topology, service boundary, data flow, dependency ownership, and why alternatives were rejected when relevant.
 - Authoritative data source: source system/table/API/file owner, access method, refresh cadence, quality rule, fallback behavior, and sample evidence.
 - API/model contract: endpoint boundary, request params, response model, transformations, error envelope, pagination/sorting/export, default/max page size, stable ordering, global SQL/source-side/provider-side filter execution, component-internal local filter scope, parameter-driven data-version/scope filtering, versioning, and backward compatibility.
-- Report data-service backend readiness: apply `$backend-development-workflow` for report/BI/dashboard APIs; report metadata, backend reuse pattern/API family, common request/response model family, parameter-driven query context, query-service chain, dimension/metric/filter/sort whitelists, backend-owned source/SQL expression mapping, parameter guardrails, backend-injected tenant/data/field/export permissions, component-ready result metadata, data freshness/quality status, async export lifecycle, Redis/cache role and permission safety when used, audit, version/publish/rollback, and slow-report governance are documented or implemented.
+- Report data-service backend readiness: apply `$backend-development-workflow` for report/BI/dashboard APIs; report metadata, backend reuse pattern/API family, common request/response model family, parameter-driven query context, query-service chain, dimension/metric/filter/sort whitelists, backend-owned source/SQL expression mapping, parameter guardrails, backend-injected tenant/data/field/export permissions, component-ready result metadata, data-vs-presentation boundary, data freshness/quality status, async export lifecycle, Redis/cache role and permission safety when used, audit, version/publish/rollback, and slow-report governance are documented or implemented.
 - OLAP data model readiness: apply `$performance-optimization` for reporting/BI/dashboard models; business questions, subject areas, business processes, grains, fact/dimension/summary/application model types, metric additivity, time口径, conformed dimensions, SCD/history, many-to-many handling, update/backfill mode, quality rules, and lineage are documented.
 - Security and permissions: SSO/auth, token/header rules, row/field/operation permission, masking, audit log, no-permission behavior, secret/config handling.
 - Environment and deployment: `.env.test` and `.env.production` profiles, dev/test/prod base URLs, config variables, proxy/CORS, route/base path, deployment target, startup command, health endpoint, rollback or restore path. Apply `environment-profile-contract.md`; a single shared `.env` keeps production readiness `partial` or `blocked` unless the target is explicitly non-production.
@@ -43,8 +43,8 @@ Using fewer skills is acceptable only when the skipped areas are truly out of sc
 
 | Stage | Minimal skill chain | Production risk if skipped |
 | --- | --- | --- |
-| Requirement and technical architecture | `$report-requirement-structure-extraction`, `$technical-solution-workflow`, `$data-model-source-mapping`, `$api-inventory-design` | API/model artifacts may be traceable on paper but miss business scope, source authority, permissions, or model gaps. |
-| Data service and backend | `$api-documentation-design`, `$data-transformation-adapter-design` when mappings/formulas differ, `$api-contract-validation`, `$gap-ledger-management`, SSO skill when auth is in scope | API docs or services may run locally but lack authoritative source, auth/config, runtime evidence, or contract proof. |
+| Requirement and technical architecture | `$report-requirement-structure-extraction`, `$technical-solution-workflow`, `$data-model-source-mapping`, `$api-inventory-design` | API/model artifacts may be traceable on paper but miss business scope, architecture boundaries, technology choices, implementation route, source authority, permissions, runtime/security, or model gaps. |
+| Data service and backend | `$backend-development-workflow`, `$api-documentation-design`, `$data-transformation-adapter-design` when mappings/formulas differ, `$api-contract-validation`, `$gap-ledger-management`, SSO skill when auth is in scope | API docs or services may run locally but lack data-service design, authoritative source, query-service chain, auth/config, runtime evidence, or contract proof. |
 | Frontend integration handoff | `$api-contract-validation`, `$data-transformation-adapter-design` when provider shape differs, `$frontend-env-deployment-verification`, `$frontend-runtime-qa-validation`, `$frontend-function-description-documentation` | Testing may receive a URL without knowing provider mode, retained mocks, auth/env behavior, visual/runtime evidence, or blockers. |
 | Testing and release acceptance | `$integration-test-case-design`, `$runtime-url-smoke-test`, `$sso-auth-flow-test` when auth is in scope, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, `$test-evidence-defect-reporting` | Results may become a one-time smoke report instead of report integration acceptance with golden/baseline data, reconciliation, permission/cache/export/performance coverage, evidence, owner routing, and retest closure. |
 
@@ -62,9 +62,11 @@ Do not mark production readiness `ready` when any of these are unknown for a pro
 
 For technical architecture / technical solution:
 
-- Architecture overview: service boundary, runtime topology, data flow, dependencies, environments, and key decisions.
+- Architecture overview: business capability, system context, logical architecture, service boundary, runtime topology, data flow, dependencies, environments, operations boundary, and key decisions.
+- Technology selection/ADR: selected stacks, default/override reasons, tradeoffs, compatibility/test/release impact, and unresolved decisions.
+- Implementation roadmap: phase order, owner actions, dependencies, release gate, rollback, migration/backfill when relevant, and acceptance evidence.
 - Environment profile plan: `.env.test` and `.env.production`, frontend/backend pairing, source/auth separation, and blockers.
-- API inventory, data model, and gap ledger.
+- API inventory, data model, risk ledger, and gap ledger.
 - Data modeling readiness: business analysis matrix, source/logical/response models, layer/type/grain decisions, metric additivity/time口径, summary/wide-table decisions, quality rules, and lineage.
 - Nonfunctional requirements: auth, permissions, performance/resilience, observability, deployment, rollback, and testability.
 - Report data-service backend plan when report APIs are in scope: metadata/query-chain ownership, backend reuse pattern/API family, common request/response model family, parameter guardrails, permission/tenant/field/export rules, Redis/cache/export/audit/freshness behavior, version/publish/rollback, and slow-report governance.
@@ -72,6 +74,7 @@ For technical architecture / technical solution:
 
 For data service / backend:
 
+- Data-service design: service boundary, layered architecture, query-service chain, QueryContext, source-adapter mapping, cache/precompute, async/export, permission/security, observability, deployment/rollback, and handoff readiness.
 - API document and implementation status.
 - Runtime backend URL or startup blocker.
 - Health/smoke evidence, contract validation, source mode, transformation validation, auth behavior, and missing-info document.

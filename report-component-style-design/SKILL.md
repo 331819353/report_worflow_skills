@@ -60,6 +60,10 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not use CSS `transform: scaleX/scaleY`, `object-fit: fill`, or raw `width: 100%; height: 100%` SVG/canvas stretching when the graphic shape has business meaning. Center/letterbox inside the assigned viewport or redesign the graphic for the actual aspect ratio.
 - For ECharts line, area, bar, and other category-axis charts, the x-axis categories must be ordered explicitly. Time/period axes default to ascending chronological order unless the user or business rule explicitly requires reverse/custom order.
 - Do not sort only x-axis labels, categories, or `xAxis.data` while series values still map the unsorted source rows. Sort the row tuples first, then derive `xAxis.data`, every `series.data`, tooltip payloads, and click payloads from the same ordered rows.
+- For ECharts Cartesian charts with visible x-axis labels and a bottom legend, `grid.containLabel` must be `true`, `grid.bottom >= 56px`, and the legend must keep an explicit safe distance from x-axis labels.
+- For donut charts inside small cards or compact sub-blocks, reserve legend width/band, reduce radius accordingly, set label max width/wrapping or truncation disclosure, enable `labelLayout.hideOverlap`, and configure `bleedMargin` and `edgeDistance` where supported. Donut labels, legends, center text, and card title must not collide or rely on clipping.
+- KPI cards must visually center the core value zone in the card body. The main value region must occupy at least 40% of the card's main visual height, and title/description text must not crowd the top while leaving a large empty lower area.
+- Tables with more than 8 visible columns or natural field groups must use complex/grouped headers by default. A flat header needs an explicit reason.
 - Do not solve density by shrinking text below readable sizes; use sampling, scrolling, zoom/pan, drawer, fullscreen, split components, or table fallback.
 - Do not create one-off component styles that conflict with the page shell, Haier branding, or existing design system.
 - Do not duplicate Haier enterprise UI tokens or standard component rules inside report component guidance; load `$haier-enterprise-app-ui-design-spec` whenever common enterprise Web components or app-surface behavior are present.
@@ -108,6 +112,10 @@ When using this skill, provide:
 - SVG/canvas/ECharts/custom graphics preserve their intended aspect ratio; curves, gauges, maps, nodes, and icons are not squeezed, stretched, or warped by the container.
 - Nested summary/KPI/tile layouts pass internal fit for long labels, values, units, helper text, and action text; no decision-critical content is clipped by nowrap/ellipsis without disclosure.
 - Line, area, bar, and other category-axis charts have an explicitly sorted x-axis, and labels/points/values/tooltips are derived from the same sorted row order.
+- ECharts charts with visible x-axis labels plus bottom legends pass the reserved-space check: `grid.containLabel = true`, `grid.bottom >= 56px`, and legend-to-axis-label distance is visually clear.
+- Small-card donut charts pass the legend/label fit check: legend zone reserved, radius reduced, label max width or wrapping/truncation defined, `hideOverlap` enabled, `bleedMargin` and `edgeDistance` configured where supported, and no legend/label/center/title collision.
+- KPI cards pass the value-anchor check: core value zone is centered in the body, occupies at least 40% of main visual height, and title/description placement does not create large unused blank space.
+- Tables with more than 8 visible columns or natural grouped fields use complex/grouped headers, or the flat-header exception is documented.
 - Repeated peer cards/charts/tiles use internal exact `M * N` distribution only when `actualTotal > 4`; prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs; sub-block viewports pass min-size checks and parent blocks pass the height-capacity check with `heightExpansionRows = ceil(N * 2 / 3)`.
 - Titles, units, labels, legends, controls, pagination, and states fit without overlapping data marks.
 - Business-question text, conclusion text, component labels, chart marks, diagrams, tables, and cards do not overlap, stack, or visually merge.

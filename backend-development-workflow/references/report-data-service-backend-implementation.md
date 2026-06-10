@@ -1,6 +1,6 @@
 # Report Data Service Backend Implementation And Optimization
 
-Use this shared reference whenever a report, BI, dashboard, or data-visualization backend/data service is planned, documented, implemented, validated, or reviewed for production readiness.
+Use this shared reference whenever a report, BI, dashboard, or data-visualization backend/data service is designed, documented, implemented, validated, or reviewed for production readiness.
 
 This reference is about the report backend as a controlled query service. It complements:
 
@@ -29,6 +29,38 @@ report definition
 Frontends choose report, dimension, metric, filter, sort, page, drilldown, and export options by stable codes. Frontends must not send raw SQL, table names, column expressions, arbitrary operators, or permission scope.
 
 API design should let this query-service chain be reused. A backend-friendly API declares the reuse pattern, common request model, common response envelope, and service-layer mapping before implementation starts.
+
+## Upstream Technical-Solution Linkage
+
+When a technical solution exists, the data-service design must consume and preserve its decisions:
+
+- `ARC-*`: service boundary, logical architecture, data flow, runtime/deployment, security, and operations views.
+- `ADR-*`: selected backend/data-service stack, cache/precompute choice, deployment/runtime, auth/security, observability, and testing/release decisions.
+- `API-*`: endpoint families, consumers, request/response model names, performance expectations, and status.
+- `SRC-*`, `LGM-*`, `RSP-*`, `MET-*`: source authority, logical model, response model, metric口径, grain, fields, lineage, and data-version fields.
+- `PERM-*`, `DQ-*`, `NFR-*`: permission, data quality, performance/resilience, security, observability, and production-readiness constraints.
+- `GAP-*`, `RISK-*`, `ROAD-*`: unresolved decisions, risks, owner actions, and implementation phase order.
+
+If upstream artifacts do not exist, produce equivalent decisions in the data-service design and mark uncertain items with linked gaps. Do not infer production runtime, source authority, metric口径, permission scope, or cache behavior without evidence.
+
+## Data-Service Design Contract
+
+Before API documentation or implementation, a production-bound report data service should have a design contract that covers:
+
+| Design Area | Required Output |
+| --- | --- |
+| Service boundary | owned APIs, consumers, upstream/downstream systems, source authority, out-of-scope work |
+| Layered architecture | controller, service/use-case, metadata, query planner, source adapter, formatter, cache/precompute, export, permission, operations |
+| Query context | client params, backend defaults, data-version params, backend-injected permission/data scope, guardrails, downstream predicate/key mapping |
+| API family mapping | metadata, filter, query, dashboard/snapshot, detail/drilldown, export, action, status/health families and shared models |
+| Source adapter mapping | source fields/formulas to response fields, units, precision, enum, null/default behavior, compatibility status |
+| Data vs presentation boundary | structured data, units, enums, reason codes, message keys/params, metadata, and documented server-owned text exceptions |
+| Runtime model | sync/async boundary, connection pools, Redis/cache/precompute, timeout/fallback, rate/concurrency limits, queue/backpressure |
+| Security and audit | auth, tenant/org/data scope, field/action/export permission, masking, secret/config, query/export/download/config audit |
+| Production operations | health/readiness, logs, traces, metrics, slow-report governance, freshness/quality signals, alert owner, deployment/rollback |
+| Handoff readiness | API documentation, implementation, frontend integration, testing, operations, gaps, risks, owner actions |
+
+Use `data-service-design-template.md` when the deliverable is design rather than implementation.
 
 ## Default Backend Stack
 
@@ -284,7 +316,14 @@ Include when applicable:
 - `page`: page number/size, cursor, `hasNext`, total only when precise total is affordable and useful.
 - `meta`: `fromCache`, query time, report version, data freshness time, data delay, data quality status/warnings, request id/trace id.
 
-Do not leave KPI formulas, ranking, grouping, chart-series derivation, permission filtering, or multi-component splitting as implicit frontend work unless the exception is small, bounded, and documented.
+Data APIs should return data and metadata, not avoidable presentation composition. Prefer raw/structured facts and frontend-composable metadata:
+
+- Good: `value`, `unit`, `precision`, `delta`, `trendDirection`, `thresholdLevel`, `reasonCode`, `messageKey`, `messageParams`, `columns`, `enumLabels`, `qualityWarnings`.
+- Avoid: preassembled paragraphs, business conclusions, HTML/Markdown, rich text, style class names, combined value+unit strings, or strings such as `"完成率 85%，较上月提升 3%"` when the frontend can compose the same statement.
+
+Server-owned text is acceptable only when it is part of a documented exception, such as error/no-permission messages, audit/legal/notification content, regulated explanation, or a governed/model-generated conclusion. When backend returns such text, also return structured evidence fields, variables, conclusion type, and status/confidence when applicable so frontend can still control styling and layout.
+
+Do not leave KPI formulas, ranking, grouping, chart-series derivation, permission filtering, or multi-component splitting as implicit frontend work unless the exception is small, bounded, and documented. Conversely, do not move frontend copywriting, visual emphasis, layout wording, or style-specific conclusion assembly into the data service merely to make the first version easier.
 
 ## Export And Long-Running Work
 
@@ -342,6 +381,7 @@ Treat these as findings unless explicitly scoped to a tiny non-production demo:
 - Cache key omits tenant, permission scope, report version, dataset/source version, or user/role scope.
 - Redis is mentioned without role, key template, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability.
 - Redis request path uses `KEYS`, unbounded `SCAN`, huge values, infinite TTL for mutable data, or distributed locks without TTL/owner token.
+- Data API returns avoidable concatenated display text, conclusions, HTML/Markdown, or style-implied strings instead of structured facts and metadata, making frontend styling, localization, responsive layout, or emphasis control difficult.
 - Metrics, trends, rankings, tables, exports, or drilldowns read an undocumented snapshot/dashboard API response or application-memory snapshot as their data source instead of using a declared snapshot/source/precompute/shared-cache contract by data-version context.
 - Response metadata echoes `snapshotDate/dataVersion` or scope values, but the repository/source/precompute/cache query did not use those values as params, predicates, or key segments.
 - Query/export opens a new physical database connection per request instead of using a bounded pool.
@@ -362,17 +402,23 @@ Mark report data-service backend readiness:
 
 Backend/API documentation, implementation notes, and validation reports should include:
 
+- Upstream technical-solution linkage: consumed `ARC-*`, `ADR-*`, `API-*`, `LGM-*`, `NFR-*`, `GAP-*`, and any divergence from them.
+- Data-service boundary and layered architecture: controller, service/use-case, metadata, query planner, source adapter, formatter, cache/precompute, export, permission, observability, and runtime ownership.
 - Report type and execution strategy.
 - Backend API family/reuse pattern for each endpoint.
 - Metadata model or explicit reason why a fixed endpoint is acceptable.
 - Query chain ownership and layer mapping.
+- QueryContext contract: client params, backend defaults, data-version fields, backend-injected tenant/permission scope, guardrails, and source/cache/precompute mapping.
 - Endpoint list with served component/widget group.
 - Request guardrails and error codes.
 - Permission, tenant, field masking, and export-permission behavior.
+- Source-adapter compatibility matrix when table/upstream/fixture/source changes.
+- Data-vs-presentation boundary: structured data/metadata returned by backend, frontend-owned copy/conclusion composition, and documented server-owned text exceptions.
 - Cache key dimensions, TTL, invalidation, warmup, stale fallback, and permission safety.
 - Redis role matrix and operational contract when Redis is used.
 - Pagination/count/export strategy.
 - Async export/job lifecycle evidence when applicable.
 - Result metadata for columns, precision, freshness, quality, cache status, and trace id.
 - Audit and monitoring evidence.
+- Environment/source-mode evidence, health/readiness path, deployment and rollback notes for production-bound work.
 - Linked `$performance-optimization` findings or pass status.

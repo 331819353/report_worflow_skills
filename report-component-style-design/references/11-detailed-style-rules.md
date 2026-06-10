@@ -676,6 +676,7 @@ Structure:
 Rules:
 
 - Value is the visual anchor.
+- The core value zone must be visually centered in the card body and occupy at least 40% of the card's main visual height. A KPI card fails when title/description text crowds the top and leaves a large blank lower area.
 - Label and value align consistently across cards.
 - Cards in the same row share height and internal rhythm.
 - Status color and trend icon are consistent.
@@ -723,6 +724,7 @@ Rules:
 Layout rules:
 
 - Reserve explicit zones for chart title/actions, legend, plot, axes, labels, and notes.
+- For ECharts Cartesian charts with visible x-axis labels and a bottom legend, set `grid.containLabel = true`, set `grid.bottom >= 56px`, and keep a clear safe distance between legend and axis-label bands.
 - Use `label column + visual column + value column` structure for horizontal bar/list charts so end values never collide with bars.
 - For waterfall, funnel, decomposition, and contribution charts, reserve extra side padding for labels and negative/positive values.
 - For line, area, and mini trend charts with sparse data, apply the Sparse Line And Trend Chart Rules so one point is centered and two points are center-symmetric.
@@ -738,6 +740,13 @@ For dense charts:
 - Hide nonessential labels by default and reveal details through tooltip, hover, selection, drawer, or fullscreen.
 - When exact value reading matters, prefer table/list/detail drawer over a visually saturated chart.
 - Switch to table when exact reading matters more than shape.
+
+### Small-Card Donut Rules
+
+- Donut charts inside small cards must reserve legend width/band before radius is chosen.
+- Reduce radius after reserving legend and label zones; do not let the donut consume the legend area.
+- Configure label maximum width, wrapping or truncation disclosure, `labelLayout.hideOverlap`, `bleedMargin`, and `edgeDistance` where supported.
+- If label/legend/center/title collision remains, move detail to tooltip/legend, enlarge the card, or switch to bar/table.
 
 ### Radar Chart Rules
 
@@ -775,6 +784,7 @@ S2 rules:
 Rules:
 
 - Header sticky when table scrolls.
+- Use complex/grouped headers by default when a table has more than 8 visible columns or when fields naturally group by subject, period, metric family, amount/rate/count, target/actual/variance, current/YoY/MoM, or region/channel/product.
 - Key columns frozen when the table is wide.
 - Columns adapt to content type: identifiers and long names get larger/wrapping columns; numeric, percent, status, and action columns use stable compact widths.
 - Full table cell content should be visible by wrapping, widening, or horizontal scroll. Do not use省略号/ellipsis as the primary way to hide undisplayed content.

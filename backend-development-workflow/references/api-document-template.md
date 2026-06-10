@@ -9,6 +9,21 @@ Use this structure when a backend workflow must output interface documentation.
 - Runtime:
 - Base URL:
 - Auth mode:
+- Mode: data-service-design / API documentation / implementation / repair
+- Upstream technical solution: ARC-* / ADR-* / API-* / LGM-* / NFR-* / GAP-*
+
+## 1a. Data-Service Design Summary
+
+- Service boundary:
+- Consumers:
+- Backend stack decision:
+- Layered architecture:
+- Query-service chain:
+- Data-vs-presentation boundary:
+- Runtime model:
+- Security/permission model:
+- Observability and deployment:
+- Readiness:
 
 ## 2. Input Files
 
@@ -136,8 +151,8 @@ Use this section when backend work starts from frontend/prototype mock data.
 
 ## 7. API Inventory
 
-| Method | Path | Served component | Purpose | Auth | Request Model | Response Model | Filter/sort/page execution stage | Frontend compute policy |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Method | Path | API family | Served component | Purpose | Auth | Request Model | Response Model | Service mapping | Runtime policy | Filter/sort/page execution stage | Frontend compute policy | Data-vs-presentation policy |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 8. API Contracts
 
@@ -147,15 +162,21 @@ Purpose:
 
 Served component or component group:
 
+API family:
+
 Auth:
 
 Data source:
+
+Service-layer mapping:
 
 Transformation:
 
 Filter/sort/page execution stage:
 
 Frontend compute policy:
+
+Data-vs-presentation policy:
 
 Contract verification:
 

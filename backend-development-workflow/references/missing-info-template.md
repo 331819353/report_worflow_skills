@@ -16,6 +16,25 @@ Use this structure when backend work must output unresolved or assumed informati
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MI-001 | Data transformation | Confirm whether source `YYYYMMDD` should become response `YYYYMM` by truncation or calendar aggregation. | Monthly trend may be inaccurate if aggregation rule is wrong. | Temporarily aggregate by first six characters and sum numeric measures. | Production readiness remains partial until aggregation rule is confirmed. | Confirm with data owner. | Open |
 
+## 2a. Data-Service Design Gaps
+
+Use this section when data-service design is incomplete or upstream technical-solution decisions are missing.
+
+- Missing upstream technical-solution artifact or version:
+- Missing service boundary or consumer scope:
+- Missing layered architecture owner:
+- Missing QueryContext fields, defaults, or permission-injected params:
+- Missing API family/reuse pattern:
+- Missing service-layer mapping:
+- Missing data-vs-presentation boundary or server-owned text exception reason:
+- Missing source-adapter ownership:
+- Missing Redis/cache/precompute role:
+- Missing sync/async/export boundary:
+- Missing connection-pool and timeout model:
+- Missing auth/permission/masking/audit decision:
+- Missing observability, health, alert owner, or runbook boundary:
+- Missing deployment target, config profile, source mode, or rollback plan:
+
 ## 3. Data Source Gaps
 
 Document unavailable files, missing tables, incomplete rows, malformed values, unknown refresh cadence, missing join keys, or unclear authoritative sources.
@@ -62,6 +81,7 @@ When replacing frontend mock data, record any mismatch between the mock/display 
 - Missing frontend-required fields:
 - Different field names or nesting:
 - Unit or precision mismatch:
+- Backend-composed text/conclusion blocks frontend styling/localization/layout:
 - Empty-state response mismatch:
 - Unknown filter option values:
 - Sort/order mismatch:
