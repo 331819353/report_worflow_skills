@@ -491,7 +491,7 @@ Do not choose a template only because it "looks better"; choose by scenario, nav
 
 Implementation must:
 
-- Install dependencies on demand. Before running `npm install`, compare `package.json`, existing imports, and the component binding matrix. Keep base template dependencies minimal; add heavy packages such as `@antv/s2` and `@antv/s2-vue` only when current code imports them or the mapped component set requires them. If install hangs past 120 seconds, stop, remove unused heavy dependencies from the generated project and lockfile, and retry the minimal install path.
+- Install dependencies on demand. Before running `npm install`, compare `package.json`, existing imports, and the component binding matrix. Keep base template dependencies minimal; add heavy packages such as `@antv/s2` and `@antv/s2-vue` only when current code imports them or the mapped component set requires them. If install hangs past 120 seconds, stop, remove unused heavy dependencies from the generated project and lockfile, and retry the minimal install path. If domestic network access blocks npm, use a temporary command-level mirror such as `npm install --registry=https://registry.npmmirror.com` or `npm install <package-name> --registry=https://registry.npmmirror.com`; if unavailable, replace the registry URL with `https://npm.aliyun.com/`, `https://mirrors.cloud.tencent.com/npm/`, `https://mirrors.ustc.edu.cn/npm/`, or `https://mirrors.tuna.tsinghua.edu.cn/npm/`. Do not make registry changes persistent unless explicitly requested.
 - Keep business data out of config when the template expects data files or data sources.
 - Declare `brandMode`, `visualMode`, and pass brand asset discovery before changing files.
 - Declare `pageShellPath`; if custom, declare `customDesignPath`.

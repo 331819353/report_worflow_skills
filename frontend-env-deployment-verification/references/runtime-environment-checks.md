@@ -8,6 +8,37 @@
 - Output directory: `dist`, `build`, `.next`, `out`, or project-specific output.
 - Router mode: hash, history, file-based, static entry, or host-controlled route.
 
+## Temporary NPM Registry Fallback
+
+Use this only when npm install/startup is blocked by network access to the default registry, especially in domestic network environments. Prefer command-level registry overrides so the project and user's global npm config remain unchanged.
+
+```bash
+npm install --registry=https://registry.npmmirror.com
+npm install <package-name> --registry=https://registry.npmmirror.com
+```
+
+If the first mirror is unavailable, replace the registry URL with one of these alternatives:
+
+```text
+https://npm.aliyun.com/
+https://mirrors.cloud.tencent.com/npm/
+https://mirrors.ustc.edu.cn/npm/
+https://mirrors.tuna.tsinghua.edu.cn/npm/
+```
+
+When the project has a trusted lockfile and exact dependency restoration is required, use:
+
+```bash
+npm ci --registry=https://registry.npmmirror.com
+```
+
+Rules:
+
+- Treat the mirror as a temporary local fallback, not the default project policy. The registry URL may be `https://registry.npmmirror.com` or one of the listed alternatives.
+- Do not run `npm config set registry ...`, edit `.npmrc`, or commit registry changes unless the user explicitly asks for a persistent mirror.
+- After install succeeds, continue with the normal project commands such as `npm run dev`, `npm run build`, `npm run preview`, or template `npm run dev:auto`.
+- If install still fails, record the registry command used, package name, error snippet, and whether the failure is dependency resolution, auth, TLS/proxy, or package-not-found.
+
 ## Environment Values
 
 - API/BFF/GraphQL base URL.

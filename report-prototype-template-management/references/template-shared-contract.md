@@ -92,3 +92,21 @@ Interaction feedback rules:
 Template assets intentionally exclude `node_modules` and `dist`.
 
 Dependency rule: if install stalls for more than 120 seconds, stop the install, remove unused heavy packages from the generated project and lockfile, then retry with the minimal dependency set needed for the current prototype.
+
+Temporary npm registry fallback: when domestic network access blocks npm install or adding a one-off package, prefer a command-level mirror instead of changing global config:
+
+```bash
+npm install --registry=https://registry.npmmirror.com
+npm install <package-name> --registry=https://registry.npmmirror.com
+```
+
+If the first mirror is unavailable, replace the registry URL with one of these alternatives:
+
+```text
+https://npm.aliyun.com/
+https://mirrors.cloud.tencent.com/npm/
+https://mirrors.ustc.edu.cn/npm/
+https://mirrors.tuna.tsinghua.edu.cn/npm/
+```
+
+Use `npm ci --registry=<registry-url>` only when a trusted lockfile should be restored exactly. Do not commit `.npmrc` or persistent registry changes unless the user explicitly asks for a project-level mirror.

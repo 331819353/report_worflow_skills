@@ -64,7 +64,8 @@ All template directories must be copied with their full project structure: `pack
 9. Before configuring filter bindings, verify the data is complete enough for filtering: filter option rows, business rows, required fields, default/non-default values, empty/no-permission states when relevant, and resolver/API branches exist for every affecting primary/global filter.
 10. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
 11. When changing layout spacing, block padding, radius, title band, row height, or hover/focus surfaces, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
-12. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
+12. Install dependencies with the minimal package set needed by the current template. If npm install is blocked by domestic network access, use a temporary command-level mirror: `npm install --registry=https://registry.npmmirror.com` or `npm install <package-name> --registry=https://registry.npmmirror.com`; if unavailable, replace the registry URL with `https://npm.aliyun.com/`, `https://mirrors.cloud.tencent.com/npm/`, `https://mirrors.ustc.edu.cn/npm/`, or `https://mirrors.tuna.tsinghua.edu.cn/npm/`. Use `npm ci --registry=<registry-url>` only when restoring an existing lockfile exactly.
+13. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
 ## Required Output
 
@@ -80,6 +81,7 @@ All template directories must be copied with their full project structure: `pack
 - Chart engine fidelity decision for standard chart widgets: ECharts instance/wrapper, data-driven option/series, update/resize path, and any explicit non-ECharts custom diagram exceptions.
 - Filter surface mapping when filters exist: template-native trigger/panel/popover/drawer, local title-band filter, or explicit template-redesign exception. Do not output a separate filter toolbar for bundled templates.
 - Template layout-token decisions when changed: `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, content range, and hover/focus feedback.
+- Dependency install command and temporary registry fallback used, if any.
 - Validation and startup commands.
 - Any template limitation or custom-development gap.
 
