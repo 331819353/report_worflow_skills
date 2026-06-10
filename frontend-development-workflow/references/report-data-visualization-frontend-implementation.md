@@ -137,6 +137,9 @@ Use the chart that fits the question:
 Hard rules:
 
 - Pie/donut normally stays within 5 categories. Use bar, stack, tree, or table when categories are many.
+- Small-card donut/pie defaults to bottom legend. When outside labels are enabled, right-side legend is allowed only after a width budget proves enough space; otherwise use bottom legend.
+- Compact donut/pie implementation must declare `legendBandHeight`, `labelLineBudget`, `radius`, and `center`. Right-side legend also requires a legend width budget and outside labels must be disabled or limited to key labels.
+- Low-share donut/pie categories may hide permanent outside labels to prevent label-ring crowding; complete name, value, and percentage must remain available through tooltip and legend.
 - Line charts should not default to many series. Show important series, Top N, or allow controlled selection.
 - Bar/ranking charts must be sorted by the business metric unless a natural order is required.
 - Dual-axis charts need at most two metrics, clear units, axis-color pairing, and no hidden correlation implication; split into two charts if users may misread it.

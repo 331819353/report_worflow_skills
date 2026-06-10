@@ -1,4 +1,4 @@
 interface:
   display_name: "质量门禁校验"
-  short_description: "执行入口一致性、设计合理性、控制语义、高度预算、生产就绪、视觉运行和交付可读性等跨阶段质量门禁。"
-  default_prompt: "Use $quality-gate-validation to run entry consistency, design reasonableness, control semantics, fixed-height card/navigation height-budget gates, production readiness, visual/runtime, and artifact quality gates."
+  short_description: "执行入口一致性、设计合理性、控制语义、高度预算、环图空间预算、生产就绪、视觉运行和交付可读性等跨阶段质量门禁。"
+  default_prompt: "Use $quality-gate-validation to run entry consistency, design reasonableness, control semantics, fixed-height card/navigation height-budget gates, donut/pie space-budget and crop-evidence gates, production readiness, visual/runtime, and artifact quality gates."

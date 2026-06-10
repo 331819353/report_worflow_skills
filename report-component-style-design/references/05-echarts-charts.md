@@ -91,11 +91,25 @@ Allowed non-ECharts SVG/canvas use:
 
 For donut charts inside small cards, KPI tiles, compact sub-blocks, or narrow dashboard cards:
 
-- Reserve legend width before choosing center and radius. Right-side legends normally need a fixed legend zone; bottom legends need a reserved bottom band. Do not let the donut occupy space needed by legends.
-- Shrink radius deliberately after legend reservation; do not use a large default radius that pushes labels into card edges or legends.
+- Use a bottom legend by default. Bottom legends must declare `legendBandHeight` before choosing chart body height, `center`, and `radius`.
+- If outside labels are enabled, a right-side legend must first pass a width budget. If the budget does not pass, use a bottom legend instead.
+- Right-side legends are allowed only when the card is wide enough and outside labels are disabled or limited to key labels such as Top N, selected, anomaly, or current focus categories.
+- Declare the donut space budget explicitly:
+
+```text
+legendBandHeight = <px or %>      // required for bottom legend
+legendSideWidth = <px or %>       // required for right legend
+labelLineBudget = <px>            // reserved outward space for labels and guide lines
+center = [x, y]
+radius = [inner, outer]
+```
+
+- Shrink radius deliberately after legend and `labelLineBudget` reservation; do not use a large default radius that pushes labels into card edges or legends.
 - Set label constraints explicitly: maximum label width, wrapping or truncation policy, tooltip/full label disclosure, `labelLayout: { hideOverlap: true }`, `bleedMargin`, and `edgeDistance` where supported.
-- Outside labels and guide lines must stay inside the card bounds. If labels cannot fit with `hideOverlap`, reduced radius, `bleedMargin`, and `edgeDistance`, move detail to legend/tooltip or switch to bar/table.
-- Center text, slice labels, legend, tooltip trigger area, and card title must each have reserved space. No element may rely on `overflow: hidden` to hide a collision.
+- Low-share categories may hide permanent outside labels. Full category name, value, percentage, and status must remain available through tooltip and legend. Do not force every low-value slice to keep an outside label when it creates a crowded label ring.
+- Outside labels and guide lines must stay inside the card bounds. If labels cannot fit with `hideOverlap`, reduced radius, `bleedMargin`, `edgeDistance`, and low-value label hiding, move detail to legend/tooltip or switch to bar/table.
+- Center text, slice labels, label lines, legend, tooltip trigger area, and card title must each have reserved space. No element may rely on `overflow: hidden` to hide a collision.
+- Do not accept a configuration that says only "adjust legend position"; it must include the legend band/width, `labelLineBudget`, `center`, and `radius` decisions.
 
 ## Radar
 

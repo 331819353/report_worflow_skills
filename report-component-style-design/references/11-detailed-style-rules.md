@@ -175,7 +175,7 @@ Density strategies:
 - Data labels: default to hidden for dense series. Show only key points such as latest, max, min, target gap, anomaly, selected item, or hovered item.
 - Bar/column charts: when bar width becomes too small for labels, move exact values to tooltip, show end labels only for Top N or highlighted bars, or switch to horizontal bars with scroll.
 - Line/area charts: do not label every point. Label endpoints, anomalies, max/min, or selected comparison points; use tooltip and axis pointer for exact reading.
-- Pie/donut/rose charts: if slices exceed a readable count, use Top N plus "others", hide low-value slice labels, use legend/tooltip for details, or switch to bar/table. Do not let outside labels and guide lines form a dense ring.
+- Pie/donut/rose charts: if slices exceed a readable count, use Top N plus "others", hide low-value slice labels, use legend/tooltip for details, or switch to bar/table. Small-card donut/pie defaults to bottom legend; right-side legend requires a passing width budget and outside labels disabled or key-label-only. Compact donut/pie must declare `legendBandHeight`, `labelLineBudget`, `radius`, and `center`. Do not let outside labels, guide lines, legends, titles, or center text form a dense ring or collide.
 - Scatter/bubble charts: when points are dense, label only selected/outlier points, use tooltip, brush, visualMap, and zoom. Do not print labels for every point.
 - Heatmap/calendar/map: prefer tooltip and selected labels; label only major regions or high-risk cells when space allows.
 - Tree/Sankey/flow/decomposition charts: collapse low-priority branches, provide zoom/pan/fullscreen, and label only visible nodes whose boxes can fully contain text.

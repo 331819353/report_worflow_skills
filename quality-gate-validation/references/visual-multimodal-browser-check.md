@@ -38,8 +38,10 @@ Capture the smallest set that can prove the page is visually usable:
 - Mobile/tablet screenshots when the page is responsive or embedded in variable containers.
 - One screenshot after changing a representative primary filter, plus the expected visible data-change assertion for affected components when the filter is supposed to change data.
 - One screenshot or focused crop after switching each non-default business domain, report theme, management object, subject area, or first-level perspective when those controls exist. The assertion must cover metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels, not only values.
+- A dedicated crop for every donut/pie chart. Full-page screenshots cannot replace donut/pie crops because label-line, legend, title, and edge collisions are easy to miss at page scale.
 - DOM overflow evidence for domain navigation, Tabs, Segments, and first-level perspective controls at `1920x1080` and `1280x768`: each visible item/card content viewport must satisfy `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`. Screenshots are not a substitute for this evidence.
 - Height-budget and DOM overflow evidence for fixed-height navigation/cards/KPI tiles/compact summaries: padding, explicit line-height, gaps, badge/status/footer heights, and `requiredContentHeight <= componentHeight`. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a clipping defect unless the region is an intentional visible scroll area.
+- Donut/pie option/config evidence for compact charts: `legendBandHeight`, `labelLineBudget`, `radius`, `center`, right-legend width budget when right legend is used, low-value label rule, tooltip/legend disclosure, and edge/bleed/hide-overlap settings.
 - One screenshot of opened custom filter popovers/dropdowns when filter visual acceptance is in scope.
 - One screenshot focused on complex flow, Sankey, graph, tree, decomposition, or lineage diagrams when present.
 - For diagrams with layer/stage/lane labels such as `L1/L2/L3`, capture the full diagram header/title band and the first row of nodes in the same screenshot so title-node collisions are visible.
@@ -95,6 +97,8 @@ Ask the multimodal model to inspect screenshots for:
 - Component too small: chart/table/KPI/detail content is compressed, unreadable, or occupies too little of its block.
 - Internal component clipping: summary text, nested KPI grids, submetric tiles, metric titles, values, helper text, or actions are truncated by narrow columns, forced fixed grids, `nowrap`, ellipsis, or hidden overflow without tooltip/focus/drawer disclosure.
 - Missing fixed-height budget: fixed-height navigation/cards/KPI tiles do not declare padding, explicit line-height, gaps, badge/status/footer heights, or a passing `requiredContentHeight <= componentHeight` calculation.
+- Donut/pie budget failure: compact donut/pie charts lack `legendBandHeight`, `labelLineBudget`, `radius`, or `center`, use a right-side legend without a width budget, or keep low-share outside labels that crowd the label ring.
+- Donut/pie crop failure: donut/pie labels, guide lines, legend, title, center text, or chart edge spacing collide, squeeze each other, clip, or leave the card bounds in the dedicated component crop.
 - Crowded component distribution: repeated peer cards/charts/tiles are too narrow, too small, or arranged in an awkward long strip instead of a balanced `M * N` pattern when space allows.
 - Clipping or truncation: important text, values, legends, axes, controls, drawers, modals, or table content is cropped.
 - Nonblank rendering: charts, canvases, maps, icons, logos, images, and tables render with visible content.
