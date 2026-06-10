@@ -63,7 +63,7 @@ All template directories must be copied with their full project structure: `pack
 8. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
 9. Before configuring filter bindings, verify the data is complete enough for filtering: filter option rows, business rows, required fields, default/non-default values, empty/no-permission states when relevant, and resolver/API branches exist for every affecting primary/global filter.
 10. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
-11. When changing layout spacing, block padding, radius, title band, row height, or hover/focus surfaces, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
+11. When changing layout spacing, block padding, radius, title band, right function area, row height, hover/focus surfaces, or no-data mask scope in composite blocks, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
 12. Install dependencies with the minimal package set needed by the current template. If npm install is blocked by domestic network access, use a temporary command-level mirror: `npm install --registry=https://registry.npmmirror.com` or `npm install <package-name> --registry=https://registry.npmmirror.com`; if unavailable, replace the registry URL with `https://npm.aliyun.com/`, `https://mirrors.cloud.tencent.com/npm/`, `https://mirrors.ustc.edu.cn/npm/`, or `https://mirrors.tuna.tsinghua.edu.cn/npm/`. Use `npm ci --registry=<registry-url>` only when restoring an existing lockfile exactly.
 13. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
@@ -81,6 +81,8 @@ All template directories must be copied with their full project structure: `pack
 - Chart engine fidelity decision for standard chart widgets: ECharts instance/wrapper, data-driven option/series, update/resize path, and any explicit non-ECharts custom diagram exceptions.
 - Filter surface mapping when filters exist: template-native trigger/panel/popover/drawer, local title-band filter, or explicit template-redesign exception. Do not output a separate filter toolbar for bundled templates.
 - Template layout-token decisions when changed: `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, content range, and hover/focus feedback.
+- Block title function-area decision when used: local filter capsule/dropdown/panel trigger, detail link, more menu, or no right-side control.
+- Composite block no-data mask decision when used: all sub-blocks empty -> parent-block mask; partial empty -> affected sub-block mask covering sub-block title/control plus component.
 - Dependency install command and temporary registry fallback used, if any.
 - Validation and startup commands.
 - Any template limitation or custom-development gap.
@@ -93,9 +95,11 @@ All template directories must be copied with their full project structure: `pack
 - If template filters are present or needed, they are configured through the template's native `filters[]` and existing invocation surface; standalone filter toolbars/bars are rejected unless a named template-redesign decision exists.
 - Template project structure remains complete after copying.
 - Native shell navigation, filters, toolbar, theme, and logo slots are preserved unless explicitly redesigned.
+- Block title bands preserve the template anatomy: left-aligned title and right function area. Single local filter with `< 3` values uses capsule; single local filter with `>= 3` values uses dropdown; multiple filters use panel trigger; detail actions use lightweight links.
 - Shared template layout tokens from `template-layout-design-system.md` are reused instead of rediscovered from source code or changed ad hoc.
 - Template shell hover/focus feedback for cards, toolbar buttons, nav items, and filter chips preserves geometry. Prefer in-bounds border glow or inset glow; do not use hover translate/scale that can clip borders/shadows in fixed grid or overflow-hidden containers.
 - Data completeness is checked before filter binding; missing option rows, missing business rows, missing fields, single-snapshot mock data, or missing resolver/API branches are data gaps and cannot be hidden with `ignoredFilters`.
+- Composite block no-data masks pass hierarchy checks: parent mask only when all child sub-blocks are empty; otherwise child masks cover affected child title/control plus component body.
 - Validation scripts and start helpers remain available.
 - Template asset paths in workflow or layout skills point to this skill, not to layout skill assets.
 - Primary/global filters that should change business data are not placed in `ignoredFilters`; mock/API/resolver data proves at least one affected widget value changes for non-default filter states.

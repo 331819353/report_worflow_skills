@@ -50,7 +50,7 @@ Required changes:
 - Register business widgets in `src/widgets/types.ts` and `src/widgets/registry.ts`.
 - Implement visual components under `src/widgets/components/`.
 - Bind widgets through `widget.data.id` and either `widget.data.params.key` for JSON mode or `widget.data.api` for standard API mode.
-- Bind component-title filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run on the component's already loaded data.
+- Bind component-title filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run on the component's already loaded data. The block title band keeps title left and function area right: one local filter with `< 3` values uses a sliding capsule, one local filter with `>= 3` values uses dropdown, multiple local filters use a filter panel trigger, and detail links stay lightweight in the right function area.
 - Before binding global/page filters, prove data completeness: options, business/API rows, required fields, default and non-default states, empty/no-permission states, and resolver/API branches exist for every affecting filter.
 - Bind global/page filters that affect widgets through `widget.data.filterFields`, `requiredFilters`, API query/body params, or resolver params. Do not put an affecting filter in `ignoredFilters`.
 - Configure `actions` only as event forwarding or integration hooks; component-level popup, navigation, drilldown, and detail behavior stays inside the component.

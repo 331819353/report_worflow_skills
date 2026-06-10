@@ -346,6 +346,30 @@ const getInlineLocalFilterOptions = (blockId: string) => {
   return filter ? getLocalFilterOptions(blockId, filter) : [];
 };
 
+const getDropdownLocalFilter = (blockId: string, widget = getWidgetForBlock(blockId)) => {
+  const filters = getWidgetLocalFilterConfigs(widget);
+  const filter = filters[0];
+
+  if (!filter || filters.length !== 1 || filter.mode === 'panel') {
+    return undefined;
+  }
+
+  return shouldUseInlineLocalFilter(filters.length, filter, getLocalFilterOptions(blockId, filter).length)
+    ? undefined
+    : filter;
+};
+
+const getDropdownLocalFilterId = (blockId: string) => getDropdownLocalFilter(blockId)?.id ?? '';
+
+const getDropdownLocalFilterOptions = (blockId: string) => {
+  const filter = getDropdownLocalFilter(blockId);
+
+  return filter ? getLocalFilterOptions(blockId, filter) : [];
+};
+
+const getSelectEventValue = (event: Event) =>
+  event.target instanceof HTMLSelectElement ? event.target.value : '';
+
 const getLocalFilterValue = (blockId: string, filterId: string) =>
   getLocalWidgetFilterValues(blockId)[filterId] ?? '';
 
@@ -967,6 +991,24 @@ watch(
                       <span>{{ option.label }}</span>
                     </button>
                   </div>
+                  <label v-else-if="getDropdownLocalFilter(block.label)" class="widget-local-filter-select">
+                    <span>{{ getDropdownLocalFilter(block.label)?.label }}</span>
+                    <select
+                      :value="getLocalFilterValue(block.label, getDropdownLocalFilterId(block.label))"
+                      @change="setLocalWidgetFilter(block.label, getDropdownLocalFilterId(block.label), getSelectEventValue($event))"
+                    >
+                      <option value="">全部</option>
+                      <option
+                        v-for="option in getDropdownLocalFilterOptions(block.label)"
+                        :key="option.id"
+                        :value="option.id"
+                        :disabled="option.disabled"
+                        :title="option.reason ?? option.label"
+                      >
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </label>
                   <div v-else class="widget-local-filter-panel-wrap">
                     <button
                       class="widget-local-filter-trigger"

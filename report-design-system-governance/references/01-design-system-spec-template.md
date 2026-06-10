@@ -55,6 +55,13 @@ Use this when the design system is implemented through bundled or existing repor
 | Left-nav workbench | Source/value | Source/value | Source/value | Source/value | Source/value | Source/value | Source/value | Nav pages share shell tokens but can vary content density |
 | Fixed cockpit | Source/value | Source/value | Source/value | Source/value | Source/value | Source/value | Source/value | Fixed canvas needs aspect-preserving fit and overflow strategy |
 
+Block title band default:
+
+| Zone | Alignment | Content | Control choice | Fit rule |
+| --- | --- | --- | --- | --- |
+| Left title | Left | Block title/business question | Plain text, no duplicate component title | Keeps priority; one-line with tooltip or approved wrapping |
+| Right function area | Right | Local filter, filter-panel trigger, detail link, more action | One filter `< 3` values -> capsule; one filter `>= 3` values -> dropdown; multiple filters -> panel; detail -> lightweight link | One line; collapse secondary actions before crowding title |
+
 ## Component Rule
 
 Minimum component families: shell/header, filter/control, KPI card, chart block, table block, detail drawer/modal, action/button/tag, feedback state.
@@ -75,7 +82,7 @@ Use this when a single report block carries multiple components that answer one 
 
 | Parent block | Parent span | Sub-blocks | Local layout | Component owner | State/overflow rule | Split condition |
 | --- | --- | --- | --- | --- | --- | --- |
-| Example business block | `8*2` or source value | `summarySubBlock`, `chartSubBlock`, `rankingSubBlock` | Named CSS grid/flex areas with `5px` parent inset and `5px` sibling gap | One component per sub-block unless micro-group | State may be parent-level or sub-block-level; one internal scroll area max | Split if sub-blocks need independent titles/actions or fail min size |
+| Example business block | `8*2` or source value | `summarySubBlock`, `chartSubBlock`, `rankingSubBlock` | Named CSS grid/flex areas with `5px` parent inset and `5px` sibling gap | One component per sub-block unless micro-group | State may be parent-level or sub-block-level; for no-data masks, all children empty -> parent mask, partial empty -> affected child mask including child title/control + body; one internal scroll area max | Split if sub-blocks need independent titles/actions or fail min size |
 
 ## Metric Display Rule
 

@@ -32,6 +32,7 @@ export interface WidgetLocalFilterConfig {
   labelField?: string | string[];
   valueField?: string | string[];
   mode?: 'auto' | 'buttons' | 'panel';
+  // Override only for deliberate exceptions; default is 2 so 3+ auto filters render as dropdown.
   maxButtonOptions?: number;
 }
 

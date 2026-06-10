@@ -38,10 +38,12 @@
 
 - Charts, tables, legends, labels, KPI cards, buttons, drawers, modals, sticky areas, table scrollbars, and toolbars fit their containers.
 - Page/block titles are not duplicated inside component bodies through chart/table/KPI internal title options.
+- Block title bands preserve the default left-title/right-function-area layout. Right function area uses capsule for one local filter with `< 3` values, dropdown for one local filter with `>= 3` values, filter panel for multiple filters, and lightweight links for detail actions; controls stay on one line and do not crowd the title.
 - Peer component groups use balanced `M * N` layouts where possible, such as 4 -> `2 * 2`, 6 -> `3 * 2`, 8 -> `4 * 2`, and 9 -> `3 * 3`; components are not narrow, tiny, crowded, or unreadable.
 - Business-question text, conclusion text, labels, legends, chart marks, table cells, cards, diagrams, and controls do not overlap, stack, or visually merge.
 - Section headers, group captions, layer/stage/lane labels, and column titles reserve independent title bands and maintain at least 16px safe spacing from the nearest card, node, connector, chart mark, legend, or child label.
 - Verify dense data, long text, empty states, and loading states do not resize fixed-format UI unexpectedly.
+- For composite parent blocks with internal sub-blocks, verify no-data masks use the correct hierarchy: all child sub-blocks empty shows one whole parent-block mask; partial child emptiness masks only affected sub-blocks, including each affected sub-block title/control area plus component body.
 - Verify hover and `focus-visible` states for interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips. They should preserve geometry and use in-bounds border/outline/glow; clipped borders, cut shadows, or offset/scale animation at grid edges are `VIS-*` defects.
 - Check target desktop and mobile/tablet viewports when the page is responsive or embedded in variable containers.
 - For ECharts, AntV S2, canvas, and virtualized tables, verify nonblank rendering, resize behavior after container changes, and cleanup/dispose behavior after route changes or tab switches.

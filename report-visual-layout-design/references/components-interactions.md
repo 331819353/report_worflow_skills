@@ -67,6 +67,40 @@ Use only actions that support the task.
 
 Primary actions may use icon + text. Secondary actions should generally use icons with tooltips.
 
+## 2.1 Block Title Function Area
+
+Every report block title band uses a stable two-zone layout:
+
+```text
+left: block title, left-aligned
+right: function area, right-aligned
+```
+
+The right function area may contain:
+
+- Local filter controls that affect only the current block/component data.
+- A filter-panel trigger when the block has multiple local filter fields.
+- Text links such as `详情`, `查看详情`, `查看明细`, or `进入分析`.
+- Secondary icon actions with tooltips, such as fullscreen, export, refresh, or more.
+
+Control selection:
+
+| Situation | Default control | Notes |
+| --- | --- | --- |
+| One local filter and value count `< 3` | Sliding capsule / segmented pill | Use when options are short and mutually exclusive. |
+| One local filter and value count `>= 3` | Compact dropdown/select | Use Element Plus or project select; long labels get tooltip. |
+| Multiple local filters | Filter panel/popover/drawer trigger | Show active count or active summary in the trigger. |
+| Detail or jump action | Text link or icon+text link | Use clear copy such as `查看详情`; keep it low visual weight. |
+| Several secondary actions | `更多` menu | Keep rare actions out of the title band. |
+
+Fit rules:
+
+- The title owns left priority. The function area may shrink, collapse, or move to `更多`, but the title must remain readable.
+- Function controls stay on one line and do not wrap into the body.
+- Keep at least `8px` gap between title text and the right function area.
+- Avoid placing chart legends in the function area; legends explain data encoding and belong near the chart.
+- If the block title band cannot fit both title and controls, keep the most frequent control visible and collapse the rest into a panel or menu.
+
 ## 3. Drawers, Popovers, And Modals
 
 Use:

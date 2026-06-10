@@ -5,7 +5,7 @@ export interface ResolvedWidgetLocalFilterOption extends WidgetLocalFilterOption
   label: string;
 }
 
-export const localFilterButtonLimit = 5;
+export const localFilterButtonLimit = 2;
 
 export const getWidgetLocalFilterConfigs = (widget?: RegisteredWidgetConfig) => widget?.localFilters ?? [];
 

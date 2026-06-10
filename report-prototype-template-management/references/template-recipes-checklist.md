@@ -61,6 +61,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Template choice matches report scope and usage scenario.
 - Logo variant matches background.
 - `dashboard.config.ts` owns layout, filters, widgets, actions, and assets.
+- Each block title band follows the default structure: left-aligned title plus right function area. Right function area uses capsule for one local filter with `< 3` values, dropdown for one local filter with `>= 3` values, filter panel for multiple filters, and lightweight links for detail actions.
 - Business data is not stored directly in config.
 - Standard API endpoints are configured with `apiData` / `httpData`; custom resolvers are reserved for complex providers.
 - Every widget has `visualType`.
@@ -72,6 +73,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Block spans match the size and component-count constraints from `$report-visual-layout-design`.
 - Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and 32px block title band.
 - Outer block validation does not replace component-internal fit checks. Composite widgets must be reviewed with `$report-component-style-design` for summary columns, nested KPI grids, text wrapping, min-height, and no critical nowrap/ellipsis clipping.
+- Composite widget no-data masks are scoped by child data states: if all child sub-blocks are no-data, show one parent-block mask; if only some child sub-blocks are no-data, mask only those sub-blocks and include their title/control area plus component body.
 - `1920 * 1080` and `1280 * 768` are used as viewport checks, not total report height caps.
 - Layout blocks do not clip titles, legends, charts, tables, empty states, or controls.
 - `npm run validate:dashboard` runs after the minimal required dependencies are installed.

@@ -11,6 +11,15 @@ In Vue report prototypes, prefer Element Plus `ElSegmented`, `ElRadioGroup`, `El
 - Do not use both a capsule switch and a dropdown for the same decision in one component.
 - Component controls must change only that component unless explicitly designed as a page-level filter.
 
+For the default report block title band right function area, use the stricter local-filter rule:
+
+| Right function area content | Control |
+| --- | --- |
+| One local filter with value count `< 3` | Sliding capsule / segmented pill |
+| One local filter with value count `>= 3` | Compact dropdown/select |
+| Multiple local filters | Filter panel/popover/drawer trigger |
+| Detail/jump action | Lightweight text link such as `查看详情` |
+
 ## Placement
 
 - Preferred placement is the component header right side, aligned with title/actions.
@@ -18,6 +27,7 @@ In Vue report prototypes, prefer Element Plus `ElSegmented`, `ElRadioGroup`, `El
 - Do not float controls over chart labels, legends, table headers, KPI values, or empty states.
 - Keep legend and controls visually separate. A control is interactive state; a legend explains visual encoding.
 - For narrow cards, collapse secondary controls into a single dropdown or `更多` menu.
+- In a report block title band, the left-aligned title keeps priority and the right function area stays one line. Collapse low-frequency controls into a panel or `更多` before shrinking the title below readability.
 
 ## Capsule Switch Style
 
@@ -126,6 +136,7 @@ Recommended light enterprise style:
 
 - Do not put page-level filters inside every component unless each component needs independent scope.
 - Do not use large colorful buttons as mode switches inside dense report cards.
+- Do not turn block-title right function links such as `查看详情` into primary filled buttons; keep them lightweight.
 - Do not let controls overlap legends, axis labels, table headers, or KPI values.
 - Do not create a new visual language for each component. Controls across the page must share height, radius, border, hover, and selected states.
 - Do not hide selected state in color only; pair it with shape, check, shadow, or text contrast.

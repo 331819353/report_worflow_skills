@@ -64,7 +64,8 @@ export const cockpitConfig: DashboardConfig = {
   // 10. filterScope 用来声明当前组件受哪些有 scope 的筛选项影响。
   //    没有 scope 的筛选项是全局筛选，所有组件都会收到。
   // 11. localFilters 用来声明组件标题区筛选，只过滤组件已加载 data，不作为接口参数。
-  //     少量选项自动显示为滑动胶囊按钮，多条件或多选项自动显示为筛选面板。
+  //     标题带左侧为分块标题，右侧为功能区；功能区可放本地筛选或“查看详情”等轻量链接。
+  //     单个筛选且选项数 < 3 时显示滑动胶囊按钮；单个筛选且选项数 >= 3 时显示下拉框；多个筛选项显示筛选面板。
   // 12. 弹窗、跳转、下钻等业务交互由组件内部自行实现。
   //     如需让外部系统感知组件事件，可 emit('dashboard-action', { name, payload })；
   //     壳层只转发到 actions/registry.ts 的同名钩子或 dashboardAction 兜底钩子。

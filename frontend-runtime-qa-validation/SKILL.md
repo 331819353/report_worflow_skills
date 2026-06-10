@@ -76,6 +76,7 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - Hover/focus states preserve geometry and use in-bounds border/outline/glow; no border, shadow, or focus ring is clipped by parent overflow.
 - Standard ECharts charts are rendered through ECharts instance/wrapper and data-driven `option`/`series`; no import-only ECharts chart is hand-drawn with SVG/HTML/CSS/canvas marks.
 - SVG/canvas/ECharts/custom graphics preserve aspect ratio and geometry; circles, gauges, maps, paths, nodes, and icons are not stretched, squeezed, or warped after resize, tab switch, drawer/fullscreen, or filter update.
+- Composite block no-data masks use the correct scope: whole parent only when all child sub-blocks are no-data; otherwise affected child sub-block masks include child title/control plus component body.
 - No stale prototype-only wording remains unless explicitly required.
 - Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
 - HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.

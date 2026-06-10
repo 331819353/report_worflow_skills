@@ -37,20 +37,23 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 1. Identify page purpose, user, primary report question, expected density, and display scenario.
 2. Declare shell intent: topbar, left-nav, unified header/control area, fixed cockpit, existing project shell, or custom shell.
 3. Declare `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
-4. Place page title, navigation, filters, toolbar actions, logo, and status/refresh/export/fullscreen controls. For template-based pages, map filters to the template's native `filters[]` trigger/panel/popover/drawer or local title-band filters.
+4. Place page title, navigation, filters, toolbar actions, logo, and status/refresh/export/fullscreen controls. For template-based pages, map filters to the template's native `filters[]` trigger/panel/popover/drawer or local title-band filters. For every block, design the title band as left title plus right function area.
 5. Plan the first meaningful viewport: primary conclusion or action entry first, then evidence, breakdown, detail, and action areas.
 6. Lay out top-level parent blocks in a rectangular `8 * N` grid. Let `N` grow; scroll or split content instead of compressing dense rows.
 7. For each parent block, decide whether it is single-component or internally composed. If composed, define stable internal sub-blocks inside the parent body, then place components in those sub-blocks.
 8. Size every parent block and sub-block by its content needs: KPI, text summary, chart, table, complex diagram, task list, evidence panel, drawer trigger, or detail area.
-9. Define layout states: loading, empty, error, no-permission, stale data, export, fullscreen, drawer/modal, and mobile/tablet behavior at both parent-block and affected sub-block levels.
+9. Define layout states: loading, empty, error, no-permission, stale data, export, fullscreen, drawer/modal, and mobile/tablet behavior at both parent-block and affected sub-block levels. For no-data masks in composed parent blocks, decide the mask scope after checking all sibling sub-block data states.
 10. Run overlap/overflow checks before finalizing.
 
 ## Hard Rules
 
 - Page/block titles are owned by layout. Component bodies should not duplicate visible titles when the surrounding block already has one.
+- Block title bands default to a two-zone layout: top-left is the left-aligned block title, and top-right is the function area. The function area may contain lightweight local filters, a filter-panel trigger, or text links such as `详情` / `查看详情`; it must not push, wrap, or overlap the title.
+- Right function area control selection: one local filter with fewer than 3 values uses a sliding capsule/segmented pill; one local filter with 3 or more values uses a compact dropdown/select; multiple local filters use a filter panel/popover/drawer trigger. Low-frequency detail/jump actions use explicit text links or icon+tooltip links in the same right area.
 - Top-level blocks must occupy legal rectangular `8 * N` spans.
 - A top-level `8 * N` block is a parent container, not a one-component limit. Parent blocks may contain internal sub-blocks, and each sub-block may contain one component or one tightly related micro-group.
 - Internal sub-blocks must remain inside the parent block body viewport. They do not create nested page-grid blocks, do not own same-weight block titles, and must use local grid/flex tracks with `5px` parent inset, `5px` sibling gaps, explicit min sizes, and overflow rules.
+- No-data masks in composed parent blocks are hierarchical. If a sub-block has no data, first check every sibling sub-block in the same parent block. When all sub-blocks are no-data, show one parent-block mask over the whole parent block. When only some sub-blocks are no-data, show masks only on those affected sub-blocks. A sub-block mask must cover the sub-block label/title/control area and component body together; it must not mask only the chart/table body and leave the sub-block title active.
 - Treat `1920 * 1080` and `1280 * 768` as viewport baselines, not maximum report height.
 - Do not divide viewport height by row count to make everything fit; increase rows, split sections, scroll, tab, drawer, or fullscreen.
 - Filters, toolbar, legends, table headers, labels, chart marks, and diagram nodes must not overlap or clip.
@@ -66,9 +69,11 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 - Page shell choice and layout rationale.
 - Brand mode and logo placement.
 - Header/navigation/filter/toolbar structure.
+- Block title-band structure: left-aligned title, right function area contents, and control selection rule for local filters/links.
 - Filter surface mapping: template-native filter trigger/panel/popover/drawer, local title-band filter, custom filter bar, or explicit redesign exception.
 - First-viewport hierarchy.
 - `8 * N` parent block grid, internal sub-block plan when used, component placement, and sizing notes.
+- Empty/no-data mask scope plan: parent-block mask when all child sub-blocks have no data; affected sub-block mask including sub-block title plus component when only part of the parent is empty.
 - Template layout-token family and deviations when template-based: `contentGap`, `cellPadding`, card padding/radius, title band, content range, and row height.
 - Responsive and state layout plan.
 - Layout risks, gaps, and downstream handoffs.
@@ -76,8 +81,10 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 ## Quality Gate
 
 - The first meaningful viewport answers the page's main question or exposes the main action.
+- Every block title band preserves left title alignment and a bounded right function area; local filters follow capsule/dropdown/panel selection rules and links do not crowd the title.
 - Every block has a purpose, a size rationale, and a visible state plan.
 - Every internal sub-block has a purpose, a size rationale, component owner, and visible state plan when parent-block composition is used.
+- No-data masks are applied at the correct hierarchy: whole parent block only when every child sub-block is no-data, otherwise only the no-data child sub-blocks, covering each child sub-block title/label/control area plus its component body.
 - Dense components have enough room or an overflow/fullscreen/drawer strategy.
 - No title, label, legend, chart, table, card, node, connector, filter, or toolbar element overlaps or clips.
 - Template filter surfaces are reused instead of duplicated; no standalone filter toolbar/bar appears in a template-based layout without a named redesign decision.

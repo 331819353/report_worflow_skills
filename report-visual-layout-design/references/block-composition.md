@@ -174,7 +174,39 @@ Use when the summary explains how to read the table.
 - Business-question text, conclusions, labels, legends, marks, table cells, cards, and diagram nodes must not overlap, stack, or visually merge inside the parent body or any sub-block.
 - If internal labels wrap, increase the parent block span or switch to tabs/drawer.
 - Use one internal scroll area at most; prefer table-level scroll over whole-block body scroll.
-- Keep empty/loading/error/no-permission states inside the affected sub-block/component when partial data fails; use whole-block state only when the whole block cannot render.
+- Keep loading/error/no-permission states inside the affected sub-block/component when partial data fails; use whole-block state only when the whole block cannot render.
+
+## No-Data Mask Scope
+
+Use this rule when an empty/no-data state is shown as a mask or overlay and the parent block contains internal sub-blocks.
+
+Decision order:
+
+1. Evaluate `hasData` or equivalent data-state for every child sub-block in the same parent block.
+2. If every child sub-block is no-data, show one parent-block no-data mask over the whole parent block. The parent mask covers the parent title/action band and parent body, so users understand the full business block has no available data.
+3. If at least one sibling sub-block still has data, show masks only on the no-data sub-blocks. Do not mask the whole parent block.
+4. A sub-block no-data mask covers the entire sub-block surface: sub-block label/title/control area plus the component body. Do not mask only the inner chart/table/KPI body while leaving the sub-block title, local filters, or controls visually active.
+5. Parent-level loading/error/no-permission may still override this when the parent block cannot determine child states or the entire block is unavailable.
+
+Implementation shape:
+
+```text
+parentBlock
+  parentHeader
+  parentBody
+    subBlock A: has data
+    subBlock B: no data -> subBlock mask covers B title + B component
+    subBlock C: has data
+
+parentBlock
+  all subBlocks no data -> parent mask covers parent title + all subBlocks
+```
+
+Avoid:
+
+- Showing multiple child no-data masks when the entire parent block is empty; use one parent mask instead.
+- Showing a parent mask when only one child sub-block is empty and siblings still carry usable evidence.
+- Masking only the ECharts/S2/SVG/canvas viewport while leaving the related sub-block title or control strip uncovered.
 
 ## Template Implementation
 
@@ -190,6 +222,7 @@ In bundled templates, one page-grid parent block maps to one configured widget. 
 - If sub-blocks/components need different datasets, either:
   - resolve a combined view model in a data source, or
   - pass secondary static/config data through `props`.
+- For empty/no-data masks, compute child sub-block data states before rendering overlays. Render a parent-level mask only when all child sub-blocks are empty; otherwise render sub-block-level masks that cover the child label/control area and component body.
 - Emit block-level `dashboard-action` events with clear names such as `rankClick`, `trendPointClick`, or `openEvidence`.
 
 ## QA Checklist
@@ -200,6 +233,7 @@ In bundled templates, one page-grid parent block maps to one configured widget. 
 - Peer sub-blocks/components follow internal exact `M * N` distribution only when `actualTotal > 4`; prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M >= N`, and `M - N` is minimal among valid factor pairs; the parent block passes the expansion check with `heightExpansionRows = ceil(N * 2 / 3)`.
 - No nested card shadows or boxed mini-card titles.
 - Every internal sub-block and component has a stable container.
+- Empty/no-data masks follow parent-child scope: all children empty -> one parent mask; partial empty -> affected child sub-block masks including child label/control area and component body.
 - Parent-to-sub-block spacing is exactly 5px, and sibling sub-block spacing is exactly 5px.
 - No chart/table overlaps the title area.
 - No sub-block overlaps another sub-block, the parent title band, local controls, legends, or state messages.

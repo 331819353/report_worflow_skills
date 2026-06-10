@@ -78,6 +78,8 @@ Layout design rules:
 Filter binding rules:
 
 - Template filter UI is shell-owned. Add, remove, relabel, source, and scope global/page filters through `filters[]`; bind component-local title-band controls through `localFilters[]`.
+- Block title bands use a left title and right function area. Use the right function area for `localFilters[]`, filter-panel triggers, and lightweight links such as `查看详情` / `查看明细`; do not add a second widget header for these controls.
+- `localFilters[]` display rules: one local filter with value count `< 3` uses sliding capsule/segmented pill; one local filter with value count `>= 3` uses compact dropdown/select; multiple local filters use a filter panel/popover/drawer trigger with active count or summary.
 - If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.
 - Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record each scope reason in `widget.data.ignoredFilterReasons`; do not use it because mock rows lack the filter field or because the resolver is missing.
 - Offline/mock rows or custom resolvers must produce different affected widget data for meaningful non-default filter states such as view, snapshot date, month, organization, industry, or scenario.

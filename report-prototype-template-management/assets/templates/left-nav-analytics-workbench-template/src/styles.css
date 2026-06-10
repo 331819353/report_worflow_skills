@@ -607,6 +607,44 @@ button {
   opacity: 0.42;
 }
 
+.widget-local-filter-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+  height: 26px;
+}
+
+.widget-local-filter-select span {
+  max-width: 72px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.widget-local-filter-select select {
+  height: 26px;
+  min-width: 88px;
+  max-width: 156px;
+  padding: 0 26px 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-low);
+  color: var(--text-strong);
+  font-size: 12px;
+  line-height: 1;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.widget-local-filter-select select:focus {
+  border-color: var(--line-strong);
+}
+
 .widget-local-filter-panel-wrap {
   position: relative;
   display: flex;
