@@ -153,6 +153,7 @@ For custom Vue or non-template pages:
 - Use TypeScript + Vue 3 single-file components with Composition API unless the existing project uses another stack.
 - Use Element Plus for standard UI controls in Vue report prototypes: filter forms, selects, tree selects, cascaders, date pickers, inputs, buttons, tabs, tags, popovers, tooltips, dialogs, drawers, pagination, and simple operation/detail tables.
 - Use ECharts for standard visual charts: KPI trend cards, line, bar, area, scatter, heatmap, map, waterfall, funnel, gauge, mixed chart.
+- When the binding matrix maps a component to ECharts, implementation must use an actual ECharts instance or approved project wrapper with data-driven `option`/`series`. Do not mark a standard chart as ECharts if the intended implementation is hand-authored SVG/HTML/CSS/canvas. Use `customDiagram`, `svgIcon`, or another explicit non-standard component type only when the visual is genuinely not an ECharts chart.
 - Use AntV S2 through `@antv/s2` and `@antv/s2-vue` for analytical tables: pivot tables, cross tables, wide metric matrices, frozen-header tables, drillable comparison grids, and dense financial/operation tables. Treat those packages as on-demand dependencies; do not add or install them when the mapped components only use charts, KPI cards, simple Element Plus tables, lists, or text summaries.
 - Use regular Vue/HTML tables only when Element Plus and S2 are both unavailable or the existing project stack explicitly forbids them.
 - Keep chart/table widgets typed, data-driven, and isolated from shell actions.
@@ -177,3 +178,4 @@ A runnable prototype should fail validation when:
 - A clickable element has no emitted event or configured action.
 - A multi-period filter is backed by single-period data.
 - A first-screen component has no dataset, static policy, or external runtime contract.
+- A component mapped as an ECharts standard chart only imports `echarts` but renders chart marks through hand-authored SVG/HTML/CSS/canvas.

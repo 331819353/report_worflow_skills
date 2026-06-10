@@ -38,6 +38,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 
 - Resolve `prototypeSourcePath` and `frontendTargetPath` before file edits. Treat upstream prototype source as read-only unless the user explicitly designates it as the frontend target.
 - For self-developed frontend work without an authoritative existing stack or user-specified override, use `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` as the default report frontend stack. Use AntV S2 for pivot tables, cross tables, frozen-header analytical tables, wide metric matrices, and dense comparison grids; use Element Plus for controls/forms/tables/pagination/dialogs; use ECharts for standard charts.
+- Treat the default stack as an implementation contract, not a dependency checklist. When a component is mapped as an ECharts standard chart, it must instantiate ECharts or the existing project ECharts wrapper, build a data-driven `option`/`series` from the component view model, call the normal render/update/resize path, and keep ECharts tooltip/legend/emphasis behavior available. Do not satisfy an ECharts chart requirement by importing `echarts` while drawing the chart marks with hand-authored SVG/HTML/CSS/canvas.
+- Hand-authored SVG is allowed for logos, icons, small trend arrows, decorative assets, or explicitly approved custom diagrams that ECharts cannot reasonably express. ECharts configured with `renderer: 'svg'` is still valid because ECharts owns the generated SVG; manually encoded bars, lines, pies, gauges, maps, or axes are not valid standard chart implementation.
 - Run baseline install/typecheck/lint/test/build when feasible before large edits, and record pre-existing failures so integration work does not hide them.
 - Classify provider/source mode, env/proxy/base path, and auth/SSO behavior before replacing mocks or wiring request clients.
 - Validate provider/API contracts and design adapters before changing production data paths. Missing provider, field, enum, formula, env, auth, permission, deployment, or testing facts must be visible gaps.
@@ -65,9 +67,10 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 10. Verify data completeness for filters before linkage: data source mode, option sources, row grain, required fields, default/non-default/empty/permission states, and resolver/API branches.
 11. Replace or isolate mock data, wire filters/interactions/pagination/sorting/export/refresh to provider inputs, preserve template-native filter surfaces when applicable, and keep component view models stable.
 12. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
-13. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
-14. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
-15. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
+13. Verify chart engine fidelity for every standard chart: dependency/import is not enough; source must contain an ECharts instance/wrapper and data-driven options, and runtime must show ECharts-owned rendering and interaction instead of hand-authored SVG chart marks.
+14. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
+15. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
+16. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
 
 ## Required Output
 
@@ -84,6 +87,7 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Data completeness proof before filter binding: option data, row grain, required fields, default/non-default data states, and resolver/API coverage.
 - Filter binding proof for non-default filter states, including visible data changes or intentionally invariant component scope.
 - Template filter-surface preservation note when the frontend target is a bundled/copy template.
+- Chart engine fidelity note for standard charts: ECharts instance/wrapper, data-driven `option`/`series`, resize/update path, tooltip/legend/emphasis behavior, and any explicitly approved non-ECharts custom diagram exceptions.
 - Frontend URL or exact blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
 
@@ -100,5 +104,6 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Do not add a new filter toolbar/bar to a template-based frontend when the template already owns filter invocation; update `filters[]`, native filter UI, and provider bindings instead.
 - Do not claim frontend readiness when visible Chinese rate/change/completion/YoY/MoM/variance-rate indicators still use `pt`, `p.p.`, or `percentage point` instead of `%`, unless the user explicitly requested that wording.
 - Do not claim frontend readiness when a common enterprise app page or report page ignores its matching UI/design baseline, unless the exception is explicitly scoped and accepted.
+- Do not claim frontend readiness when a standard chart merely imports ECharts but renders the visual with hand-authored SVG/HTML/CSS/canvas chart marks. Rework it to ECharts option/series or document an explicit custom-diagram exception before marking ready.
 - Do not mark production handoff `ready` without provider/source mode, backend/API base, env/auth behavior, runtime QA evidence, retained mock status, and testing/observability handoff.
 - Do not claim handoff readiness without build/runtime evidence or a precise blocker.

@@ -695,6 +695,8 @@ Fit rules:
 
 Use ECharts as the default chart engine for runnable prototypes. Configure it so the visual stays inside the component viewport:
 
+- Standard charts must be rendered by ECharts option/series through `echarts.init` or the approved project wrapper. Importing ECharts while hand-drawing chart marks with SVG/HTML/CSS/canvas fails the ECharts implementation contract.
+- Hand-authored SVG/canvas is allowed for icons, logos, decorative assets, or explicitly approved custom diagrams; ECharts `renderer: 'svg'` remains valid because ECharts owns the generated SVG.
 - Initialize only after the container has measurable width and height.
 - Resize on container changes, tab activation, fullscreen changes, and drawer open/close when relevant.
 - Reserve space for title, axes, labels, legends, and data zoom before calculating plot area.

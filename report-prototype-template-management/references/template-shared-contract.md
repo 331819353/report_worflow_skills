@@ -44,6 +44,7 @@ Prefer config/data/widget layers:
 - Standard API endpoint/query binding -> `widget.data.api` or `filters[].source.api` in `dashboard.config.ts`.
 - Response adapters and custom API/provider resolvers -> `dataSources/registry.ts`.
 - Business visuals -> `src/widgets/components/*.vue`.
+- Standard chart visuals -> ECharts component/wrapper inside `src/widgets/components/*.vue`, with data-driven `option`/`series`, lifecycle update, and resize. Do not draw standard chart marks by hand with SVG/HTML/CSS/canvas while merely importing ECharts.
 - Chart row sorting and series helpers -> `src/widgets/chartDataUtils.ts` or a similarly named utility file, never a data-bearing `*Data.ts` module.
 - Component-owned popup/jump/drilldown -> component implementation.
 - Shell-level event observation or external integration hooks -> `src/actions/registry.ts`.
@@ -63,6 +64,7 @@ Avoid shell replacement in generated projects:
 - Do not add duplicate title bars, filter regions, navigation layers, sidebars, or toolbars because a requirement document shows a different shell. Use template-level fields and document any adaptation.
 - Do not create standalone `FilterToolbar`, `FilterBar`, persistent header filter rows, or extra filter drawers for bundled templates. A requirement that says "主筛选栏", "筛选工具栏", or "filter bar" maps to template `filters[]` plus the native trigger/panel/popover/drawer unless the user explicitly approves a template-level redesign.
 - Do not drop default fields such as `defaultTheme`, `defaultNavOpen`, `defaultFiltersOpen`, `screen.controls`, or the template's logo slot while rewriting business labels.
+- Do not satisfy a chart widget requirement by importing ECharts but rendering the chart as hand-authored `<svg>`, `<path>`, `<rect>`, positioned `<div>`, CSS gradient, or raw canvas marks. Use ECharts option/series for standard charts; reserve handmade SVG/canvas for logos, icons, decorations, or explicitly approved custom diagrams.
 - Dark template pages must load Element Plus dark CSS variables and toggle the Element Plus `.dark` class with the template theme, or provide equivalent `--el-*` token overrides. Changing only `screen.defaultTheme` is not enough: update logo variant, `screen.grid.innerBackgroundColor`, card surfaces, and component scoped input/control backgrounds to the same theme tokens.
 
 Layout design rules:

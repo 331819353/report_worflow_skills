@@ -17,6 +17,7 @@ Default routing:
 - Choose `pageShellPath: custom` only when the user explicitly asks for custom/free design, explicitly asks for exact screenshot/HTML/source restoration, an existing shell must be preserved, or a documented requirement cannot be met by any bundled template.
 - If the user provides only a loose sample/reference, use it as hierarchy/density/tone evidence and still choose the closest bundled template.
 - Bundled templates use Vue 3 + TypeScript + Vite + Element Plus + ECharts + axios, with AntV S2 added for S2-class analytical tables.
+- In bundled templates, standard chart widgets must use ECharts through an actual chart component/wrapper and data-driven `option`/`series`. Do not implement standard charts by importing ECharts but drawing the bars, lines, pies, gauges, maps, axes, or legends with hand-authored SVG/HTML/CSS/canvas.
 - If a selected template has `nav[]`, every nav item must map to a substantial business page. Do not ship a navigation template with only the homepage populated.
 - Requirement-document shell details must be adapted into the selected template's existing title/logo, `nav`/`page`, `filters`, controls, toolbar, and action slots. Do not add duplicate shell structures that fight the template.
 - When a selected template already owns filter invocation, filter design means editing `filters[]`, `filters[].source/options`, active-state display, and widget/API/resolver bindings. Do not create a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly asks for a template-level redesign.
@@ -58,11 +59,12 @@ All template directories must be copied with their full project structure: `pack
 4. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
 5. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components.
 6. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
-7. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
-8. Before configuring filter bindings, verify the data is complete enough for filtering: filter option rows, business rows, required fields, default/non-default values, empty/no-permission states when relevant, and resolver/API branches exist for every affecting primary/global filter.
-9. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
-10. When changing layout spacing, block padding, radius, title band, row height, or hover/focus surfaces, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
-11. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
+7. For every standard chart widget, implement ECharts fidelity: ECharts instance/wrapper, data-driven `option`/`series`, update/resize lifecycle, and relevant tooltip/legend/emphasis behavior. Use hand-authored SVG/canvas only for explicit custom diagrams, icons, logos, or decorations.
+8. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
+9. Before configuring filter bindings, verify the data is complete enough for filtering: filter option rows, business rows, required fields, default/non-default values, empty/no-permission states when relevant, and resolver/API branches exist for every affecting primary/global filter.
+10. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
+11. When changing layout spacing, block padding, radius, title band, row height, or hover/focus surfaces, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
+12. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
 ## Required Output
 
@@ -75,6 +77,7 @@ All template directories must be copied with their full project structure: `pack
 - Data binding mode: JSON, API, custom resolver, or retained offline mode.
 - Data completeness proof before filter binding: option rows, business rows/API response, required fields, default/non-default states, and resolver/API branch coverage.
 - Filter-to-widget binding decision: `filterFields`, `requiredFilters`, API params, resolver params, or intentionally labeled `ignoredFilters` with `ignoredFilterReasons`.
+- Chart engine fidelity decision for standard chart widgets: ECharts instance/wrapper, data-driven option/series, update/resize path, and any explicit non-ECharts custom diagram exceptions.
 - Filter surface mapping when filters exist: template-native trigger/panel/popover/drawer, local title-band filter, or explicit template-redesign exception. Do not output a separate filter toolbar for bundled templates.
 - Template layout-token decisions when changed: `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, content range, and hover/focus feedback.
 - Validation and startup commands.
@@ -94,3 +97,4 @@ All template directories must be copied with their full project structure: `pack
 - Validation scripts and start helpers remain available.
 - Template asset paths in workflow or layout skills point to this skill, not to layout skill assets.
 - Primary/global filters that should change business data are not placed in `ignoredFilters`; mock/API/resolver data proves at least one affected widget value changes for non-default filter states.
+- Standard chart widgets are not accepted when they only import ECharts but draw chart marks with hand-authored SVG/HTML/CSS/canvas. ECharts SVG renderer is allowed only when generated by ECharts options.

@@ -54,6 +54,8 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 - Do not accept a polished component that is unreasonable for the task. Use `DESIGN-*` findings when a chart should be a table, a dense component needs drilldown/fullscreen, a component duplicates another message, or the style hides the user's decision-critical value.
 - Do not hide decision-critical labels, units, warnings, or values without a hover/focus/click disclosure path.
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable parent block or sub-block container.
+- When a component is a standard ECharts chart, implement it as an ECharts chart: project wrapper or `echarts.init`, data-driven `option`/`series`, normal `setOption`/update/resize, and ECharts tooltip/legend/emphasis behavior. Do not import ECharts while hand-drawing bars, lines, pies, gauges, maps, axes, or legends with SVG/HTML/CSS/canvas.
+- Hand-authored SVG/canvas is allowed only for icons, logos, trend arrows, decorative assets, or explicitly named custom diagrams/graphics that are not standard charts. ECharts output using `renderer: 'svg'` is valid because ECharts owns the generated SVG.
 - Do not stretch SVG, canvas, ECharts custom graphics, gauges, maps, radar, flow paths, or generated decorative geometry with independent X/Y scaling. Preserve geometry with a canonical `viewBox`, `preserveAspectRatio="xMidYMid meet"`, CSS `aspect-ratio`, or a measured inner fit box using `scale = min(containerWidth / designWidth, containerHeight / designHeight)`.
 - Do not use CSS `transform: scaleX/scaleY`, `object-fit: fill`, or raw `width: 100%; height: 100%` SVG/canvas stretching when the graphic shape has business meaning. Center/letterbox inside the assigned viewport or redesign the graphic for the actual aspect ratio.
 - For ECharts line, area, bar, and other category-axis charts, the x-axis categories must be ordered explicitly. Time/period axes default to ascending chronological order unless the user or business rule explicitly requires reverse/custom order.
@@ -100,6 +102,7 @@ When using this skill, provide:
 - Component titles are layout-owned by default; chart/table/KPI bodies do not duplicate the block/page title.
 - Component choice is reasonable for the business task and data shape; unresolved `P0`/`P1` `DESIGN-*` findings are not styled over.
 - Component size is sufficient for the selected visual type and data density; cramped/narrow/small components are enlarged, split, scrolled, zoomed, or moved to fullscreen/drawer before pass.
+- Standard charts mapped to ECharts use actual ECharts options/series and runtime interaction; there is no dependency-only ECharts import paired with hand-authored SVG/HTML/CSS/canvas chart marks.
 - SVG/canvas/ECharts/custom graphics preserve their intended aspect ratio; curves, gauges, maps, nodes, and icons are not squeezed, stretched, or warped by the container.
 - Nested summary/KPI/tile layouts pass internal fit for long labels, values, units, helper text, and action text; no decision-critical content is clipped by nowrap/ellipsis without disclosure.
 - Line, area, bar, and other category-axis charts have an explicitly sorted x-axis, and labels/points/values/tooltips are derived from the same sorted row order.

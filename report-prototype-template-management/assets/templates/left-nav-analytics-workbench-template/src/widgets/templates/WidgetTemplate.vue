@@ -197,7 +197,7 @@ const triggerExampleAction = () => {
 <template>
   <!-- 根元素必须保留 width/height: 100%，让组件填满分块内容区域。 -->
   <section class="custom-widget">
-    <!-- 在这里开发你的图表、指标卡、表格或关系图。 -->
+    <!-- 在这里开发你的图表、指标卡、表格或关系图。标准图表请使用 ECharts option/series，不要手写 SVG 模拟图表。 -->
     <div>{{ value }}</div>
     <div>数据行数：{{ data?.length ?? 0 }}</div>
     <!-- 示例：真实组件中可在柱子、表格行、关系图节点点击时触发 dashboard-action。 -->
@@ -221,6 +221,7 @@ const triggerExampleAction = () => {
   /*
    * 必备：不要给根节点或图表容器写大于组件视窗的固定宽高。
    * ECharts、AntV S2、SVG、Canvas 都应从当前根节点读取尺寸并在 resize 时重算。
+   * 如果组件是柱线饼图、地图、仪表盘等标准图表，必须由 ECharts 渲染；SVG/Canvas 只用于图标、装饰或明确的自定义关系图。
    */
 
   /* 可选：如果组件内部自己滚动，打开下面两行；否则交给 WidgetRenderer 兜底裁剪。 */

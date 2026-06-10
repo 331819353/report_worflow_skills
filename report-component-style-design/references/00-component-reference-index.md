@@ -17,7 +17,7 @@ Use this index to load only the component rules needed for the current task.
 | Filters, query bars, filter chips, advanced filter popovers | `02-filter-controls.md` | Date, organization, status, owner, metric, baseline, or advanced filters |
 | Text summaries, conclusion blocks, insight cards | `03-text-summary.md` | Executive conclusion, diagnosis, risk explanation, recommendation |
 | KPI cards, pyramid KPI cards, metric groups, comparison tiles, mini trends | `04-kpi-metric-cards.md` | KPI, target attainment, YoY/MoM, target, sparkline, status, submetric tile |
-| ECharts charts, axes, legends, data labels, tooltips, proportional geometry | `05-echarts-charts.md` | Bar, line, pie, radar, scatter, map, heatmap, funnel, waterfall, gauge, custom path |
+| ECharts charts, axes, legends, data labels, tooltips, proportional geometry, chart-engine fidelity | `05-echarts-charts.md` | Bar, line, pie, radar, scatter, map, heatmap, funnel, waterfall, gauge, custom path, or any case where ECharts may be imported but chart marks are hand-drawn |
 | AntV S2 and analytical tables | `06-analytical-tables.md` | Pivot table, cross table, metric matrix, detail table, financial grid |
 | Cards, lists, task cards, anomaly cards, status badges | `07-cards-lists-tasks.md` | Object cards, ranking lists, alert cards, task boards, status chips |
 | Drawers, modals, detail panels, evidence panels | `08-drawers-detail-panels.md` | Row detail, evidence, logs, source trace, object profile |
