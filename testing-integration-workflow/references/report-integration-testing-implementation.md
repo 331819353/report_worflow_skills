@@ -58,7 +58,7 @@ Document or verify these decisions before claiming report integration readiness.
 | Golden data | Seed dataset, expected values, dimensions, roles, tenants, edge records, source snapshot, and refresh/reset method. |
 | Data chain | Source -> ODS -> DWD -> DWS -> ADS/API/frontend/export reconciliation path and accepted tolerances. |
 | API contract | Path, method, params, enums, defaults, fields, types, units, nulls, error codes, paging, sorting, auth, permissions, empty behavior. |
-| Frontend binding | Component-to-endpoint mapping, adapter rules, chart/table/KPI format, filters, drilldown, detail, refresh, and states. |
+| Frontend binding | Component-to-endpoint mapping, adapter rules, chart/table/KPI format, control semantics, filters, drilldown, detail, refresh, and states. |
 | Permissions | Report/menu/component/metric/field/row/export/tenant rules, masking, direct API denial, and audit expectations. |
 | Cache | Key dimensions, user/tenant/permission/report-version/data-version isolation, invalidation, freshness, warmup, degradation. |
 | Export | Sync/async flow, task states, active filters, fields, units, sorting, permissions, max rows, file expiry, retry, audit. |
@@ -76,7 +76,7 @@ Design cases by layer instead of only by screen:
 - SQL/query tests: safe projection, parameter validation, sort/page behavior, large-range guardrails, source-side filters, plan evidence for risky queries.
 - API contract tests: schema, type, unit, percentage representation, date format, pagination base, error envelope, no-permission/empty behavior.
 - Backend behavior tests: normal query, no data, illegal params, oversized params, no permission, field permission, cache hit/miss, data source timeout, SQL failure.
-- Frontend integration tests: metadata, filter options, query params, component binding, chart/table format, drilldown, stale mock detection, state coverage.
+- Frontend integration tests: metadata, control semantics, filter options, query params, component binding, chart/table format, drilldown, stale mock detection, state coverage.
 - Permission tests: report/menu/component/metric/field/row/export/tenant/masking/direct API/cross-role/cross-tenant behavior.
 - Cache tests: key isolation, invalidation, refresh, warmup, version/data update behavior, last-success fallback.
 - Export tests: task lifecycle, active filters, data consistency, permissions, large file behavior, retry, expiry, audit.
@@ -166,6 +166,8 @@ metadata API
 
 For each component, verify endpoint, params, backend fields, adapter mapping, unit, precision, sorting, Top N, null handling, tooltip/legend/axis semantics, freshness display, and active-filter inheritance.
 
+For each first-level perspective, verify it is not only a normal filter when it changes schema. Non-default perspective cases must check metric names, title/summary wording, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels as well as values.
+
 Charts require semantic checks, not only rendering checks:
 
 - KPI cards: name, value, unit, precision, comparison, direction, color/icon semantics, freshness.
@@ -176,6 +178,8 @@ Charts require semantic checks, not only rendering checks:
 ## Filter Tests
 
 Filters must be tested as UI controls, request params, backend queries, component state, and export/drill context.
+
+Classify controls before filter tests: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. Business domain, report theme, management object, subject area, and first-level perspective are `perspective-switch` when they change metric names, component set, table headers,口径, or domain vocabulary.
 
 Cover default, single-select, multi-select, all, empty, invalid, required, search, range, date boundary, cascade, reset, permission-limited option, no-result, repeated changes, and persistence across pagination/sort/drill/export/refresh/page jumps.
 
@@ -314,7 +318,7 @@ Rollback targets may include code version, report config version, metric config 
 
 Mark report integration testing readiness:
 
-- `ready`: metric口径, golden/baseline data, model reconciliation, API/backend behavior, frontend binding, filters, permissions, cache, export, performance, exceptions, UAT/smoke, monitoring, rollback, automation/regression, evidence, and defect retest closure are confirmed for the stated scope.
+- `ready`: metric口径, golden/baseline data, model reconciliation, API/backend behavior, frontend binding, control semantics, filters, non-default perspective behavior, permissions, cache, export, performance, exceptions, UAT/smoke, monitoring, rollback, automation/regression, evidence, and defect retest closure are confirmed for the stated scope.
 - `partial`: non-prod/demo or limited scope can proceed with named gaps, unexecuted cases, missing optional automation, limited data, or accepted UAT/monitoring limitations.
 - `blocked`: P0 metric口径, source authority, golden/baseline data, API contract, runtime URL, account/permission, environment profile, data reconciliation, cache/export/permission safety, performance target, or blocker/major retest evidence is missing for a production-bound scope.
 
@@ -324,7 +328,7 @@ Testing reports and production handoffs should include:
 
 - Tested scope, report/API/component/export/config versions, environment profile/config file, frontend/backend URLs, source mode, account/role/tenant.
 - Golden dataset or baseline evidence, expected values, tolerance, and reset/source snapshot method.
-- Case matrix covering metric, model, API, frontend, filter, permission, cache, export, performance, exception, UAT, smoke, regression, and automation scope.
+- Case matrix covering metric, model, API, frontend, control semantics, filter, permission, cache, export, performance, exception, UAT, smoke, regression, and automation scope.
 - Execution results: pass/fail/blocked/not run counts by category.
 - Data reconciliation evidence across source/model/API/frontend/export.
 - Network/API samples, screenshots, export files or hashes, query IDs, cache hit/miss evidence, freshness timestamps, logs, and monitoring snapshots when available.

@@ -4,8 +4,8 @@ Use this reference whenever a report layout must decide how large each `8 * N` c
 
 The skill normally checks two practical viewport baselines:
 
-- `1920 * 1080`: desktop prototype, large report viewport, cockpit design baseline.
-- `1280 * 768`: smaller laptop/browser preview viewport baseline.
+- `1920x1080`: desktop prototype, large report viewport, cockpit design baseline.
+- `1280x768`: smaller laptop/browser preview viewport baseline.
 
 These are not total report size limits. They describe the visible window used for first-viewport planning, screenshot review, and component density checks. Ordinary report pages may be taller than `1080px` or `768px` and should scroll vertically.
 
@@ -13,7 +13,7 @@ These are not total report size limits. They describe the visible window used fo
 
 Separate these concepts:
 
-- Viewport size: the visible browser/screen window, usually `1920 * 1080` or `1280 * 768`.
+- Viewport size: the visible browser/screen window, usually `1920x1080` or `1280x768`.
 - Content display area: the report's usable grid area after header, nav, filters, sidebar, and margins.
 - Report height: the full height produced by all `8 * N` rows. It may exceed the viewport.
 - First viewport: the portion visible before scrolling. It should show the core answer, but it does not need to contain the entire report.
@@ -26,7 +26,51 @@ Design principle:
 - Enable vertical scrolling when total grid height exceeds the viewport.
 - Do not compress charts, tables, cards, or text just to fit the whole report into one screen.
 
-Only the sci-fi cockpit template is normally fixed to one `1920 * 1080` screen. Do not apply that fixed-height behavior to ordinary report pages.
+Only the sci-fi cockpit template is normally fixed to one `1920x1080` screen. Do not apply that fixed-height behavior to ordinary report pages.
+
+## 1.1 Perspective Navigation Viewport Checks
+
+First-level perspective controls include domain navigation, top or side perspective cards, `Tabs`, `Segments`, and any control that switches business domain, report theme, management object, subject area, or statistical口径.
+
+Required viewport checks:
+
+- Run layout checks at both `1920x1080` and `1280x768`.
+- For each visible navigation/control item or card content viewport, the DOM acceptance condition is:
+
+```text
+scrollHeight <= clientHeight
+scrollWidth <= clientWidth
+```
+
+- If the measured result is `scrollHeight > clientHeight` or `scrollWidth > clientWidth`, record a clipping defect. Do not downgrade it only because the screenshot hides a 1-3px crop.
+- Screenshot review can find visual symptoms, but it cannot replace the DOM overflow check above.
+- If the navigation design intentionally uses a horizontal scroll track, the scroll track may be wider than its container only when the interaction is explicit and accessible; each visible item/card content viewport inside the track must still pass `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
+- If a Tab/Segment label, status light, badge, percentage, or focus label fails the DOM check, use a larger container, two-line item, dropdown perspective selector, intentional horizontal navigation pattern, tooltip, or overview detail area instead of shrinking text below baseline readability.
+
+Fixed-height navigation/card height budget:
+
+```text
+requiredContentHeight =
+  paddingTop
+  + paddingBottom
+  + sum(explicitLineHeight * reservedLineCount)
+  + sum(verticalGaps)
+  + fixedBadgeStatusFooterHeights
+
+requiredContentHeight <= cardHeight
+```
+
+- The budget must be declared for fixed-height perspective cards, navigation cards, KPI strips, compact summary cards, and fixed-height control items.
+- Every text row in the budget must have an explicit `line-height`: domain name, metric name, percentage/core value, status badge, bottom label, and footer/focus text. Large percentage or KPI numbers need their own explicit line box instead of relying on browser default line-height.
+- Auto layout is allowed only after the budget proves the intended content fits. It is not a substitute for budgeting fixed-height components.
+- If the budget does not fit, reduce visible information, increase height, use a two-line structure with reserved rows, use intentional horizontal navigation, switch to dropdown perspective selection, or move detail into hover/focus tooltip, selected-state summary, or overview area.
+
+Navigation information density:
+
+- One navigation card may carry at most two layers of primary information.
+- First-level navigation defaults to `domain + one core indicator`.
+- `domain name + metric name + value + focus point` is too dense for one single-line card. Convert it to a two-line structure, horizontal scroll, dropdown perspective selector, selected-state summary, or move the extra detail into tooltip/overview content.
+- Do not rely on `overflow: hidden`, ellipsis, or screenshots that appear acceptable while DOM `scrollWidth`/`scrollHeight` still proves clipping.
 
 ## 2. Size Formula
 
@@ -462,7 +506,7 @@ Applies to small custom pages and small topbar scroll template previews.
 
 ### Left-Nav 1280 Viewport
 
-At `1280 * 768`, prefer collapsed or low-intrusion navigation. With a collapsed `80px` sidebar:
+At `1280x768`, prefer collapsed or low-intrusion navigation. With a collapsed `80px` sidebar:
 
 - `contentWidth = 1200`
 - `gap = 10`
@@ -530,17 +574,21 @@ If the current parent body height is smaller, expand the parent block's row span
 - The page-grid span belongs to the top-level parent block; internal sub-blocks must not create nested page grids.
 - Internal sub-blocks are local layout regions inside the parent body. They may use local grid/flex tracks, but they must have explicit min size, gap, overflow, and state behavior.
 - Internal sub-blocks use `5px` inset from the parent body and `5px` sibling gaps. Do not silently collapse these gaps to make a cramped block pass.
-- Do not treat `1920 * 1080` or `1280 * 768` as the report's maximum height.
+- Do not treat `1920x1080` or `1280x768` as the report's maximum height.
 - Do not reduce `N`, row height, title space, chart body height, or table body height to force the full report into one viewport.
 - Do not divide available viewport height by `N` to create smaller rows.
 - Do not skip the default span distribution before size checking.
 - Do not render any component whose computed outer size or content viewport is smaller than its final required size.
+- Do not accept domain navigation, Tabs, or Segment controls whose visible item/card content viewport fails `scrollHeight <= clientHeight` or `scrollWidth <= clientWidth` at `1920x1080` or `1280x768`.
+- Do not pack more than two primary information layers into one perspective navigation card.
+- Do not accept fixed-height navigation/cards without a declared padding, line-height, gap, and height-budget calculation.
+- Do not accept fixed-height navigation/cards whose measured DOM has `scrollHeight > clientHeight` or `scrollWidth > clientWidth`, even if the screenshot looks acceptable.
 - Do not duplicate block titles inside chart/table/KPI bodies.
 - Do not make peer components too narrow, tiny, crowded, or unreadable; when `actualTotal > 4`, use internal exact `M * N` layouts, expand the parent block, split sections, or move details to drawer/fullscreen.
 - Do not use a generic `chart`, `table`, `map`, or `other` label when a precise component type exists.
 - Do not use more than one internal scroll area in one block.
 - If a title, legend, axis label, table column, toolbar, or status tag does not fit, increase the span or simplify the component.
-- On `1280 * 768`, promote mixed components by at least one span tier compared with 1920 planning.
+- On `1280x768`, promote mixed components by at least one span tier compared with 1920 planning.
 - If a block needs long explanations, detailed table review, or multiple independent actions, use a drawer/detail page instead of expanding the card forever.
 
 ## 10. Selection Steps
@@ -552,9 +600,11 @@ If the current parent body height is smaller, expand the parent block's row span
 5. Classify the dominant component with the detailed size table and validate every sub-block component against its own minimum.
 6. Apply base minimum size and complexity expansion.
 7. Compute actual parent outer/body pixel size and sub-block viewport sizes.
-8. Keep the default span if it passes; otherwise try the next larger candidate span or redesign the block.
-9. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
-10. If the block still fails any constraint, either:
+8. For fixed-height navigation/cards, declare padding, explicit line-height, row count, gaps, and footer/status heights; verify `requiredContentHeight <= cardHeight`.
+9. For domain navigation, Tabs, and Segments, run DOM no-clipping checks at `1920x1080` and `1280x768`: `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
+10. Keep the default span if it passes; otherwise try the next larger candidate span or redesign the block.
+11. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
+12. If the block still fails any constraint, either:
    - increase the span,
    - switch simultaneous sub-blocks/components to tabs/segmented views,
    - move details to a drawer/modal,

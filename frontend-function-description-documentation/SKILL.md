@@ -36,13 +36,14 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
    Mark each page/module as common enterprise app, report/dashboard, or mixed, and record the matching baseline as part of the test and acceptance basis.
 
 3. Extract functional behavior.
-   For each page/module, describe user purpose, visible controls, filters, data display, interactions, drilldowns, refresh, export/download, empty/error/loading states, and permission behavior.
+   For each page/module, describe user purpose, visible controls, control semantics, filters, data display, interactions, drilldowns, refresh, export/download, empty/error/loading states, and permission behavior.
 
 4. Map data providers to features.
    Link each functional module to endpoint names/paths, SDK calls, static files, GraphQL operations, data-source IDs, request params, response adapter, displayed fields, raw/display value rules, and metric units. Do not repeat the whole provider document; reference it and summarize the frontend binding.
 
-5. Record data and filter behavior.
-   Explain data completeness before filter binding, then filter behavior. For every affecting filter, record option sources, default data, non-default data or response branch, required fields, empty/no-permission state when relevant, cascades, reset behavior, pagination, sorting, search, cross-component linkage, state persistence, and which visible component values/rows/series should change for non-default filters. Mark invariant components and retained mock/offline data explicitly.
+5. Record control, data, and filter behavior.
+   Explain control semantics first, then data completeness before filter binding, then filter behavior. For every perspective switch, record `componentSchemaImpact` and the expected metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels for default and non-default perspectives. For every affecting filter, record option sources, default data, non-default data or response branch, required fields, empty/no-permission state when relevant, cascades, reset behavior, pagination, sorting, search, cross-component linkage, state persistence, and which visible component values/rows/series should change for non-default filters. Mark invariant components and retained mock/offline data explicitly.
+   When perspective navigation shows percentages, rankings, or status lights, document `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`. Also document cross-perspective consistency checks across navigation percentages, overview KPIs, journey cards, and chart summaries, including at least one field-level assertion.
 
 6. Record interaction behavior.
    Cover chart clicks, KPI/card clicks, table row actions, drawer/modal content, page jumps, parameter passing, back behavior, fullscreen, download, and refresh.
@@ -60,8 +61,12 @@ Produce the function description using the standard frontend function document s
 - Each data-backed feature names its provider, source file, SDK call, endpoint, or document section.
 - Each page/module states whether the common enterprise app baseline, report development baseline, or both are the acceptance basis.
 - Filters, interactions, permissions, edge states, and exports are not omitted.
+- Control semantics are documented: perspective switches, global filters, local filters, drilldown params, and schema impact.
+- Navigation metric lineage is documented for perspective percentages, rankings, and status lights, and dynamic KPI values are not described as filter option metadata.
+- Cross-perspective consistency is documented with at least one field-level assertion, such as navigation satisfaction equals current `experienceProfiles.satisfaction`.
 - Displayed metric units, percentage/rate scaling, rounding, and forbidden display terms are documented when KPI/chart/table values contain rates or changes.
 - Filter documentation states data completeness before binding: option rows, default/non-default data, required fields, and provider/API/resolver branch coverage.
 - Filter binding evidence is clear enough for testers to verify more than selected-state changes.
+- Non-default perspective behavior is clear enough for testers to verify labels/schema and not only values.
 - Stale prototype wording, mock-only behavior, and temporary assumptions are clearly marked.
 - The document distinguishes implemented behavior from blocked, deferred, or not-tested behavior.

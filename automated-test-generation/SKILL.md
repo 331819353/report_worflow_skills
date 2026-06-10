@@ -30,8 +30,13 @@ Recommended matrix fields:
 - Test Data / Params / Body / Headers.
     - Expected API Result / Expected Status.
     - Expected Frontend Result / Expected UI.
+    - Control Semantics / 控制语义: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`.
+    - Component Schema Impact / 组件结构影响: metric names, component set, table headers, dimensions,口径, domain vocabulary, or row-scope-only.
+    - Navigation Metric Lineage / 导航指标血缘: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, `periodBehavior`.
+    - Cross-Perspective Assertion / 跨视角一致性断言: a field equality assertion such as `navigation.satisfaction == experienceProfiles.satisfaction`.
+    - Height Budget DOM Check / 高度预算DOM检查: padding, explicit line-height rows, gaps, component height, and DOM overflow assertion.
     - Forbidden Text / 禁止文案: page text that must not appear, such as `pt`, `p.p.`, or `percentage point` for Chinese rate labels.
-    - Change Selector / 变化值选择器: a locator whose text must change after the case steps exercise a non-default filter.
+    - Change Selector / 变化值选择器: a locator whose text must change after the case steps exercise a non-default filter or perspective.
     - Evidence / 证据.
     - Tags / 标签.
 
@@ -95,6 +100,9 @@ Use `$delivery-artifact-template-management` when the user needs the automation 
 7. Use executable regression assertions when matrix intent is specific.
    Supported E2E step DSL includes `expect_text`, `expect_no_text`, `capture_text`, `expect_text_changed`, and `expect_value_change_after_filter`. Prefer these over free-text expectations for metric unit checks and filter-linked value-change checks.
    For filter-linkage cases, require a data-completeness precondition or API/data case first: default data and at least one non-default filter dataset/response must exist before a value-change E2E assertion can be considered meaningful.
+   For perspective-switch cases, require assertions for labels/schema as well as values: metric name, title/summary, table header/dimension, specialty metric, risk focus, or口径 selectors should be checked when available.
+   For cross-perspective consistency cases, require one explicit field-level assertion in the matrix or expected result. A visual value-change assertion alone is not enough.
+   For fixed-height navigation/card/KPI cases, require a height-budget DOM assertion. Screenshot-only visual cases are not enough to prove the absence of 1-3px clipping.
 
 8. Report limitations instead of overstating coverage.
    If matrix steps are natural language and cannot be mapped to the DSL, the generated E2E test records an annotation and can be made strict with `STRICT_E2E_STEPS=true`. Mark these cases as pending/manual in the handoff unless selectors/actions are supplied.
@@ -115,8 +123,12 @@ Use `--run install`, `--run api`, `--run e2e`, `--run visual`, or `--run all`. R
 - API cases include method, path/url, expected status, headers/query/body when available.
 - E2E cases use executable selectors/actions or are clearly annotated as manual/unsupported.
 - Metric display cases use forbidden-text assertions when the expected result says Chinese rate/change labels must not use `pt`, `p.p.`, or `percentage point`.
+- Control-semantics cases preserve whether the case is a perspective switch, global filter, local filter, or drilldown param.
 - Filter-linkage automation includes or references a data-completeness case before UI value-change assertions; single-snapshot data cannot produce a passing filter-linkage automation result for affecting filters.
 - Filter-linkage cases use a change selector or explicit `capture_text`/`expect_text_changed`/`expect_value_change_after_filter` steps when the expected behavior is visible data change.
+- Perspective-switch automation includes label/schema assertions for non-default perspectives, not only value-change assertions.
+- Cross-perspective consistency automation preserves navigation metric lineage and includes at least one field-level assertion against overview/journey/chart data.
+- Fixed-height navigation/card/KPI automation preserves height-budget DOM checks and records `scrollHeight <= clientHeight` plus `scrollWidth <= clientWidth` expectations when supplied.
 - Visual cases define a route/page and produce deterministic Playwright snapshots.
 - CI workflow uploads Playwright report, test results, screenshots, and traces.
 - Credentials, tokens, and environment-specific URLs are read from env variables, not hard-coded into committed tests.

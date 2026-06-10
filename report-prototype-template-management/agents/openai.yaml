@@ -1,4 +1,4 @@
 interface:
   display_name: "报表原型模板管理"
-  short_description: "默认选择、复制、二开和校验可运行 Vue/Vite 报表模板，管理品牌资产、配置入口、数据绑定和启动脚本。"
-  default_prompt: "Use $report-prototype-template-management to default to a bundled template, select the best Vue/Vite report template, copy, extend, validate, and start it."
+  short_description: "默认选择、复制、二开和校验可运行 Vue/Vite 报表模板，管理品牌资产、配置入口、视角/筛选边界、数据绑定和启动脚本。"
+  default_prompt: "Use $report-prototype-template-management to default to a bundled template, select the best Vue/Vite report template, keep perspective switches separate from filters, copy, extend, validate, and start it."

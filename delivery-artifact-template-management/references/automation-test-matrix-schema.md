@@ -26,6 +26,11 @@ The generator normalizes common Chinese and English headers:
 | `steps` | `Steps`, `操作步骤`, `步骤` |
 | `expected_frontend` | `Expected Frontend Result`, `Expected UI`, `前端预期`, `页面预期` |
 | `expected_api` | `Expected API Result`, `后端预期`, `接口预期` |
+| `control_semantics` | `Control Semantics`, `controlSemantics`, `控制语义`, `控制项语义` |
+| `component_schema_impact` | `Component Schema Impact`, `componentSchemaImpact`, `组件结构影响`, `组件Schema影响` |
+| `navigation_metric_lineage` | `Navigation Metric Lineage`, `navigationMetricLineage`, `导航指标血缘` |
+| `cross_perspective_assertion` | `Cross-Perspective Assertion`, `crossPerspectiveAssertion`, `跨视角一致性断言` |
+| `height_budget_dom_check` | `Height Budget DOM Check`, `Height Budget / DOM Overflow Check`, `heightBudgetDomCheck`, `高度预算DOM检查`, `固定高度裁切检查` |
 | `evidence` | `Evidence`, `证据`, `截图证据` |
 | `tags` | `Tags`, `标签` |
 
@@ -81,11 +86,19 @@ wait: 500
 expect_visible: text=订单列表
 expect_hidden: text=加载中
 expect_text: [data-testid="total"] => 120
+expect_text: [data-testid="metric-title"] => 供应链风险指数
+expect_text: [data-testid="risk-focus"] => 交付超期风险
 expect_url: /orders
 screenshot: orders-filtered
 ```
 
 Unsupported natural-language steps are kept as annotations. Set `STRICT_E2E_STEPS=true` to fail when a step cannot be automated.
+
+For `perspective-switch` cases, include explicit label/schema assertions when possible, such as metric title, section title, table header, specialty metric, risk focus, or口径 text. A value-change assertion alone is not enough for perspective acceptance.
+
+For cross-perspective consistency cases, include navigation metric lineage and at least one field equality assertion, such as `navigation.satisfaction == experienceProfiles.satisfaction` under the same active filters and period behavior.
+
+For fixed-height navigation/card/KPI cases, include height budget and DOM overflow assertions: padding, explicit line-height rows, gaps, badge/status/footer heights, `requiredContentHeight <= componentHeight`, and `scrollHeight <= clientHeight && scrollWidth <= clientWidth` at `1920x1080` and `1280x768`.
 
 ## Visual Case Conventions
 

@@ -12,6 +12,7 @@ Use this reference to design report filters, filter option data, defaults, casca
 - Design filters around user decisions, not all available fields.
 - Preserve filter state across drilldown, drawer, jump, export, refresh, and back navigation.
 - Never show filter options that the user has no permission to query.
+- Classify controls before treating them as filters. A control that changes metric collection, component semantics, report subject, business-domain wording, table schema, or metric口径 is a perspective/navigation control, not an ordinary filter.
 
 ## Filter Taxonomy
 
@@ -26,6 +27,21 @@ Use this reference to design report filters, filter option data, defaults, casca
 - Source: system, data version, source table, report version, upload batch.
 - Keyword: object name, code, document number, customer, project, comment.
 - Saved view: common filter schemes, personal favorites, meeting presets.
+
+## Control Semantics Before Filter Design
+
+Every visible or implicit control must be classified before placement:
+
+- `perspective-switch`: changes the business domain, report theme, management object, subject area, metric set, component set, component semantics, table schema, metric口径, or domain vocabulary. It belongs in navigation, route, tab, segment, view switcher, or explicit perspective state.
+- `global-filter`: applies a horizontal constraint to the same report meaning, such as time, organization, status, risk level, owner, or product scope. It narrows rows or values without changing metric names, component collection, table headers, or口径.
+- `local-filter`: affects one component or parent block over an already fetched component dataset, such as local tabs, legend toggles, in-card category filters, or quick search inside a detail table.
+- `drilldown-param`: is emitted after a user action and scopes a drawer, modal, detail route, or lower-level query.
+
+Hard boundary:
+
+- Anything that changes 指标集合, 组件语义, 领域话术, 报表主题, 管理对象, 表头/分组表头, 维度集合, or 指标口径 cannot be placed in an ordinary global/local filter.
+- A perspective switch may update default filters internally, but the visible contract must still identify it as `perspective-switch`.
+- `componentSchemaImpact` must state whether the switch changes metric names, component set, table headers, dimensions, formulas/口径, domain vocabulary, or only row scope.
 
 ## Main Filter Surface Vs Advanced Filter
 
@@ -86,6 +102,13 @@ Every filter option should include:
 
 Do not use display names as query keys if names can change.
 
+`meta` boundary:
+
+- `meta` may contain only dimensional attributes: display aliases, stable category tags, owner/type/region descriptors, permission flags, disabled reason, description, icon, or stable UI hints.
+- `meta` must not contain dynamic metrics, KPI values, percentages, rankings, traffic-light/status-light values, period-sensitive counts, satisfaction scores, completion rates, or risk scores.
+- Dynamic metrics for option labels, perspective navigation, badges, and status lights must come from business fact datasets, aggregate datasets, or a resolver with declared lineage.
+- If a value in `meta` is intentionally static display copy, label it as static and do not use it for KPI, sorting, ranking, status, or cross-component consistency.
+
 ## Option Source Rules
 
 - Time, organization, product, customer, project, owner, source-system, data-version, store, department, and business-object filters must derive options from dimension data, fact data, or a resolver.
@@ -94,10 +117,12 @@ Do not use display names as query keys if names can change.
 - Dynamic options must define source, label field, value field, parent field, permission scope, and count behavior.
 - Filter option counts must be calculated from the current filtered dataset and permission scope.
 - A filter value must not appear selectable when no component or dataset can consume it.
+- Perspective navigation metrics such as percentages, rankings, and status lights must not be stored in `filterData.meta`. They require `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
 
 For bundled templates:
 
 - Treat `filters[]` as the main filter surface contract. Add, remove, relabel, source, and scope filters there instead of generating a standalone filter toolbar.
+- Treat template `filters[]` as horizontal constraint controls only. Business domain, report theme, management object, subject area, and first-level perspective belong in nav/page/tab/segment/route/perspective configuration, not in `filters[]`, unless the accepted contract proves they are row-scope-only.
 - Prefer `filters[].source` for data-derived options.
 - Use `filters[].options` only for static enums or clearly marked early shell placeholders.
 - Time options should come from `dim_time` or fact periods.
@@ -134,6 +159,9 @@ No filter is complete until at least one expected component change is defined an
 Force-check rules:
 
 - A runnable prototype must fail validation when a primary filter has no explicit component binding.
+- A runnable prototype must fail validation when a schema-changing perspective is modeled only as a normal filter.
+- A binding matrix must fail validation when `controlSemantics` or `componentSchemaImpact` is missing for controls that affect a component.
+- A runnable prototype or spec must fail validation when dynamic navigation KPIs are stored in filter option `meta` instead of a fact dataset, aggregate dataset, or resolver.
 - A widget affected by filters must declare `filterFields`, `requiredFilters`, or equivalent `filterMap`.
 - A widget expected to react to a global/page filter must not declare that same filter in `ignoredFilters`. Use `ignoredFilters` only when the component is intentionally invariant under the filter, and record the reason and visible scope label.
 - Primary filter validation must prove data changed in affected components. Selected-state change alone is not enough.

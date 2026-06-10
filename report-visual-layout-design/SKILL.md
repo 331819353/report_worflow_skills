@@ -43,7 +43,8 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 7. For each parent block, decide whether it is single-component or internally composed. If composed, define stable internal sub-blocks inside the parent body, then place components in those sub-blocks.
 8. Size every parent block and sub-block by its content needs: KPI, text summary, chart, table, complex diagram, task list, evidence panel, drawer trigger, or detail area.
 9. Define layout states: loading, empty, error, no-permission, stale data, export, fullscreen, drawer/modal, and mobile/tablet behavior at both parent-block and affected sub-block levels. For no-data masks in composed parent blocks, decide the mask scope after checking all sibling sub-block data states.
-10. Run overlap/overflow checks before finalizing.
+10. For fixed-height navigation, cards, KPI strips, and compact controls, declare an internal height budget before finalizing: padding + explicit line-height boxes + vertical gaps + status/badge/footer rows must be `<=` the assigned component height.
+11. Run overlap/overflow checks before finalizing.
 
 ## Hard Rules
 
@@ -54,7 +55,11 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 - A top-level `8 * N` block is a parent container, not a one-component limit. Parent blocks may contain internal sub-blocks, and each sub-block may contain one component or one tightly related micro-group.
 - Internal sub-blocks must remain inside the parent block body viewport. They do not create nested page-grid blocks, do not own same-weight block titles, and must use local grid/flex tracks with `5px` parent inset, `5px` sibling gaps, explicit min sizes, and overflow rules.
 - No-data masks in composed parent blocks are hierarchical. If a sub-block has no data, first check every sibling sub-block in the same parent block. When all sub-blocks are no-data, show one parent-block mask over the whole parent block. When only some sub-blocks are no-data, show masks only on those affected sub-blocks. A sub-block mask must cover the sub-block label/title/control area and component body together; it must not mask only the chart/table body and leave the sub-block title active.
-- Treat `1920 * 1080` and `1280 * 768` as viewport baselines, not maximum report height.
+- Treat `1920x1080` and `1280x768` as viewport baselines, not maximum report height.
+- First-level perspective controls such as domain navigation, Tabs, and Segments must pass no-clipping DOM checks at both `1920x1080` and `1280x768`. For each visible navigation/control item or card content viewport, acceptance requires `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`; if `scrollHeight > clientHeight` or `scrollWidth > clientWidth`, the layout fails even when screenshots look acceptable. Screenshot inspection cannot replace this DOM check.
+- Fixed-height navigation/cards must declare a height budget before acceptance: `paddingTop + paddingBottom + sum(explicit line-height * reserved lines) + sum(gaps) + fixed badges/status/footer heights <= cardHeight`. Auto layout alone is not acceptable for fixed-height components.
+- Domain names, metric names, percentages/core values, badges, footer labels, and bottom focus labels inside fixed-height navigation/cards must have explicit `line-height`; large numbers must not rely on browser default line boxes.
+- First-level navigation should carry `domain + one core indicator` by default. Navigation cards may carry at most two layers of primary information. If one navigation card needs domain name, metric name, value, and focus point at the same time, redesign it as a two-line structure, intentional horizontal navigation pattern, dropdown perspective selector, selected-state summary, or move detail into tooltip/overview content.
 - Do not divide viewport height by row count to make everything fit; increase rows, split sections, scroll, tab, drawer, or fullscreen.
 - Filters, toolbar, legends, table headers, labels, chart marks, and diagram nodes must not overlap or clip.
 - Template-based pages must not introduce a standalone filter toolbar, persistent filter bar, or extra filter drawer when the selected template already has a filter trigger/panel/popover/drawer. Treat "筛选工具栏" requirements as `filters[]` and filter-binding work unless the user explicitly requests template-level redesign.
@@ -69,6 +74,8 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 - Page shell choice and layout rationale.
 - Brand mode and logo placement.
 - Header/navigation/filter/toolbar structure.
+- Perspective navigation density and DOM no-clipping check plan for `1920x1080` and `1280x768`.
+- Fixed-height navigation/card height budget: declared height, padding, explicit line heights, row count, gaps, footer/status heights, and pass/fail calculation.
 - Block title-band structure: left-aligned title, right function area contents, and control selection rule for local filters/links.
 - Filter surface mapping: template-native filter trigger/panel/popover/drawer, local title-band filter, custom filter bar, or explicit redesign exception.
 - First-viewport hierarchy.
@@ -82,6 +89,10 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 
 - The first meaningful viewport answers the page's main question or exposes the main action.
 - Every block title band preserves left title alignment and a bounded right function area; local filters follow capsule/dropdown/panel selection rules and links do not crowd the title.
+- Domain navigation, Tabs, and Segments pass DOM no-clipping checks at `1920x1080` and `1280x768`: `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth` for each visible item/card content viewport. Screenshot-only evidence is insufficient.
+- Fixed-height navigation/cards declare padding, explicit line-height, gaps, and height budget; `padding + line-height boxes + gaps <= card height` at both baseline viewports.
+- Navigation/cards with `scrollHeight > clientHeight` or `scrollWidth > clientWidth` fail layout QA even if screenshot review does not show obvious clipping.
+- Navigation cards do not exceed two primary information layers; default content is `domain + one core indicator`; domain name + metric name + value + focus point is split, scrolled intentionally, converted to dropdown perspective selection, moved to selected-state summary, or moved to tooltip/overview.
 - Every block has a purpose, a size rationale, and a visible state plan.
 - Every internal sub-block has a purpose, a size rationale, component owner, and visible state plan when parent-block composition is used.
 - No-data masks are applied at the correct hierarchy: whole parent block only when every child sub-block is no-data, otherwise only the no-data child sub-blocks, covering each child sub-block title/label/control area plus its component body.

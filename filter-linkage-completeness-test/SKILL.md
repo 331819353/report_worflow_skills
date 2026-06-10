@@ -23,8 +23,8 @@ Optional inputs: filter design documentation, API documentation, permission rule
 
 ## Workflow
 
-1. Inventory filters.
-   List all visible and hidden filters: time, organization, region, industry, product, customer, brand, status, owner, keyword, advanced filters, saved queries, and page/tab scoped filters.
+1. Inventory filters and control semantics.
+   List all visible and hidden controls, then classify each as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. Filters include time, organization, region, industry, product, customer, brand, status, owner, keyword, advanced filters, saved queries, and page/tab scoped filters. Business domain, report theme, management object, subject area, and first-level perspective controls are not ordinary filters when they change metric names, component set, table headers, metric口径, or domain vocabulary.
 
 2. Verify data completeness before binding.
    Before judging UI linkage, confirm that every primary/global filter has enough underlying data grain to work: option rows, matching fact/business rows, required fields, default state, at least one non-default state, empty/no-permission state when relevant, and resolver/API branches for scenario-style filters such as view, snapshot date, month, period, organization, industry, status, or permission. If this fails, classify it as a data-completeness or data-grain defect first; do not mark the filter binding as pass or treat the issue as a display-only problem.
@@ -45,21 +45,26 @@ Optional inputs: filter design documentation, API documentation, permission rule
 7. Verify data variation.
    For each primary filter, choose at least one non-default option and prove that an affected component's visible value, row set, series, total, or empty/no-permission state changes. Selected control state alone is not a pass.
 
-8. Verify combined cases.
+8. Verify non-default perspectives.
+   For each `perspective-switch`, switch away from the default and verify metric names, titles/summaries, table dimensions/headers, component collection, specialty metrics, risk focus, and口径 labels as well as values. If a schema-changing perspective is implemented as a normal filter, record a control-semantics defect before normal filter-linkage judgment.
+   For each domain and statistical口径, verify cross-perspective consistency: navigation percentages, overview KPIs, journey cards, and chart summaries must use the same data chain. Record at least one concrete field equality assertion, such as navigation satisfaction equals current `experienceProfiles.satisfaction`.
+
+9. Verify combined cases.
    Test default filters, single filter changes, combined filters, reset, all option, empty option, multi-select, date range boundaries, permission-limited values, and repeated changes.
 
-9. Verify state persistence.
+10. Verify state persistence.
    Check whether active filters persist across pagination, sorting, tab switching, drilldown, drawer open/close, refresh, export/download, back navigation, and page jumps according to requirements.
 
-10. Verify display after filtering.
+11. Verify display after filtering.
    Confirm loading, empty, error, no-permission, and stale-selection states render correctly and do not show mixed old/new data.
 
-11. Record production/retest context when applicable.
+12. Record production/retest context when applicable.
    For production-bound validation, record environment/version/account/data seed, permission role, backend/API source mode, evidence paths, defect ID when retesting, and closure criteria. Do not mark filter linkage `pass` when required filter options, backend-supported values, account permissions, or runtime evidence are missing.
 
 ## Required Output
 
-- Filter inventory:
+- Filter/control inventory:
+- Control semantics classification:
 - Data completeness before binding:
 - Option source and completeness:
 - Default/reset behavior:
@@ -67,6 +72,8 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Cascade behavior:
 - Filter-to-component matrix:
 - Data variation proof:
+- Non-default perspective proof:
+- Cross-perspective consistency proof:
 - Combined filter cases:
 - Persistence behavior:
 - Production/retest context:
@@ -75,10 +82,13 @@ Optional inputs: filter design documentation, API documentation, permission rule
 ## Pass Criteria
 
 - Every filter has valid options, defaults, reset behavior, and documented request mapping.
+- Every control has a correct semantics classification, and schema-changing perspectives are not treated as ordinary filters.
 - Data completeness is verified before filter binding: every affecting primary filter has matching option data, fact/business rows or API/resolver support, required fields, and at least one default plus one non-default validation case.
 - Filter option values are supported by backend APIs and available data or explicitly permission-limited.
 - Changing filters changes the expected backend request and affected components.
 - For every affecting primary filter, at least one visible affected component changes data for a non-default value, or the component is explicitly documented and tested as invariant.
+- For every non-default perspective, metric names, titles/summaries, table dimensions/headers, component collection, specialty metrics, risk focus, and口径 labels update as specified.
+- For every domain and statistical口径, navigation percentages, overview KPIs, journey cards, and chart summaries reconcile to the same data chain, with at least one field-level assertion recorded.
 - `ignoredFilters` is not used for filters that should affect a component.
 - Cascades clear or refresh dependent values correctly.
 - Active filters are preserved or reset consistently across interactions.

@@ -107,9 +107,9 @@ Do not mark a production-bound artifact `ready` when required source authority, 
 Required handoff bundle when a prototype feeds technical solution:
 
 - Prototype theme, user scenario, report type, and core business questions.
-- Component binding matrix: component ID, business question, data source, row grain, required fields, filters, interactions, and empty state.
+- Component binding matrix: component ID, business question, data source, row grain, required fields, controls, filters, `controlSemantics`, `componentSchemaImpact`, navigation metric lineage, interactions, and empty state.
 - Mock/data-source contract: dataset IDs, field names, sample rows, formulas, units, enums, and derived values.
-- Filter contract: filter IDs, defaults, option source, field/query mapping, global SQL/source execution stage, component-internal local filter scope, affected components, permission behavior, and bounded-local exception if any.
+- Control/filter contract: perspective switches, global filters, local filters, drilldown params, filter IDs, defaults, option source, field/query mapping, global SQL/source execution stage, component-internal local filter scope, affected components, permission behavior, schema impact, navigation indicator lineage, and bounded-local exception if any.
 - Interaction contract: event names, payload fields, target drawer/modal/route/export/action, stale-selection behavior.
 - Visual/layout constraints that affect data shape or export behavior.
 - Assumptions and gaps that affect model/API design.
@@ -156,7 +156,7 @@ Required handoff bundle:
 Required handoff bundle:
 
 - `前端功能说明` with pages/modules, provider mapping, filters, interactions, states, permissions, exports, verification evidence, and known limitations.
-- Report data-visualization frontend evidence: page type, user purpose, first-screen answer, component/chart choice, metric formatting/口径/freshness, filter/linkage/drill-through behavior, component-ready provider mapping, state coverage, frontend performance controls, theme/accessibility, and known visualization limitations.
+- Report data-visualization frontend evidence: page type, user purpose, first-screen answer, component/chart choice, metric formatting/口径/freshness, control semantics, filter/linkage/drill-through behavior, non-default perspective behavior, cross-perspective consistency, fixed-height navigation/card height budget and DOM overflow evidence, component-ready provider mapping, state coverage, frontend performance controls, theme/accessibility, and known visualization limitations.
 - Frontend URL when runnable.
 - Backend/API base URL used by the frontend.
 - Environment/auth/proxy/deployment notes, including which profile loaded `.env.test` or `.env.production`, whether frontend and backend point to the same intended environment, and any retained mock/demo mode per profile.
@@ -169,7 +169,7 @@ Required feedback bundle for every defect:
 
 - Defect ID, severity, likely owner workflow: report design, technical solution, backend, frontend, SSO/security, data, environment, or unclear.
 - Expected result, actual result, evidence, reproduction steps, and affected artifact/API/page/component.
-- Report integration testing context when applicable: metric口径, golden/baseline dataset, source/model/API/frontend/export reconciliation evidence, account/role/tenant, active filters, cache hit/miss status, data freshness time, query/task/export ID, and likely chain layer.
+- Report integration testing context when applicable: metric口径, golden/baseline dataset, source/model/API/frontend/export reconciliation evidence, account/role/tenant, active perspective, active filters, cache hit/miss status, data freshness time, query/task/export ID, and likely chain layer.
 - Screenshot path, baseline/current/diff path when available, deterministic `VDIFF-*` finding, and multimodal `VIS-*` finding when the defect is visual/layout related.
 - Retest criteria and required input to unblock.
 - Status: `open`, `fixed`, `retest`, `closed`, `blocked`, or `accepted`.

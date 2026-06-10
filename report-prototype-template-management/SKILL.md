@@ -21,6 +21,8 @@ Default routing:
 - If a selected template has `nav[]`, every nav item must map to a substantial business page. Do not ship a navigation template with only the homepage populated.
 - Requirement-document shell details must be adapted into the selected template's existing title/logo, `nav`/`page`, `filters`, controls, toolbar, and action slots. Do not add duplicate shell structures that fight the template.
 - When a selected template already owns filter invocation, filter design means editing `filters[]`, `filters[].source/options`, active-state display, and widget/API/resolver bindings. Do not create a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly asks for a template-level redesign.
+- Template `filters[]` is reserved for horizontal constraints that keep the same component schema. Business domain, report theme, management object, subject area, or first-level analysis perspective must use nav/page/route/tab/segment/perspective state when it changes metric names, component set, table headers, metric口径, or domain vocabulary.
+- Dynamic perspective-navigation metrics such as percentages, rankings, status lights, satisfaction scores, completion rates, and risk scores must not be stored in `filterData.meta`; use `businessData`, aggregate datasets, API/provider fields, or custom resolvers with declared lineage.
 
 ## Bundled Assets
 
@@ -57,7 +59,7 @@ All template directories must be copied with their full project structure: `pack
 2. Select exactly one template when bundled assets are appropriate.
 3. For templates with `nav[]`, define the nav-page content plan before copying or editing: each nav item needs its own question, widgets, dataset scope, filters/interactions, and enough page density.
 4. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
-5. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components.
+5. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components. Place first-level perspective state in nav/page/route/tab/segment/perspective config, not in `filters[]`, when it changes schema or domain meaning.
 6. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
 7. For every standard chart widget, implement ECharts fidelity: ECharts instance/wrapper, data-driven `option`/`series`, update/resize lifecycle, and relevant tooltip/legend/emphasis behavior. Use hand-authored SVG/canvas only for explicit custom diagrams, icons, logos, or decorations.
 8. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
@@ -78,8 +80,10 @@ All template directories must be copied with their full project structure: `pack
 - Data binding mode: JSON, API, custom resolver, or retained offline mode.
 - Data completeness proof before filter binding: option rows, business rows/API response, required fields, default/non-default states, and resolver/API branch coverage.
 - Filter-to-widget binding decision: `filterFields`, `requiredFilters`, API params, resolver params, or intentionally labeled `ignoredFilters` with `ignoredFilterReasons`.
+- Navigation metric lineage when perspective navigation shows percentages, rankings, or status lights: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
 - Chart engine fidelity decision for standard chart widgets: ECharts instance/wrapper, data-driven option/series, update/resize path, and any explicit non-ECharts custom diagram exceptions.
 - Filter surface mapping when filters exist: template-native trigger/panel/popover/drawer, local title-band filter, or explicit template-redesign exception. Do not output a separate filter toolbar for bundled templates.
+- Perspective-layer mapping when business domain, report theme, management object, subject area, or first-level view switching exists; do not describe it only as a template filter unless it is row-scope-only.
 - Template layout-token decisions when changed: `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, content range, and hover/focus feedback.
 - Block title function-area decision when used: local filter capsule/dropdown/panel trigger, detail link, more menu, or no right-side control.
 - Composite block no-data mask decision when used: all sub-blocks empty -> parent-block mask; partial empty -> affected sub-block mask covering sub-block title/control plus component.
@@ -93,6 +97,8 @@ All template directories must be copied with their full project structure: `pack
 - Templates with `nav[]` are used only when multiple substantial nav pages are implemented; if only one page can be populated, do not choose or retain a nav template.
 - Requirement-document title/filter/navigation/toolbar ideas are mapped into existing template slots instead of implemented as duplicate shell layers.
 - If template filters are present or needed, they are configured through the template's native `filters[]` and existing invocation surface; standalone filter toolbars/bars are rejected unless a named template-redesign decision exists.
+- Template `filters[]` contains horizontal constraints only. Schema-changing domain/theme/management-object/perspective controls are rejected as ordinary filters unless `componentSchemaImpact: row-scope-only` is explicitly proven.
+- `filterData.meta` contains only static dimensional attributes. Dynamic navigation KPIs in `filterData.meta` are rejected unless explicitly marked as static display copy and excluded from KPI/consistency checks.
 - Template project structure remains complete after copying.
 - Native shell navigation, filters, toolbar, theme, and logo slots are preserved unless explicitly redesigned.
 - Block title bands preserve the template anatomy: left-aligned title and right function area. Single local filter with `< 3` values uses capsule; single local filter with `>= 3` values uses dropdown; multiple filters use panel trigger; detail actions use lightweight links.

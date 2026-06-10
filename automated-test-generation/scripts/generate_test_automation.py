@@ -52,6 +52,44 @@ ALIASES = {
         "接口预期",
         "预期接口结果",
     ],
+    "control_semantics": [
+        "control semantics",
+        "controlsemantics",
+        "control_semantics",
+        "控制语义",
+        "控制项语义",
+    ],
+    "component_schema_impact": [
+        "component schema impact",
+        "componentschemaimpact",
+        "component_schema_impact",
+        "组件结构影响",
+        "组件schema影响",
+        "组件schema impact",
+    ],
+    "navigation_metric_lineage": [
+        "navigation metric lineage",
+        "navigationmetriclineage",
+        "navigation_metric_lineage",
+        "导航指标血缘",
+    ],
+    "cross_perspective_assertion": [
+        "cross-perspective assertion",
+        "cross perspective assertion",
+        "crossperspectiveassertion",
+        "cross_perspective_assertion",
+        "跨视角一致性断言",
+    ],
+    "height_budget_dom_check": [
+        "height budget dom check",
+        "height budget dom overflow check",
+        "height budget / dom overflow check",
+        "heightbudgetdomcheck",
+        "heightbudgetdomoverflowcheck",
+        "height_budget_dom_check",
+        "高度预算dom检查",
+        "固定高度裁切检查",
+    ],
     "forbidden_text": [
         "forbidden text",
         "must not contain",
@@ -344,6 +382,11 @@ def normalize_cases(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
             "steps": split_steps(row.get("steps")),
             "expectedFrontend": clean_string(row.get("expected_frontend")),
             "expectedApi": clean_string(row.get("expected_api")),
+            "controlSemantics": clean_string(row.get("control_semantics")),
+            "componentSchemaImpact": clean_string(row.get("component_schema_impact")),
+            "navigationMetricLineage": clean_string(row.get("navigation_metric_lineage")),
+            "crossPerspectiveAssertion": clean_string(row.get("cross_perspective_assertion")),
+            "heightBudgetDomCheck": clean_string(row.get("height_budget_dom_check")),
             "forbiddenText": split_assertion_list(row.get("forbidden_text")),
             "changeSelector": clean_string(row.get("change_selector")),
             "evidence": clean_string(row.get("evidence")),
@@ -623,6 +666,36 @@ for (const tc of cases) {
       test.info().annotations.push({
         type: 'expected-frontend',
         description: String(tc.expectedFrontend),
+      });
+    }
+    if (tc.controlSemantics) {
+      test.info().annotations.push({
+        type: 'control-semantics',
+        description: String(tc.controlSemantics),
+      });
+    }
+    if (tc.componentSchemaImpact) {
+      test.info().annotations.push({
+        type: 'component-schema-impact',
+        description: String(tc.componentSchemaImpact),
+      });
+    }
+    if (tc.navigationMetricLineage) {
+      test.info().annotations.push({
+        type: 'navigation-metric-lineage',
+        description: String(tc.navigationMetricLineage),
+      });
+    }
+    if (tc.crossPerspectiveAssertion) {
+      test.info().annotations.push({
+        type: 'cross-perspective-assertion',
+        description: String(tc.crossPerspectiveAssertion),
+      });
+    }
+    if (tc.heightBudgetDomCheck) {
+      test.info().annotations.push({
+        type: 'height-budget-dom-check',
+        description: String(tc.heightBudgetDomCheck),
       });
     }
   });

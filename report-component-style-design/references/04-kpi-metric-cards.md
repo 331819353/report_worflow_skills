@@ -8,6 +8,7 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 - The value is the visual anchor. Status and trend support the value without competing with it.
 - The core value zone must be visually centered in the card body and occupy at least 40% of the card's main visual height. Do not stack title, subtitle, notes, or helper copy at the top in a way that leaves a large empty middle/lower area.
 - Cards in the same group share height, padding, value baseline, unit placement, and status position.
+- Fixed-height KPI cards must declare a height budget before style acceptance: padding + label line-height + value line-height + comparison/status/footer line-heights + gaps must be `<=` card body height. The value, label, unit, trend, and footer rows all need explicit `line-height`.
 - Clickable KPI cards need hover, active, selected, loading, and disabled states when applicable.
 
 ## Pyramid KPI Card Pattern
@@ -106,6 +107,7 @@ Suggested CSS tokens:
 - Label: 12-14px. Long labels wrap to two lines or move full name to tooltip.
 - Trend and status: 12px minimum with icon or sign.
 - The value, unit, and status must remain visible together.
+- Main values, percentages, and large numerals use explicit line-height sized to the intended visual box; do not rely on browser default line-height or `normal`.
 
 ## Overflow Rules
 

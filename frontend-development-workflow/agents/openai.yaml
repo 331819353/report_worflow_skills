@@ -1,4 +1,4 @@
 interface:
   display_name: "前端开发 Workflow"
-  short_description: "编排前端接真实数据与运行交付，覆盖契约校验、响应适配、环境部署、Haier SSO、运行QA、性能和功能说明。"
-  default_prompt: "Use $frontend-development-workflow to orchestrate frontend provider integration, mock replacement, contract validation, adapters, env/deployment, Haier SSO, runtime QA, performance, and handoff docs."
+  short_description: "编排前端接真实数据与运行交付，覆盖控制语义、契约校验、响应适配、环境部署、Haier SSO、运行QA、性能和功能说明。"
+  default_prompt: "Use $frontend-development-workflow to orchestrate frontend provider integration, control semantics, mock replacement, contract validation, adapters, env/deployment, Haier SSO, runtime QA, performance, and handoff docs."

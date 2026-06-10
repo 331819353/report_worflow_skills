@@ -39,6 +39,7 @@ Prefer config/data/widget layers:
 
 - Requirements -> `dashboard.config.ts`.
 - Shell navigation/filter changes -> existing `nav`/`page`, `filters`, `screen.controls`, and theme fields in `dashboard.config.ts`; patch or extend them instead of generating a separate nav/filter shell.
+- First-level perspective changes -> existing `nav`/`page`, route, tabs, segment controls, or explicit perspective state in `dashboard.config.ts`; do not bury schema-changing domain/theme/management-object choices in `filters[]`.
 - Requirement-document title/header/filter/navigation/toolbar sketches -> existing template title/logo, `nav`/`page`, `filters`, `screen.controls`, `actions`, and theme slots. Preserve business labels, defaults, options, and behaviors, but adapt the structure to the selected template.
 - Static/mock data -> `dashboard.dataset.json`.
 - Standard API endpoint/query binding -> `widget.data.api` or `filters[].source.api` in `dashboard.config.ts`.
@@ -78,6 +79,11 @@ Layout design rules:
 Filter binding rules:
 
 - Template filter UI is shell-owned. Add, remove, relabel, source, and scope global/page filters through `filters[]`; bind component-local title-band controls through `localFilters[]`.
+- Template `filters[]` is only for horizontal constraints that preserve the same component schema, metric set, table headers, and metric口径 while narrowing row scope.
+- Business domain, report theme, management object, subject area, or first-level perspective belongs in `nav[]`, page route, tab/view segment, or explicit perspective state when it changes metric names, component collection, table headers, dimensions,口径, or domain vocabulary.
+- Controls with schema impact must declare `controlSemantics: perspective-switch` and `componentSchemaImpact` in the binding matrix and implementation handoff.
+- `filterData` option `meta` is for static dimensional attributes only: aliases, sort order, permission, description, icon, stable category, disabled reason, or UI hints.
+- Do not store dynamic KPI values, percentages, rankings, status lights, satisfaction scores, completion rates, or risk scores in `filterData.meta`. Perspective-navigation indicators must come from `businessData`, aggregate datasets, API/provider fields, or custom resolvers with lineage.
 - Block title bands use a left title and right function area. Use the right function area for `localFilters[]`, filter-panel triggers, and lightweight links such as `查看详情` / `查看明细`; do not add a second widget header for these controls.
 - `localFilters[]` display rules: one local filter with value count `< 3` uses sliding capsule/segmented pill; one local filter with value count `>= 3` uses compact dropdown/select; multiple local filters use a filter panel/popover/drawer trigger with active count or summary.
 - If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.

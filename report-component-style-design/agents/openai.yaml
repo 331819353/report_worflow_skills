@@ -1,4 +1,4 @@
 interface:
   display_name: "报表组件风格设计"
-  short_description: "规范报表组件视觉与响应式行为，覆盖ECharts图例/轴安全距、环图标签、KPI值区、复杂表头、防重叠和统一风格"
-  default_prompt: "Use $report-component-style-design to design consistent responsive report components, including ECharts legend/axis spacing, small-card donut label and legend fit, KPI value-zone hierarchy, complex/grouped table headers, AntV S2 tables, capsule switches, and dropdown controls."
+  short_description: "规范报表组件视觉与响应式行为，覆盖高度预算、显式行高、ECharts图例/轴安全距、环图标签、KPI值区、复杂表头和防裁切。"
+  default_prompt: "Use $report-component-style-design to design consistent responsive report components, including fixed-height card/KPI/navigation height budgets, explicit line-height, DOM overflow prevention, ECharts legend/axis spacing, small-card donut label and legend fit, KPI value-zone hierarchy, complex/grouped table headers, AntV S2 tables, capsule switches, and dropdown controls."

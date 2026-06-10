@@ -40,6 +40,15 @@ Use this file for common adjustments and final verification after changing a tem
 7. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
 8. Render from the `data` prop inside the widget.
 
+### Add Or Change First-Level Perspective
+
+1. Classify the control as `perspective-switch` when it changes business domain, report theme, management object, metric set, component set, table schema,口径, or domain wording.
+2. Put the switch in `nav[]`, page route, tab/segment control, or explicit perspective state. Do not place it in `filters[]` unless the binding matrix proves it only narrows row scope.
+3. Add `componentSchemaImpact` to the binding matrix and list whether metric names, component collection, table headers, dimensions, formulas/口径, or domain vocabulary change.
+4. Add navigation metric lineage when the perspective navigation shows percentages, rankings, or status lights: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
+5. Add mock/API/resolver data for default and non-default perspectives, including one personalized metric and one risk focus per domain. Dynamic navigation KPIs must come from `businessData`, aggregate data, API/provider fields, or resolver output, not `filterData.meta`.
+6. Add a QA case that switches every non-default perspective and checks labels/schema as well as values.
+
 ### Add Component Interaction
 
 1. Widget emits `dashboard-action`.
@@ -67,9 +76,13 @@ Use this file for common adjustments and final verification after changing a tem
 - Every widget has `visualType`.
 - Widgets without data have `dataPolicy`.
 - Data completeness is verified before filter binding: filter option rows, business/API rows, required fields, default/non-default states, and resolver/API branches exist or are documented as gaps.
+- First-level perspective switches are not hidden in `filters[]`; domain/theme/management-object controls use nav/page/route/tab/segment/perspective state unless explicitly row-scope-only.
+- Binding matrix includes `controlSemantics` and `componentSchemaImpact` for controls that affect widgets.
+- Navigation percentages, rankings, and status lights have lineage and are not stored in `filterData.meta` unless explicitly static display copy.
 - Filter scope and data field mapping are explicit.
 - Affecting filters are bound through `filterFields`, `requiredFilters`, API params, or resolver params; `ignoredFilters` is used only for intentionally invariant widgets and each ignored filter has `ignoredFilterReasons`.
 - Non-default primary filter states visibly change affected widget data in JSON/API/resolver mode, or the widget is clearly labeled static/invariant.
+- Non-default perspective states update metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, and口径 when specified by `componentSchemaImpact`; value-only changes are not enough.
 - Block spans match the size and component-count constraints from `$report-visual-layout-design`.
 - Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and 32px block title band.
 - Outer block validation does not replace component-internal fit checks. Composite widgets must be reviewed with `$report-component-style-design` for summary columns, nested KPI grids, text wrapping, min-height, and no critical nowrap/ellipsis clipping.

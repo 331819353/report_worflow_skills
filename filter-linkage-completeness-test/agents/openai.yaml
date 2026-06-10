@@ -1,4 +1,4 @@
 interface:
   display_name: "过滤联动完整性测试"
-  short_description: "验证筛选项清单、选项值、默认重置、级联、请求参数、组件绑定矩阵和导出/钻取/分页继承"
-  default_prompt: "Use $filter-linkage-completeness-test to verify report filter options, request mapping, component linkage, cascades, and persistence."
+  short_description: "验证控制项语义、筛选项清单、选项值、默认重置、级联、请求参数、组件绑定矩阵和导出/钻取/分页继承"
+  default_prompt: "Use $filter-linkage-completeness-test to verify report control semantics, filter options, request mapping, component linkage, cascades, non-default perspectives, and persistence."

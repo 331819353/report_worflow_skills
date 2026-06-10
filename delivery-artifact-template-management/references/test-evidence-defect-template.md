@@ -28,6 +28,11 @@ Use this template when producing a handoff-ready test report.
 - Data completeness checked before filter binding: yes / no / not applicable.
 - Data completeness evidence: option rows, default rows, non-default rows, required fields, resolver/API branch, empty/no-permission state.
 - Filter binding evidence: request params, provider params, `filterFields`, `requiredFilters`, `ignoredFilters`, visible value/row-set/series/total change.
+- Control semantics evidence: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`.
+- Component schema impact evidence: metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels for non-default perspectives.
+- Navigation metric lineage evidence: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, `periodBehavior`.
+- Cross-perspective consistency evidence: navigation percentages, overview KPIs, journey cards, chart summaries, and at least one field-level equality assertion.
+- Fixed-height budget/DOM evidence: component height, padding, explicit line-height rows, gaps, badge/status/footer heights, `requiredContentHeight <= componentHeight`, viewport, `scrollHeight/clientHeight`, and `scrollWidth/clientWidth`.
 - Evidence:
 - Screenshot:
 - Baseline/current/diff artifact:

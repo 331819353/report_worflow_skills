@@ -1,4 +1,4 @@
 interface:
   display_name: "测试联调 Workflow"
-  short_description: "编排测试联调阶段，覆盖用例矩阵、自动化、URL冒烟、SSO、权限、数据一致性、筛选联动、运行QA、证据缺陷和回归闭环。"
-  default_prompt: "Use $testing-integration-workflow to orchestrate integration testing from case design and automation through smoke, SSO, permissions, data consistency, filters, runtime QA, evidence, defects, and retest closure."
+  short_description: "编排测试联调阶段，覆盖用例矩阵、自动化、URL冒烟、SSO、权限、数据一致性、控制语义、筛选联动、运行QA、证据缺陷和回归闭环。"
+  default_prompt: "Use $testing-integration-workflow to orchestrate integration testing from case design and automation through smoke, SSO, permissions, data consistency, control semantics, filters, runtime QA, evidence, defects, and retest closure."

@@ -10,7 +10,7 @@ The same business input should produce the same:
 - Answer atoms and component priorities.
 - Sample/source module roles when restoration input exists.
 - Component IDs, parent block IDs, sub-block IDs, dataset IDs, filter IDs, and action names.
-- `visualType`, layout span category, row grain, and required fields.
+- `visualType`, control semantics, component schema impact, layout span category, row grain, and required fields.
 - Binding matrix columns and validation cases.
 
 If a later revision changes these, it must be because the business question, data shape, template capability, or user instruction changed.
@@ -39,6 +39,10 @@ Use these values unless the target project explicitly defines a different vocabu
 - `visualType`: `line`, `bar`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, `other`.
 - `actionType`: `openModal`, `closeModal`, `setFilters`, `resetFilters`, `navigateUrl`, `print`, `fullscreen`, `refresh`, or a named custom action registered in the project.
 - `filterValueType`: `single`, `multiple`, `range`, `keyword`, `date`, `treePath`, `enum`, `toggle`.
+- `controlSemantics`: `perspective-switch`, `global-filter`, `local-filter`, `drilldown-param`.
+- `componentSchemaImpact`: `none`, `row-scope-only`, `metric-name`, `metric-set`, `component-set`, `table-schema`, `dimension-set`, `definition-change`, `domain-vocabulary`, `mixed`.
+- `navigationMetricKind`: `percentage`, `ranking`, `status-light`.
+- `periodBehavior`: `selected-period`, `current-period`, `comparison-period`, `rolling-window`, `latest-snapshot`, `static-display-copy`.
 - `filterExecutionStage`: `sql-where`, `source-query`, `provider-query`, `repository-query`, `resolver-param`, `redis-cache`, `precompute-cache`, `component-local`, `bounded-local`, `blocked`.
 - `dataPolicy`: `bound`, `static`, `external`. Prefer `bound`.
 - `sampleModuleRole`: `businessRequired`, `sampleStructure`, `optionalEnhancement`.
@@ -53,6 +57,7 @@ Do not create near-synonyms such as `trendLine`, `line-chart`, `metricCard`, or 
 - Sub-block IDs: lowerCamelCase ending with `SubBlock`, such as `trendChartSubBlock` or `topRiskListSubBlock`.
 - Dataset IDs: lower_snake_case with prefixes: `dim_`, `fact_`, `agg_`, `ref_`, `log_`.
 - Filter IDs: lowerCamelCase and scope-oriented, such as `period`, `orgId`, `jobFamily`, `severity`, `ownerId`.
+- Perspective IDs: lowerCamelCase and view-oriented, such as `businessDomain`, `reportTheme`, `managementObject`, or `analysisPerspective`. Do not reuse ordinary filter IDs for first-level perspective switching.
 - Action event names: lowerCamelCase plus event type, such as `barClick`, `rowClick`, `stageClick`, `taskSubmit`.
 - Modal IDs and drawer IDs: lowerCamelCase ending with `Modal` or `Drawer`.
 - Field names in mock datasets: lower_snake_case unless the existing project already uses camelCase.
@@ -108,6 +113,10 @@ If two components answer the same atom, keep the one earlier in this order unles
 
 - Always include a binding matrix for `spec-contract` and `prototype-config` modes.
 - Use the same field name for the same concept across datasets, filters, actions, and matrix rows.
+- Classify every user control before placement with `controlSemantics`. A control that changes metric names, metric set, component set, table headers, dimensions, metric definition/口径, report subject, or business-domain vocabulary is `perspective-switch`, not a normal filter.
+- Every binding matrix row must include `controlSemantics` and `componentSchemaImpact`. Use `row-scope-only` only when the control keeps the same component schema and only narrows rows or values.
+- Every perspective-navigation percentage, ranking, or status light must include stable lineage fields: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
+- Filter option `meta` must be treated as static/dimensional only. Do not place dynamic KPI values in `filterData.meta` unless the value is explicitly `static-display-copy`.
 - For bundled template prototypes, each mock dataset ID must map to a `dashboard.dataset.json` key or to an explicit API/provider resolver. A generated TS data file is not an acceptable mock dataset target.
 - Use a controlled `filterExecutionStage` for primary filters and implementation-handoff components. Global/page filters should prefer `sql-where`, `source-query`, `provider-query`, or `repository-query`; component-internal filters may use `component-local`; `blocked` is required when the current design depends on page/API-level full-materialize-then-filter behavior.
 - Do not alternate between `org`, `organization`, `orgId`, and `department` for the same scope. Pick one and map aliases explicitly.
@@ -117,6 +126,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 - Every component inside a composed parent block must declare `parentBlockId`, `subBlockId`, `subBlockRole`, local sub-block layout, `subBlockInset:5px`, and `subBlockGap:5px`.
 - Every primary filter must list affected components.
 - Every primary/global filter must state whether it narrows data through SQL/source/provider/repository/resolver/precompute/cache before component construction; every component-internal filter must state the already fetched component dataset it operates on.
+- First-level business domain, report theme, management object, subject area, or analysis perspective must map to navigation, route, tab, segment, or an explicit perspective state. Do not encode it only as a template `filters[]` item unless an accepted local project contract proves it is row-scope-only.
 - Every clickable component must list event name, payload fields, target action, and stale-state behavior.
 
 ## Acceptance Gate
@@ -126,6 +136,9 @@ Before finalizing, answer yes to all:
 - Can another agent implement the same component IDs and dataset IDs from this output?
 - Can every first-screen value be traced to a dataset or static policy?
 - Can every primary filter be tested against at least one affected component?
+- Can every control be classified as perspective switch, global filter, local filter, or drilldown param without hiding schema-changing behavior inside ordinary filters?
+- For every non-default perspective, can QA verify changed metric names, titles/summaries, table dimensions or headers, component set, specialty metrics, and口径 where the contract says they should change?
+- Can every navigation percentage, ranking, and status light be traced to `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior` instead of filter option metadata?
 - Can every global/page-level filter be tested without relying on full-materialize-then-filter behavior, and can every component-internal filter be tested against already fetched component data?
 - Can every clickable mark or row produce a stable action payload?
 - Can the page still behave predictably when filters return empty data or remove a selected object?

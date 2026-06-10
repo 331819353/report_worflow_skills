@@ -89,6 +89,22 @@ Useful mock data contains meaningful contrast:
 
 Avoid all numbers being too neat. Use realistic variation, but keep the story legible.
 
+## Multi-Domain And Perspective Rules
+
+When a report has multiple business domains, report themes, management objects, subject areas, or first-level perspectives:
+
+- Each domain/perspective must have at least one personalized metric that is not just a renamed clone of the default domain.
+- Each domain/perspective must have at least one risk focus or abnormal signal that matches its business vocabulary.
+- Each domain/perspective must have at least one non-default validation case.
+- Mock data should vary metric names, domain vocabulary, table dimensions, specialty indicators, and formula/口径 fields whenever the binding contract declares schema impact.
+- A perspective switch cannot be proven by one shared snapshot plus different selected-state labels. Use distinct rows, scenario keys, resolver branches, or API fixtures that drive the actual component data and schema.
+
+Validation checks:
+
+- For every non-default domain/perspective, at least one KPI/chart/table/list value changes and at least one domain-specific metric or risk focus is visible.
+- Table rows include the fields needed by that domain's headers, dimensions, and drilldown payload.
+- Default-domain metric names and summaries do not leak into non-default-domain components unless they are intentionally shared metrics.
+
 ## Filter Compatibility
 
 - Time filters should return valid periods and not break trends.
@@ -100,6 +116,13 @@ Avoid all numbers being too neat. Use realistic variation, but keep the story le
 - Default filters should produce a strong first-screen story.
 
 Filter option mock data should include stable `id`, `label`, optional `count`, `disabled`, `reason`, and `parentId` for cascades. Counts must match filtered rows when displayed.
+
+Filter option `meta` rules:
+
+- `meta` may contain dimensional/static attributes such as aliases, sort order, permission scope, description, icon, stable category, disabled reason, or UI hint.
+- Do not store dynamic KPI values, percentages, rankings, status lights, satisfaction scores, completion rates, risk scores, or period-sensitive counts in filter option `meta` or `filterData.meta`.
+- Perspective navigation indicators must be modeled in business fact/aggregate datasets or resolver output with fields that can be reconciled to overview KPIs, journey cards, chart summaries, and detail rows.
+- If a label-like value is static display copy, mark it static and keep it out of calculations, ranking, status, and cross-component consistency checks.
 
 ## Filter Granularity And Scenario Rules
 

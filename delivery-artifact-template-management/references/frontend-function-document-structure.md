@@ -43,8 +43,10 @@ Use this structure for 前端功能说明. Omit sections only when they truly do
 - Purpose:
 - Main components:
 - Data/provider mapping:
+- Control semantics and schema impact:
 - Provider evidence:
 - Filters and defaults:
+- Non-default perspective behavior:
 - Interactions:
 - States:
 - Export/download/refresh:
@@ -52,6 +54,13 @@ Use this structure for 前端功能说明. Omit sections only when they truly do
 - Known limitations:
 
 ## Data And Filter Linkage Summary
+
+- Control semantics summary:
+- Perspective switches and schema impact:
+- Navigation metric lineage:
+- Filter defaults/options/provider params:
+- Non-default perspective verification:
+- Cross-perspective consistency verification:
 
 ## Verification Summary
 

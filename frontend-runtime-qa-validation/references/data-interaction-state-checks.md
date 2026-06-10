@@ -11,6 +11,18 @@
 - Rapid filter/search/page changes do not let old responses overwrite newer UI state.
 - Cache reuse, manual refresh, logout, permission changes, and provider errors invalidate or preserve data according to the documented policy.
 
+## Control Semantics Checks
+
+- Classify each visible control as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param` before judging behavior.
+- Perspective switches cover business domain, report theme, management object, subject area, and first-level views. They may change metric names, component set, table headers, dimensions,口径, and domain vocabulary.
+- Global filters narrow the same semantic schema and should not change metric names, component titles, component collection, table headers, or口径 unless the binding matrix declares them as perspective switches.
+- Local filters affect one component or parent block over already fetched data and must not alter page-level totals, permission scope, or backend query shape.
+- Drilldown params are action payloads that scope drawers, modals, detail routes, or lower-level queries.
+- For every non-default perspective, verify metric names, title/summary wording, table dimensions/headers, component collection, specialty metrics, risk focus, and口径 labels as well as numeric values.
+- For every domain and statistical口径 switch, verify cross-perspective consistency: navigation percentages, overview KPIs, journey cards, and chart summaries come from the same data chain and active filter context.
+- Record at least one field-level equality assertion for the selected perspective, such as `navigation.satisfaction === current experienceProfiles.satisfaction`, with the source dataset/field and active period behavior.
+- Flag a failure when a domain/theme/management-object switch is implemented only as an ordinary filter and schema-changing labels or table fields remain in the default domain.
+
 ## Interaction Checks
 
 - Filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, chart clicks, table row actions, exports/downloads, refresh, reset, retry, fullscreen, and close/back flows.

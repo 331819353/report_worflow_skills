@@ -54,6 +54,18 @@ Use for review recap and meeting materials.
 
 Flow: executive conclusion -> chapter navigation -> stage results -> changes/causes -> issues/risks -> action plan -> export/presentation mode.
 
+### Perspective Navigation
+
+Use for business domain, report theme, management object, subject area, or statistical口径 switching when the control changes the report's first-level view.
+
+Rules:
+
+- Prefer low-intrusion Tabs, Segments, compact card navigation, or dropdown perspective selection based on available width and item count.
+- Each perspective item should expose at most two primary information layers. The default payload is `domain + one core metric/status`; move extra focus detail into hover/focus tooltip, selected-state summary, overview content, or the selected perspective body.
+- Fixed-height navigation items must declare a height budget: padding + explicit line-height rows + gaps + badge/status/footer heights must be `<=` item height. Domain name, metric name, percentage/core value, and bottom labels must use explicit `line-height`.
+- At `1920x1080` and `1280x768`, every visible item/card content viewport must pass `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`. Use DOM checks; screenshots are supporting evidence only. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is clipping.
+- If labels or badges do not fit, redesign the navigation pattern instead of shrinking text or hiding overflow.
+
 ## 2. Key Page Actions
 
 Use only actions that support the task.

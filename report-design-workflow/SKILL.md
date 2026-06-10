@@ -19,6 +19,7 @@ Default runnable prototype policy:
 - If selecting a template with `nav[]`, such as `left-nav-analytics-workbench-template` or `frozen-title-sci-fi-cockpit-template`, redesign the content into multiple substantial nav pages. Do not choose a navigation template and implement only a homepage.
 - When using a bundled template, map requirement-document title, filter, navigation, toolbar, and shell-layout intent into the template's existing slots and config. Do not recreate the requirement document's shell structure when it conflicts with the selected template.
 - When using a bundled template with filter functionality, do not generate a separate filter toolbar, persistent filter bar, or extra filter drawer. A requested "main filter bar" becomes template `filters[]`, native trigger/panel/popover/drawer behavior, local title-band filters, and filter-to-widget/API/resolver bindings.
+- Template-native filter surfaces carry horizontal constraints only. Business domain, report theme, management object, subject area, and first-level analysis perspective belong in navigation, tabs, routes, segments, or an explicit perspective layer when they change metrics, components, table schema,口径, or domain wording.
 
 ## Child Skills
 
@@ -47,6 +48,7 @@ Default runnable prototype policy:
 - Data completeness is checked before filter binding after implementation or repair. Required rows/options/fields/default and non-default states/resolver branches must exist before `filterFields`, `requiredFilters`, API params, or resolver params can be accepted as working.
 - A primary/global filter is not accepted until affected components have filter-field/query/resolver binding and non-default filter values prove visible data changes. Selected-state-only behavior is a failed prototype.
 - In template mode, filter design is a shell-config and binding problem, not permission to add a new filter toolbar. Only explicit template-level redesign may add a new persistent filter surface.
+- In template mode, the native `filters[]` contract must not be used to hide first-level perspective switching. Domain/theme/management-object controls must be modeled as nav/page/tab/segment/route/perspective state unless the binding matrix proves `componentSchemaImpact: row-scope-only`.
 - Template `8 * N` validation covers top-level parent blocks only. A parent block may contain internal sub-blocks and components; those internals, summary text areas, nested KPI grids, chart/table sub-blocks, and small metric cells must pass `$report-visual-layout-design` composition rules and `$report-component-style-design` fit rules.
 - Missing API, model, field, formula, source, permission, or acceptance facts must be recorded as assumptions or gaps. Do not implement unsupported behavior as final prototype logic.
 - When the prototype feeds technical solution, produce a handoff bundle: component binding, mock/data-source contract, filter contract, interaction payload, data/model assumptions or gaps, and readiness value.
@@ -71,8 +73,9 @@ Default runnable prototype policy:
 
 - Workflow mode and input inventory.
 - Primary report type and core question.
-- Parent-block/sub-block/component/data/filter/interaction binding matrix.
+- Parent-block/sub-block/component/data/filter/control/interaction binding matrix with `controlSemantics` and `componentSchemaImpact`.
 - Layout plan, parent `8 * N` grid, internal sub-block plan when used, `pageShellPath`, selected template/custom reason, filter surface mapping, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
+- Perspective-layer mapping when the report has multiple domains, themes, management objects, subject areas, or first-level views.
 - Prototype-to-technical handoff bundle when the output will feed API/model/backend/frontend work.
 - Files changed or created when implementation is requested.
 - Quality-gate findings and readiness: `ready`, `partial`, or `blocked`.
@@ -87,6 +90,7 @@ Default runnable prototype policy:
 - Do not select a navigation/sidebar template unless the content is reorganized into multiple meaningful nav pages, each with enough components, data, and interactions to stand on its own.
 - Do not create a second title area, filter bar, sidebar, navigation layer, or toolbar inside an existing template because the requirement document showed one; adapt labels, options, defaults, and behavior through template config unless a template-level redesign is explicitly requested.
 - Do not satisfy "筛选工具栏" or "主筛选栏" by rendering a new visual bar in bundled templates. Use the template's native filter entry and `filters[]` contract.
+- Do not put business domain, report theme, management object, subject area, or first-level perspective into ordinary template filters when it changes metric names, component set, table headers, metric口径, or domain wording.
 - Do not claim filter linkage is implemented when data completeness was not checked first, or when the only available data is a single default snapshot for an affecting filter.
 - Do not keep template engineering inside layout; template work belongs to `$report-prototype-template-management`.
 - Do not claim a runnable prototype satisfies the ECharts stack when standard charts are hand-drawn with SVG/HTML/CSS/canvas. ECharts SVG renderer is valid only when generated through ECharts options; manually encoded bars, lines, pies, gauges, axes, or maps fail readiness.

@@ -14,6 +14,8 @@
 - Before filter UI interaction is judged, confirm data completeness evidence exists: filter option data, default rows, at least one non-default filter dataset/response, required fields, and empty/no-permission state when relevant. If a data source has only one default snapshot, filter linkage cannot pass for affecting filters.
 - Static assets, chunks, fonts, images, workers, and downloaded templates resolve under the intended base path.
 - Layout appears at target viewport sizes without obvious clipping or overlap.
+- Domain navigation, Tabs, Segments, and first-level perspective controls are checked at `1920x1080` and `1280x768` with DOM overflow assertions. For each visible item/card content viewport: `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`. Screenshots can support findings but cannot replace these DOM checks.
+- Fixed-height navigation/cards/KPI tiles/compact summaries are checked with DOM overflow assertions at `1920x1080` and `1280x768`. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a clipping finding unless the element is an intentional visible scroll region.
 
 ## Headless Screenshot, Baseline Diff, And Multimodal Review
 
@@ -48,6 +50,8 @@
 - For composite parent blocks with internal sub-blocks, verify no-data masks use the correct hierarchy: all child sub-blocks empty shows one whole parent-block mask; partial child emptiness masks only affected sub-blocks, including each affected sub-block title/control area plus component body.
 - Verify hover and `focus-visible` states for interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips. They should preserve geometry and use in-bounds border/outline/glow; clipped borders, cut shadows, or offset/scale animation at grid edges are `VIS-*` defects.
 - Check target desktop and mobile/tablet viewports when the page is responsive or embedded in variable containers.
+- For perspective navigation density, verify each nav card carries at most two layers of primary information. If domain name, metric name, value, and focus point all appear together, record a layout defect unless the design uses a two-line structure, intentional horizontal navigation, dropdown perspective selector, tooltip, or overview detail area.
+- For fixed-height cards and navigation items, verify implementation evidence for height budget: padding, explicit line-height values, row count, gaps, badge/status/footer heights, and `requiredContentHeight <= componentHeight`. Missing budget evidence is a QA gap; failing budget or DOM overflow is a `VIS-*` defect.
 - For ECharts, AntV S2, canvas, and virtualized tables, verify nonblank rendering, resize behavior after container changes, and cleanup/dispose behavior after route changes or tab switches.
 - For components mapped or labeled as ECharts standard charts, verify chart-engine fidelity: source/runtime uses an ECharts instance or approved wrapper, visible marks come from data-driven ECharts `option`/`series`, and tooltip/legend/emphasis behavior is available when relevant. Import-only ECharts paired with hand-authored SVG/HTML/CSS/canvas bars, lines, pies, gauges, maps, axes, or legends is a `VIS-*`/implementation QA failure.
 - For trend/cartesian ECharts charts with visible x-axis labels and bottom legends, inspect option/config and crop: `grid.containLabel` is `true`, `grid.bottom >= 56px`, and the legend has clear safe distance from axis labels.

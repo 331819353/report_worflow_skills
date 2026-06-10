@@ -158,7 +158,10 @@ Every chart needs enough metadata to be understandable:
 
 Filter rules:
 
+- Classify visible controls as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param` before implementation.
+- Business domain, report theme, management object, subject area, and first-level perspective controls are `perspective-switch` when they change metric names, component set, table headers, metric口径, or domain vocabulary.
 - Keep high-frequency filters visible through the page's approved filter surface and put low-frequency filters into advanced filters. In bundled/copy templates, the approved surface is the template-native trigger/panel/popover/drawer and `filters[]`, not a newly generated standalone toolbar.
+- In bundled/copy templates, `filters[]` carries horizontal constraints only. Put schema-changing perspective controls in nav/page/route/tab/segment/perspective state.
 - Do not show a long row of many filters by default.
 - Do not default to unbounded historical data or all details. Use safe defaults such as recent 7/30 days and current permission scope.
 - Show the active filter summary and support reset.
@@ -176,6 +179,11 @@ Interaction rules:
 - Global filters, permission scope, pagination, sorting, Top/Bottom, grouping, aggregation, and export scope must be sent to the provider/API/resolver before component rendering.
 - Data completeness must be checked before filter binding: provider/mock data needs option rows, default rows, non-default filter rows or responses, required fields, and resolver/API branches for every affecting global/page filter.
 - A global/page filter is not implemented if it only changes selected control state. Affected components must bind the filter to API/provider/resolver inputs or configured `filterFields`/equivalent mapping, and non-default filter values must visibly change the relevant KPI/chart/table/list data.
+- A non-default perspective is not implemented if it only changes numeric values while metric names, titles/summaries, table dimensions/headers, component collection, specialty metrics, risk focus, or口径 labels remain in the default domain.
+- Perspective navigation percentages, rankings, and status lights are not implemented unless they declare `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
+- Cross-perspective consistency is required when the page has domain/statistical口径 switching: navigation percentages, overview KPIs, journey cards, and chart summaries must come from the same active data chain.
+- Fixed-height navigation/cards/KPI tiles are not implemented unless CSS/component config declares padding, explicit `line-height` for domain names, metric names, percentages/core values, badges, footer labels, vertical gaps, and a height budget where `requiredContentHeight <= componentHeight`. `auto` layout alone is not enough.
+- Runtime QA must measure fixed-height content viewports. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is clipping unless the region is an intentional visible scroll area.
 - Use `ignoredFilters` only for intentionally invariant components. Do not use it to compensate for missing provider fields, mock data grain, or resolver branches.
 
 ## Data Freshness, Quality, And Trust
@@ -304,7 +312,7 @@ Treat these as findings unless explicitly accepted for a tiny prototype:
 
 Mark report data-visualization frontend readiness:
 
-- `ready`: user purpose, information hierarchy, component choices, metric formatting/口径, filters, linkage, drill/trace, states, provider mapping, theme, performance controls, permissions, freshness/quality, runtime QA, environment profile, and handoff evidence are confirmed, implemented or documented, and testable for the stated scope.
+- `ready`: user purpose, information hierarchy, component choices, metric formatting/口径, control semantics, filters, linkage, non-default perspective behavior, drill/trace, states, provider mapping, theme, performance controls, permissions, freshness/quality, runtime QA, environment profile, and handoff evidence are confirmed, implemented or documented, and testable for the stated scope.
 - `partial`: local/demo/test scope can proceed with named limitations, retained mocks, missing optional interactions, limited responsive coverage, or incomplete production monitoring.
 - `blocked`: core metric口径, provider contract, auth/permission, filter behavior, first-screen conclusion, component-ready data, global query execution scope, error/empty/no-permission states, or runtime verification is missing for a production-bound page.
 
@@ -315,7 +323,11 @@ Frontend function descriptions, QA notes, and handoff summaries should include:
 - Page type, user, primary question, and first-screen answer.
 - Component inventory and chart-choice rationale.
 - Metric formatting, unit, precision,口径, freshness, and quality display.
+- Control semantics: perspective switches, global filters, local filters, drilldown params, and component schema impact when applicable.
+- Navigation metric lineage and cross-perspective consistency assertions when perspective navigation displays percentages, rankings, or status lights.
+- Fixed-height navigation/card/KPI height-budget evidence and DOM overflow assertions for `1920x1080` and `1280x768`.
 - Filter defaults, option sources, cascade/reset behavior, and provider param mapping.
+- Non-default perspective evidence: metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels.
 - Interaction map: chart click, drill-down, drill-through, drawer/modal, route, export, refresh.
 - Provider mapping and adapter boundary.
 - Performance decisions: point/category/table limits, lazy load, debounce, cancellation, cache, virtual scroll, downsampling/aggregation.

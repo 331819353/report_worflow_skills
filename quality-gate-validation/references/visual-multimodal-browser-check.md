@@ -37,6 +37,9 @@ Capture the smallest set that can prove the page is visually usable:
 - Full-page screenshot when the page scrolls.
 - Mobile/tablet screenshots when the page is responsive or embedded in variable containers.
 - One screenshot after changing a representative primary filter, plus the expected visible data-change assertion for affected components when the filter is supposed to change data.
+- One screenshot or focused crop after switching each non-default business domain, report theme, management object, subject area, or first-level perspective when those controls exist. The assertion must cover metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels, not only values.
+- DOM overflow evidence for domain navigation, Tabs, Segments, and first-level perspective controls at `1920x1080` and `1280x768`: each visible item/card content viewport must satisfy `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`. Screenshots are not a substitute for this evidence.
+- Height-budget and DOM overflow evidence for fixed-height navigation/cards/KPI tiles/compact summaries: padding, explicit line-height, gaps, badge/status/footer heights, and `requiredContentHeight <= componentHeight`. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a clipping defect unless the region is an intentional visible scroll area.
 - One screenshot of opened custom filter popovers/dropdowns when filter visual acceptance is in scope.
 - One screenshot focused on complex flow, Sankey, graph, tree, decomposition, or lineage diagrams when present.
 - For diagrams with layer/stage/lane labels such as `L1/L2/L3`, capture the full diagram header/title band and the first row of nodes in the same screenshot so title-node collisions are visible.
@@ -91,12 +94,16 @@ Ask the multimodal model to inspect screenshots for:
 - Text-graphic collision: business-question text, conclusion text, titles, labels, legends, chart marks, tables, cards, diagram nodes, connectors, or controls overlap, stack, or visually merge.
 - Component too small: chart/table/KPI/detail content is compressed, unreadable, or occupies too little of its block.
 - Internal component clipping: summary text, nested KPI grids, submetric tiles, metric titles, values, helper text, or actions are truncated by narrow columns, forced fixed grids, `nowrap`, ellipsis, or hidden overflow without tooltip/focus/drawer disclosure.
+- Missing fixed-height budget: fixed-height navigation/cards/KPI tiles do not declare padding, explicit line-height, gaps, badge/status/footer heights, or a passing `requiredContentHeight <= componentHeight` calculation.
 - Crowded component distribution: repeated peer cards/charts/tiles are too narrow, too small, or arranged in an awkward long strip instead of a balanced `M * N` pattern when space allows.
 - Clipping or truncation: important text, values, legends, axes, controls, drawers, modals, or table content is cropped.
 - Nonblank rendering: charts, canvases, maps, icons, logos, images, and tables render with visible content.
 - Brand/logo acceptance: required logo or declared placeholder is visible, uses the correct light/dark variant, keeps aspect ratio, and is not clipped. For custom `htmlReplica` or `freeDesign` pages, a real bundled Haier logo is required; placeholder is a blocker.
 - Sample fidelity: for sample/screenshot/HTML-source restoration, shell, module order, control count, hierarchy, card proportions, and first viewport match the source unless an enhancement is labeled.
 - Control surface quality: primary filters use a styled design-system/custom select/dropdown surface; naked native `<select>` controls are not accepted as final visuals.
+- Perspective semantics mismatch: domain/theme/management-object/subject-area switching is shown as a normal filter while component schema changes, or the non-default perspective leaves default metric names, titles, table headers, specialty metrics, or口径 labels in place.
+- Perspective navigation clipping: domain navigation, Tabs, Segments, or first-level perspective cards fail DOM no-clipping checks even when screenshots appear acceptable.
+- Perspective data-chain mismatch: navigation percentages, overview KPIs, journey cards, or chart summaries disagree under the same domain/statistical口径 and active filters.
 - Complex diagram spacing: layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges in flow/Sankey/graph/tree/decomposition visuals have at least 16px visible separation and do not collide with rail, title-band, or edge-bend zones.
 - Complex diagram title band: layer/stage/lane titles reserve a separate top/side title band with at least 16px spacing from the nearest node, card border, connector, or label.
 - Bad visual proportion: primary KPI, chart, table, or conclusion area is visually underweighted compared with decorative or secondary elements.

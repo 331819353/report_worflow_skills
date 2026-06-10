@@ -13,7 +13,8 @@ When asked to design a report visual layout, use this structure:
 7. 关键组件: parent block -> sub-block -> component placement for KPI cards, charts, tables, text summaries, drawers/popovers, toolbar actions.
 8. 模板路由: chosen template and config files to adjust.
 9. 交互与状态: filters, drilldown, drawer/modal, refresh/export/fullscreen, empty/loading/error/no-permission, responsive behavior.
-10. 设计校验: first-viewport value, sample fidelity when applicable, brand correctness, grid correctness, visual restraint, no clipping/overlap.
+10. 视角导航验收: domain navigation, Tabs, Segments, or other first-level perspective controls; include `1920x1080` and `1280x768` DOM no-clipping results.
+11. 设计校验: first-viewport value, sample fidelity when applicable, brand correctness, grid correctness, visual restraint, no clipping/overlap.
 
 ## 2. Quality Checklist
 
@@ -51,8 +52,8 @@ Before finalizing, verify:
 - Every top-level parent block occupies complete rectangular page-grid cells.
 - Components may be placed inside internal sub-blocks of a parent block; sub-blocks are local layout regions and do not count as page-grid cells.
 - Page, section, and block titles are owned by the layout layer. Component bodies do not duplicate those titles through chart/table/card internal title options.
-- Every chosen block span has been checked against `1920 * 1080` or `1280 * 768` practical viewport constraints.
-- `1920 * 1080` and `1280 * 768` are not treated as total report height limits.
+- Every chosen block span has been checked against `1920x1080` or `1280x768` practical viewport constraints.
+- `1920x1080` and `1280x768` are not treated as total report height limits.
 - If one parent grid block contains multiple sub-blocks/components, it has one clear block-level business title and the internal sub-block labels/components remain visually subordinate.
 - Every sub-block has a declared purpose, component owner, local size, `5px` parent inset, `5px` sibling gap, state behavior, and overflow rule.
 - Peer component groups inside one large block use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, they use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M` is columns, `N` is internal rows, `M >= N`, and `M - N` is minimal among valid factor pairs.
@@ -61,6 +62,11 @@ Before finalizing, verify:
 - Shape-sensitive visuals such as gauges, radar, maps, pies, SVG/canvas diagrams, flow paths, and custom ECharts graphics use aspect-compatible blocks or centered uniform fit boxes. A warped curve, stretched map, oval radar/circle, or squeezed gauge fails layout QA.
 - Scrollable report pages keep usable row/block heights and support vertical scrolling when content exceeds the first viewport.
 - Navigation is present only when it helps orientation and remains low-intrusion.
+- Domain navigation, Tabs, and Segments are checked at `1920x1080` and `1280x768`; each visible navigation/control item or card content viewport passes `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
+- Screenshot evidence does not replace DOM no-clipping evidence for first-level perspective navigation.
+- Fixed-height navigation/cards include a height budget: declared height, padding, explicit line-height for each text row, row count, gaps, badge/status/footer heights, and a `requiredContentHeight <= cardHeight` calculation.
+- A navigation/card DOM check where `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is recorded as clipping, even when the screenshot looks visually acceptable.
+- A navigation card carries at most two primary information layers. Default first-level navigation is `domain + one core indicator`. If it needs domain name, metric name, value, and focus point, the design uses a two-line structure, intentional horizontal navigation, dropdown perspective selector, selected-state summary, tooltip, or overview detail area.
 - Filters are easy to invoke and active conditions are visible.
 - Template-based pages preserve the selected template's native navigation/filter mechanism; config changes patch `nav`/`page`, `filters`, toolbar labels, and theme fields instead of replacing the shell.
 - Requirement wording such as "主筛选栏", "筛选工具栏", or "filter bar" is not enough to create a separate visual surface in template mode; it must be adapted into the template's native filter mechanism.
@@ -104,6 +110,8 @@ Before finalizing, verify:
 - Do not let copied HTML inline colors or one-off custom styles override the selected global UI token system.
 - Do not add a sidebar, nav, footer, or logo just to fill space.
 - Do not make navigation visually dominant when compact tabs, breadcrumbs, segmented controls, or drawer navigation are enough.
+- Do not accept clipped domain navigation, Tabs, or Segments based on screenshots alone; DOM overflow checks are required.
+- Do not pack domain name, metric name, value, and focus point into one overcrowded navigation card.
 - Do not expose a large permanent filter region when a filter trigger, popover, drawer, or bottom sheet can carry the task.
 - Do not use naked native `<select>` controls as the final visual surface for primary filters.
 - Do not use masonry, staggered, irregular, diagonal, or non-rectangular component layouts.

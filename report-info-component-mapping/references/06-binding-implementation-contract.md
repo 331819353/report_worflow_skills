@@ -7,6 +7,53 @@ Use this reference before implementation, prototype configuration, API handoff, 
 Every mapped component must be expressible as an implementation contract.
 
 ```ts
+type ControlSemantics =
+  | 'perspective-switch'
+  | 'global-filter'
+  | 'local-filter'
+  | 'drilldown-param';
+
+type ComponentSchemaImpact =
+  | 'none'
+  | 'row-scope-only'
+  | 'metric-name'
+  | 'metric-set'
+  | 'component-set'
+  | 'table-schema'
+  | 'dimension-set'
+  | 'definition-change'
+  | 'domain-vocabulary'
+  | 'mixed';
+
+type ComponentSchemaImpactDetail = {
+  categories: ComponentSchemaImpact[];
+  changesMetricNames: boolean;
+  changesComponentSet: boolean;
+  changesTableHeaders: boolean;
+  changesDimensions: boolean;
+  changesFormulaOrDefinition: boolean;
+  changesDomainVocabulary: boolean;
+  notes?: string;
+};
+
+type NavigationMetricLineage = {
+  navigationId: string;
+  metricKind: 'percentage' | 'ranking' | 'status-light';
+  sourceDataset: string;
+  field?: string;
+  formula?: string;
+  grain: string;
+  affectedFilters: string[];
+  periodBehavior:
+    | 'selected-period'
+    | 'current-period'
+    | 'comparison-period'
+    | 'rolling-window'
+    | 'latest-snapshot'
+    | 'static-display-copy';
+  staticDisplayCopy?: boolean;
+};
+
 type ComponentMapping = {
   id: string;
   // Metadata for the layout/block title. Do not render this again inside the component body.
@@ -34,6 +81,9 @@ type ComponentMapping = {
   requiredFields: string[];
   formulas?: string[];
   rollupLogic?: string;
+  controlSemantics: ControlSemantics[];
+  componentSchemaImpact: ComponentSchemaImpactDetail;
+  navigationMetricLineage?: NavigationMetricLineage[];
   globalFilters: string[];
   filterMap: Record<string, string>;
   filterExecutionStage?: 'sql-where' | 'source-query' | 'provider-query' | 'repository-query' | 'resolver-param' | 'redis-cache' | 'precompute-cache' | 'component-local' | 'bounded-local' | 'blocked';
@@ -59,6 +109,9 @@ Rules:
 - `parentBlockId` groups components that live in the same top-level `8 * N` parent block. `subBlockId` identifies the internal sub-block viewport that owns the component. Leave `subBlockId` empty only for single-component parent blocks.
 - `parentLayoutSpan` is the top-level `columns * rows` span. `subBlockLayout` describes local grid/flex placement such as `area:evidence`, `local:2x1`, `track:minmax(240px,1fr)`, or `tab:trend`, and must preserve `subBlockInset:5px` plus `subBlockGap:5px` when sub-blocks exist.
 - `filterMap` must map UI filter IDs to dataset fields or query params.
+- `controlSemantics` must classify controls that affect the component as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`.
+- `componentSchemaImpact` must explicitly state whether a control changes metric names, component collection, table headers, dimensions, metric formulas/口径, domain vocabulary, or only narrows rows.
+- `navigationMetricLineage` is required when perspective navigation displays percentages, rankings, or status lights. Each item must declare `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
 - `filterExecutionStage` must show where filters, sorting, pagination, ranking, grouping, and aggregation execute when implementation or handoff is in scope. Use `sql-where` for global/page-level database filters, `component-local` for filters over the already fetched component dataset, and `blocked` when the current design depends on page/API-level full-materialize-then-filter behavior.
 - `apiId`/`apiEndpoint` should identify the API that serves this component when the output feeds API planning or frontend integration. Default to one component or coherent component group per API.
 - `frontendComputePolicy` must be `component-ready` or `format-only` for implementation handoff. Use `blocked` when required business formulas, aggregations, rankings, filters, or series shaping are still expected to happen in the frontend.
@@ -74,6 +127,10 @@ Use these values unless an existing project explicitly defines a different local
 - `componentType`: `card`, `chart`, `table`, `text-summary`, `drawer`, `task`, `action`, `custom`.
 - `visualType`: `line`, `bar`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, `other`.
 - Built-in action type: `openModal`, `closeModal`, `setFilters`, `resetFilters`, `navigateUrl`, `print`, `fullscreen`, `refresh`. Avoid `switchNav` for new components unless maintaining legacy config.
+- `controlSemantics`: `perspective-switch`, `global-filter`, `local-filter`, `drilldown-param`.
+- `componentSchemaImpact`: `none`, `row-scope-only`, `metric-name`, `metric-set`, `component-set`, `table-schema`, `dimension-set`, `definition-change`, `domain-vocabulary`, `mixed`.
+- `navigationMetricKind`: `percentage`, `ranking`, `status-light`.
+- `periodBehavior`: `selected-period`, `current-period`, `comparison-period`, `rolling-window`, `latest-snapshot`, `static-display-copy`.
 - `filterExecutionStage`: `sql-where`, `source-query`, `provider-query`, `repository-query`, `resolver-param`, `redis-cache`, `precompute-cache`, `component-local`, `bounded-local`, or `blocked`.
 - `dataPolicy`: `static` only for explicit narrative/static content, `external` only when the component manages runtime data outside normal datasets.
 
@@ -92,6 +149,9 @@ Minimum columns:
 - API ID/path and frontend compute policy when an API/backend handoff is in scope.
 - Row grain, primary key, and required fields.
 - Metric formulas and rollup logic.
+- Control semantics for each control that affects the component.
+- Component schema impact: whether the control changes metric names, component set, table headers, dimensions, formulas/口径, domain vocabulary, or only row scope.
+- Navigation metric lineage when perspective navigation shows percentages, rankings, or status lights: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, `periodBehavior`.
 - Global filters that affect it.
 - Ignored filters and visible scope label.
 - Local filters or internal tabs.
@@ -114,6 +174,9 @@ Minimum columns:
 - Additive KPI/chart totals must reconcile with detail rows under the same filters.
 - Non-additive metrics such as rates, scores, and completion rates must recalculate from raw numerator/denominator fields.
 - A primary/global filter that should affect a component must map to a dataset field, query param, resolver param, or required filter. It cannot be hidden in `ignoredFilters`.
+- Business domain, report theme, management object, subject area, and first-level perspective switching must not be represented as ordinary filters when they change metric names, component semantics, table headers, metric口径, or domain vocabulary.
+- Perspective navigation percentages, rankings, and status lights are data-bearing metrics. They must be backed by business facts, aggregate datasets, or resolvers with lineage; they must not be hidden in `filterData.meta`.
+- Filter option `meta` may contain only dimensional/static descriptors such as name aliases, sort order, permission, description, icon, disabled reason, stable category tags, or UI hints. Dynamic KPI values belong in business facts or resolvers.
 - Mock/offline data must include enough dimension grain or resolver logic for each affected primary filter to return different values when business reality differs. A single static snapshot is allowed only for explicitly invariant/static content.
 - For backend/API handoff, business formulas, aggregations, ranking, grouping, Top/Bottom, filtering, pagination, and chart-series/table shaping should be returned as component-ready response fields. The frontend may do display formatting, enum label display, null handling, local UI sorting of tiny already-returned option lists, and interaction state only.
 - Do not design page/API-level full-materialize-then-filter data paths. Components, stores, adapters, and static helpers must not build/fetch all candidate rows and then apply global filters, permission filters, pagination, ranking, grouping, aggregation, or counts locally. Use `component-local` only for filters over the already fetched component dataset; use `bounded-local` for tiny static enums or confirmed bounded lookups; otherwise use `blocked`.
@@ -125,9 +188,11 @@ For bundled templates:
 
 - One template widget normally represents one top-level parent block. When the parent block contains multiple sub-blocks, implement them inside that widget with local CSS grid/flex or a typed `subBlocks[]` view model; do not create fake page-grid blocks for internal sub-blocks.
 - Global/page filters must be declared in `filters[]` and invoked through the selected template's native filter trigger/panel/popover/drawer. Do not generate a standalone filter toolbar, persistent filter bar, or extra filter drawer unless the user explicitly requests template-level redesign.
+- Template `filters[]` is for horizontal row-scope constraints. First-level business domain, report theme, management object, subject area, or analysis perspective must be represented through nav/page/route/tab/segment/perspective state when it changes component schema, metric names, table headers, or domain wording.
 - Offline/mock filter options and business rows must live in `src/data/dashboard.dataset.json` and be loaded through `src/data/dashboard.loader.ts` plus the data-source registry. Do not create generated TS files for fixture rows, arrays, or payloads.
 - `widget.data.params.key` must point to a real dataset in `dashboardData`.
 - Use `filters[].source` for data-derived filter options and `filters[].options` for static enums.
+- Do not put dynamic perspective-navigation KPIs in `filterData.meta`. Use `businessData`, aggregate rows, or a custom resolver and bind the navigation display to that data chain.
 - Use `widget.data.filterFields` when filter ID differs from dataset field.
 - Use `widget.data.requiredFilters` for filters that must affect the dataset.
 - Use `widget.data.requiredParams` for fixed params that must filter `staticData`.
@@ -170,9 +235,21 @@ For each primary filter, include at least one scenario proving:
 - Non-additive metrics recalculate from raw numerator/denominator fields.
 - Selected objects remain in scope or show a stale-selection state.
 
+For each `perspective-switch`, include at least one default and one non-default scenario proving:
+
+- Metric names and title/summary wording match the selected domain.
+- Component collection and table dimensions/headers change when `componentSchemaImpact` says they should.
+- Domain-specific specialty metrics and risk focus appear for the selected domain.
+- Formula/口径 differences are visible in labels, field mapping, or validation notes instead of only changing numeric values.
+- Navigation percentages, rankings, and status lights reconcile to the same `sourceDataset`/field/formula chain used by overview KPIs, journey cards, and chart summaries.
+
 A runnable prototype should fail validation when:
 
 - A primary filter has no explicit component binding.
+- A schema-changing control is modeled only as a normal filter or lacks `componentSchemaImpact`.
+- A navigation percentage, ranking, or status light lacks `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, or `periodBehavior`.
+- A dynamic navigation KPI is stored in filter option `meta` or `filterData.meta` without being explicitly static display copy.
+- A non-default perspective only changes numeric values while metric names, titles, table dimensions, component set, specialty metrics, and口径 stay incorrectly default.
 - A primary filter only narrows data after full dataset/component construction.
 - A primary filter changes only UI selected state while affected component data stays identical. Treat `ignoredFilters` or missing `filterFields` as binding gaps after data completeness is proven; treat single-snapshot mock data, missing non-default rows, or missing resolver/API branches as data-completeness gaps first.
 - A clickable element has no emitted event or configured action.

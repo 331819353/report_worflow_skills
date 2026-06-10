@@ -32,6 +32,7 @@ Apply these rules to every component before applying component-specific rules.
 - Helper text, units, metadata: 12px minimum.
 - Core KPI value: 24-36px depending on block importance and available space.
 - Use tabular numerals for values that need comparison.
+- Fixed-height component text must declare explicit `line-height`, especially domain names, metric names, KPI values, percentage values, badges, helper text, and footer labels. Do not rely on browser default line boxes for large numbers or compact card rows.
 
 ## Global UI And Metric Semantics
 
@@ -49,6 +50,26 @@ Apply these rules to every component before applying component-specific rules.
 - Long metric titles and summary labels should wrap to one or two reserved lines before truncation. Reserve the line height so wrapping does not shift neighboring tiles.
 - Units must stay visually attached to values. If a value is too long, reduce precision, use compact notation, widen the value zone, or move secondary text away.
 - Badges must not compress their text below readability. If status wording is long, use icon plus short label and show full status in tooltip.
+
+## Fixed-Height Budget
+
+Before accepting fixed-height cards, navigation items, KPI tiles, compact summaries, and fixed-height controls, calculate the internal height budget:
+
+```text
+requiredContentHeight =
+  paddingTop
+  + paddingBottom
+  + sum(explicitLineHeight * reservedLineCount)
+  + sum(verticalGaps)
+  + fixedBadgeStatusFooterHeights
+
+requiredContentHeight <= componentHeight
+```
+
+- Count every visible row: domain/object name, metric label, core value/percentage, unit, status badge, helper text, bottom label, footer, and selected-state marker.
+- Auto, flex, or grid layout may distribute the rows only after the budget proves they fit.
+- If the budget fails, reduce visible information, increase height, split rows, use horizontal scroll with explicit affordance, or move secondary detail into tooltip, selected-state summary, drawer, or overview area.
+- Runtime QA must also measure DOM overflow. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a clipping failure for fixed-height content.
 
 ## Density And Collision Rules
 

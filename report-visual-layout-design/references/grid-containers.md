@@ -6,7 +6,7 @@ All report content display areas must use an `8 * N` rectangular block grid:
 
 - The content display area is divided into 8 equal columns and N rows.
 - N is flexible and grows with page length.
-- `1920 * 1080` and `1280 * 768` are viewport baselines, not report height limits.
+- `1920x1080` and `1280x768` are viewport baselines, not report height limits.
 - Every top-level content block occupies one or more complete page-grid cells and acts as a parent block.
 - Every top-level content block's occupied area must be rectangular.
 - A top-level parent block may contain multiple internal sub-blocks, and each sub-block may contain one component or a tightly related micro-group. Internal sub-blocks do not count as page-grid blocks. See `block-composition.md`.
@@ -17,7 +17,7 @@ All report content display areas must use an `8 * N` rectangular block grid:
 
 Do not use masonry, staggered, diagonal, floating, or irregular component shapes.
 
-After choosing a default span, calculate its actual pixel size with `block-size-constraints.md`, especially for `1920 * 1080` and `1280 * 768` viewports. Keep the default span when the content fits; enlarge, split, or move detail content only when the size check fails.
+After choosing a default span, calculate its actual pixel size with `block-size-constraints.md`, especially for `1920x1080` and `1280x768` viewports. Keep the default span when the content fits; enlarge, split, or move detail content only when the size check fails.
 
 ## 2. Scroll And Row Height
 

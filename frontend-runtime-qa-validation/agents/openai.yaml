@@ -1,4 +1,4 @@
 interface:
   display_name: "前端运行时 QA"
-  short_description: "用浏览器整页截图、组件裁图和多模态识别检查运行时、交互、布局和可运行URL"
-  default_prompt: "使用 $frontend-runtime-qa-validation 对前端/原型页面做运行时QA：先通过无头浏览器截图，报表页还要分别裁取环图、趋势图、KPI卡和表格，再用多模态模型按可验证清单识别布局偏移、空白过大、文字/图形重叠、图例/轴标签拥挤、KPI值区不足、表头结构不当、图表过小、裁剪和空白渲染等异常，并把发现回流到修复或QA报告。"
+  short_description: "用浏览器整页截图、组件裁图、DOM overflow、高度预算、多模态识别和非默认视角检查运行时、交互、布局和可运行URL"
+  default_prompt: "使用 $frontend-runtime-qa-validation 对前端/原型页面做运行时QA：先通过无头浏览器截图，报表页还要分别裁取环图、趋势图、KPI卡和表格；对视角导航、固定高度卡片/KPI做1920x1080和1280x768 DOM overflow检查，scrollHeight > clientHeight 或 scrollWidth > clientWidth 即判裁切，并核对padding、显式line-height、gap和高度预算；切换非默认业务视角检查指标名、标题摘要、表头维度、特色指标和口径，再用多模态模型按可验证清单识别布局偏移、空白过大、文字/图形重叠、图例/轴标签拥挤、KPI值区不足、表头结构不当、图表过小、裁剪和空白渲染等异常，并把发现回流到修复或QA报告。"
