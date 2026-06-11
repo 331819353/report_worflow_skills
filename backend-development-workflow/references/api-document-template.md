@@ -138,6 +138,8 @@ Use this section when backend work starts from frontend/prototype mock data.
 - Cache TTL and invalidation:
 - Database connection pool:
 - Pool min/max/acquire timeout/idle timeout:
+- Pool release/close guarantee for `ApiError`, timeout, cancellation, early return, and generic exception paths:
+- StarRocks pool max config such as `STARROCKS_POOL_MAX` and repeated-failure exhaustion test:
 - Refresh cadence:
 - Timeout behavior:
 - Large-file/database fallback:

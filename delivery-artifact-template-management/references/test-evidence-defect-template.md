@@ -34,6 +34,7 @@ Use this template when producing a handoff-ready test report.
 - Cross-perspective consistency evidence: navigation percentages, overview KPIs, journey cards, chart summaries, and at least one field-level equality assertion.
 - Fixed-height budget/DOM evidence: component height, padding, explicit line-height rows, gaps, badge/status/footer heights, `requiredContentHeight <= componentHeight`, viewport, `scrollHeight/clientHeight`, and `scrollWidth/clientWidth`.
 - Donut/pie crop and budget evidence: crop path, `legendBandHeight`, `labelLineBudget`, `radius`, `center`, right-legend width budget if used, low-value label handling, tooltip/legend disclosure, and title/legend/label-line/label/center boundary result.
+- Connection-pool leak evidence: pool type/source, max config such as `STARROCKS_POOL_MAX`, repeated `ApiError`/timeout/exception reproduction count, acquire/release logs or active/idle counts, later-request acquire result, and cleanup path (`finally`/context manager/equivalent).
 - Evidence:
 - Screenshot:
 - Baseline/current/diff artifact:

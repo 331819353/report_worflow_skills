@@ -44,4 +44,5 @@ It owns performance strategy and verification. It does not replace API design, d
 - Do not optimize by removing or ignoring backend query params. Data-version, business filters, pagination/sort, and permission/data scope must remain source-side predicates, precompute lookup inputs, or cache-key dimensions.
 - Cache keys must include filters, permission/user/tenant scope, source version, pagination/sort, and locale/unit options when relevant.
 - Redis usage is not ready when key dimensions, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability are unknown.
+- Database/upstream connection-pool usage is not ready when any query path can raise `ApiError`, timeout, cancellation, validation error after acquire, early return, or generic exception without releasing/closing the acquired connection in `finally`, context-manager cleanup, or an equivalent pool-safe guard. A leaked StarRocks connection can exhaust a small pool such as `STARROCKS_POOL_MAX=5`; treat this as a blocker, not a minor resilience issue.
 - Frontend rendering optimizations must preserve loading, empty, error, and interaction states.

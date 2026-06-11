@@ -90,6 +90,15 @@ ALIASES = {
         "高度预算dom检查",
         "固定高度裁切检查",
     ],
+    "connection_pool_release_check": [
+        "connection pool release check",
+        "connectionpoolreleasecheck",
+        "connection_pool_release_check",
+        "apierror connection release check",
+        "apierrorconnectionreleasecheck",
+        "连接池释放检查",
+        "apierror连接释放检查",
+    ],
     "forbidden_text": [
         "forbidden text",
         "must not contain",
@@ -387,6 +396,7 @@ def normalize_cases(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
             "navigationMetricLineage": clean_string(row.get("navigation_metric_lineage")),
             "crossPerspectiveAssertion": clean_string(row.get("cross_perspective_assertion")),
             "heightBudgetDomCheck": clean_string(row.get("height_budget_dom_check")),
+            "connectionPoolReleaseCheck": clean_string(row.get("connection_pool_release_check")),
             "forbiddenText": split_assertion_list(row.get("forbidden_text")),
             "changeSelector": clean_string(row.get("change_selector")),
             "evidence": clean_string(row.get("evidence")),
@@ -696,6 +706,12 @@ for (const tc of cases) {
       test.info().annotations.push({
         type: 'height-budget-dom-check',
         description: String(tc.heightBudgetDomCheck),
+      });
+    }
+    if (tc.connectionPoolReleaseCheck) {
+      test.info().annotations.push({
+        type: 'connection-pool-release-check',
+        description: String(tc.connectionPoolReleaseCheck),
       });
     }
   });

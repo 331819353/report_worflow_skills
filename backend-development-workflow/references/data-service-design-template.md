@@ -141,6 +141,15 @@ Rules:
 
 ## 9. Redis, Cache, And Precompute Design
 
+Connection-pool lifecycle contract:
+
+- Database/upstream pool owner:
+- Pool config keys and max size, such as `STARROCKS_POOL_MAX`:
+- Acquire timeout, idle timeout, validation, and safe shutdown:
+- Release/close pattern: context manager / `try-finally` / `defer` / `using` / framework-owned:
+- Exception cleanup coverage: `ApiError`, timeout, cancellation, validation error after acquire, formatter error, early return, generic exception:
+- Repeated-failure proof: simulate repeated `ApiError` and confirm active/idle pool counts return to normal and later requests can acquire a connection:
+
 | Cache ID | Role | Key dimensions | Value shape/size | TTL/invalidation | Miss/stampede behavior | Fallback | Metrics | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CACHE-001 | metadata / permission / result / widget / snapshot / rate-limit / lock / idempotency / job-progress | tenant, user/role, report, dataVersion, filters, page/sort |  | TTL+jitter/source-version/publish rollback | singleflight/lock/warmup | stale last-success / bypass / fail closed | hit ratio, latency, errors | ready / partial / blocked |

@@ -62,6 +62,9 @@ For every production-bound data service, record the applicable decisions below o
 ## Resource Pool Rules
 
 - Database-backed APIs must use a connection pool or document that the runtime/framework owns pooling externally.
+- Every acquired database/upstream connection must be released or closed on all paths. Use a context manager, `try/finally`, `defer`, `using`, or equivalent guard around the exact acquire scope; do not rely on normal success-path code after query execution.
+- `ApiError` and framework/business exceptions are not allowed to bypass pool cleanup. If a query raises `ApiError`, timeout, cancellation, validation error after acquire, formatter error, early return, or any generic exception, the connection must still be returned to the pool or closed before the error envelope is produced.
+- For StarRocks or similar small pools, record the max pool config such as `STARROCKS_POOL_MAX` and test the failure path. With a default max such as `STARROCKS_POOL_MAX=5`, repeated `ApiError` leaks can exhaust the pool and make later requests fail to create/acquire connections.
 - Redis clients must use bounded pools, connect/read/write timeouts, retry/backoff limits, and safe shutdown behavior.
 - Upstream HTTP/API clients should reuse connections and define connect/read/overall timeout.
 - Pool limits must be consistent with database/upstream limits and application worker count; increasing threads without pool limits can reduce stability.
@@ -79,7 +82,7 @@ For every production-bound data service, record the applicable decisions below o
 
 - Mark data-service/API design `ready` only when applicable performance and resilience decisions are documented or explicitly out of scope.
 - Mark `partial` when the service can run for local/demo/test scope but lacks confirmed capacity, latency, pool, cache, async/offline, SQL plan, timeout, or observability decisions.
-- Mark `blocked` when a production-bound endpoint may overload the source, uses unbounded concurrency, accepts unbounded async queue growth, lacks source-side filtering/pagination for large data, opens one connection per request, uses Redis without key/TTL/invalidation/permission-safety/miss/fallback/pool decisions, depends on another endpoint's in-memory response payload for correctness, omits data-version/business/permission scope from query or cache keys, has no timeout/failure behavior for required upstream dependencies, or keeps long-running work synchronous without a safe limit.
+- Mark `blocked` when a production-bound endpoint may overload the source, uses unbounded concurrency, accepts unbounded async queue growth, lacks source-side filtering/pagination for large data, opens one connection per request, can leak pooled database/upstream connections on `ApiError`/timeout/exception paths, uses Redis without key/TTL/invalidation/permission-safety/miss/fallback/pool decisions, depends on another endpoint's in-memory response payload for correctness, omits data-version/business/permission scope from query or cache keys, has no timeout/failure behavior for required upstream dependencies, or keeps long-running work synchronous without a safe limit.
 
 ## Handoff Evidence
 
@@ -87,6 +90,7 @@ For implementation, validation, or production acceptance, include:
 
 - Endpoint-level performance/resilience table.
 - Config keys or files for pool, Redis/cache, timeout, worker, and rate-limit settings.
+- Connection lifecycle evidence for database/upstream pools: acquire/release ownership, `ApiError`/timeout/exception cleanup path, pool max such as `STARROCKS_POOL_MAX`, and a repeated-failure test proving the pool is not exhausted.
 - Redis handoff evidence when used: role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and metrics.
 - Async job contract and evidence when long-running work exists: create/status/cancel/result endpoints, queue/worker limits, retry/dead-letter policy, retention, and sample job lifecycle.
 - Load/smoke evidence when available: request count, latency, error rate, saturation, cache hit ratio, and slow-query sample.

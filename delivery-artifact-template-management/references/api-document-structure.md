@@ -45,7 +45,7 @@ Use this reference when creating the API document skeleton.
 - Filter syntax, date range inclusivity, timezone, enum values, and default filters.
 - File upload/download content type, filename, streaming, and export size limits.
 - Report data-service backend conventions for report/BI/dashboard APIs: report type, metadata/fixed-contract source, dimension/metric/filter/sort whitelist, frontend-code-only rule, backend-owned source/SQL mapping, parameter guardrails, permission injection, component-ready result metadata, freshness/quality, cache safety, export lifecycle, audit, versioning, and slow-report governance.
-- Data-service performance/resilience conventions: expected volume/latency, concurrency model, cache/precompute, resource pools, async/offline job strategy, timeout/retry/fallback, rate/concurrency limits, and observability.
+- Data-service performance/resilience conventions: expected volume/latency, concurrency model, cache/precompute, resource pools, `ApiError`/timeout/exception connection release/close behavior, async/offline job strategy, timeout/retry/fallback, rate/concurrency limits, and observability.
 - SQL query conventions for database-backed APIs: selected columns, sargable predicates, join cardinality, pagination/keyset strategy, aggregation/window placement, dynamic optional-filter strategy, and plan-evidence expectation.
 - Async job, callback, webhook, streaming, or batch-processing conventions when relevant, including status/progress, cancellation, queue/worker limits, retry/dead-letter behavior, idempotency, result retention, and failure states.
 - Backward compatibility and deprecation notes.

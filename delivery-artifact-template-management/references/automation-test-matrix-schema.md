@@ -31,6 +31,7 @@ The generator normalizes common Chinese and English headers:
 | `navigation_metric_lineage` | `Navigation Metric Lineage`, `navigationMetricLineage`, `导航指标血缘` |
 | `cross_perspective_assertion` | `Cross-Perspective Assertion`, `crossPerspectiveAssertion`, `跨视角一致性断言` |
 | `height_budget_dom_check` | `Height Budget DOM Check`, `Height Budget / DOM Overflow Check`, `heightBudgetDomCheck`, `高度预算DOM检查`, `固定高度裁切检查` |
+| `connection_pool_release_check` | `Connection Pool Release Check`, `connectionPoolReleaseCheck`, `连接池释放检查`, `ApiError连接释放检查` |
 | `evidence` | `Evidence`, `证据`, `截图证据` |
 | `tags` | `Tags`, `标签` |
 
@@ -99,6 +100,8 @@ For `perspective-switch` cases, include explicit label/schema assertions when po
 For cross-perspective consistency cases, include navigation metric lineage and at least one field equality assertion, such as `navigation.satisfaction == experienceProfiles.satisfaction` under the same active filters and period behavior.
 
 For fixed-height navigation/card/KPI cases, include height budget and DOM overflow assertions: padding, explicit line-height rows, gaps, badge/status/footer heights, `requiredContentHeight <= componentHeight`, and `scrollHeight <= clientHeight && scrollWidth <= clientWidth` at `1920x1080` and `1280x768`.
+
+For backend pool-resilience cases, include connection-pool release checks: simulate repeated `ApiError`/timeout/exception after acquire, assert release/close in cleanup, record pool max such as `STARROCKS_POOL_MAX`, and verify later requests can still acquire a connection.
 
 ## Visual Case Conventions
 

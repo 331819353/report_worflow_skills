@@ -246,9 +246,10 @@ Pressure scenarios should include:
 - dashboard auto-refresh
 - cache stampede or cache unavailable
 - slow data source or saturated connection pool
+- repeated `ApiError`/timeout/exception after database/upstream connection acquire, verifying release/close and no pool exhaustion
 - complex permission predicates
 
-Guardrails should verify max time range, max rows, max export rows, max dimensions/metrics, max `IN` size, per-user/per-tenant concurrency, timeout, and heavy-query async/degradation behavior.
+Guardrails should verify max time range, max rows, max export rows, max dimensions/metrics, max `IN` size, per-user/per-tenant concurrency, timeout, heavy-query async/degradation behavior, and connection-pool recovery after repeated failures. For StarRocks, include pool max config such as `STARROCKS_POOL_MAX` and prove later requests can still acquire a connection after repeated `ApiError` responses.
 
 ## Regression, Automation, And Snapshots
 
@@ -331,6 +332,6 @@ Testing reports and production handoffs should include:
 - Case matrix covering metric, model, API, frontend, control semantics, filter, permission, cache, export, performance, exception, UAT, smoke, regression, and automation scope.
 - Execution results: pass/fail/blocked/not run counts by category.
 - Data reconciliation evidence across source/model/API/frontend/export.
-- Network/API samples, screenshots, export files or hashes, query IDs, cache hit/miss evidence, freshness timestamps, logs, and monitoring snapshots when available.
+- Network/API samples, screenshots, export files or hashes, query IDs, cache hit/miss evidence, connection pool active/idle counts or equivalent logs, freshness timestamps, logs, and monitoring snapshots when available.
 - Defect ledger: severity, owner layer, expected/actual, reproduction, evidence, status, fix version, retest criteria, and retest evidence.
 - Final conclusion: pass, partial pass, fail, or blocked, with remaining risk and next owner action.

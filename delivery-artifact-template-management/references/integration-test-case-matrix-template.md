@@ -23,6 +23,7 @@ Use this template when integration test cases need to be handed off as a runnabl
 - Non-default perspective behavior: every domain/theme/management-object/subject-area view updates metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels as specified.
 - Cross-perspective consistency: every domain/statistical口径 validates navigation percentages, overview KPIs, journey cards, and chart summaries against one data chain, with at least one field-level equality assertion.
 - Fixed-height navigation/card/KPI fit: padding, explicit line-height, gaps, badge/status/footer heights, `requiredContentHeight <= componentHeight`, and DOM checks where `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth` at `1920x1080` and `1280x768`.
+- Backend connection-pool resilience: repeated `ApiError`/timeout/exception after connection acquire releases/closes the connection, later requests can still acquire from the pool, and pool max such as `STARROCKS_POOL_MAX` is recorded.
 - Interaction behavior: drilldown, drawer, modal, page jump, pagination, sorting, refresh, export/download.
 - Edge states: loading, empty, error, timeout, null, partial data, missing optional fields.
 - Defect retest: blocker/high/major defects after a fix, with original defect ID, fix version, retest environment, and closure criteria.

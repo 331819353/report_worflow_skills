@@ -37,7 +37,7 @@ Optional inputs: test account, data seed, environment URL, source commit, risk l
    Cover default page load, data completeness for filter states, normal filter changes that prove affected data changes, non-default perspective switches that prove schema/wording changes, cross-perspective consistency across navigation percentages/overview KPIs/journey cards/chart summaries, expected drilldowns, successful exports, valid permissions, representative data rows, and visible rate/change/completion labels using `%` in Chinese report UI. For filters, put data completeness cases before filter-binding cases.
 
 5. Design negative and edge cases.
-   Cover empty data, invalid params, missing token, expired token, no permission, API failure, timeout, missing optional fields, null values, boundary dates, cascade clearing, no-result filters, stale selected-state-only filters, schema-changing perspectives hidden as ordinary filters, single-snapshot mock residue, text truncation in KPI/summary/card internals, and fixed-height navigation/card DOM clipping.
+   Cover empty data, invalid params, missing token, expired token, no permission, API failure, timeout, missing optional fields, null values, boundary dates, cascade clearing, no-result filters, stale selected-state-only filters, schema-changing perspectives hidden as ordinary filters, single-snapshot mock residue, text truncation in KPI/summary/card internals, fixed-height navigation/card DOM clipping, and backend `ApiError` paths that must release/close pooled connections.
 
 6. Define expected results and evidence.
    Each case must specify precondition, steps, test data/API params, expected UI result, expected API behavior, evidence to capture, and pass/fail criteria.
@@ -89,6 +89,7 @@ When using this skill, produce:
 - Fixed-height navigation/card/KPI budget cases at `1920x1080` and `1280x768`: declared padding, explicit line-height, gaps, row count, badge/status/footer heights, `requiredContentHeight <= componentHeight`, and DOM assertions where `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
 - Common enterprise app UI baseline cases for form/list/detail/table/navigation/dialog/feedback/empty/error/cross-platform surfaces when those pages exist.
 - Report UI baseline cases for layout hierarchy, chart/table formatting, filters, states, permissions, export, performance, and acceptance when report pages exist.
+- Backend resilience cases when database/upstream pools exist: simulate repeated `ApiError`/timeout/exception after connection acquire, verify later requests still acquire connections, and record pool max such as `STARROCKS_POOL_MAX`.
 - Drilldown/drawer/modal/page-jump parameter preservation.
 - Loading, empty, error, timeout, null, and partial data states.
 - Export/download inherits active filters and permissions.

@@ -67,7 +67,9 @@ Use `data-service-design-template.md` when the deliverable is design rather than
 For default report backend/data-service planning or implementation, use `Python + Flask + database/upstream connection pools + Redis` unless the user specifies another stack or an existing project has an authoritative backend stack.
 
 - Flask owns HTTP routing, request validation handoff, service composition, error envelopes, health/readiness endpoints, and auth middleware integration.
-- Database/upstream connection pools own bounded resource usage, acquire timeout, idle/validation behavior, and overload protection.
+- Database/upstream connection pools own bounded resource usage, acquire timeout, idle/validation behavior, overload protection, and guaranteed release/close on success and exception paths.
+- Repository/source adapters must pair every pool acquire with `finally`, context-manager cleanup, `defer`, `using`, or an equivalent guard. `ApiError`, timeout, cancellation, validation error after acquire, formatter error, early return, and generic exception paths must return the connection to the pool or close it before the error envelope is produced.
+- For StarRocks-backed services, record the max pool config such as `STARROCKS_POOL_MAX`. A default max such as `STARROCKS_POOL_MAX=5` means a handful of leaked `ApiError` paths can exhaust the pool and block later requests.
 - Redis owns cache/precompute, hot query acceleration, dictionary/permission cache where safe, canonical snapshot cache when declared, stampede protection, stale fallback, rate/concurrency support, idempotency keys, distributed locks, and short-lived job progress when needed.
 - Document an override reason before choosing FastAPI, Spring, Express, Node, or another backend stack by default.
 
@@ -385,6 +387,7 @@ Treat these as findings unless explicitly scoped to a tiny non-production demo:
 - Metrics, trends, rankings, tables, exports, or drilldowns read an undocumented snapshot/dashboard API response or application-memory snapshot as their data source instead of using a declared snapshot/source/precompute/shared-cache contract by data-version context.
 - Response metadata echoes `snapshotDate/dataVersion` or scope values, but the repository/source/precompute/cache query did not use those values as params, predicates, or key segments.
 - Query/export opens a new physical database connection per request instead of using a bounded pool.
+- Query/export/repository code acquires a pooled connection and can raise `ApiError`, timeout, cancellation, or another exception before release/close. Success-path-only cleanup is a connection leak; for small pools such as `STARROCKS_POOL_MAX=5`, this is a production blocker.
 - Export loads all rows into memory before writing.
 - Core metrics are recalculated differently by each report.
 - No audit log for sensitive query/export/download/config changes.
@@ -416,6 +419,7 @@ Backend/API documentation, implementation notes, and validation reports should i
 - Data-vs-presentation boundary: structured data/metadata returned by backend, frontend-owned copy/conclusion composition, and documented server-owned text exceptions.
 - Cache key dimensions, TTL, invalidation, warmup, stale fallback, and permission safety.
 - Redis role matrix and operational contract when Redis is used.
+- Database/upstream connection lifecycle evidence: pool max config such as `STARROCKS_POOL_MAX`, acquire/release owner, `ApiError`/timeout/exception cleanup path, and repeated-failure proof that the pool is not exhausted.
 - Pagination/count/export strategy.
 - Async export/job lifecycle evidence when applicable.
 - Result metadata for columns, precision, freshness, quality, cache status, and trace id.

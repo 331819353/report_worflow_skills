@@ -98,6 +98,8 @@ Document unknown or unconfirmed performance limits:
 - Cache or precompute requirement:
 - Redis/cache need, cache key dimensions, TTL, invalidation, and permission safety:
 - Database connection pool configuration, max connections, timeout, and health-check behavior:
+- Connection release/close behavior on `ApiError`, timeout, cancellation, early return, and generic exception paths:
+- StarRocks pool max such as `STARROCKS_POOL_MAX` and repeated-failure pool-exhaustion test evidence:
 - Refresh cadence:
 - Timeout/retry behavior:
 - Large-file, database, or upstream API failure behavior:

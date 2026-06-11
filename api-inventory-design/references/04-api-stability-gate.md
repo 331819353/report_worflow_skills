@@ -39,7 +39,7 @@ Create a `GAP-*` item instead of inventing:
 - Performance/resilience/cache/SLA behavior for P0 APIs.
 - Redis/cache strategy when a hot or expensive query needs acceleration.
 - Backend reuse pattern and common request/response model family. Do not invent a one-off controller/query/DTO shape when a metadata, filter-options, query, dashboard/snapshot, export, action, or health/status pattern fits.
-- Database/upstream/cache connection-pool behavior for database-backed or upstream-dependent APIs.
+- Database/upstream/cache connection-pool behavior for database-backed or upstream-dependent APIs, including release/close on `ApiError`, timeout, cancellation, early return, and generic exception paths.
 - Async/offline job strategy for long-running exports, heavy aggregation, batch import, report generation, or multi-upstream fan-out.
 - SQL query-writing strategy for database-backed APIs: projection, predicate shape, join cardinality, dedup/order necessity, pagination/keyset strategy, aggregation/window placement, dynamic optional-filter strategy, or plan-evidence need.
 - Expected volume, concurrency model, export limit, timeout, retry/backoff, circuit-breaker, fallback, rate/concurrency limit, or observability behavior when it affects implementation or validation.
@@ -71,7 +71,7 @@ Keep paths stable, lowercase, and noun-led. Do not mix Chinese and English path 
 
 Mark an API:
 
-- `ready`: backend reuse pattern, response model, source or declared snapshot dependency, request params, reused request/response model family or custom-shape reason, data-version context when applicable, backend query binding, endpoint dependency/reuse rule, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior, async/offline strategy when needed, and priority are clear.
+- `ready`: backend reuse pattern, response model, source or declared snapshot dependency, request params, reused request/response model family or custom-shape reason, data-version context when applicable, backend query binding, endpoint dependency/reuse rule, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior including `ApiError` cleanup, async/offline strategy when needed, and priority are clear.
 - `partial`: assumptions exist but are linked to gaps and do not block API documentation.
 - `blocked`: missing source, model, formula, backend reuse pattern, reused model family or custom-shape reason, snapshot reuse rule when relevant, data-version context for snapshot/latest-period semantics, backend query binding for data-version/business/permission scope, endpoint dependency/reuse rule, permission, report data-service backend behavior when applicable, frontend compute policy, pagination/performance-resilience/cache/SLA, source-side global filter/sort/page execution, component-internal filter scope, SQL query strategy when database-backed, connection-pool behavior, async/offline strategy for long-running work, SQLite fixture source plan for mock-derived implementation, or interaction rule prevents reliable API documentation.
 
