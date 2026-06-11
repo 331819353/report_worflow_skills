@@ -14,6 +14,7 @@ Use when the user asks for a concrete report prototype plan but has not yet requ
 
 Deliver:
 
+- Display theme and selected reusable pattern cards.
 - Report type judgment.
 - Design logic.
 - Content blocks.
@@ -31,6 +32,7 @@ Use when the user wants an implementation-ready report prototype specification.
 Deliver:
 
 - Structured requirement.
+- Display theme and pattern-card set.
 - Report type and secondary roles.
 - Page layout.
 - Component list.
@@ -46,6 +48,7 @@ Use when the user wants code, a Vue dashboard, or an actual runnable page.
 Deliver:
 
 - All prototype design outputs.
+- Display theme, pattern-card-to-component mapping, and pattern acceptance cases.
 - Technical architecture based on `TypeScript + Vue 3 + Element Plus + ECharts`, with AntV S2 installed and used only when the binding matrix contains S2-class analytical tables.
 - Template choice.
 - Data files or mock data.
@@ -66,7 +69,7 @@ Use when the user provides an existing screenshot or page and asks what is wrong
 Deliver:
 
 - Visible issues.
-- Requirement/type interpretation.
+- Requirement/display-theme/type interpretation.
 - Layout and component diagnosis.
 - Data/filter/interaction gaps.
 - Concrete repair plan.
@@ -80,6 +83,7 @@ Clarify or infer:
 
 - Is the user asking for thinking, design proposal, actual prototype, or repair?
 - Is there a specific report page or a report category?
+- Which of the six display themes is primary: 明细、汇总统计、经营看板、分析探索、管理报告/专题报告, or 监控告警?
 - Is the expected output text, specification, code, or both?
 - Which standard inputs are present: 需求文档, 指标清单, optional screenshot/image, optional HTML源码?
 - If screenshot/image input is present, is it a full page, first viewport, partial component, modal/drawer, mobile view, export page, or style reference?
@@ -199,6 +203,7 @@ Use `report-requirement-structure-extraction`.
 Output must include:
 
 - Report theme.
+- Display theme and selected/rejected theme rationale.
 - User intent.
 - Design thinking.
 - Primary and secondary report types.
@@ -211,6 +216,24 @@ Output must include:
 - Assumptions and missing information.
 
 Skip only when the user already provides a clean structured brief.
+
+### Stage 1.5: Display Theme And Pattern Routing
+
+Use `references/04-common-display-theme-pattern-chain.md`.
+
+Output must include:
+
+- `displayTheme`: `detail-table`, `summary-stat`, `business-dashboard`, `exploratory-analysis`, `management-report`, or `monitoring-alert`.
+- Competing display themes and why they were rejected or kept as local blocks.
+- Selected pattern cards with `patternId`, `patternName`, `patternRole`, and priority.
+- How each selected pattern affects component mapping, mock/API design, filter/interaction behavior, export/share, acceptance, or operations.
+- Any selected source pattern that cannot be implemented in the current scope, marked as `gap` or `futurePattern`.
+
+Rules:
+
+- Display theme is a page-form decision; it does not replace the primary report type from `$report-type-design`.
+- Use 3-7 pattern cards for a design proposal and 5-12 for an implementation-ready spec or runnable page.
+- Each selected pattern must map to at least one binding matrix row, data/API requirement, or validation case before implementation.
 
 ### Stage 2: Report Type Routing
 
@@ -264,9 +287,11 @@ Use `report-info-component-mapping`.
 Output must include:
 
 - Information inventory.
+- Display theme and selected pattern-card influence.
 - Semantic roles.
 - Content block mapping.
 - Component/chart/table/card mapping.
+- `sourcePatternIds` and pattern acceptance points for affected components or interactions.
 - Interaction entry points.
 - Mock data needs.
 - Filter data needs.
@@ -335,6 +360,7 @@ Apply this gate for every prototype or implementation, including pages that do n
 
 Before visual polish or final delivery, require an explicit linkage contract:
 
+- Every selected pattern card maps to at least one component, filter/control, interaction, dataset/API requirement, or validation case; unmapped patterns are backlog/gaps, not completed scope.
 - Every component declares its data source, row grain, required fields, formulas, filter dependencies, refresh trigger, and empty state.
 - Every filter maps to a real data field, resolver parameter, or permission scope. If names differ, define an explicit filter-to-field mapping.
 - Every primary/global filter expected to affect a component must prove a visible data change for at least one non-default state. Selected-state-only behavior fails the linkage gate.
@@ -405,6 +431,7 @@ Use `report-visual-layout-design`.
 Output must include:
 
 - `visualMode` and conflict resolution.
+- `displayTheme`, selected pattern set impact, and first-screen theme structure.
 - `pageShellPath`, `pageStyleSource`; if custom, `customDesignPath` and `customLayoutPattern`.
 - Brand asset discovery result, configured logo path, logo variant, or placeholder gap.
 - Page shell choice.
@@ -496,6 +523,7 @@ Implementation must:
 - Declare `brandMode`, `visualMode`, and pass brand asset discovery before changing files.
 - Declare `pageShellPath`; if custom, declare `customDesignPath`.
 - Declare `pageStyleSource`; if no page style and no HTML/source/sample styling is provided, use a bundled template by default.
+- Preserve the selected `displayTheme` and `sourcePatternIds` in component IDs, widget comments/spec rows, or handoff notes so QA can trace why a component exists.
 - If using a template with `nav[]`, declare the nav-page information architecture before implementation and populate every nav page with distinct widgets, data scope, and relevant interactions. If only a homepage can be populated, switch to a non-nav template.
 - If choosing a bundled template, adapt requirement-document title, filter, navigation, and toolbar requirements into the selected template's existing config and shell slots. Do not implement duplicate shell layers from the original requirement document when they conflict with the template.
 - In bundled-template mode, do not implement a standalone filter toolbar/bar for "main filter bar" wording. Implement filter scope through `filters[]`, native template invocation, and data/filter/component binding.

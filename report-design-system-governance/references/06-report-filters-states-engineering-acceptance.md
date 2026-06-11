@@ -30,12 +30,16 @@ Reason:
 
 ## Filter And Control Colors
 
-| Color | Value | Usage |
+Use project/template tokens first. For Haier-branded enterprise/report pages, inherit `$haier-enterprise-app-ui-design-spec` color tokens and record any project-level override.
+
+| Role | Token/fallback | Usage |
 | --- | --- | --- |
-| Primary blue | `#0073E5` | Button default, selected pagination |
-| Light blue | `#2793F2` | Button hover |
-| Pale blue | `#E6F7FF` | Cascader hover |
-| Light gray | `#F2F2F2` | Disabled/no-permission button |
+| Primary action | `brand.primary` / Haier `HBlue-6 #0073E5` | Button default, selected pagination |
+| Primary hover/pressed | Generated `HBlue` hover/pressed token or documented project token | Button hover and active states |
+| Option hover/focus fill | Generated `HBlue-1`/light brand token or documented project token | Cascader/select option hover and focus |
+| Disabled/no-permission | Neutral disabled/background token / Haier `#BFBFBF` text with `#F5F5F5` background | Disabled or no-permission button/control |
+
+Do not introduce standalone filter colors such as `#2793F2`, `#E6F7FF`, or `#F2F2F2` without mapping them to an approved brand/template token.
 
 ## Buttons
 
@@ -86,7 +90,7 @@ Cascader:
 - Hierarchy must be clear and not too deep.
 - Search should match any level when supported.
 - Leaf/non-leaf selection rule must be clear.
-- Hover color uses `#E6F7FF`.
+- Hover color uses the approved option hover/focus fill token from `Filter And Control Colors`.
 
 Date picker:
 

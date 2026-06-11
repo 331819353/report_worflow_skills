@@ -26,6 +26,8 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 - Haier enterprise app UI tokens/components/layouts for common app surfaces: `$haier-enterprise-app-ui-design-spec`
 - Report development layout baseline for report pages: `$report-design-system-governance` `references/04-report-requirements-metrics-layout-guidelines.md`
 - Leadership-friendly report sample patterns and reusable reading paths: `$report-design-system-governance` `references/07-exemplary-report-design-patterns.md`
+- Anti-AI layout and product-context gate: `$report-design-system-governance` `references/08-anti-ai-design-gate.md`
+- Report decision anti-AI gate for avoiding dashboard shells and enforcing metric tree, data story, detail/action, trust details, industry sense, and report-designer behavior: `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md`
 - `8 * N` grid and container anatomy: `references/grid-containers.md`
 - Block sizing and viewport checks: `references/block-size-constraints.md`
 - Parent block and internal sub-block composition: `references/block-composition.md`
@@ -34,21 +36,33 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 
 ## Workflow
 
-1. Identify page purpose, user, primary report question, expected density, and display scenario.
-2. Declare shell intent: topbar, left-nav, unified header/control area, fixed cockpit, existing project shell, or custom shell.
-3. Declare `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
-4. Place page title, navigation, filters, toolbar actions, logo, and status/refresh/export/fullscreen controls. For template-based pages, map filters to the template's native `filters[]` trigger/panel/popover/drawer or local title-band filters. For every block, design the title band as left title plus right function area.
-5. Plan the first meaningful viewport: primary conclusion or action entry first, then evidence, breakdown, detail, and action areas.
-6. Lay out top-level parent blocks in a rectangular `8 * N` grid. Let `N` grow; scroll or split content instead of compressing dense rows.
-7. For each parent block, decide whether it is single-component or internally composed. If composed, define stable internal sub-blocks inside the parent body, then place components in those sub-blocks.
-8. Size every parent block and sub-block by its content needs: KPI, text summary, chart, table, complex diagram, task list, evidence panel, drawer trigger, or detail area.
-9. Define layout states: loading, empty, error, no-permission, stale data, export, fullscreen, drawer/modal, and mobile/tablet behavior at both parent-block and affected sub-block levels. For no-data masks in composed parent blocks, decide the mask scope after checking all sibling sub-block data states.
-10. For fixed-height navigation, cards, KPI strips, and compact controls, declare an internal height budget before finalizing: padding + explicit line-height boxes + vertical gaps + status/badge/footer rows must be `<=` the assigned component height.
-11. Run overlap/overflow checks before finalizing.
+1. Identify page purpose, user, primary report question, expected density, display scenario, and first real user action.
+2. Run the anti-AI layout gate: confirm product context, real content priority, forbidden visual defaults, first-screen-only risk, brand/product memory point, and state/responsive coverage.
+3. Run the report decision layout gate for report surfaces: answer the five decision questions, choose the primary diagnostic path, locate metric tree nodes, and reserve layout space for trust details, detail records, and next action.
+4. Declare shell intent: topbar, left-nav, unified header/control area, fixed cockpit, existing project shell, or custom shell.
+5. Declare `brandMode`: `haierBranded`, `sampleNative`, or `neutral`.
+6. Place page title, navigation, filters, toolbar actions, logo, and status/refresh/export/fullscreen controls. For template-based pages, map filters to the template's native `filters[]` trigger/panel/popover/drawer or local title-band filters. For every block, design the title band as left title plus right function area.
+7. Plan the first meaningful viewport: primary conclusion or action entry first, then evidence, breakdown, detail, and action areas. Do not optimize only for a polished hero-like screenshot.
+8. Lay out top-level parent blocks in a rectangular `8 * N` grid. Let `N` grow; scroll or split content instead of compressing dense rows.
+9. For each parent block, decide whether it is single-component or internally composed. If composed, define stable internal sub-blocks inside the parent body, then place components in those sub-blocks.
+10. Size every parent block and sub-block by its content needs: KPI, text summary, chart, table, complex diagram, task list, evidence panel, drawer trigger, or detail area.
+11. Define layout states: loading, empty, error, no-permission, stale data, export, fullscreen, drawer/modal, and mobile/tablet behavior at both parent-block and affected sub-block levels. For no-data masks in composed parent blocks, decide the mask scope after checking all sibling sub-block data states.
+12. For fixed-height navigation, cards, KPI strips, and compact controls, declare an internal height budget before finalizing: padding + explicit line-height boxes + vertical gaps + status/badge/footer rows must be `<=` the assigned component height.
+13. Run overlap/overflow checks before finalizing.
 
 ## Hard Rules
 
 - Page/block titles are owned by layout. Component bodies should not duplicate visible titles when the surrounding block already has one.
+- Layout must be driven by user task, business priority, real content density, and next action. A page that only looks modern, clean, high-end, or "科技感" without a clear task path fails layout design.
+- Do not default to a generic dashboard composition such as four KPI cards, two big charts, three small charts, a right list, and one top date filter. Use that pattern only when it is justified by the metric tree and decision path.
+- Report layout must encode a diagnostic sequence: current state -> target/baseline gap -> movement -> driver/dimension contribution -> abnormality/trust signal -> detail records -> owner/action. Overview-only first screens must still expose a route to diagnosis or detail.
+- Reserve visible or discoverable space for data updated time, source, statistical period/snapshot/batch/version, metric口径, permission scope, export scope, anomaly notes, and owner/action when the report is implementation-ready.
+- Do not spend primary layout real estate on decorative charts, equal-weight chart variety, or visual atmosphere while detail tables, drilldowns, owner/action blocks, or trust details are missing.
+- Report-designer/editor layouts must include data-binding and validation workflow areas, not only component library, canvas, property panel, preview, save, and publish buttons.
+- Do not use generic SaaS/AI page structures such as oversized hero, three-column feature cards, uniform decorative sections, pricing/testimonial/FAQ blocks, or floating card strips in a report/task interface unless the business workflow explicitly requires them.
+- Do not use decorative gradient/orb/glass/neon backgrounds as layout glue. Visual atmosphere must come from approved brand/template tokens and report hierarchy.
+- Avoid average-weight layouts where every section/card has similar height, spacing, and emphasis. The first viewport must show a deliberate priority order and the downstream reading path.
+- Do not treat desktop first-screen appearance as completion. Scroll depth, lower sections, mobile/tablet, long text, empty/error/no-permission states, and real data density are part of layout acceptance.
 - Block title bands default to a two-zone layout: top-left is the left-aligned block title, and top-right is the function area. The function area may contain lightweight local filters, a filter-panel trigger, or text links such as `详情` / `查看详情`; it must not push, wrap, or overlap the title.
 - Right function area control selection: one local filter with fewer than 3 values uses a sliding capsule/segmented pill; one local filter with 3 or more values uses a compact dropdown/select; multiple local filters use a filter panel/popover/drawer trigger. Low-frequency detail/jump actions use explicit text links or icon+tooltip links in the same right area.
 - Top-level blocks must occupy legal rectangular `8 * N` spans.
@@ -72,6 +86,8 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 ## Required Output
 
 - Page shell choice and layout rationale.
+- Anti-AI layout gate result: `antiAiRisk`, product-context proof, forbidden-default scan, first-screen-only risk, and brand/product memory-point decision.
+- Report decision layout gate when applicable: `reportDecisionRisk`, `RPT-*` findings, five decision-question answers, metric tree/diagnostic path, first-viewport decision answer, detail/action route, and trust-detail placement.
 - Brand mode and logo placement.
 - Header/navigation/filter/toolbar structure.
 - Perspective navigation density and DOM no-clipping check plan for `1920x1080` and `1280x768`.
@@ -88,6 +104,11 @@ For every report, dashboard, cockpit, data-screen, BI, or business-analysis layo
 ## Quality Gate
 
 - The first meaningful viewport answers the page's main question or exposes the main action.
+- The layout passes the anti-AI gate: it is task-specific, content-specific, state-aware, responsive, and not a generic polished template.
+- The layout passes the report decision gate for report surfaces: it is not a generic dashboard shell, the metric tree/diagnostic path is visible, and detail/action/trust areas are present or explicitly scoped out.
+- Unresolved `RPT-TEMPLATE-LAYOUT`, `RPT-NO-DATA-STORY`, `RPT-NO-ACTION`, or `RPT-DESIGNER-SHELL` findings block implementation-ready layout acceptance.
+- Any gradient, glow, glass, oversized radius, abstract imagery, or decorative atmosphere has an approved brand/template/sample rationale and does not replace information hierarchy.
+- Sections and cards are not evenly weighted by default; priority and workflow path are visibly encoded.
 - Every block title band preserves left title alignment and a bounded right function area; local filters follow capsule/dropdown/panel selection rules and links do not crowd the title.
 - Domain navigation, Tabs, and Segments pass DOM no-clipping checks at `1920x1080` and `1280x768`: `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth` for each visible item/card content viewport. Screenshot-only evidence is insufficient.
 - Fixed-height navigation/cards declare padding, explicit line-height, gaps, and height budget; `padding + line-height boxes + gaps <= card height` at both baseline viewports.

@@ -16,6 +16,8 @@ This distilled standard covers:
 - Query/filter controls, buttons, inputs, selectors, cascaders, dates, navigation, switches.
 - Loading, empty, error, permission, data anomaly, performance, acceptance, and reusable template rules.
 - Leadership-friendly sample patterns for long operating-analysis pages, high-density diagnostic dashboards, asset/resource overviews, and 16:9 cockpits.
+- Anti-AI design checks for product context, concrete copy, forbidden generic aesthetics, edge states, accessibility, and implementation realism.
+- Report decision anti-AI checks for metric口径, metric tree, diagnostic path, realistic dirty data, filters/drilldowns, trust/action details, industry vocabulary, and report designer complexity.
 
 ## Skill Boundary
 
@@ -41,6 +43,8 @@ Do not use `$haier-enterprise-app-ui-design-spec` as the primary report guidelin
 | Chart anatomy, chart selection, series/warning colors, table rules, typography, number/date format | `05-report-charts-tables-format-guidelines.md` |
 | Query/filter controls, states, permissions, data anomalies, frontend implementation, performance, collaboration, acceptance, templates | `06-report-filters-states-engineering-acceptance.md` |
 | Design highlights from proven leadership/operating report samples, reusable page patterns, reading paths, density, and visual acceptance | `07-exemplary-report-design-patterns.md` |
+| Anti-AI design gate for generic aesthetics, empty copy, first-screen-only completion, missing states/accessibility, and sample-like engineering | `08-anti-ai-design-gate.md` |
+| Report decision anti-AI gate for avoiding empty dashboard shells and enforcing metric systems, data stories, realistic data, linkage, action, and industry sense | `09-report-decision-anti-ai-gate.md` |
 
 Load only the smallest reference needed. Do not load all report guideline references by default.
 

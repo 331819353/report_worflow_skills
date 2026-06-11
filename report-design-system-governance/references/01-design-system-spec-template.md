@@ -19,6 +19,8 @@ Use this template to produce a complete, non-empty report design system specific
 | Principle | Rule | Acceptance check |
 | --- | --- | --- |
 | Enterprise density | Prioritize scanning, comparison, and repeated work over marketing-style decoration | First viewport answers a business question without decorative-only blocks |
+| Anti-AI realism | Product context, real content, states, accessibility, and engineering constraints outrank generic polish | `AI-*` findings are absent, remediated, or documented as scoped exceptions |
+| Report decision usefulness | Report pages must support judgment, diagnosis, trust, and action instead of only looking like dashboards | `RPT-*` findings are absent, remediated, or documented as scoped exceptions |
 | Semantic tokens | Use role-based tokens instead of one-off raw styles | Every raw color/spacing/shadow maps to a token or exception |
 | Stable geometry | Hover/focus/loading/error states preserve layout size | No cards, buttons, charts, or tables shift on interaction |
 | Parent/sub-block composition | `8 * N` defines parent blocks; parent blocks may contain internal sub-blocks | Parent block and sub-block layout are both documented and pass fit checks |
@@ -143,3 +145,32 @@ Use this when the task is an audit or when the current design system appears emp
 | Finding ID | Severity | Surface | Missing/conflicting rule | Evidence | Required fix | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | DSG-001 | P0/P1/P2/P3 | Token/component/chart/state/governance | Description | Screenshot/file/rule | Concrete repair | Owner | open/fixed/waived |
+
+## Anti-AI Gate Matrix
+
+Use this when creating, auditing, or migrating a report design system.
+
+| Cause ID | Surface | Evidence | Severity | Required constraint/token/component rule | Exception owner | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `AI-CONTEXT-THIN` | Page/component/copy/code | Missing user task, first action, or real content | P0/P1/P2/P3 | Add context, priority, and workflow rule | Owner | open/fixed/waived |
+| `AI-TEMPLATE-AESTHETIC` | Visual tokens/layout/assets | Generic gradient/glass/glow/oversized radius | P0/P1/P2/P3 | Bind visual choice to approved token/source | Owner | open/fixed/waived |
+| `AI-GENERIC-COPY` | Headings/CTA/states | Empty slogan or placeholder copy | P0/P1/P2/P3 | Require concrete action/object/condition/evidence | Owner | open/fixed/waived |
+| `AI-FIRSTSCREEN-ONLY` | Layout/QA | Missing mobile, scroll, states, long content | P0/P1/P2/P3 | Add responsive and state acceptance | Owner | open/fixed/waived |
+| `AI-ENGINEERING-SAMPLE` | Frontend implementation | Hardcoded styles, fake rows, no labels/focus | P0/P1/P2/P3 | Add tokens, typed view model, states, accessibility | Owner | open/fixed/waived |
+
+## Report Decision Anti-AI Gate Matrix
+
+Use this when the standard covers report, dashboard, cockpit, BI, detail-query, topic-analysis, or report-designer surfaces. A report can pass the generic anti-AI gate and still fail because it cannot support a decision.
+
+| Cause ID | Surface | Evidence | Severity | Required constraint/token/component rule | Exception owner | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `RPT-METRIC-SHELL` | Metric/KPI/card/view model | Primary metrics lack formula, denominator, grain, period, source, owner, or drill path | P0/P1/P2/P3 | Require metric dictionary and metric tree before layout acceptance | Owner | open/fixed/waived |
+| `RPT-TEMPLATE-LAYOUT` | Page/grid/first viewport | Default equal-weight dashboard layout replaces decision path | P0/P1/P2/P3 | Layout follows status -> target -> driver -> abnormality -> detail -> action | Owner | open/fixed/waived |
+| `RPT-DECORATIVE-CHART` | Chart/table/component | Chart exists for visual variety rather than a task | P0/P1/P2/P3 | Chart/table choice maps to target gap, trend, ranking, composition, driver, detail, or action task | Owner | open/fixed/waived |
+| `RPT-NO-DATA-STORY` | Page/component/copy | Result has no baseline, driver, abnormality, or explanation | P0/P1/P2/P3 | Require diagnostic narrative and evidence path | Owner | open/fixed/waived |
+| `RPT-TOO-CLEAN-DATA` | Mock/provider/QA | Only smooth, positive, complete sample data exists | P0/P1/P2/P3 | Require realistic messy states and reconciliation cases | Owner | open/fixed/waived |
+| `RPT-STATIC-FILTERS` | Filter/drilldown/export | Controls change selected UI only or lose context | P0/P1/P2/P3 | Filters map to fields/API params and carry context into detail/export/share | Owner | open/fixed/waived |
+| `RPT-VISUAL-OVER-DATA` | Visual tokens/component style | Decoration reduces numeric, axis, label, table, or anomaly readability | P0/P1/P2/P3 | Data readability outranks polish; use semantic color and exact-value access | Owner | open/fixed/waived |
+| `RPT-NO-INDUSTRY-SENSE` | Copy/metric/dimension | Domain vocabulary and metric families are generic or wrong | P0/P1/P2/P3 | Require domain terms, business objects, dimensions, and constraints | Owner | open/fixed/waived |
+| `RPT-NO-ACTION` | Interaction/workflow | No detail, owner, export, assignment, approval, runbook, or next step | P0/P1/P2/P3 | Every primary concern has a next action or documented read-only exception | Owner | open/fixed/waived |
+| `RPT-DESIGNER-SHELL` | Report designer/editor | Three-panel designer shell lacks data source, binding, aggregation, validation, version, or publish flow | P0/P1/P2/P3 | Designer standard covers data-to-report behavior and validation workflow | Owner | open/fixed/waived |

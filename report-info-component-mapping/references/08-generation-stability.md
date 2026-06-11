@@ -7,6 +7,7 @@ Use this reference whenever the output may become a reusable specification, widg
 The same business input should produce the same:
 
 - Primary report type and secondary report-type routing.
+- Display theme and selected pattern-card IDs when supplied by the prototype workflow.
 - Answer atoms and component priorities.
 - Sample/source module roles when restoration input exists.
 - Component IDs, parent block IDs, sub-block IDs, dataset IDs, filter IDs, and action names.
@@ -47,6 +48,8 @@ Use these values unless the target project explicitly defines a different vocabu
 - `dataPolicy`: `bound`, `static`, `external`. Prefer `bound`.
 - `sampleModuleRole`: `businessRequired`, `sampleStructure`, `optionalEnhancement`.
 - `subBlockRole`: `summary`, `evidence`, `detail`, `control`, `peer`, `state`, `microGroup`.
+- `displayTheme`: `detail-table`, `summary-stat`, `business-dashboard`, `exploratory-analysis`, `management-report`, `monitoring-alert`.
+- `patternRole`: `primary-structure`, `supporting-evidence`, `interaction`, `state`, `export`, `governance`, `acceptance-only`.
 
 Do not create near-synonyms such as `trendLine`, `line-chart`, `metricCard`, or `dataTable` in contract fields. Put display labels in titles, not enum fields.
 
@@ -62,6 +65,7 @@ Do not create near-synonyms such as `trendLine`, `line-chart`, `metricCard`, or 
 - Modal IDs and drawer IDs: lowerCamelCase ending with `Modal` or `Drawer`.
 - Field names in mock datasets: lower_snake_case unless the existing project already uses camelCase.
 - Display labels may be Chinese; IDs and field names should stay ASCII.
+- Source pattern IDs: `<displayTheme>-NN`, such as `detail-table-01`, `summary-stat-05`, or `monitoring-alert-12`.
 
 When revising an existing mapping, preserve IDs unless the component's semantic role changes. Add new components instead of renaming existing ones.
 
@@ -112,6 +116,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 ## Output Stability Rules
 
 - Always include a binding matrix for `spec-contract` and `prototype-config` modes.
+- Preserve upstream `displayTheme` and `sourcePatternIds` in binding rows unless a pattern is explicitly rejected as out of scope.
 - Use the same field name for the same concept across datasets, filters, actions, and matrix rows.
 - Classify every user control before placement with `controlSemantics`. A control that changes metric names, metric set, component set, table headers, dimensions, metric definition/口径, report subject, or business-domain vocabulary is `perspective-switch`, not a normal filter.
 - Every binding matrix row must include `controlSemantics` and `componentSchemaImpact`. Use `row-scope-only` only when the control keeps the same component schema and only narrows rows or values.
@@ -124,6 +129,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 - State assumptions in one section; do not hide assumptions inside component titles.
 - Every `must-have` component must have a dataset, fields, filters, interaction state, update trigger, and validation case.
 - Every component inside a composed parent block must declare `parentBlockId`, `subBlockId`, `subBlockRole`, local sub-block layout, `subBlockInset:5px`, and `subBlockGap:5px`.
+- Every selected pattern card must map to at least one component/control/data/API/interaction/export/operations/validation row; otherwise mark it `futurePattern` or remove it from the selected set.
 - Every primary filter must list affected components.
 - Every primary/global filter must state whether it narrows data through SQL/source/provider/repository/resolver/precompute/cache before component construction; every component-internal filter must state the already fetched component dataset it operates on.
 - First-level business domain, report theme, management object, subject area, or analysis perspective must map to navigation, route, tab, segment, or an explicit perspective state. Do not encode it only as a template `filters[]` item unless an accepted local project contract proves it is row-scope-only.
@@ -134,6 +140,7 @@ If two components answer the same atom, keep the one earlier in this order unles
 Before finalizing, answer yes to all:
 
 - Can another agent implement the same component IDs and dataset IDs from this output?
+- Can another agent trace every selected pattern card to implemented rows or explicit future/gap status?
 - Can every first-screen value be traced to a dataset or static policy?
 - Can every primary filter be tested against at least one affected component?
 - Can every control be classified as perspective switch, global filter, local filter, or drilldown param without hiding schema-changing behavior inside ordinary filters?

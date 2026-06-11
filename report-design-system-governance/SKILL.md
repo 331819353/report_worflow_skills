@@ -40,8 +40,13 @@ For any report, dashboard, cockpit, business analysis, detail-query, or topic-an
 - Chart, table, typography, number/date format, series colors, and warning colors: `references/05-report-charts-tables-format-guidelines.md`.
 - Filters, states, permissions, frontend implementation, performance, collaboration, acceptance, and templates: `references/06-report-filters-states-engineering-acceptance.md`.
 - Leadership-friendly report patterns, strong sample highlights, long operating-analysis pages, high-density diagnostic dashboards, asset/resource overviews, and fixed 16:9 cockpits: `references/07-exemplary-report-design-patterns.md`.
+- Report-specific anti-AI decision gate for metric systems, data story, realistic data, chart/table choice, drilldown/action, industry sense, and report designer behavior: `references/09-report-decision-anti-ai-gate.md`.
 
 When the reusable standard is based on bundled report templates, also inspect `$report-prototype-template-management` `references/template-layout-design-system.md` so spacing, radius, title-band, and hover/focus rules stay aligned with the actual template assets.
+
+For any design, implementation, QA, or reusable-standard work where output could become generic, "AI-looking", template-like, or overly polished without product context, read `references/08-anti-ai-design-gate.md` and apply it as a required quality gate.
+
+For report, dashboard, BI, business-analysis, detail-query, cockpit, topic-analysis, or report-designer work, also read `references/09-report-decision-anti-ai-gate.md`. This is mandatory because a report can pass the generic anti-AI gate and still fail as a decision report.
 
 If Haier enterprise UI tokens are the required source of truth, read `$haier-enterprise-app-ui-design-spec` before defining report token overrides. Keep the inherited Haier values and report-specific extensions separate.
 
@@ -53,19 +58,25 @@ If Haier enterprise UI tokens are the required source of truth, read `$haier-ent
 2. Inventory design surfaces.
    List shell, navigation, filters, KPI cards, charts, tables, drawers, modals, buttons, tags, empty/loading/error/no-permission states, exports, mobile layouts, and any custom graphics.
 
-3. Define semantic tokens.
+3. Run the anti-AI design gate.
+   Identify thin product context, generic SaaS/AI aesthetics, screenshot-only completion, empty copy, brandless visuals, generic assets, equal hierarchy, decorative motion, and sample-like engineering. Record remediation or approved exceptions before stabilizing tokens.
+
+4. Run the report decision anti-AI gate when report surfaces are in scope.
+   Check metric system, metric tree, data story, realistic data, chart/table decision logic, filters/drilldowns/linkage, trust/action details, industry vocabulary, and report-designer behavior.
+
+5. Define semantic tokens.
    Specify color roles, typography scale, spacing/grid, radius, border, shadow, density, icon size, z-index, and responsive breakpoints. Tokens must be semantic, for example `surface.card`, `text.primary`, `state.error`, not only raw colors.
 
-4. Define component standards.
+6. Define component standards.
    For each component family, specify anatomy, required/optional slots, states, data density, label/tooltip behavior, overflow, loading/empty/error/no-permission behavior, accessibility, interaction expectations, hover/focus feedback, and internal fit rules.
 
-5. Define visualization standards.
+7. Define visualization standards.
    Specify chart/table selection, axis/legend/tooltip/data-label rules, color semantics, metric unit wording, percentage/rate display conventions, comparison baselines, threshold/alert styling, drilldown/export behavior, and screenshot regression requirements.
 
-6. Define governance.
+8. Define governance.
    Mark stable tokens/components, allowed variants, deprecated patterns, exception process, versioning policy, migration status, and review checklist.
 
-7. Route implementation.
+9. Route implementation.
    For page-level fixes use `$report-visual-layout-design`; for component defects use `$report-component-style-design`; for frontend implementation use `$frontend-development-workflow`; for visual regression use `$testing-integration-workflow`.
 
 ## Required Output
@@ -80,6 +91,8 @@ If Haier enterprise UI tokens are the required source of truth, read `$haier-ent
 - Metric display specification: raw vs display scale, percent/rate wording, rounding, trend icon semantics, and forbidden legacy terms.
 - Report-development guideline mapping for report work: requirement fields, metric dictionary, calculation口径, page hierarchy, chart/table/filter/state rules, engineering handoff, acceptance checklist, and reusable templates.
 - Responsive and accessibility rules.
+- Anti-AI design gate result: `antiAiRisk`, cause IDs, forbidden default scan, copy specificity, real-context proof, state/accessibility coverage, and approved exceptions.
+- Report decision anti-AI gate result: `reportDecisionRisk`, `RPT-*` cause IDs, metric tree, metric dictionary completeness, data story path, realistic data proof, linkage proof, trust/action details, industry sense, and report-designer checks when applicable.
 - Governance matrix: version, owner, source, status, allowed variants, deprecated patterns, exception approval, review checklist.
 - Adoption plan: affected projects/components, migration priority, screenshot regression baseline plan.
 
@@ -87,6 +100,11 @@ If Haier enterprise UI tokens are the required source of truth, read `$haier-ent
 
 - Do not output an empty table-only template. Every required table needs at least the minimum rows listed in `01-design-system-spec-template.md`, with either values, inherited source references, or explicit `gap` status.
 - Do not create one-off colors, spacings, hover effects, chart semantics, or component variants without assigning them to a semantic token or an approved exception.
+- Do not allow generic "modern SaaS", "高级科技感", purple-blue gradients, glass cards, glow buttons, floating decorative assets, oversized radius, or abstract AI imagery as default report styles unless an approved source explicitly requires them.
+- Do not accept empty marketing/product copy such as "赋能", "一站式", "重新定义", "智能化", "无缝", or "提升效率" without concrete user action, data object, system behavior, condition, or evidence.
+- Do not accept a reusable standard that optimizes only first-screen beauty while omitting responsive behavior, edge states, accessibility, data density, and engineering token/reuse rules.
+- Do not accept report standards that only define dashboard surfaces and chart/card styling while omitting metric口径, metric tree/driver path, realistic dirty data, drilldown/detail/action, trust metadata, and industry-specific vocabulary.
+- Do not accept a report designer/editor standard that only defines the three-panel shell without data source binding, aggregation, calculated fields, filters, permissions, validation, versioning, preview, and publish behavior.
 - Do not duplicate Haier enterprise UI values when `$haier-enterprise-app-ui-design-spec` is the source. Reference inherited values and only define report-specific extensions.
 - Do not let template layout tokens drift from `$report-prototype-template-management` when bundled templates are the implementation target.
 - Do not mark a rule `stable` unless it has scope, owner/source, usage guidance, acceptance criteria, and migration impact.
@@ -98,6 +116,12 @@ If Haier enterprise UI tokens are the required source of truth, read `$haier-ent
 - The output is reusable across reports, not a single-page style note.
 - Tokens distinguish semantic roles rather than one-off colors.
 - The spec separates inherited company/template rules, report extensions, and project exceptions.
+- The anti-AI design gate passes or remaining `AI-*` findings are recorded with owner, severity, and remediation.
+- The report decision anti-AI gate passes or remaining `RPT-*` findings are recorded with owner, severity, and remediation.
+- Primary report metrics have formulas, grain, period, source/freshness, baseline, unit/precision, owner, and drilldown/action path.
+- Report standards include realistic data-state requirements: missing/zero/extreme values, abnormal spikes/drops, long labels, partial sync, permission-limited cases, and reconciliation checks.
+- Primary headings, CTAs, summaries, empty states, and errors contain concrete business meaning rather than generic AI/SaaS slogans.
+- Visual identity comes from brand/template/product/domain choices, not interchangeable gradient/glass/neon decoration.
 - Empty/error/loading/no-permission states are specified.
 - Dense enterprise-report needs are prioritized over marketing-style layouts.
 - KPI/summary/card internals have wrapping, min-height, tooltip/expand, or scroll rules for long labels and values; critical metric text is not hidden by ellipsis-only treatment.

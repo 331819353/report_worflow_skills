@@ -36,10 +36,22 @@ Default runnable prototype policy:
 | Quality gates | `$quality-gate-validation` |
 | Runtime visual QA | `$frontend-runtime-qa-validation` |
 
+## Reference Loading
+
+- For every report prototype design, specification, implementation, optimization, or repair, load `references/04-common-display-theme-pattern-chain.md` before component mapping. It supplies the six display themes, the 120-card pattern catalog, and the ten-stage prototype-to-development chain.
+- The display theme is a page-form axis, not a replacement for `$report-type-design`. Carry both `displayTheme` and primary report type into the binding matrix.
+- For every prototype design, implementation, optimization, or repair that touches layout, copy, styling, frontend implementation, or QA, load `$report-design-system-governance` `references/08-anti-ai-design-gate.md` and keep its result in the handoff/readiness notes.
+- For every report/dashboard/BI/detail-query/cockpit/topic-analysis/report-designer prototype, load `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` and keep its result in the handoff/readiness notes.
+- Load `references/01-workflow-modes-and-stage-gates.md` for stage sequencing, `references/02-self-check-startup-deployment.md` for runnable verification, and `references/03-output-quality-and-avoid.md` for output and QA gates as needed by the request.
+
 ## Reinforced Constraints
 
 - When multiple artifacts influence the prototype, run `$quality-gate-validation` before locking scope, visual source, API/mock contract, or implementation target. Unresolved high-impact conflicts keep the affected scope `partial` or `blocked`.
-- Before implementation, lock one workflow mode, one primary report type, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
+- Before implementation, lock one workflow mode, one `displayTheme`, one primary report type, one selected reusable pattern set, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
+- Do not confuse display theme with report business type. For example, a monitoring-alert display theme may still have `primaryReportType: anomaly-monitoring`, while a management-report display theme may still carry review-recap or reconciliation-traceability evidence blocks.
+- Selected pattern cards must trace into the component/data/filter/control/interaction binding matrix, API/mock handoff, or acceptance cases. Do not list pattern names as inspiration only.
+- The workflow must resist AI-looking output: generic "现代/高级/科技感" aesthetics, empty slogans, interchangeable assets, screenshot-only completion, missing states, missing accessibility, and sample-like engineering are blockers for `ready` unless explicitly approved as scoped exceptions.
+- The workflow must also resist report-specific AI-looking output: generic metrics, dashboard-template layout, decorative charts, no data story, too-clean mock data, static filters, missing drilldown/detail/action, missing口径/source/freshness, no industry sense, and report-designer shells without data-binding behavior.
 - The first meaningful viewport must answer one named business question. Every must-have component, dataset, filter, and interaction must appear in the binding matrix before visual polish or code.
 - Template selection and asset copying belong to `$report-prototype-template-management`; page shell/grid fit belongs to `$report-visual-layout-design`; component readability belongs to `$report-component-style-design`.
 - The default Vue/ECharts prototype stack means standard charts are implemented with real ECharts options and series. Do not accept a prototype that only installs/imports ECharts while drawing standard chart marks with hand-authored SVG/HTML/CSS/canvas; use a named custom-diagram exception only when ECharts is not the intended renderer.
@@ -57,22 +69,27 @@ Default runnable prototype policy:
 
 1. Confirm prototype intent and choose mode: design spec, runnable implementation, screenshot/HTML restoration, repair, or URL handoff.
 2. Normalize rough requirements with `$report-requirement-structure-extraction` when scope, users, metrics, screenshots, HTML, or acceptance rules are unclear.
-3. Run `$quality-gate-validation` when inputs conflict on scope, metric口径, visual source, API/mock contract, or implementation target.
-4. Use `$report-type-design` to choose one primary report type and any secondary local blocks.
-5. Use `$report-info-component-mapping` to produce answer atoms, component bundles, datasets, filters, interactions, and binding matrix.
-6. Declare `pageShellPath` as `template` or `custom`; default to `template` when no hard custom/restoration/existing-shell reason exists.
-7. Use `$report-visual-layout-design` for page shell, header/navigation/native filter surface, `8 * N` grid, block sizing, and responsive layout.
-8. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
-9. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
-10. Apply `$report-design-system-governance` report guideline references as the default report baseline for metrics, charts, tables, filters, states, engineering handoff, and acceptance.
-11. Apply `$haier-enterprise-app-ui-design-spec` when the prototype also includes common enterprise app UI tokens, component rules, scene templates, or cross-platform adaptation.
-12. Implement or repair the prototype in the selected target path when requested.
-13. Run build/start/visual QA when a runnable URL is requested and route findings through `$frontend-runtime-qa-validation`.
+3. Classify the six-way `displayTheme` and select a small reusable pattern set from `references/04-common-display-theme-pattern-chain.md`; record rejected competing themes.
+4. Run the anti-AI design gate from `$report-design-system-governance` before layout/styling: record product context, real content, forbidden visual defaults, copy specificity, states, accessibility, and engineering readiness.
+5. Run the report decision anti-AI gate from `$report-design-system-governance`: record five decision-question answers, metric tree, metric dictionary completeness, data story, realistic data, linkage, trust/action details, and industry/report-designer checks.
+6. Run `$quality-gate-validation` when inputs conflict on scope, display theme, metric口径, visual source, API/mock contract, or implementation target.
+7. Use `$report-type-design` to choose one primary report type and any secondary local blocks.
+8. Use `$report-info-component-mapping` to produce answer atoms, selected pattern-to-component mapping, component bundles, datasets, filters, interactions, and binding matrix.
+9. Declare `pageShellPath` as `template` or `custom`; default to `template` when no hard custom/restoration/existing-shell reason exists.
+10. Use `$report-visual-layout-design` for page shell, header/navigation/native filter surface, `8 * N` grid, block sizing, and responsive layout.
+11. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
+12. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
+13. Apply `$report-design-system-governance` report guideline references as the default report baseline for metrics, charts, tables, filters, states, engineering handoff, and acceptance.
+14. Apply `$haier-enterprise-app-ui-design-spec` when the prototype also includes common enterprise app UI tokens, component rules, scene templates, or cross-platform adaptation.
+15. Implement or repair the prototype in the selected target path when requested.
+16. Run build/start/visual QA when a runnable URL is requested and route findings through `$frontend-runtime-qa-validation`.
 
 ## Required Output
 
 - Workflow mode and input inventory.
-- Primary report type and core question.
+- `displayTheme`, selected reusable pattern cards, rejected competing themes, primary report type, and core question.
+- Anti-AI design gate result: `antiAiRisk`, cause IDs, visual cliché scan, copy specificity, state/accessibility coverage, and approved exceptions.
+- Report decision anti-AI gate result: `reportDecisionRisk`, `RPT-*` causes, five decision-question answers, metric tree, data story path, realistic data proof, linkage proof, trust/action details, and industry/report-designer checks.
 - Parent-block/sub-block/component/data/filter/control/interaction binding matrix with `controlSemantics` and `componentSchemaImpact`.
 - Layout plan, parent `8 * N` grid, internal sub-block plan when used, `pageShellPath`, selected template/custom reason, filter surface mapping, nav-page content plan when a template with `nav[]` is selected, and default-stack override reason if any.
 - Perspective-layer mapping when the report has multiple domains, themes, management objects, subject areas, or first-level views.
@@ -84,7 +101,10 @@ Default runnable prototype policy:
 ## Quality Gate
 
 - Do not use this workflow without prototype/demo/page-output intent.
-- Do not start implementation before report type, binding matrix, layout, and template/custom shell decision exist.
+- Do not start implementation before display theme, selected pattern set, report type, binding matrix, layout, and template/custom shell decision exist.
+- Do not choose or retain pattern cards that have no mapped component, control, dataset/API, interaction, or acceptance case.
+- Do not claim readiness when unresolved AI-looking causes remain on primary surfaces: thin context, generic copy, generic SaaS/AI visuals, first-screen-only completion, missing states, missing accessibility, or sample-like engineering.
+- Do not claim readiness when unresolved report decision causes remain: generic metric shell, no metric tree/口径, no data story, decorative charts, too-clean mock data, static filters, no drilldown/action, no trust details, no industry sense, or incomplete report-designer behavior.
 - Do not default to custom development merely because the user omitted visual style; select a bundled template unless a hard custom/restoration/existing-shell/template-limitation reason exists.
 - Do not use a non-Vue3/TypeScript/Vite/Element Plus/ECharts/axios stack for runnable prototypes unless the user specifies it or the existing project requires it.
 - Do not select a navigation/sidebar template unless the content is reorganized into multiple meaningful nav pages, each with enough components, data, and interactions to stand on its own.

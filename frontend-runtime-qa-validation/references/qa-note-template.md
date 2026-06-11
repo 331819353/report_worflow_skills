@@ -16,6 +16,8 @@
 - Deterministic visual regression:
 - Baseline diff artifacts:
 - Multimodal visual review:
+- Anti-AI runtime review:
+- Report decision anti-AI review:
 - Visual findings:
 - Interaction cases checked:
 - Perspective/control semantics checked:
@@ -31,6 +33,8 @@ Use `Runtime provider status` for network APIs, GraphQL, SDK calls, static files
 Use `Deterministic visual regression` for baseline status: pass, fail, baseline missing, or not run, with threshold and masked-region notes.
 Use `Baseline diff artifacts` for baseline/current/diff image paths from Playwright/Cypress or the project's visual regression setup.
 Use `Visual findings` for `VDIFF-*` items from deterministic image diff and `VIS-*` items from multimodal screenshot review, including severity, screenshot path, diff path when available, component/region, likely owner, fix direction, and retest criteria.
+Use `Anti-AI runtime review` for `AI-*` findings from `08-anti-ai-design-gate.md`: thin product context, generic aesthetics, first-screen-only completion, generic copy, brandless/generic assets, average hierarchy, component soup, decorative motion, and sample-like engineering. Include `antiAiRisk`, evidence, fix direction, and approved exceptions.
+Use `Report decision anti-AI review` for `RPT-*` findings from `09-report-decision-anti-ai-gate.md`: metric shell, template dashboard layout, decorative chart choice, missing data story, too-clean data, static filters, visual-over-data, missing industry sense, missing action, and report-designer shell. Include `reportDecisionRisk`, evidence, fix direction, and readiness impact.
 Use `Component crop screenshots` for donut/pie chart, trend/cartesian chart, KPI card/group, and table/analytical-grid crops when present. Donut/pie charts require their own crop; do not accept only full-page evidence.
 Use `Component crop checklist` for verifiable checks: ECharts bottom legend/x-axis spacing, small-card donut/pie legend/label-line/label/title/center fit, `legendBandHeight`, `labelLineBudget`, `radius`, `center`, right-legend width budget when used, low-value label handling, KPI value-zone centering and >=40% height, complex/grouped table header rule, and any documented exception.
 Use `Perspective/control semantics checked` for non-default domain/theme/management-object/subject-area cases, including metric names, title/summary wording, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels.

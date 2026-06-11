@@ -4,11 +4,11 @@ Use this reference for report chart/table UI standards, color semantics, typogra
 
 ## Chart Anatomy
 
-A standard chart should include:
+A standard chart should include these semantics. When the chart is placed inside a report block with a layout-owned title band, the block title owns `Chart title` and the chart body must not render a duplicate internal title.
 
 | Element | Position | Rule |
 | --- | --- | --- |
-| Chart title | Top-left | Describes chart topic |
+| Chart title | Top-left or layout-owned block title band | Describes chart topic; do not duplicate it inside the chart body when the surrounding block already has a title |
 | Subtitle / conclusion | Below title | Gives key conclusion or explanation |
 | Unit | Beside title or axis name | Example: `单位：万元` |
 | Filter condition | Top-right | Date or dimension switch |
@@ -24,11 +24,11 @@ A standard chart should include:
 
 | Text | Font size | Line height | Color | Rule |
 | --- | ---: | ---: | --- | --- |
-| Chart title | `16px` | `24px` | `#000000` | Bold, left-aligned; may adapt to theme |
-| Subtitle/conclusion | `14px` | `22px` | `#5B5B59` | Left-aligned |
-| Filter button | `14px` | `22px` | `#5B5B59` | Top-right area |
-| Description/unit | `12px` | `18px` | `#8D8D8B` | Bottom-left or beside title |
-| Axis/legend | `10px` | `14px` | `#8D8D8B` | Axis text centered; legend centered |
+| Chart title | `16px` | `24px` | `text.primary` / Haier fallback `#262626` | Bold, left-aligned; layout-owned when block title exists |
+| Subtitle/conclusion | `14px` | `22px` | `text.secondary` / Haier fallback `#595959` | Left-aligned |
+| Filter button | `14px` | `22px` | `text.secondary` / Haier fallback `#595959` | Top-right area |
+| Description/unit | `12px` | `18px` | `text.tertiary` / Haier fallback `#8C8C8C` | Bottom-left or beside title |
+| Axis/legend | `12px` | `18px` | `text.tertiary` / Haier fallback `#8C8C8C` | Axis text centered; legend centered; do not shrink below component readability baseline |
 
 Main body font guidance: recommended font size `14px`, line-height `22px`.
 
@@ -79,16 +79,16 @@ Use the blue palette for unified theme, stage gradients, or depth hierarchy.
 
 ## Warning Colors
 
-Warning colors communicate business state. Always judge whether the metric is positive, negative, or neutral before applying colors.
+Warning colors communicate business state. Always judge metric direction and business meaning before applying colors; do not color by raw sign alone.
 
-| Color | Value | Business meaning examples |
+| Semantic role | Preferred token/value | Business meaning examples |
 | --- | --- | --- |
-| Red | `#FF0000` | Loss, negative growth, key reminder, YoY > 0, negative number |
-| Green | `#43C061` | Zero forecast/actual difference, completion rate `>= 100%`, YoY < 0 |
-| Blue | `#007AFF` | Small forecast/actual difference, completion rate `>= 90%` |
-| Orange | `#FAAA37` | Large forecast/actual difference, completion rate `> 0` and `< 90%` |
+| Danger/major warning | `state.error` / Haier fallback `#FF4D4F` | Loss, risk, overdue, threshold breach, abnormal exception, business-negative result |
+| Good/healthy | `state.success` / Haier fallback `#52C41A` | Reached target, healthy status, risk reduced, business-positive result |
+| Info/normal highlight | `state.info` / Haier fallback `#0073E5` | Selected item, normal progress, small difference, neutral highlight |
+| Warning/attention | `state.warning` / Haier fallback `#FAAD14` | Approaching threshold, incomplete target, needs attention |
 
-For negative indicators such as complaint volume, overdue rate, and cost rate, decreasing values may be good. Reverse color semantics by business meaning, not by raw sign. High-risk warnings should use color plus text/icon/tag.
+For Chinese report rate/change/YoY/MoM/variance indicators, use positive-red-up and negative-green-down by default unless the metric dictionary explicitly defines a different direction. For negative indicators such as complaint volume, overdue rate, and cost rate, decreasing values may be good. Reverse color semantics by business meaning, not by raw sign. High-risk warnings should use color plus text/icon/tag.
 
 ## Chart Selection
 
@@ -324,26 +324,28 @@ Export:
 
 Fonts:
 
+Use the project or Haier system font stack first. Do not force a one-off font family inside chart/table components when the page shell already defines typography tokens.
+
 | Type | Font |
 | --- | --- |
-| Chinese | Microsoft YaHei |
-| English/digits | Arial |
+| Chinese | Project/Haier system font stack, with Microsoft YaHei as a Windows fallback |
+| English/digits | Project/Haier system font stack, with Arial as a fallback; use tabular numerals for comparable values |
 
 Text:
 
 | Text type | Size | Line height | Color |
 | --- | ---: | ---: | --- |
-| Page title | `20px` | `30px` | `#000000` |
-| Large title | `16px` | `24px` | `#000000` |
-| Small title | `14px` | `22px` | `#5B5B59` |
-| Body | `14px` | `22px` | `#5B5B59` |
-| Note | `12px` | `18px` | `#8D8D8B` |
+| Page title | `20px` | `30px` | `text.primary` / Haier fallback `#262626` |
+| Large title | `16px` | `24px` | `text.primary` / Haier fallback `#262626` |
+| Small title | `14px` | `22px` | `text.secondary` / Haier fallback `#595959` |
+| Body | `14px` | `22px` | `text.secondary` / Haier fallback `#595959` |
+| Note | `12px` | `18px` | `text.tertiary` / Haier fallback `#8C8C8C` |
 
 Number format:
 
 | Type | Rule | Example |
 | --- | --- | --- |
-| Negative | Red | `-1,234` |
+| Negative / change value | Color by metric direction and business meaning, not raw sign alone; Chinese report rate/change indicators default to positive-red-up and negative-green-down | `-1,234` |
 | Rate | YoY/completion no decimal | `86%` |
 | Number | Thousands separator, no decimal | `1,234,567` |
 | Amount | Thousands separator, business unit | `1,234 万元` |
@@ -373,18 +375,21 @@ Copywriting:
 
 Color tokens:
 
-| Token | Value |
+Use semantic project/template tokens first. The values below are Haier-aligned fallbacks or roles, not permission to create one-off raw colors.
+
+| Token | Value/source |
 | --- | --- |
-| `--color-primary` | `#0073E5` |
-| `--color-primary-hover` | `#2793F2` |
-| `--color-primary-light` | `#E6F7FF` |
-| `--color-text-title` | `#000000` |
-| `--color-text-primary` | `#5B5B59` |
-| `--color-text-secondary` | `#8D8D8B` |
-| `--color-border` | `#F0F0F0` |
-| `--color-grid-line` | `#E5E5E5` |
-| `--color-table-header-bg` | `#FAFAFA` |
-| `--color-disabled-bg` | `#F2F2F2` |
+| `--color-primary` | `brand.primary` / Haier fallback `#0073E5` |
+| `--color-primary-hover` | generated `HBlue` hover token or documented project token |
+| `--color-primary-light` | generated `HBlue-1`/light brand token or documented project token |
+| `--color-text-title` | `text.primary` / Haier fallback `#262626` |
+| `--color-text-primary` | `text.secondary` / Haier fallback `#595959` |
+| `--color-text-secondary` | `text.tertiary` / Haier fallback `#8C8C8C` |
+| `--color-border` | `border.default` / Haier fallback `#D9D9D9` |
+| `--color-divider` | `divider.default` / Haier fallback `#F0F0F0` |
+| `--color-grid-line` | chart grid token, default `#E5E5E5` unless brand/template overrides |
+| `--color-table-header-bg` | table header surface token, default `#FAFAFA` unless brand/template overrides |
+| `--color-disabled-bg` | disabled/background token / Haier fallback `#F5F5F5` |
 
 Spacing tokens:
 

@@ -16,6 +16,8 @@ Default routing:
 - Default to `pageShellPath: template` for runnable report prototypes.
 - Choose `pageShellPath: custom` only when the user explicitly asks for custom/free design, explicitly asks for exact screenshot/HTML/source restoration, an existing shell must be preserved, or a documented requirement cannot be met by any bundled template.
 - If the user provides only a loose sample/reference, use it as hierarchy/density/tone evidence and still choose the closest bundled template.
+- If the upstream prototype workflow supplies `displayTheme` and selected pattern cards, use them as scenario evidence for template routing, but do not choose a template from display theme alone. Content volume, navigation depth, interaction density, and display environment still decide.
+- If the upstream workflow supplies a report decision anti-AI result, carry `reportDecisionRisk`, `RPT-*` gaps, metric tree, data story, realistic data needs, linkage/action/trust details, and report-designer requirements into template routing. If it is missing for a report surface, record a routing gap instead of assuming a generic dashboard template is sufficient.
 - Bundled templates use Vue 3 + TypeScript + Vite + Element Plus + ECharts + axios, with AntV S2 added for S2-class analytical tables.
 - In bundled templates, standard chart widgets must use ECharts through an actual chart component/wrapper and data-driven `option`/`series`. Do not implement standard charts by importing ECharts but drawing the bars, lines, pies, gauges, maps, axes, or legends with hand-authored SVG/HTML/CSS/canvas.
 - If a selected template has `nav[]`, every nav item must map to a substantial business page. Do not ship a navigation template with only the homepage populated.
@@ -52,26 +54,30 @@ All template directories must be copied with their full project structure: `pack
 - Template use modes: `references/template-usage-modes.md`
 - Template redevelopment: `references/template-redevelopment-playbook.md`
 - Recipe and verification checklist: `references/template-recipes-checklist.md`
+- Report decision anti-AI gate when a template must carry metric tree, data story, realistic data states, drilldown/action/trust details, or report-designer behavior: `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md`
 
 ## Workflow
 
 1. Decide whether the task needs a bundled template, an existing project shell, or custom development; default to bundled template unless a hard custom/restoration/existing-shell/template-limitation reason exists.
-2. Select exactly one template when bundled assets are appropriate.
-3. For templates with `nav[]`, define the nav-page content plan before copying or editing: each nav item needs its own question, widgets, dataset scope, filters/interactions, and enough page density.
-4. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
-5. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components. Place first-level perspective state in nav/page/route/tab/segment/perspective config, not in `filters[]`, when it changes schema or domain meaning.
-6. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
-7. For every standard chart widget, implement ECharts fidelity: ECharts instance/wrapper, data-driven `option`/`series`, update/resize lifecycle, and relevant tooltip/legend/emphasis behavior. Use hand-authored SVG/canvas only for explicit custom diagrams, icons, logos, or decorations.
-8. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
-9. Before configuring filter bindings, verify the data is complete enough for filtering: filter option rows, business rows, required fields, default/non-default values, empty/no-permission states when relevant, and resolver/API branches exist for every affecting primary/global filter.
-10. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
-11. When changing layout spacing, block padding, radius, title band, right function area, row height, hover/focus surfaces, or no-data mask scope in composite blocks, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
-12. Install dependencies with the minimal package set needed by the current template. If npm install is blocked by domestic network access, use a temporary command-level mirror: `npm install --registry=https://registry.npmmirror.com` or `npm install <package-name> --registry=https://registry.npmmirror.com`; if unavailable, replace the registry URL with `https://npm.aliyun.com/`, `https://mirrors.cloud.tencent.com/npm/`, `https://mirrors.ustc.edu.cn/npm/`, or `https://mirrors.tuna.tsinghua.edu.cn/npm/`. Use `npm ci --registry=<registry-url>` only when restoring an existing lockfile exactly.
-13. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
+2. Select exactly one template when bundled assets are appropriate, using `displayTheme`, selected pattern cards, content volume, navigation depth, interaction density, and display environment together.
+3. Verify report decision compatibility before copying: the selected template must be able to express the metric tree/data story path, detail/action/trust areas, realistic data states, and report-designer behavior when applicable. If not, choose a better template, document a template limitation, or route to custom only when the limitation is real.
+4. For templates with `nav[]`, define the nav-page content plan before copying or editing: each nav item needs its own question, widgets, dataset scope, filters/interactions, and enough page density.
+5. Copy the full template directory into the target project or merge it into an existing Vue 3 + Vite app.
+6. Keep shell-owned behavior in `src/config/dashboard.config.ts`, `src/data/dashboard.dataset.json`, `src/dataSources/registry.ts`, `src/actions/registry.ts`, and template shell components. Place first-level perspective state in nav/page/route/tab/segment/perspective config, not in `filters[]`, when it changes schema or domain meaning.
+7. Add business widgets through `src/widgets/components/`, `src/widgets/types.ts`, and `src/widgets/registry.ts`.
+8. For every standard chart widget, implement ECharts fidelity: ECharts instance/wrapper, data-driven `option`/`series`, update/resize lifecycle, and relevant tooltip/legend/emphasis behavior. Use hand-authored SVG/canvas only for explicit custom diagrams, icons, logos, or decorations.
+9. Keep mock/offline rows in `src/data/dashboard.dataset.json`; use `src/dataSources/registry.ts` custom resolvers only when filter-driven scenarios or provider behavior cannot be represented by plain rows. Do not create TS fixture modules for data rows.
+10. Before configuring filter bindings, verify the data is complete enough for filtering: filter option rows, business rows, required fields, default/non-default values, empty/no-permission states when relevant, and resolver/API branches exist for every affecting primary/global filter.
+11. For every primary/global filter that should affect a widget, bind it with `filterFields`, `requiredFilters`, API query/body params, or a resolver param. Use `ignoredFilters` only for intentionally invariant widgets and pair every ignored filter with `ignoredFilterReasons`; never use it to cover missing data grain.
+12. When changing layout spacing, block padding, radius, title band, right function area, row height, hover/focus surfaces, or no-data mask scope in composite blocks, follow `references/template-layout-design-system.md` and record deviations as template-level design decisions.
+13. Install dependencies with the minimal package set needed by the current template. If npm install is blocked by domestic network access, use a temporary command-level mirror: `npm install --registry=https://registry.npmmirror.com` or `npm install <package-name> --registry=https://registry.npmmirror.com`; if unavailable, replace the registry URL with `https://npm.aliyun.com/`, `https://mirrors.cloud.tencent.com/npm/`, `https://mirrors.ustc.edu.cn/npm/`, or `https://mirrors.tuna.tsinghua.edu.cn/npm/`. Use `npm ci --registry=<registry-url>` only when restoring an existing lockfile exactly.
+14. Run `npm run validate:dashboard`, build, and use `npm run dev:auto` or `npm run preview:auto` when a local URL is required.
 
 ## Required Output
 
 - Selected template ID and reason.
+- Display theme and selected pattern-card compatibility notes when supplied by the upstream prototype workflow.
+- Report decision compatibility when applicable: `reportDecisionRisk`, `RPT-*` gaps that affect template selection, metric tree/data story fit, detail/action/trust capacity, realistic data-state support, and report-designer capability support.
 - Nav-page content plan when the selected template has `nav[]`.
 - Shell compatibility decisions for title, filters, navigation, toolbar, and controls.
 - Asset copy/merge path.
@@ -94,6 +100,9 @@ All template directories must be copied with their full project structure: `pack
 ## Quality Gate
 
 - The selected template matches display scenario, navigation depth, density, and fixed/scroll behavior.
+- The selected template is not justified by display theme alone; it also matches content volume, navigation depth, interaction density, and display environment.
+- The selected template is not justified by dashboard appearance alone. It must support the report decision path, including metric tree, data story, detail/action/trust areas, realistic data states, and report-designer behavior when applicable.
+- Do not choose a template that forces unresolved `RPT-TEMPLATE-LAYOUT`, `RPT-NO-DATA-STORY`, `RPT-STATIC-FILTERS`, `RPT-NO-ACTION`, or `RPT-DESIGNER-SHELL` findings unless the limitation is recorded and the delivery readiness is `partial` or `blocked`.
 - Templates with `nav[]` are used only when multiple substantial nav pages are implemented; if only one page can be populated, do not choose or retain a nav template.
 - Requirement-document title/filter/navigation/toolbar ideas are mapped into existing template slots instead of implemented as duplicate shell layers.
 - If template filters are present or needed, they are configured through the template's native `filters[]` and existing invocation surface; standalone filter toolbars/bars are rejected unless a named template-redesign decision exists.

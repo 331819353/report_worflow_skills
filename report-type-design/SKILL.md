@@ -41,20 +41,25 @@ Load only the reference files for the selected primary type:
 - `operational-execution`: `references/operational-execution-pattern-examples-and-acceptance.md`, `references/operational-execution-subtype-selection-and-execution-patterns.md`
 - `reconciliation-traceability`: `references/reconciliation-traceability-pattern-examples-and-acceptance.md`
 
+For any output that will feed a report prototype, dashboard, BI page, business-analysis page, cockpit, or report designer, also apply `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` at the business-design level. Use it to prevent generic metric shells and to require metric口径, metric tree/driver path, data story, drilldown/action, trust details, and industry vocabulary.
+
 ## Workflow
 
 1. Identify the user, decision scenario, managed object, time scope, and business question.
 2. Select the primary report type and explain why competing types were not selected.
-3. Define the report's answer model: conclusion, metrics, dimensions, grain, baseline, threshold, evidence, and action.
-4. Propose components only at the business-design level: KPI, chart, table, list, flow, detail drawer, action block, audit evidence, or narrative block.
-5. Define filters, drilldowns, interactions, permissions, exports, and acceptance criteria at a contract level.
-6. Record assumptions and missing facts without inventing fields, formulas, thresholds, owners, or source systems.
+3. Answer the five decision questions from the report decision anti-AI gate: who uses it, what decision is made, how metrics are calculated, how abnormalities are located, and what drilldown/action exists.
+4. Define the report's answer model: conclusion, metrics, dimensions, grain, baseline, threshold, evidence, and action.
+5. Build a metric tree or driver path when the report is not purely static/detail lookup. Generic KPIs such as revenue/users/growth/conversion require domain-specific formula, denominator, period, source, owner, and drill path.
+6. Propose components only at the business-design level: KPI, chart, table, list, flow, detail drawer, action block, audit evidence, or narrative block.
+7. Define filters, drilldowns, interactions, permissions, exports, and acceptance criteria at a contract level.
+8. Record assumptions and missing facts without inventing fields, formulas, thresholds, owners, or source systems.
 
 ## Required Output
 
 - Primary report type and optional secondary local blocks.
 - Core business question and target users.
-- Metric, dimension, grain, baseline, threshold, and evidence model.
+- Five decision-question answers and `reportDecisionRisk` when the output feeds prototype/frontend work.
+- Metric, dimension, grain, baseline, threshold, evidence model, and metric tree/driver path when applicable.
 - Component/content block proposal with business purpose.
 - Filter, drilldown, interaction, permission, export, and return-path notes.
 - Acceptance criteria, open questions, and downstream handoff notes.
@@ -62,6 +67,8 @@ Load only the reference files for the selected primary type:
 ## Quality Gate
 
 - The chosen type matches the decision scenario, not merely a chart form.
+- The report is not a generic metric shell: primary metrics have formula/denominator, grain, period, source/freshness, owner, and business-specific vocabulary when possible.
+- The report has a data story path from state to baseline/target, driver, abnormality, detail, and action when the decision scenario requires diagnosis.
 - Every component answers a named question or supports a required action.
 - Metrics have grain, comparison basis, and business owner when possible.
 - Missing口径, thresholds, source fields, permissions, and action ownership are visible.

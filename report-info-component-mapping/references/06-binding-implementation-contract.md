@@ -54,12 +54,32 @@ type NavigationMetricLineage = {
   staticDisplayCopy?: boolean;
 };
 
+type DisplayTheme =
+  | 'detail-table'
+  | 'summary-stat'
+  | 'business-dashboard'
+  | 'exploratory-analysis'
+  | 'management-report'
+  | 'monitoring-alert';
+
+type PatternRole =
+  | 'primary-structure'
+  | 'supporting-evidence'
+  | 'interaction'
+  | 'state'
+  | 'export'
+  | 'governance'
+  | 'acceptance-only';
+
 type ComponentMapping = {
   id: string;
   // Metadata for the layout/block title. Do not render this again inside the component body.
   title: string;
   priority: 'must-have' | 'should-have' | 'optional';
   sampleModuleRole?: 'businessRequired' | 'sampleStructure' | 'optionalEnhancement';
+  displayTheme?: DisplayTheme;
+  sourcePatternIds?: string[];
+  patternRoles?: PatternRole[];
   businessQuestion: string;
   answerAtom: string;
   semanticRole: string;
@@ -105,6 +125,7 @@ Rules:
 
 - Use stable IDs such as `attritionTrend`, `riskEmployeeTable`, or `revenueGapWaterfall`.
 - For sample/source restoration, set `sampleModuleRole`. Only `businessRequired` modules should become `must-have`; `sampleStructure` preserves visible sample structure, and `optionalEnhancement` must be labeled as an enhancement.
+- When a display-theme pattern library is used, set `displayTheme`, `sourcePatternIds`, and `patternRoles` on every affected mapping row. Pattern IDs should be stable values such as `detail-table-01`.
 - `visualType` must match runnable template/widget capability where a template is used.
 - `parentBlockId` groups components that live in the same top-level `8 * N` parent block. `subBlockId` identifies the internal sub-block viewport that owns the component. Leave `subBlockId` empty only for single-component parent blocks.
 - `parentLayoutSpan` is the top-level `columns * rows` span. `subBlockLayout` describes local grid/flex placement such as `area:evidence`, `local:2x1`, `track:minmax(240px,1fr)`, or `tab:trend`, and must preserve `subBlockInset:5px` plus `subBlockGap:5px` when sub-blocks exist.
@@ -141,6 +162,7 @@ Every mapping must produce a binding matrix before implementation or final speci
 Minimum columns:
 
 - Component ID, parent block ID, optional sub-block ID, and layout/block title metadata.
+- Display theme, source pattern IDs, and pattern roles when the workflow selected reusable pattern cards.
 - Priority.
 - Component type, `visualType`, planned parent `columns * rows` span, and sub-block layout when present.
 - Sub-block spacing: `subBlockInset:5px` and `subBlockGap:5px` when the component lives inside a composed parent block.
@@ -167,6 +189,7 @@ Minimum columns:
 ## Data Accuracy Rules
 
 - A component without a data source is decorative unless explicitly static narrative.
+- A selected pattern card without a component/control/data/API/interaction/export/operations/validation impact is decorative. Mark it as backlog or remove it from completed scope.
 - A data-bearing component should have a matching API or provider contract when implementation or handoff is in scope. Do not make a complex page-level API the hidden source for multiple unrelated components.
 - KPI cards, conclusion cards, status cards, warning cards, and text-summary cards must have a source dataset or explicit static policy.
 - Visible sample/source modules are not automatically `must-have`. A module becomes `businessRequired` only when it directly answers the stated report question; otherwise it remains `sampleStructure` or `optionalEnhancement`.

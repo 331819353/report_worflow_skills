@@ -33,10 +33,20 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Read `references/report-data-visualization-frontend-implementation.md` when the frontend is a report/BI/dashboard decision interface, or when production readiness depends on first-screen conclusion, chart/table semantics, provider mapping, edge states, freshness/quality display, performance, theme/accessibility, or runtime QA evidence.
 - For common enterprise application pages, read `$haier-enterprise-app-ui-design-spec` as the full-process UI baseline before implementation, visual repair, runtime QA handoff, or acceptance notes. This applies to forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, workbench pages, and cross-platform adaptation even when the user did not say "规范".
 - For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis frontends, read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the smallest relevant report guideline references before styling, data display formatting, state handling, performance handoff, QA, or acceptance.
+- For any frontend page that could become generic, "AI-looking", or sample-like, read `$report-design-system-governance` `references/08-anti-ai-design-gate.md` before styling or marking runtime readiness.
+- For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, topic-analysis, or report-designer frontends, also read `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` before implementation and readiness judgment. Use it to reject generic metric shells, decorative chart pages, too-clean mock evidence, static filters, missing drilldown/action paths, missing trust details, and report-designer shells without data-binding behavior.
 
 ## Reinforced Constraints
 
 - Resolve `prototypeSourcePath` and `frontendTargetPath` before file edits. Treat upstream prototype source as read-only unless the user explicitly designates it as the frontend target.
+- Do not implement "modern/high-end/tech" aesthetics as a substitute for product context. User task, real content, first action, data structure, state coverage, accessibility, and tokenized implementation must be known or explicitly marked as gaps before readiness.
+- Do not add generic purple-blue gradients, glassmorphism, black neon, glow buttons, decorative orbs/particles/grids, oversized radius, abstract AI imagery, or ornamental motion unless the approved design source requires them and the exception is documented.
+- Do not ship generic copy in primary headings, CTAs, empty/error states, or key summaries. Replace broad slogans with concrete user actions, data objects, system behavior, conditions, limits, evidence, or next steps.
+- Avoid sample-like implementation: hardcoded one-off colors/spacing/radius, untyped random rows, repeated div/card markup, missing reusable components, missing ARIA/labels/focus-visible, and missing loading/empty/error/no-permission/disabled/success states.
+- For report frontends, do not ship a generic KPI/chart shell. Every primary metric needs formula/denominator, grain, period, source/freshness, unit/precision, baseline, owner/action, and drilldown/detail behavior in the view model or explicit handoff gap.
+- Report mock/offline data used as implementation evidence must include realistic messy cases: variance, missing/zero/extreme values, long labels, non-default filter branches, freshness/source metadata, permission-limited states, and reconciliation between KPI/chart/table/drawer/export totals.
+- Report filters, clickable chart marks, KPI cards, tables, drawers, exports, share links, and refresh actions must preserve active filter, period, permission, and snapshot/batch context. Selected-state-only UI changes are report integration defects.
+- Report-designer/editor frontends must implement or explicitly gap data source selection, field binding, aggregation, calculated fields, filter/parameter configuration, permission/data scope, validation errors, preview, versioning, and publish flow. A left library + canvas + right properties shell is not ready.
 - For self-developed frontend work without an authoritative existing stack or user-specified override, use `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` as the default report frontend stack. Use AntV S2 for pivot tables, cross tables, frozen-header analytical tables, wide metric matrices, and dense comparison grids; use Element Plus for controls/forms/tables/pagination/dialogs; use ECharts for standard charts.
 - Treat the default stack as an implementation contract, not a dependency checklist. When a component is mapped as an ECharts standard chart, it must instantiate ECharts or the existing project ECharts wrapper, build a data-driven `option`/`series` from the component view model, call the normal render/update/resize path, and keep ECharts tooltip/legend/emphasis behavior available. Do not satisfy an ECharts chart requirement by importing `echarts` while drawing the chart marks with hand-authored SVG/HTML/CSS/canvas.
 - Hand-authored SVG is allowed for logos, icons, small trend arrows, decorative assets, or explicitly approved custom diagrams that ECharts cannot reasonably express. ECharts configured with `renderer: 'svg'` is still valid because ECharts owns the generated SVG; manually encoded bars, lines, pies, gauges, maps, or axes are not valid standard chart implementation.
@@ -61,19 +71,21 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 1. Discover source and target paths. If prototype source is upstream evidence, copy or identify a writable frontend target before editing.
 2. Inspect stack, package manager, env files, router, request utilities, stores/composables, mock/static data, and component consumers. If this is self-developed work and no existing stack is authoritative, align implementation to the default `Vue 3 + TypeScript + ECharts + Element Plus + axios + AntV S2` stack.
 3. Classify the UI baseline: common enterprise app, report/dashboard, or mixed. Load `$haier-enterprise-app-ui-design-spec` and/or `$report-design-system-governance` according to the surface before implementation decisions.
-4. Run baseline install/build/test when feasible and record pre-existing failures.
-5. Run `$quality-gate-validation` when source code, API docs, provider samples, env/auth notes, requirements, design baseline, or runtime traces conflict.
-6. Validate provider/API contract with `$api-contract-validation`.
-7. Design adapters with `$data-transformation-adapter-design` when provider payloads differ from UI view models.
-8. Verify env/proxy/base path/build/deploy behavior with `$frontend-env-deployment-verification`.
-9. Use `$haier-sso-integration` for Haier account-center login or auth header behavior.
-10. Classify controls and verify data completeness for filters before linkage: perspective switches, global filters, local filters, drilldown params, data source mode, option sources, row grain, required fields, default/non-default/empty/permission states, and resolver/API branches.
-11. Replace or isolate mock data, wire perspective switches/filters/interactions/pagination/sorting/export/refresh to provider inputs, preserve template-native filter surfaces when applicable, and keep component view models stable.
-12. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
-13. Verify chart engine fidelity for every standard chart: dependency/import is not enough; source must contain an ECharts instance/wrapper and data-driven options, and runtime must show ECharts-owned rendering and interaction instead of hand-authored SVG chart marks.
-14. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
-15. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
-16. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
+4. Run the anti-AI implementation gate: record product context, real content, forbidden visual defaults, copy specificity, edge-state coverage, accessibility requirements, and token/reuse strategy.
+5. For report interfaces, run the report decision implementation gate: answer the five decision questions, prove metric dictionary completeness, map the metric tree/data story, identify realistic data cases, and define filter/drilldown/export/action/trust behavior.
+6. Run baseline install/build/test when feasible and record pre-existing failures.
+7. Run `$quality-gate-validation` when source code, API docs, provider samples, env/auth notes, requirements, design baseline, or runtime traces conflict.
+8. Validate provider/API contract with `$api-contract-validation`.
+9. Design adapters with `$data-transformation-adapter-design` when provider payloads differ from UI view models.
+10. Verify env/proxy/base path/build/deploy behavior with `$frontend-env-deployment-verification`.
+11. Use `$haier-sso-integration` for Haier account-center login or auth header behavior.
+12. Classify controls and verify data completeness for filters before linkage: perspective switches, global filters, local filters, drilldown params, data source mode, option sources, row grain, required fields, default/non-default/empty/permission states, and resolver/API branches.
+13. Replace or isolate mock data, wire perspective switches/filters/interactions/pagination/sorting/export/refresh to provider inputs, preserve template-native filter surfaces when applicable, and keep component view models stable.
+14. Use `$report-component-style-design` when KPI cards, charts, tables, summaries, metric units, Chinese `%` display, overflow, truncation, responsiveness, or visual readability are touched or affected by provider data.
+15. Verify chart engine fidelity for every standard chart: dependency/import is not enough; source must contain an ECharts instance/wrapper and data-driven options, and runtime must show ECharts-owned rendering and interaction instead of hand-authored SVG chart marks.
+16. Use `$performance-optimization` when data volume, first screen, API latency, chart/table rendering, or export performance matters.
+17. Use `$production-observability-feedback` when production-bound delivery needs monitoring, runtime error/performance metrics, data refresh SLA visibility, analytics, alerts, or feedback closure.
+18. Run `$frontend-runtime-qa-validation`, then produce `$frontend-function-description-documentation` for handoff.
 
 ## Required Output
 
@@ -84,6 +96,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Env/auth/deployment notes.
 - Files changed and verification commands.
 - Runtime QA and function description.
+- Anti-AI implementation gate result: `antiAiRisk`, cause IDs, visual cliché scan, copy specificity, edge-state/accessibility coverage, token/reuse proof, and approved exceptions.
+- Report decision implementation gate result when applicable: `reportDecisionRisk`, `RPT-*` causes, five decision-question answers, metric dictionary/tree completeness, data story path, realistic data proof, filter/drilldown/export/action/trust proof, industry vocabulary check, and report-designer capability check.
 - Component style and metric-display checks, including `%` vs `pt/p.p./percentage point` when Chinese rate/change indicators are present.
 - UI baseline applied: common enterprise app baseline, report development baseline, or mixed, with loaded reference names and any deliberate exceptions.
 - Production observability and retained mock/offline-source notes when production handoff is in scope.
@@ -101,6 +115,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 ## Quality Gate
 
 - Do not edit upstream prototype source unless explicitly designated as target.
+- Do not mark frontend readiness `ready` while unresolved `AI-CONTEXT-THIN`, `AI-FIRSTSCREEN-ONLY`, `AI-GENERIC-COPY`, missing state coverage, missing keyboard/focus support, or sample-like hardcoded styling remains.
+- Do not use generic AI/SaaS decoration or generic copy as a substitute for real product content, design tokens, component states, and accessible interactions.
 - Do not start a self-developed report frontend on an unspecified or ad hoc stack. Use the default stack or document the user/existing-project override before implementation.
 - Do not leave production paths on unapproved mocks.
 - Do not claim filter integration until data completeness has been checked first. Missing option rows, missing fact/business rows, missing provider fields, single-snapshot mock data, or missing resolver/API branches must be recorded as data gaps before binding is judged.
@@ -116,5 +132,8 @@ Use this workflow for frontend/provider integration and runnable page delivery a
 - Do not claim frontend readiness when visible Chinese rate/change/completion/YoY/MoM/variance-rate indicators still use `pt`, `p.p.`, or `percentage point` instead of `%`, unless the user explicitly requested that wording.
 - Do not claim frontend readiness when a common enterprise app page or report page ignores its matching UI/design baseline, unless the exception is explicitly scoped and accepted.
 - Do not claim frontend readiness when a standard chart merely imports ECharts but renders the visual with hand-authored SVG/HTML/CSS/canvas chart marks. Rework it to ECharts option/series or document an explicit custom-diagram exception before marking ready.
+- Do not mark report frontend readiness `ready` while unresolved `RPT-METRIC-SHELL`, `RPT-NO-DATA-STORY`, `RPT-STATIC-FILTERS`, `RPT-NO-ACTION`, or `RPT-DESIGNER-SHELL` remains.
+- Do not replace missing report metric systems with generic `Revenue/Users/Growth/Conversion` labels, decorative charts, or all-upward mock data.
+- Do not claim report filter/drilldown/export integration when active context is lost between KPI, chart, table, drawer, export, refresh, and share behavior.
 - Do not mark production handoff `ready` without provider/source mode, backend/API base, env/auth behavior, runtime QA evidence, retained mock status, and testing/observability handoff.
 - Do not claim handoff readiness without build/runtime evidence or a precise blocker.

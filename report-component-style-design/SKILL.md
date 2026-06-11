@@ -33,8 +33,10 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 | Capsule switches, segmented controls, dropdowns inside components | `references/10-in-component-controls.md` |
 | Legacy detailed rules not yet covered by focused references | `references/11-detailed-style-rules.md` |
 | Haier enterprise app UI tokens and standard components | `$haier-enterprise-app-ui-design-spec` |
-| Report UI guideline chart/table/format/filter/state rules | `$report-design-system-governance` `references/05-report-charts-tables-format-guidelines.md` and `references/06-report-filters-states-engineering-acceptance.md` |
+| Report UI guideline chart/table/format/filter/state rules | `$report-design-system-governance` `references/05-report-charts-tables-format-guidelines.md` and `$report-design-system-governance` `references/06-report-filters-states-engineering-acceptance.md` |
 | Leadership-friendly KPI/chart/table sample patterns and reading-path alignment | `$report-design-system-governance` `references/07-exemplary-report-design-patterns.md` |
+| Anti-AI visual, copy, state, accessibility, and engineering-smell gate | `$report-design-system-governance` `references/08-anti-ai-design-gate.md` |
+| Report decision anti-AI gate for metric systems, data story, realistic data, chart/table choice, linkage/action, and trust details | `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` |
 | Cross-stage design reasonableness when component style choices affect business comprehension, density, exact values, or interaction closure | `$quality-gate-validation` |
 
 ## Workflow
@@ -44,13 +46,24 @@ Start with `references/00-component-reference-index.md`, then load only the matc
 3. Reserve stable component dimensions before styling: parent block body, internal sub-block viewport when present, header, actions, legend, body viewport, footer, pagination, state messages, and aspect-ratio boxes for SVG/canvas/custom geometry.
 4. Apply shared fit rules first, then component-specific rules. If rules conflict, use the stricter no-duplicate-title/no-overlap/no-truncation/no-hidden-critical-data rule.
 5. Run design reasonableness checks when a component choice may weaken the business answer, hide exact values, duplicate another component, overload the container, or block the next action.
-6. Define overflow and exact-value disclosure: tooltip, drawer, fullscreen, zoom/pan, scroll, table fallback, or label sampling.
-7. Specify visual tokens: typography, color semantics, borders, shadows, spacing, states, hover/focus, and responsive behavior.
-8. Verify the component inside its real parent block or sub-block container after filters, tab switches, data updates, drawer/fullscreen changes, and window resize.
+6. Run the anti-AI component gate: detect generic gradients/glass/glow/oversized-radius styling, empty copy, generic icons/assets, decorative motion, missing states, weak accessibility, and sample-like hardcoded styling.
+7. Run the report decision component gate for report components: verify metric口径 display/support, chart/table task fit, data story role, realistic data states, filter/drilldown/export/action linkage, trust details, and industry vocabulary. Record `RPT-*` issues when styling hides or replaces decision evidence.
+8. Define overflow and exact-value disclosure: tooltip, drawer, fullscreen, zoom/pan, scroll, table fallback, or label sampling.
+9. Specify visual tokens: typography, color semantics, borders, shadows, spacing, states, hover/focus, and responsive behavior.
+10. Verify the component inside its real parent block or sub-block container after filters, tab switches, data updates, drawer/fullscreen changes, and window resize.
 
 ## Hard Constraints
 
 - Do not style a component until its business purpose, data grain, key fields, filter scope, and interaction state are known.
+- Do not use generic "AI/SaaS polish" as a component style: purple-blue gradients, glass panels, black neon, glow buttons, floating decorative cards, oversized radius, abstract AI icons/3D assets, or particle/grid decoration require a named brand/template/sample rationale.
+- Component copy must be concrete. Titles, subtitles, CTAs, empty states, errors, and helper text must name the user action, data object, condition, owner, source, period, or next step. Generic words such as "赋能", "智能化", "一站式", "重新定义", "无缝", or "提升效率" are not enough.
+- KPI cards, metric groups, chart blocks, and summary components must not be styled as generic metric shells. Every primary metric-bearing component must preserve visible or discoverable formula/denominator, grain, period, source/freshness, unit/precision, baseline, and owner/action context when the surface is implementation-ready.
+- Do not add chart variety for decoration. A chart/table choice must serve a specific task such as target gap, trend, ranking, composition, distribution, relationship, driver diagnosis, abnormality, detail, or action. Otherwise record `RPT-DECORATIVE-CHART`.
+- Visual treatment must not compete with data reading. Gradients, glass, glow, illustration, large shadows, and high-saturation decorative colors fail when they reduce numeric hierarchy, axis/legend readability, anomaly visibility, table scanning, or exact-value access.
+- Report components that show a result must expose the next step or evidence path: tooltip, detail table, drawer, drilldown, export, owner/action, annotation, or runbook. A polished result card with no action path is `RPT-NO-ACTION`.
+- Prototype or mock component states must not imply unrealistically clean performance. All-green/all-up KPIs, perfectly smooth trends, balanced shares, and no missing/zero/extreme states should be marked `RPT-TOO-CLEAN-DATA` unless the source evidence proves that reality.
+- Icon-only and decorative components are not accepted when they carry decision-critical meaning without labels, tooltips, data, or accessible names.
+- Motion must communicate state, feedback, hierarchy, loading, selection, or transition. Decorative movement that distracts from scanning or has no reduced-motion behavior fails component style QA.
 - Do not accept a polished component that is unreasonable for the task. Use `DESIGN-*` findings when a chart should be a table, a dense component needs drilldown/fullscreen, a component duplicates another message, or the style hides the user's decision-critical value.
 - Do not hide decision-critical labels, units, warnings, or values without a hover/focus/click disclosure path.
 - Do not let ECharts, S2, SVG, canvas, or custom diagrams mount into a zero-size or unstable parent block or sub-block container.
@@ -99,14 +112,20 @@ When using this skill, provide:
 1. Component inventory and loaded reference files.
 2. Viewport and size assumptions for each component, including parent block and sub-block viewport when relevant.
 3. Style decisions: typography, spacing, color, border/shadow, state, and interaction feedback.
-4. Fit decisions: label density, overflow, exact-value disclosure, scroll/zoom/fullscreen/drawer/table fallback.
-5. Design reasonableness status and any `DESIGN-*` findings that affected component choice or fit.
-6. Implementation notes for ECharts/S2/DOM/CSS behavior where relevant.
-7. Self-check result: overlap, clipping, truncation, contrast, resize, aspect-ratio/geometry integrity, hover/focus/touch, loading/empty/error states.
+4. Anti-AI component gate: visual cliché scan, copy specificity, state/accessibility coverage, and any approved exceptions.
+5. Report decision component gate when applicable: `reportDecisionRisk`, `RPT-*` findings, metric口径 support, chart/table task fit, data story role, realistic data state, linkage/action/trust proof, and industry vocabulary check.
+6. Fit decisions: label density, overflow, exact-value disclosure, scroll/zoom/fullscreen/drawer/table fallback.
+7. Design reasonableness status and any `DESIGN-*` findings that affected component choice or fit.
+8. Implementation notes for ECharts/S2/DOM/CSS behavior where relevant.
+9. Self-check result: overlap, clipping, truncation, contrast, resize, aspect-ratio/geometry integrity, hover/focus/touch, loading/empty/error states.
 
 ## Quality Checklist
 
 - Each component has a stable body viewport and explicit overflow policy.
+- Each component passes the anti-AI style gate: style choices are tokenized and product-specific, copy is concrete, imagery/icons are meaningful, and motion is stateful rather than decorative.
+- Report components pass the report decision gate: primary metrics have口径 and trust context, chart/table choices answer a named task, realistic data states are supported, and detail/action paths are not hidden by visual polish.
+- Unresolved `RPT-METRIC-SHELL`, `RPT-DECORATIVE-CHART`, `RPT-VISUAL-OVER-DATA`, or `RPT-NO-ACTION` findings block component acceptance for implementation-ready report work.
+- Primary component text does not use generic AI/SaaS slogans without concrete behavior or evidence.
 - Each internal sub-block has a stable viewport and explicit overflow/state policy before component acceptance.
 - Sub-block viewports preserve `5px` spacing from the parent body edge and `5px` spacing from sibling sub-blocks.
 - No-data masks inside composite blocks pass hierarchy checks: all child sub-blocks empty uses one parent mask; partial empty uses affected sub-block masks that cover sub-block title/label/control plus component body.
@@ -143,6 +162,10 @@ When using this skill, provide:
 
 - Do not duplicate detailed reference rules in final answers; cite the loaded references and apply their decisions.
 - Do not use decorative cards, gradients, or visual noise when the component's job is analytical scanning.
+- Do not make components look "premium" by adding generic gradients, glass, glow, huge radii, abstract AI imagery, or ornamental animation.
+- Do not accept generic empty copy in component headings, helper text, empty states, or errors.
+- Do not use charts as visual variety when a table, detail drawer, decomposition, or action block is the actual decision support.
+- Do not hide metric口径, source/freshness, baseline, anomaly marker, or owner/action context merely to keep a KPI/chart card cleaner.
 - Do not add internal chart/table/card titles that duplicate the page or block title.
 - Do not make a component look compact by making it too narrow, too small, crowded, or unreadable.
 - Do not hide required table columns, action text, KPI values, or alert labels merely to make the layout look cleaner.

@@ -40,6 +40,12 @@
 
 ## Layout Checks
 
+- Run the anti-AI design gate on the rendered page: primary surfaces must not rely on generic "modern SaaS/AI" aesthetics, empty slogans, interchangeable assets, first-screen-only polish, decorative motion, missing state coverage, missing accessibility, or sample-like hardcoded implementation. Record `AI-*` findings with evidence and severity.
+- Run the report decision anti-AI gate on report surfaces: verify the page is not only a dashboard shell. Record `RPT-*` findings for generic KPI metrics without formulas, default `4 KPI + charts + list` layout, decorative chart variety, missing diagnostic story, all-clean mock/provider data, selected-state-only filters, visual polish that harms numeric reading, missing industry vocabulary, missing next action, or report-designer shells without data binding and validation behavior.
+- For every primary report metric visible at runtime, verify available evidence for formula/denominator, grain, period/snapshot, source/freshness, unit/precision, baseline, owner/action, and drilldown/detail/export behavior. Missing evidence is at least a report decision QA gap.
+- Verify the runtime data story path where the report claims to support decision-making: current state -> target/baseline gap -> time movement -> driver/dimension contribution -> abnormality/trust signal -> detail records -> owner/action.
+- Verify mock/offline/provider sample data is not only smooth, balanced, and positive. At least one non-default filter branch, long label or high-cardinality case, missing/zero/extreme value, freshness/source marker, permission-limited state, or reconciliation case should be visible or named when relevant.
+- Verify report filters, KPI/chart clicks, table row actions, drawers, exports, refresh, and share links carry active period, permission, filter, and snapshot/batch context forward. Context loss is an `RPT-STATIC-FILTERS` or linkage defect.
 - Charts, tables, legends, labels, KPI cards, buttons, drawers, modals, sticky areas, table scrollbars, and toolbars fit their containers.
 - Page/block titles are not duplicated inside component bodies through chart/table/KPI internal title options.
 - Block title bands preserve the default left-title/right-function-area layout. Right function area uses capsule for one local filter with `< 3` values, dropdown for one local filter with `>= 3` values, filter panel for multiple filters, and lightweight links for detail actions; controls stay on one line and do not crowd the title.
@@ -64,6 +70,7 @@
 - Verify change-rate and variance-rate indicators use positive-red-up and negative-green-down SVG/icon+text semantics, with neutral styling for zero.
 - For HTML-replica or custom layouts, verify the page uses global UI tokens for palette, typography, spacing, radius, shadows, semantic states, and control styling instead of copied one-off inline colors.
 - Check keyboard focus, visible focus states, close/back escape behavior, and basic screen-reader labels for custom controls when those controls are part of the delivered workflow.
+- Search primary headings, CTAs, summaries, empty/error states, and helper text for generic claims such as "赋能", "智能化", "一站式", "重新定义", "无缝", "提升效率", "Transform your workflow", "Unlock the power", or "Supercharge"; record a finding unless the same text also includes concrete user action, data object, condition, system behavior, or evidence.
 
 ## Evidence Quality
 

@@ -33,6 +33,31 @@ Only `frozen-title-sci-fi-cockpit-template` is fixed to a full 1920*1080 screen.
 | `left-nav-analytics-workbench-template` | Multi-page report suite, complex analysis, dense tables, repeated filtering, enterprise workbench, status/diagnosis/detail/action chapters; each nav page uses a scrollable `8 * N` content grid. | The page is a compact one-theme dashboard, only one homepage can be populated, or a large-screen command center. |
 | `frozen-title-sci-fi-cockpit-template` | Fixed 1920*1080 exhibition screen, monitoring wall, command center, leadership cockpit, frozen title/background visual assets; nav drawer pages must all be substantial when retained. | Daily office analytics, long text, frequent editing, dense forms, table-heavy workbench, scrollable report reading, or only one cockpit page can be populated. |
 
+## Display Theme Hints
+
+When `$report-design-workflow` supplies `displayTheme` and selected pattern cards, use them as routing evidence. Do not choose a template from display theme alone.
+
+| Display theme | Useful template tendency | Check before choosing |
+| --- | --- | --- |
+| `detail-table` | `topbar-light-scroll-dashboard-template` for one focused list/detail page; `left-nav-analytics-workbench-template` for multi-page ledgers or dense workbench suites. | Server-side table patterns, detail drawer/page, export, field permission, and table viewport needs. |
+| `summary-stat` | `topbar-light-scroll-dashboard-template` for compact office summary; `left-nav-analytics-workbench-template` for multi-chapter summaries or pivot-heavy analysis. | Aggregation/matrix density, drilldown path, and whether AntV S2 is needed. |
+| `business-dashboard` | Topbar light/dark for one-story dashboard; dark when status/cockpit atmosphere helps; fixed sci-fi only for explicit big-screen/presentation. | First-screen answer, global context, number of KPI/chart/list modules, and refresh context. |
+| `exploratory-analysis` | Topbar for focused analysis; `left-nav-analytics-workbench-template` for saved views, repeated filtering, and multiple analysis chapters. | Dynamic dimension/metric controls, linked detail table, interaction density, and multiple substantial pages. |
+| `management-report` | Topbar light for interactive report; left-nav for long chaptered suite; custom only for exact paginated/print restoration. | Conclusion/evidence structure, export/print, version/sign-off, and chapter count. |
+| `monitoring-alert` | `frozen-title-sci-fi-cockpit-template` for monitoring wall; topbar dark for scrollable operational monitor; left-nav for multi-environment workbench. | Fixed-screen requirement, refresh cadence, alert list density, runbook/root-cause paths, and whether retained nav pages are substantial. |
+
+## Report Decision Routing Guard
+
+Before choosing a template for a report surface, verify the template can carry the report decision anti-AI requirements from `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md`.
+
+- Do not choose a template because it visually resembles a dashboard. Choose it because it can express the metric tree, diagnostic path, detail/action areas, trust metadata, realistic data states, and required interaction density.
+- `topbar-light-scroll-dashboard-template` is the default for office decision reports that need readability, tables, detail drawers, and handoff clarity.
+- `topbar-dark-scroll-dashboard-template` is acceptable for status/diagnosis atmosphere only when numeric readability, detail/action paths, and trust metadata remain clear.
+- `left-nav-analytics-workbench-template` is preferred when the decision path naturally splits into multiple substantial chapters such as overview, diagnosis, detail, action, and audit.
+- `frozen-title-sci-fi-cockpit-template` is for fixed monitoring or command screens; it must still expose alert cause, runbook/action, refresh/freshness, and drilldown paths. Do not use it for ordinary office reports only to create "科技感".
+- If a report-designer/editor page is requested, route by data-binding workflow needs, not by the three-panel shell appearance. The chosen shell must support data source, field binding, aggregation, filters, validation, preview, version, and publish flow.
+- If the chosen template cannot support the required decision path without fighting its shell, document a real template limitation before routing to custom.
+
 ## Selection Priority
 
 0. Hard intent: 自行设计开发 / 自由设计 routes to `custom/freeDesign`; 百分百复刻 routes to `custom/htmlReplica`.

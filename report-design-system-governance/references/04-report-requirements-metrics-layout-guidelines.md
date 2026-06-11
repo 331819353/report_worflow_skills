@@ -164,7 +164,7 @@ Rules:
 - Same metric on the same page must use the same unit.
 - Unit appears in title, axis, table header, or KPI card.
 - Amount and quantity use thousands separator.
-- Negative numbers use red.
+- Color follows metric direction and business meaning, not raw sign alone. In visible Chinese rate/change/completion/YoY/MoM/variance indicators, default to positive-red-up and negative-green-down unless the metric dictionary explicitly defines another direction. Absolute loss, overdue, risk, or business-negative values may use danger red with text/icon/tag evidence.
 
 ## Source And Update Time
 

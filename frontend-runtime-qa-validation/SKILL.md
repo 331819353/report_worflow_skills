@@ -19,6 +19,8 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
 - Read `$quality-gate-validation` before visual pass/fail judgment for any runnable page.
 - For common enterprise application pages, read `$haier-enterprise-app-ui-design-spec` as the runtime visual and interaction baseline for layout, component states, copy, feedback, and cross-platform fit.
 - For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis pages, read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) for layout, chart/table formatting, filters, states, permissions, performance, and acceptance expectations.
+- For any visual QA, read `$report-design-system-governance` `references/08-anti-ai-design-gate.md` and record AI-looking causes when the page is generic, first-screen-only, copy-thin, inaccessible, or sample-like.
+- For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, topic-analysis, or report-designer pages, read `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` and record report decision causes when the page looks like a report but lacks metric system, data story, realistic data, real filters, drilldown/action, trust details, industry sense, or report-designer data-binding behavior.
 
 ## Workflow
 
@@ -39,28 +41,34 @@ This skill is not bound to 数据服务. It can verify API-backed pages, SDK-bac
 5. Run multimodal visual anomaly recognition.
    Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, SVG/canvas/ECharts geometry distortion, broken proportions, stale prototype residue, and broken scroll behavior. Component crops must be reviewed against verifiable checklist items such as legend-axis distance, donut legend/label/title/guide-line fit, KPI value-zone height/centering, and complex table header usage; do not record only vague judgments such as "视觉舒适". Convert all findings into structured `VIS-*` items.
 
-6. Check browser console and network.
+6. Run anti-AI runtime review.
+   Inspect screenshots, visible copy, DOM/source, states, and responsive views for `AI-CONTEXT-THIN`, `AI-TEMPLATE-AESTHETIC`, `AI-FIRSTSCREEN-ONLY`, `AI-GENERIC-COPY`, `AI-BRANDLESS`, `AI-GENERIC-ASSET`, `AI-AVERAGE-HIERARCHY`, `AI-COMPONENT-SOUP`, `AI-DECORATIVE-MOTION`, and `AI-ENGINEERING-SAMPLE`. Treat primary-heading/CTA/empty/error generic copy, missing edge states, missing keyboard/focus support, and generic first-viewport decoration as actionable defects.
+
+7. Run report decision runtime review when the page is a report surface.
+   Inspect rendered UI, source/view models, provider traces, mock data, and interaction states for `RPT-METRIC-SHELL`, `RPT-TEMPLATE-LAYOUT`, `RPT-DECORATIVE-CHART`, `RPT-NO-DATA-STORY`, `RPT-TOO-CLEAN-DATA`, `RPT-STATIC-FILTERS`, `RPT-VISUAL-OVER-DATA`, `RPT-NO-INDUSTRY-SENSE`, `RPT-NO-ACTION`, and `RPT-DESIGNER-SHELL`. Verify the five decision questions with evidence: metric formulas/grain/period/source/freshness/baseline, diagnostic path, abnormality/detail path, realistic non-default data states, active filter context carried into drilldown/export/share, trust details, owner/action path, industry vocabulary, and report-designer data-binding behavior when applicable.
+
+8. Check browser console and network.
    Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.
    Before judging filter binding, verify data completeness evidence: the page has option data, default data, at least one non-default filter state, required fields, and API/resolver/mock branches capable of returning different rows/values or an explicit invariant scope.
 
-7. Exercise page interactions.
+9. Exercise page interactions.
    Traverse visible controls page by page: filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, drawers, modals, chart clicks, table row actions, export/download, refresh, fullscreen, and close/back flows.
    For interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips, check hover and `focus-visible` states. A hover/focus state that moves/scales the element and clips borders/shadows at a grid/card edge is a visual defect.
 
-8. Check perspective and control semantics.
+10. Check perspective and control semantics.
    For every domain, report theme, management object, subject area, or first-level perspective, switch away from the default state and verify more than numeric changes: metric names, component titles, summary wording, table dimensions/headers, component collection, specialty metrics, risk focus, and formula/口径 labels must match the selected perspective. Ordinary global/local filters should preserve component schema and only narrow rows or values unless the binding matrix marks them as `perspective-switch`.
    Add cross-perspective consistency checks for every domain and statistical口径: navigation percentages, overview KPIs, journey cards, and chart summaries must come from the same data chain. Verify at least one concrete field, for example navigation satisfaction equals the current `experienceProfiles.satisfaction` value under the same active filters and period behavior.
 
-9. Check chart engine fidelity.
+11. Check chart engine fidelity.
    For every component that the requirement, binding matrix, config, or code labels as an ECharts standard chart, inspect source/DOM/runtime behavior enough to confirm ECharts owns the rendering: ECharts instance or approved wrapper, data-driven `option`/`series`, update/resize path, and tooltip/legend/emphasis behavior where relevant. Flag dependency-only/import-only ECharts paired with hand-authored SVG/HTML/CSS/canvas chart marks as a QA failure. ECharts SVG renderer is acceptable only when generated by ECharts.
 
-10. Check data states.
+12. Check data states.
    Confirm loading, empty, error, no-permission, token-invalid, stale-selection, and retry states render without layout breakage or stale data.
 
-11. Check copy and prototype residue.
-   Search visible source text and UI for stale wording such as `原型`, `mock`, `demo`, `示例`, placeholder titles, wrong metric names, malformed units, and irrelevant explanatory copy.
+13. Check copy and prototype residue.
+   Search visible source text and UI for stale wording such as `原型`, `mock`, `demo`, `示例`, placeholder titles, wrong metric names, malformed units, irrelevant explanatory copy, and generic AI/SaaS slogans such as `赋能`, `智能化`, `一站式`, `重新定义`, `无缝`, `提升效率`, `Transform your workflow`, `Unlock the power`, or `Supercharge`.
 
-12. Feed visual findings into repair or QA conclusion.
+14. Feed visual findings into repair or QA conclusion.
    For self-check tasks, repair all actionable `blocker` and `major` visual findings, then re-capture affected screenshots and rerun multimodal inspection. For reporting-only tasks, include findings, screenshot evidence, likely owner, and retest criteria in the QA note.
 
 ## Required Output
@@ -76,6 +84,9 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - First-level perspective navigation DOM checks are executed at `1920x1080` and `1280x768`: visible domain nav/Tab/Segment item content passes `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`; screenshot-only evidence is insufficient.
 - Fixed-height navigation/cards/KPI tiles declare height budget and explicit line-height for domain names, metric names, percentages/core values, footer labels, badges, and helper text; `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a fail unless the element is an intentional visible scroll region.
 - Multimodal visual review was run on the screenshots, with `VIS-*` findings recorded or an explicit no-issue result.
+- Anti-AI runtime review was run: generic template aesthetics, generic copy, brandless/generic assets, first-screen-only completion, missing states, missing accessibility/focus, and sample-like engineering are either absent, repaired, or recorded as `AI-*` findings.
+- Report decision runtime review was run for report surfaces: metric shell, dashboard-template layout, decorative charts, missing data story, too-clean data, static filters, visual-over-data, missing industry sense, missing action, and report-designer shell are absent, repaired, or recorded as `RPT-*` findings.
+- Report/dashboard readiness is not `ready` when the five decision questions cannot be answered with runtime evidence.
 - Runtime data requests hit expected endpoints, SDKs, files, or configured proxies.
 - Matching common app or report UI baseline was applied for visual/runtime judgment, or a scoped exception is documented.
 - Data completeness for filters is checked before linkage: options, provider/mock rows, fields, default/non-default states, and resolver/API branches exist or are recorded as gaps.
@@ -94,6 +105,9 @@ Produce a compact QA note using `references/qa-note-template.md`.
 - SVG/canvas/ECharts/custom graphics preserve aspect ratio and geometry; circles, gauges, maps, paths, nodes, and icons are not stretched, squeezed, or warped after resize, tab switch, drawer/fullscreen, or filter update.
 - Composite block no-data masks use the correct scope: whole parent only when all child sub-blocks are no-data; otherwise affected child sub-block masks include child title/control plus component body.
 - No stale prototype-only wording remains unless explicitly required.
+- No primary headings, CTAs, empty/error states, or key summaries use generic AI/SaaS copy without concrete user action, data object, system behavior, condition, or evidence.
+- Generic gradients, glass/neon/glow decoration, oversized radius, abstract AI/tech imagery, and ornamental animation are absent unless an approved brand/template/sample exception is documented.
+- Keyboard focus, accessible names for icon-only controls, contrast, and non-color-only error/status cues pass the active baseline.
 - Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
 - HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.
 - Final answer includes the verified URL when startup succeeds.

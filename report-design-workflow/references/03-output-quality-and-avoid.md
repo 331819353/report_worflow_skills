@@ -19,10 +19,10 @@ If skipping a stage creates risk, say what is being deferred.
 Use this structure:
 
 1. 流程模式.
-2. 报表主题与类型.
+2. 展示主题、模式卡片与报表类型.
 3. 用户与核心问题.
 4. 业务设计思路.
-5. 信息区块与组件映射.
+5. 信息区块、模式卡片与组件映射.
 6. 数据策略.
 7. 筛选策略.
 8. 数据交互策略.
@@ -37,15 +37,16 @@ Use this structure:
 
 1. Scope and selected workflow mode.
 2. Skills used and why.
-3. Files/components/data to create or modify.
-4. Mock data and filter state plan.
-5. Interaction state and parameter plan.
-6. Shell path, style source, brand mode, visual mode, and brand asset gate: `pageShellPath`, `pageStyleSource`, `brandMode`, `visualMode`, `customDesignPath` and `customLayoutPattern` if any, logo discovery result, logo slot/placeholder, sample-fidelity decision, and sample module classification.
-7. Visual layout and component style plan.
-8. Technical architecture: TypeScript, Vue 3, Element Plus, ECharts, optional AntV S2 trigger, and template choice.
-9. Self-check report and repair-loop plan.
-10. Automatic deployment plan and expected URL source.
-11. Verification plan.
+3. Display theme, selected pattern cards, and pattern-to-component/API/test impact.
+4. Files/components/data to create or modify.
+5. Mock data and filter state plan.
+6. Interaction state and parameter plan.
+7. Shell path, style source, brand mode, visual mode, and brand asset gate: `pageShellPath`, `pageStyleSource`, `brandMode`, `visualMode`, `customDesignPath` and `customLayoutPattern` if any, logo discovery result, logo slot/placeholder, sample-fidelity decision, and sample module classification.
+8. Visual layout and component style plan.
+9. Technical architecture: TypeScript, Vue 3, Element Plus, ECharts, optional AntV S2 trigger, and template choice.
+10. Self-check report and repair-loop plan.
+11. Automatic deployment plan and expected URL source.
+12. Verification plan.
 
 ### Review/Repair Output
 
@@ -54,9 +55,10 @@ Use this structure:
 1. Visible problems.
 2. Root design causes.
 3. Affected components/blocks.
-4. Fix strategy by workflow stage.
-5. Concrete implementation changes if requested.
-6. Verification checks.
+4. Affected display-theme and pattern-card decisions.
+5. Fix strategy by workflow stage.
+6. Concrete implementation changes if requested.
+7. Verification checks.
 
 ### Self-Check Report Output
 
@@ -65,7 +67,7 @@ Use this structure after implementation and after each repair cycle:
 1. 自检轮次与总体结论.
 2. 本轮检查范围.
 3. 已执行命令/工具/页面验证.
-4. Z型逐组件检查: in rendered order, list each component's filters, filter config, mock coverage, data/filter binding, interaction binding, layout capacity, block-size/clip status, and pass/fail result.
+4. Z型逐组件检查: in rendered order, list each component's source pattern IDs, filters, filter config, mock coverage, data/filter binding, interaction binding, layout capacity, block-size/clip status, and pass/fail result.
 5. 数据完整性检查.
 6. 筛选配置检查.
 7. 交互可用性检查.
@@ -83,6 +85,9 @@ Use this structure after implementation and after each repair cycle:
 Before final delivery, verify:
 
 - The primary report type is clear and not confused with a chart type.
+- The display theme is clear, not confused with the primary report type, and selected pattern cards are listed.
+- Every selected pattern card maps to a component, filter/control, interaction, dataset/API requirement, export/share behavior, operations note, or validation case.
+- No unimplemented pattern is described as done; unsupported patterns are marked as gaps or future work.
 - Secondary report types only appear where they change a block or flow.
 - The core user question is answered in the first meaningful viewport.
 - `pageShellPath` is declared as `template` or `custom`.
@@ -138,12 +143,15 @@ Before final delivery, verify:
 ## Avoid
 
 - Do not start from visual layout before classifying the report purpose.
+- Do not start from visual layout before classifying the display theme and selecting a bounded pattern-card set.
 - Do not choose a custom shell merely because the user did not specify page style.
 - Do not mark a `brandMode: haierBranded` custom shell complete when it has only a logo placeholder instead of a real bundled Haier logo.
 - Do not start implementation before declaring `pageShellPath`, `pageStyleSource`, `brandMode`, `visualMode`, custom design/layout paths when applicable, and passing the logo asset gate.
 - Do not use every skill for every task; use the smallest complete path.
 - Do not duplicate detailed rules from child skills; route to them.
 - Do not invent new report categories when one of the eight categories fits.
+- Do not invent new display themes when one of the six common display themes fits.
+- Do not list pattern-card names without carrying their implementation and acceptance impact into the binding matrix or handoff bundle.
 - Do not treat mock data as random values.
 - Do not design filters or jumps without permission and state behavior.
 - Do not finish an implementation without checking for duplicate component titles, cramped components, overlap, clipping, broken layout, and title-node collision.

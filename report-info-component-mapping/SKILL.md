@@ -21,6 +21,10 @@ A business question does not equal one chart, and a chart is not complete until 
 
 Example: `人员流失情况` should not default to one pie chart. It may need KPI cards, trend chart, organization/job/rank distribution, reason contribution, employee detail table, and retention task block. The same design must also define employee-level mock rows, time/org/job filters, row drawer, stale-selection behavior, and KPI-to-detail reconciliation. Use a funnel only when there is a real ordered HR process stage.
 
+When `$report-design-workflow` supplies a display theme and pattern-card set, treat those cards as traceable design inputs. A selected pattern is valid only when it changes a component, control, dataset/API, interaction, export/share behavior, operations note, or validation case.
+
+When `$report-design-workflow`, `$report-type-design`, or `$report-design-system-governance` supplies the report decision anti-AI gate, treat the five decision questions, metric tree, data story path, realistic data requirements, and trust/action details as binding inputs. A component bundle that cannot answer those is a dashboard shell, not an implementation-ready report.
+
 Choose the smallest component bundle that answers the decision question. Do not add multiple charts for the same message.
 
 ## Low-Freedom Stability Contract
@@ -41,16 +45,18 @@ Use this contract for implementation-ready specs, mock data, widget config, or g
 For every report requirement or extracted information set:
 
 1. Normalize the input: theme, audience, scenario, primary question, decision, time scope, organization scope, object, metrics, dimensions, baseline, process stage, rules, risks, tasks, evidence, source, permissions.
-2. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
-3. Map answer atoms to parent content blocks, optional internal sub-blocks, and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
-4. Define and validate the mock/data model before filter binding: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, time coverage, default state, non-default filter states, empty/no-permission states, domain-specific scenarios, and resolver/API branch needs.
-5. Classify every control before placement: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. Controls that change metric set, component semantics, domain vocabulary, table schema, or report subject are perspective/navigation controls, not ordinary filters.
-6. Define the filter/query model only after the data model can support it: main filter surface, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components. For bundled templates, the main filter surface is the template's native `filters[]` invocation and binding contract, not a new toolbar component.
-7. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, and stale-state behavior.
-8. Produce the binding matrix: parent block -> sub-block when present -> component -> dataset -> fields -> formulas -> controls/filters -> interactions -> update triggers -> validation cases.
-9. Route to primary and secondary report-type skills for business logic.
-10. Apply local layout and visual constraints from `references/07-routing-layout-quality.md`, including grid fit, component density, exact-value access, and visual QA notes.
-11. Validate that KPI totals, chart totals, table rows, drawers, exports, controls, filters, and jumps share the same context.
+2. Preserve display theme and selected pattern cards from upstream when present; otherwise infer whether the component map is detail-table, summary-stat, business-dashboard, exploratory-analysis, management-report, or monitoring-alert. If multiple themes compete, record the competing themes and choose one primary theme for the matrix.
+3. Apply the report decision anti-AI gate when the surface is a report/dashboard/BI/cockpit/detail-query/topic-analysis/report designer: metric system, metric tree, data story, realistic data, linkage, trust/action, industry sense, and designer behavior.
+4. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
+5. Map answer atoms and selected pattern cards to parent content blocks, optional internal sub-blocks, and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
+6. Define and validate the mock/data model before filter binding: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, time coverage, default state, non-default filter states, empty/no-permission states, domain-specific scenarios, realistic dirty-data cases, and resolver/API branch needs.
+7. Classify every control before placement: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. Controls that change metric set, component semantics, domain vocabulary, table schema, or report subject are perspective/navigation controls, not ordinary filters.
+8. Define the filter/query model only after the data model can support it: main filter surface, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components. For bundled templates, the main filter surface is the template's native `filters[]` invocation and binding contract, not a new toolbar component.
+9. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, owner/action flow, and stale-state behavior.
+10. Produce the binding matrix: display theme/pattern cards/report decision gate -> parent block -> sub-block when present -> component -> dataset -> fields -> formulas -> controls/filters -> interactions -> update triggers -> validation cases.
+11. Route to primary and secondary report-type skills for business logic.
+12. Apply local layout and visual constraints from `references/07-routing-layout-quality.md`, including grid fit, component density, exact-value access, and visual QA notes.
+13. Validate that KPI totals, chart totals, table rows, drawers, exports, controls, filters, and jumps share the same context.
 
 ## Reference Map
 
@@ -80,11 +86,18 @@ Loading guidance:
 ## Hard Constraints
 
 - A component is valid only when it answers a named business question.
+- A report component is valid only when it participates in a decision path: state, target/baseline, trend, driver, abnormality, detail, trust, or action. Generic KPI cards and decorative charts without this role are rejected.
+- Every primary metric-bearing component must have formula/denominator, grain, period, source/freshness, unit/precision, baseline, and owner/action notes when the output is implementation-ready.
+- Generic marketing sections, decorative cards, generic AI/SaaS feature lists, empty slogan panels, and interchangeable icon blocks are not valid report components unless they map to a real user task, data object, decision, evidence, or workflow action.
+- Do not let "modern/high-end/tech" copy become an answer atom. Answer atoms must be business meanings such as status, trend, cause, detail, action, evidence, or data trust.
+- A selected pattern card is valid only when it maps to a visible component, control, data/API requirement, interaction, export/share behavior, operations note, or validation case. Otherwise mark it as a gap or backlog item.
 - For sample/source restoration, do not promote a visible sample module to `must-have` only because it exists in the source. Mark it as `businessRequired` only when it directly answers the user's stated report question; otherwise use `sampleStructure` or `optionalEnhancement`.
 - For status-overview reports, process/path/flow diagrams are secondary unless the core question explicitly asks for value chain, dependency, lineage, transmission, process conversion, or flow attribution.
 - A component without a data source is decorative unless it is explicitly static narrative.
 - First-screen cards and large panels cannot remain unbound "暂无数据" placeholders.
 - Mock data must make KPI totals, chart totals, table rows, drawers, and exports reconcile under the same active filters.
+- Mock/offline data must not be unrealistically clean when it is used as prototype evidence. Include realistic variance, missing/zero/extreme values, non-default filter changes, long labels/high-cardinality dimensions, freshness/source metadata, and permission-limited cases where relevant.
+- A report page with only overview charts and no detail table, drawer, drilldown, export, owner, or action path cannot be marked implementation-ready unless the report is explicitly static/read-only and that limitation is documented.
 - Multi-period filters, trends, MoM, YoY, quarter, or rolling-period views require complete matching time rows.
 - Data completeness must be checked before filter binding. Do not finalize `filterMap`, `filterFields`, `requiredFilters`, API params, or resolver params until the underlying option data, row grain, required fields, default/non-default states, and resolver/API support are present or explicitly marked as gaps.
 - A filter without affected components is dead UI unless it controls navigation or permissions.
@@ -117,26 +130,34 @@ Loading guidance:
 When this skill is used, produce at least:
 
 1. Report theme, primary question, business decision, and user scenario.
-2. Answer atom decomposition.
-3. Parent block, sub-block, and component bundle mapping with priority.
+2. Display theme and selected pattern-card set when available.
+3. Report decision gate result when applicable: `reportDecisionRisk`, five decision-question answers, metric tree/data story path, trust/action details, and `RPT-*` gaps.
+4. Answer atom decomposition.
+5. Parent block, sub-block, and component bundle mapping with priority.
    For sample/source restoration, include `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
-4. Mock/data model: datasets, grain, fields, formulas, signals, edge cases.
-5. Filter/query model: filter surface, filters, option sources, defaults, cascades, permissions, query params.
-6. Control semantics model: perspective switches, global filters, local filters, and drilldown params, including schema impact.
-7. Navigation metric lineage: source dataset, field/formula, grain, affected filters, and period behavior for navigation percentages, rankings, and status lights.
-8. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.
-9. Unified parent-block/sub-block/data/filter/control/component/interaction binding matrix.
-10. Report type routing.
-11. Layout and style constraints.
-12. Missing information, assumptions, and removed decorative components.
+6. Mock/data model: datasets, grain, fields, formulas, signals, realistic messy cases, edge cases.
+7. Filter/query model: filter surface, filters, option sources, defaults, cascades, permissions, query params.
+8. Control semantics model: perspective switches, global filters, local filters, and drilldown params, including schema impact.
+9. Navigation metric lineage: source dataset, field/formula, grain, affected filters, and period behavior for navigation percentages, rankings, and status lights.
+10. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.
+11. Unified parent-block/sub-block/data/filter/control/component/interaction binding matrix, including `sourcePatternIds` when pattern cards are used.
+12. Report type routing.
+13. Layout and style constraints.
+14. Missing information, assumptions, and removed decorative components.
 
-For implementation tasks, items 3-7 are mandatory.
+For implementation tasks, items 5-9 are mandatory. Item 2 is also mandatory when the upstream workflow selected a display theme or reusable pattern-card set. Item 3 is mandatory for report/dashboard/BI/cockpit/detail-query/topic-analysis/report-designer work.
 
 ## Quick Quality Gate
 
 Before finalizing, verify:
 
 - Every key business concern maps to at least one visible block or interaction.
+- The five report decision questions can be answered or have named gaps.
+- The component bundle includes a data story path appropriate to the report type: state -> target/baseline -> driver -> abnormality -> detail -> action.
+- Generic dashboard KPI/chart shells are removed or converted into metric-tree-backed components.
+- No component exists only to make the page look polished, AI-like, or template-complete.
+- Primary titles, summaries, empty states, and actions are specific enough to name the user task, data object, condition, or next step.
+- Every selected pattern card maps to at least one visible component, control, data/API rule, interaction, export/share rule, operations note, or validation case.
 - There is one primary answer area, not a flat wall of equal-weight charts.
 - Every component has a distinct semantic role, dimension, grain, or workflow purpose.
 - Parent blocks and sub-blocks are explicit when one `8 * N` block contains multiple components.
