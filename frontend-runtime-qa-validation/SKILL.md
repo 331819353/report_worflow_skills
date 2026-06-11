@@ -7,121 +7,51 @@ description: "用于前端实现、视觉修改、数据接入或环境调整后
 
 ## Positioning
 
-Use this skill independently after frontend code changes that affect a runnable page. It turns final verification into a repeatable browser QA pass instead of a quick build-only check.
+Use this skill after frontend or prototype changes affect a runnable page. It verifies browser runtime, visual quality, interaction behavior, data binding, states, and readiness evidence.
 
-This skill is not bound to 数据服务. It can verify API-backed pages, SDK-backed pages, local/static-data pages, realtime views, visual-only prototypes, and deployed static builds. Use data-service checks only when the frontend actually depends on data-service endpoints.
+It is not a test-case design skill. For test matrices use `$integration-test-case-design`; for automated scripts use `$automated-test-generation`; for URL reachability only use `$runtime-url-smoke-test`.
 
 ## Reference Map
 
-- Read `references/browser-qa-matrix.md` for browser, console, route, asset, and layout checks.
-- Read `references/data-interaction-state-checks.md` for provider, filter, interaction, and edge-state checks.
-- Read `references/qa-note-template.md` when producing the QA result.
-- Read `$quality-gate-validation` before visual pass/fail judgment for any runnable page.
-- For common enterprise application pages, read `$haier-enterprise-app-ui-design-spec` as the runtime visual and interaction baseline for layout, component states, copy, feedback, and cross-platform fit.
-- For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis pages, read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) for layout, chart/table formatting, filters, states, permissions, performance, and acceptance expectations.
-- For any visual QA, read `$report-design-system-governance` `references/08-anti-ai-design-gate.md` and record AI-looking causes when the page is generic, first-screen-only, copy-thin, inaccessible, or sample-like.
-- For report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, topic-analysis, or report-designer pages, read `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` and record report decision causes when the page looks like a report but lacks metric system, data story, realistic data, real filters, drilldown/action, trust details, industry sense, or report-designer data-binding behavior.
+| Need | Read |
+| --- | --- |
+| Browser, console, route, asset, layout checks | `references/browser-qa-matrix.md` |
+| Provider, filter, interaction, edge-state checks | `references/data-interaction-state-checks.md` |
+| QA report structure | `references/qa-note-template.md` |
+| Full runtime QA procedure and component-crop checklist | `references/runtime-qa-procedure.md` |
+| Readiness and visual/multimodal gate | `$quality-gate-validation` |
+| Common enterprise app baseline | `$haier-enterprise-app-ui-design-spec` |
+| Report/dashboard baseline and anti-AI/report-decision gates | `$report-design-system-governance` relevant references |
 
 ## Workflow
 
-1. Start from build/runtime basics.
-   Run available typecheck, lint, tests, build, and dev/preview startup commands. Record skipped commands only when they are not defined or blocked by an external dependency.
-
-2. Classify the runtime UI baseline.
-   Determine whether the page is common enterprise app, report/dashboard, or mixed. Load and apply the matching common app and/or report baseline before judging visual/runtime defects, even when the user only asked for QA or URL验收.
-
-3. Open the target page.
-   Use a local verified URL. Check that the page loads without blocking runtime errors and that core layout appears.
-
-4. Capture headless browser screenshots.
-   After the page is stable, capture first-viewport screenshots before visual judgment. Capture full-page, responsive, filter-state, drawer, modal, tab, and edge-state screenshots when those states are in scope. For report/dashboard pages, do not stop at full-page screenshots: crop component-level evidence for every in-scope donut/pie chart, Gauge chart, funnel chart, radar chart, scatter/bubble chart, parallel-coordinate chart, map/geographic chart, candlestick/K-line chart, boxplot chart, heatmap chart, sunburst chart, treemap/rectangular tree map, path/user/process path chart, Sankey diagram, tree/hierarchical tree chart, relation/network graph chart, Combo chart, trend chart, KPI card/group, Detail Table, Pivot Table, table with complex/grouped headers, and table/analytical grid. Component crops are mandatory for donut/pie, Gauge, funnel, radar, scatter/bubble, parallel-coordinate, map/geographic, candlestick/K-line, boxplot, heatmap, sunburst, treemap/rectangular tree map, path/user/process path, Sankey, tree/hierarchical tree, relation/network graph, Combo chart, Detail Table, Pivot Table, and tables with complex/grouped headers when those components exist; full-page screenshots cannot replace them. Store screenshot paths as QA evidence.
-   For domain navigation, Tabs, Segments, and other first-level perspective controls, run DOM no-clipping checks at `1920x1080` and `1280x768`: each visible item/card content viewport must satisfy `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`. If `scrollHeight > clientHeight` or `scrollWidth > clientWidth`, record a clipping defect even when the screenshot looks acceptable. Screenshot checks do not replace DOM checks.
-   For fixed-height navigation, cards, KPI tiles, compact summaries, and fixed-height controls, verify the implementation declares padding, explicit line-height, gaps, and height budget. Then measure DOM overflow for the fixed-height content viewport at `1920x1080` and `1280x768`.
-
-5. Run multimodal visual anomaly recognition.
-   Use `$quality-gate-validation` to ask a multimodal model to inspect screenshots for layout offset, excessive blank area, duplicate component titles, text overlap, graphic overlap, text-graphic overlap, clipping, tiny/crowded charts/tables/cards, unbalanced peer-component strips, unreadable labels, nonblank chart/canvas rendering, SVG/canvas/ECharts geometry distortion, broken proportions, stale prototype residue, and broken scroll behavior. Component crops must be reviewed against verifiable checklist items such as Detail Table row grain/primary key, Pivot Table row/column dimensions, measures, aggregation formulas, subtotal/grand-total, frozen headers, pivotAreaH, exact cell tooltip/drilldown, complex/grouped table-header columnTree, leaf fields, colSpan/rowSpan or maxDepth, group-to-leaf alignment, fixed whole header, frozen row/primary columns, component-local filter vs column-filter separation, header tooltip definitions, density fallback, useful body-row budget, prioritized visible columns, default sort, numeric/status/action alignment, tableBodyAreaH and visible-row budget, fixed header/frozen columns, pagination/search/export scope, tooltip/detail access, Combo shared x-axis, bar/line metric roles, axis units, series <=4, dual-axis rationale, plotH budget, exact tooltip, legend-axis distance, donut category-count/merge rule, negative/all-zero handling, legend/label/title/guide-line/center fit, Gauge bounded metric/min/max/unit/current value, center value hierarchy, arc geometry, target/threshold/status semantics, clamp/overflow behavior, sparse ticks, local-filter separation, exact tooltip, scatter X/Y units, point density, label clutter, bubble overlap, reference/quadrant labels, parallel-coordinate object/dimension schema, axis unit/range/direction, axisGap/plotH budget, line-density opacity/sampling, Top/anomaly/selected highlight, brush/filter/legend separation, exact object tooltip, map aspect ratio, basemap/data-layer hierarchy, visualMap/legend placement, map label density, dense point clustering/heatmap, flow TopN readability, candlestick OHLC validity, market color convention, candle density, volume alignment, MA/indicator overload, crosshair/tooltip exact values, boxplot sample/outlier rule, median/IQR readability, whisker geometry, outlier overplot, category label density, five-number tooltip, heatmap visualMap/color scale, missing-vs-zero encoding, cell size, row/column label density, all-cell text overload, exact-value tooltip, sunburst hierarchy, non-negative additive angle metric, visible depth/ring width, TopN/other aggregation, sector label thresholds, center fit, color semantics, breadcrumb/drilldown, exact path/total-share/parent-share tooltip, treemap hierarchy, non-negative additive area metric, TopN/other aggregation, parent/child label thresholds, color semantics, breadcrumb/drilldown, exact path/share tooltip, funnel stage order, shared population/cohort, entry share, stage conversion, drop value/rate, total conversion, stage density, target/comparison markers, exact tooltip, path chart start/end/order, TopN branches, conversion/drop-off labels, arrow direction, branch clutter, legend/filter separation, node/link tooltip, Sankey source-target-value schema, layer/stage order, TopN/other aggregation, node/link density, flow-width readability, main-flow emphasis, loss/unknown nodes, legend/filter separation, exact node/link tooltip, tree chart root/parent-child schema, visible depth, expand/collapse, TopN/+N aggregation, node label fit, connector clarity, legend/filter separation, node tooltip, relation graph node/edge schema, source/target direction, density, hairball, label clutter, fitView, zoom/search/detail, node/edge tooltip, and KPI value-zone height/centering; do not record only vague judgments such as "视觉舒适". Convert all findings into structured `VIS-*` items.
-
-6. Run anti-AI runtime review.
-   Inspect screenshots, visible copy, DOM/source, states, and responsive views for `AI-CONTEXT-THIN`, `AI-TEMPLATE-AESTHETIC`, `AI-FIRSTSCREEN-ONLY`, `AI-GENERIC-COPY`, `AI-BRANDLESS`, `AI-GENERIC-ASSET`, `AI-AVERAGE-HIERARCHY`, `AI-COMPONENT-SOUP`, `AI-DECORATIVE-MOTION`, and `AI-ENGINEERING-SAMPLE`. Treat primary-heading/CTA/empty/error generic copy, missing edge states, missing keyboard/focus support, and generic first-viewport decoration as actionable defects.
-
-7. Run report decision runtime review when the page is a report surface.
-   Inspect rendered UI, source/view models, provider traces, mock data, and interaction states for `RPT-METRIC-SHELL`, `RPT-TEMPLATE-LAYOUT`, `RPT-DECORATIVE-CHART`, `RPT-NO-DATA-STORY`, `RPT-TOO-CLEAN-DATA`, `RPT-STATIC-FILTERS`, `RPT-VISUAL-OVER-DATA`, `RPT-NO-INDUSTRY-SENSE`, `RPT-NO-ACTION`, and `RPT-DESIGNER-SHELL`. Verify the five decision questions with evidence: metric formulas/grain/period/source/freshness/baseline, diagnostic path, abnormality/detail path, realistic non-default data states, active filter context carried into drilldown/export/share, trust details, owner/action path, industry vocabulary, and report-designer data-binding behavior when applicable.
-
-8. Check browser console and network.
-   Verify there are no blocking console errors, unresolved assets, failed provider requests, wrong base URLs, CORS/proxy failures, unexpected 401/403 loops, or malformed responses. For global filter/search/pagination/sort interactions, verify network/provider calls include active params and do not request all candidate data for local full-materialize-then-filter behavior. For component-internal filters, verify the behavior is local to already fetched component data and does not change API-level totals, permission scope, pagination, or business aggregation.
-   Before judging filter binding, verify data completeness evidence: the page has option data, default data, at least one non-default filter state, required fields, and API/resolver/mock branches capable of returning different rows/values or an explicit invariant scope.
-
-9. Exercise page interactions.
-   Traverse visible controls page by page: filters, search, date ranges, organization selectors, pagination, sorting, tabs, route jumps, drawers, modals, chart clicks, table row actions, export/download, refresh, fullscreen, and close/back flows.
-   For interactive cards, KPI tiles, chart/table containers, navigation items, toolbar controls, and local filter chips, check hover and `focus-visible` states. A hover/focus state that moves/scales the element and clips borders/shadows at a grid/card edge is a visual defect.
-
-10. Check perspective and control semantics.
-   For every domain, report theme, management object, subject area, or first-level perspective, switch away from the default state and verify more than numeric changes: metric names, component titles, summary wording, table dimensions/headers, component collection, specialty metrics, risk focus, and formula/口径 labels must match the selected perspective. Ordinary global/local filters should preserve component schema and only narrow rows or values unless the binding matrix marks them as `perspective-switch`.
-   Add cross-perspective consistency checks for every domain and statistical口径: navigation percentages, overview KPIs, journey cards, and chart summaries must come from the same data chain. Verify at least one concrete field, for example navigation satisfaction equals the current `experienceProfiles.satisfaction` value under the same active filters and period behavior.
-
-11. Check chart engine fidelity.
-   For every component that the requirement, binding matrix, config, or code labels as an ECharts standard chart, inspect source/DOM/runtime behavior enough to confirm ECharts owns the rendering: ECharts instance or approved wrapper, data-driven `option`/`series`, update/resize path, and tooltip/legend/emphasis behavior where relevant. Flag dependency-only/import-only ECharts paired with hand-authored SVG/HTML/CSS/canvas chart marks as a QA failure. ECharts SVG renderer is acceptable only when generated by ECharts.
-
-12. Check data states.
-   Confirm loading, empty, error, no-permission, token-invalid, stale-selection, and retry states render without layout breakage or stale data.
-
-13. Check copy and prototype residue.
-   Search visible source text and UI for stale wording such as `原型`, `mock`, `demo`, `示例`, placeholder titles, wrong metric names, malformed units, irrelevant explanatory copy, and generic AI/SaaS slogans such as `赋能`, `智能化`, `一站式`, `重新定义`, `无缝`, `提升效率`, `Transform your workflow`, `Unlock the power`, or `Supercharge`.
-
-14. Feed visual findings into repair or QA conclusion.
-   For self-check tasks, repair all actionable `blocker` and `major` visual findings, then re-capture affected screenshots and rerun multimodal inspection. For reporting-only tasks, include findings, screenshot evidence, likely owner, and retest criteria in the QA note.
+1. Run available build/typecheck/lint/test/start commands and record blockers.
+2. Classify the UI baseline: common enterprise app, report/dashboard, mixed, or unknown.
+3. Open the target URL and confirm the page loads without blocking runtime errors.
+4. Capture screenshots before visual judgment: full page, responsive states, interactions, and component crops when report/chart/table components exist.
+5. Run DOM overflow checks for fixed-height navigation/cards/KPI tiles and compact controls.
+6. Inspect console, network, assets, routes, auth, and provider calls.
+7. Exercise filters, tabs, drawers, modals, chart clicks, table actions, pagination, sorting, export, refresh, fullscreen, hover, and focus states in scope.
+8. Apply anti-AI, report-decision, and multimodal/visual checks when relevant.
+9. Produce a compact QA note with findings, evidence paths, owner, retest criteria, URL, and readiness.
 
 ## Required Output
 
-Produce a compact QA note using `references/qa-note-template.md`.
+Use `references/qa-note-template.md` and include:
 
-## Verification Checklist
+- Commands run and blockers.
+- URL and viewport/screenshot evidence.
+- Console/network result.
+- Interaction/state checks.
+- Visual/DOM overflow findings.
+- Baseline references applied.
+- Readiness: `ready`, `partial`, or `blocked`.
 
-- Build/startup succeeds or a concrete external blocker is documented.
-- Browser reaches the target page without blocking console/runtime failures.
-- Headless browser screenshots were captured before visual pass/fail judgment, or an explicit blocker explains why screenshots could not be captured.
-- Report/dashboard QA includes component-level cropped screenshots for donut/pie charts, Gauge charts, funnel charts, radar charts, scatter/bubble charts, parallel-coordinate charts, map/geographic charts, candlestick/K-line charts, boxplot charts, heatmap charts, sunburst charts, treemap/rectangular tree maps, path/user/process path charts, Sankey diagrams, tree/hierarchical tree charts, relation/network graph charts, Combo chart, trend charts, KPI cards/groups, Detail Tables, Pivot Tables, tables with complex/grouped headers, and tables/analytical grids when present; full-page screenshots alone are insufficient. Donut/pie, Gauge, funnel, radar, scatter/bubble, parallel-coordinate, map/geographic, candlestick/K-line, boxplot, heatmap, sunburst, treemap/rectangular tree map, path/user/process path, Sankey, tree/hierarchical tree, relation/network graph, Combo chart, Detail Table, Pivot Table, and complex/grouped-header table crops are required whenever those components exist.
-- First-level perspective navigation DOM checks are executed at `1920x1080` and `1280x768`: visible domain nav/Tab/Segment item content passes `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`; screenshot-only evidence is insufficient.
-- Fixed-height navigation/cards/KPI tiles declare height budget and explicit line-height for domain names, metric names, percentages/core values, footer labels, badges, and helper text; `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a fail unless the element is an intentional visible scroll region.
-- Multimodal visual review was run on the screenshots, with `VIS-*` findings recorded or an explicit no-issue result.
-- Anti-AI runtime review was run: generic template aesthetics, generic copy, brandless/generic assets, first-screen-only completion, missing states, missing accessibility/focus, and sample-like engineering are either absent, repaired, or recorded as `AI-*` findings.
-- Report decision runtime review was run for report surfaces: metric shell, dashboard-template layout, decorative charts, missing data story, too-clean data, static filters, visual-over-data, missing industry sense, missing action, and report-designer shell are absent, repaired, or recorded as `RPT-*` findings.
-- Report/dashboard readiness is not `ready` when the five decision questions cannot be answered with runtime evidence.
-- Runtime data requests hit expected endpoints, SDKs, files, or configured proxies.
-- Matching common app or report UI baseline was applied for visual/runtime judgment, or a scoped exception is documented.
-- Data completeness for filters is checked before linkage: options, provider/mock rows, fields, default/non-default states, and resolver/API branches exist or are recorded as gaps.
-- Filters and interactions update the correct data without stale values.
-- Non-default perspective QA is executed for every business domain/theme/management-object/subject-area view: verify metric names, title/summary wording, table dimensions/headers, component collection, specialty metrics, risk focus, and口径 labels, not only changed values.
-- Cross-perspective consistency is checked for every domain and statistical口径: navigation percentages, overview KPIs, journey cards, and chart summaries use the same source chain; at least one field-level equality assertion is recorded, such as navigation satisfaction equals current `experienceProfiles.satisfaction`.
-- Ordinary global/local filters preserve component schema unless explicitly declared as `perspective-switch` with schema impact.
-- Global filter/search/pagination/sort interactions send scope params to providers before response construction; any all-data request followed by local filtering is a `fail` or `partial` QA finding unless it is explicitly a component-internal filter over already fetched component data.
-- Empty/error/loading/auth states are visible and stable.
-- Hover/focus states preserve geometry and use in-bounds border/outline/glow; no border, shadow, or focus ring is clipped by parent overflow.
-- Standard ECharts charts are rendered through ECharts instance/wrapper and data-driven `option`/`series`; no import-only ECharts chart is hand-drawn with SVG/HTML/CSS/canvas marks.
-- Trend/cartesian ECharts charts with visible x-axis labels and bottom legends pass the cropped screenshot and option check: `grid.containLabel = true`, `grid.bottom >= 56px`, and legend-to-axis-label distance is clear.
-- Scatter/bubble chart crops pass the relationship-fit check: X/Y metrics and units are visible, axes have range/baseline behavior, point count drives radius/opacity/label density, bubble size uses bounded sqrt mapping when present, reference lines/quadrants/trend lines are weak and data-driven, ordinary labels are hidden in dense charts, and tooltip/detail exposes exact object values.
-- Parallel-coordinate chart crops pass the profile-fit check: object/sample schema and `3-12` ordered dimensions are visible or inspectable, each axis has unit/range/direction or declared standardization, `axisGap >= 56px` and `plotH >= CH * 0.48` are met, ordinary-line opacity follows sample density, Top/anomaly/selected lines are distinguishable without overpowering the plot, brush/filter/legend zones are separate, and tooltip/detail exposes exact object values across visible dimensions.
-- Map/geographic chart crops pass the spatial-fit check: geography is the actual decision dimension, map shapes/routes/coordinates preserve aspect ratio, visualMap/legend does not cover important regions/points/routes, labels are key-only, dense points use clustering/heatmap, dense flows use TopN, basemap is weaker than the data layer, and tooltip/detail exposes exact region/point/flow values.
-- Candlestick/K-line chart crops pass the OHLC-fit check: ordered OHLC data is valid, market color convention is visible or documented, candles are readable at the visible density, volume bars align to candle centers and remain secondary, MA/technical indicators do not overpower candles, time labels are sampled, crosshair/tooltip exposes exact OHLC/volume/MA values, and dataZoom/recent-window fallback exists for dense histories.
-- Boxplot chart crops pass the distribution-fit check: sample count and whisker/outlier rule are declared, boxes/median/whiskers are readable, outliers are not overplotted, category labels fit or use horizontal/scroll fallback, grouped series stay readable, and tooltip/detail exposes five-number summary plus outlier details.
-- Heatmap chart crops pass the density-fit check: row/column/value/aggregation contract is visible or inspectable, visualMap/color scale is clear, missing and zero cells are distinct, cells are readable at the visible density, row/column labels are sampled before collision, all-cell value text is avoided unless cells are large enough, and tooltip/detail exposes exact cell values.
-- Treemap/rectangular tree map crops pass the composition-area fit check: hierarchy and parent/leaf aggregation are visible or inspectable, area metric is non-negative and additive, parent groups are readable, Top N/`其他` or drilldown handles dense leaves, tiny rectangles do not force labels, color legend/visualMap semantics are clear, breadcrumb/drilldown works when deep, and tooltip/detail exposes full path, value, percent of total, percent of parent, color metric, source, and aggregation rule.
-- Sunburst chart crops pass the hierarchy-path composition fit check: hierarchy and parent/child aggregation are visible or inspectable, angle metric is non-negative and additive, visible depth stays within `2-3` by default and `<=4` without drilldown, rings are readable with `ringW >= 18px`, Top N/`其他` or drilldown handles dense siblings, tiny sectors do not force labels, center text fits, color legend/visualMap semantics are clear, breadcrumb/drilldown works when deep, and tooltip/detail exposes full path, value, percent of total, percent of parent, color metric, source, and aggregation rule.
-- Path/user/process path crops pass the flow-fit check: start/end and step order are declared, path viewport is sufficient, main path is visually centered and dominant, branches are Top N/aggregated rather than all expanded, arrows point to target node edges, path labels are key-only, drop-off/abnormal paths are readable but not overpowering, legend and filters are separate, and tooltip/detail exposes exact node and transition evidence.
-- Sankey crops pass the flow-fit check: source/target/value link schema and node schema are inspectable, stages/layers read in the declared direction, `sankeyAreaH` and horizontal layer spacing are sufficient, node/link density uses Top N/`其他` rather than all-link clutter, main flows are dominant while long tails are weak, loss/unknown nodes explain non-conservation, labels are key-only, legend and filters are separate, and tooltip/detail exposes exact source, target, value, source share, target share, total share, conversion/loss, period, source, and aggregation evidence.
-- Relation/network graph crops pass the structure-fit check: node/edge schema and relationship direction are declared, graph viewport is sufficient, nodes and edges are not an unreadable hairball, core/anomaly/selected labels are readable, ordinary and edge labels do not clutter, legend and filter controls are separate, fitView keeps the graph inside the canvas, zoom/search/detail interactions are available, and tooltip/detail exposes exact node/edge evidence.
-- Donut/pie chart crops pass the composition and fit check when applicable: donut is the report default; categories are `2-6` preferred and `<=8` before merge; `Top5 + 其他` or an approved merge rule is applied; negative values are rejected; all-zero values show empty/all-zero state; bottom legend is the default for narrow cards; right legend is used only with a passing width budget and outside labels disabled or key-label-only; `legendBandHeight`, `labelLineBudget`, `radius`, `innerRadius` for donut, and `center` are declared; low-value permanent outside labels may be hidden with full values available in tooltip/legend; labels, guide lines, legend, title, and center text do not collide, squeeze each other, clip, or leave the card bounds.
-- KPI card/group crops pass the value-anchor check: core value zone is centered in the body, takes at least 40% of the main visual height, and title/description content does not leave a large empty lower area.
-- Analysis & Insight component crops pass the decision-copy check: `analysisInsightContract` or equivalent source evidence exists, conclusion appears before evidence, evidence/affected object/comparison or insufficient-data state is visible or inspectable, action/detail/trust/source/freshness is available where relevant, component-local filters do not affect other widgets, and loading/empty/error/no-permission/data-delay states preserve geometry.
-- Composite Panel crops pass the one-topic/one-primary check: a shared title/function/local-filter area exists, one child is visually primary, child count defaults to `2-3` and normal maximum `4`, primary child uses `50-70%` visual weight, body content keeps `contentH >= CH * 0.60`, shared local filters/legends/units are separated, child-only filters are labeled, hover/click selection context links children, detail preview stays short, and partial child loading/empty/error/no-permission states use child scope instead of masking the whole panel.
-- Table/analytical-grid crops pass the header-structure check: more than 8 visible columns or naturally grouped fields use complex/grouped headers, or a documented exception exists. Complex/grouped headers prove columnTree/nested columns, real leaf fields, computed span/depth, group-to-leaf alignment, fixed whole-header behavior, frozen row/primary columns, filter separation, tooltip definitions, and body-row budget.
-- SVG/canvas/ECharts/custom graphics preserve aspect ratio and geometry; circles, gauges, maps, paths, nodes, and icons are not stretched, squeezed, or warped after resize, tab switch, drawer/fullscreen, or filter update.
-- Composite block no-data masks use the correct scope: whole parent only when all child sub-blocks are no-data; otherwise affected child sub-block masks include child title/control plus component body.
-- No stale prototype-only wording remains unless explicitly required.
-- No primary headings, CTAs, empty/error states, or key summaries use generic AI/SaaS copy without concrete user action, data object, system behavior, condition, or evidence.
-- Generic gradients, glass/neon/glow decoration, oversized radius, abstract AI/tech imagery, and ornamental animation are absent unless an approved brand/template/sample exception is documented.
-- Keyboard focus, accessible names for icon-only controls, contrast, and non-color-only error/status cues pass the active baseline.
-- Chinese report rate/change labels use `%`, and change-rate indicators follow positive-red-up / negative-green-down icon semantics when present.
-- HTML-replica or custom layouts preserve global UI token consistency instead of copied one-off colors or surfaces.
-- Final answer includes the verified URL when startup succeeds.
-- QA findings use verifiable criteria and evidence paths. Avoid pass/fail language based only on "视觉舒适", "看起来还行", or other subjective wording without measurable or inspectable checks.
+## Quality Gate
+
+- Do not mark visual/runtime readiness without screenshots or a precise blocker.
+- Report/dashboard QA cannot rely only on full-page screenshots when component crops are needed.
+- Fixed-height content with `scrollHeight > clientHeight` or `scrollWidth > clientWidth` fails unless it is an intentional visible scroll region.
+- Data completeness must be checked before filter-linkage pass/fail.
+- Standard ECharts charts must show ECharts-owned rendering and interaction when that renderer is claimed.
+- Load `runtime-qa-procedure.md` before full QA execution or final readiness judgment.

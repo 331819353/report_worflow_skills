@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端设计提升 Workflow"
+  short_description: "把提高前端设计、页面规范、组件规范、UI优化等模糊请求路由到页面布局、组件规范、报表设计系统、海尔UI基线和运行QA。"
+  default_prompt: "Use $frontend-design-improvement-workflow to route vague frontend design improvement requests into page-level, component-level, design-system, common-app baseline, implementation, and runtime QA work."

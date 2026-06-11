@@ -1,4 +1,4 @@
 interface:
   display_name: "报表视觉布局设计"
-  short_description: "设计报表页面壳、视角导航、标题筛选工具区、Haier 品牌位置、8*N 网格、区块尺寸、高度预算、响应式和布局缺陷修复。"
-  default_prompt: "Use $report-visual-layout-design to design the report page shell, perspective navigation, header/filter areas, brand placement, 8*N content grid, block sizing including Analysis & Insight conclusion/evidence/action/trust side-panel/annotation blocks, Composite Panel one-topic/primary-child/child-priority/contentH blocks, Detail Table row/column density blocks, complex/grouped table-header depth/body-row/fixed-header/frozen-column blocks, Pivot Table/S2 cross-summary blocks, Combo shared-axis/dual-axis blocks, Gauge bounded-status arc blocks, funnel/sunburst/treemap/path/Sankey/tree/relation shape-sensitive visuals and parallel-coordinate multi-axis density blocks, fixed-height card/navigation height budgets, responsive behavior, DOM no-clipping checks, and layout defect repairs."
+  short_description: "设计或修复报表页面规范，覆盖页面壳、导航、筛选、8*N网格、区块尺寸、响应式、遮挡和溢出。"
+  default_prompt: "Use $report-visual-layout-design for report page-level layout, page standards, shell, navigation, filters, 8*N grid, block sizing, responsive behavior, overlap, overflow, and layout readiness."

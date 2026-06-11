@@ -1,205 +1,69 @@
 ---
 name: report-info-component-mapping
-description: "用于把报表业务问题映射为组件、数据集、筛选、交互和绑定矩阵。用户提到指标怎么放、问题怎么变组件、图表选择、卡片/表格/图形组合、数据集设计、mock字段、筛选查询、联动状态、钻取路径、组件绑定矩阵、页面信息架构落地时触发；不负责页面模板复制或组件视觉细节。"
+description: "用于把报表业务问题映射为组件、数据集、筛选、交互和绑定矩阵。用户提到指标怎么放、业务问题怎么变组件、图表选择、组件规划、页面信息架构、组件设计规范前置、卡片/表格/图形组合、数据集设计、mock字段、筛选查询、联动状态、钻取路径、组件绑定矩阵、实现配置、页面信息架构落地时触发；不负责页面模板复制或组件视觉细节。"
 ---
 
 # Report Info Component Mapping
 
 ## Core Positioning
 
-Use this as the integrated design flow between business meaning and runnable report implementation.
+Use this skill as the bridge from business meaning to implementable report components:
 
-This skill turns:
+`business question -> answer atoms -> component bundle -> data model -> control semantics -> filter/query model -> interaction state -> binding matrix`
 
-`business question -> answer atoms -> component bundle -> mock data model -> control semantics -> filter/query model -> interaction state -> implementation contract`
-
-It does not define a new report type. It decides how information should become real report components, then makes the component, data, filter, and interaction design mutually verifiable.
-
-## Core Principle
-
-A business question does not equal one chart, and a chart is not complete until its data, filters, and interactions are defined.
-
-Example: `人员流失情况` should not default to one pie chart. It may need KPI cards, trend chart, organization/job/rank distribution, reason contribution, employee detail table, and retention task block. The same design must also define employee-level mock rows, time/org/job filters, row drawer, stale-selection behavior, and KPI-to-detail reconciliation. Use a funnel only when there is a real ordered HR process stage.
-
-When `$report-design-workflow` supplies a display theme and pattern-card set, treat those cards as traceable design inputs. A selected pattern is valid only when it changes a component, control, dataset/API, interaction, export/share behavior, operations note, or validation case.
-
-When `$report-design-workflow`, `$report-type-design`, or `$report-design-system-governance` supplies the report decision anti-AI gate, treat the five decision questions, metric tree, data story path, realistic data requirements, and trust/action details as binding inputs. A component bundle that cannot answer those is a dashboard shell, not an implementation-ready report.
-
-Choose the smallest component bundle that answers the decision question. Do not add multiple charts for the same message.
-
-## Low-Freedom Stability Contract
-
-Use this contract for implementation-ready specs, mock data, widget config, or generated files.
-
-- Select one generation mode from `references/08-generation-stability.md`: `concept-map`, `spec-contract`, or `prototype-config`.
-- For `spec-contract` and `prototype-config`, always load `references/06-binding-implementation-contract.md` and `references/08-generation-stability.md`.
-- Use only the controlled vocabularies in `08-generation-stability.md` for `answerAtom`, `semanticRole`, `priority`, `componentType`, `visualType`, `actionType`, `filterValueType`, `controlSemantics`, `componentSchemaImpact`, `navigationMetricKind`, `periodBehavior`, and `dataPolicy`.
-- Preserve generated IDs across revisions unless the business meaning changes.
-- Keep quantities within the default bounds in `08-generation-stability.md` unless the user explicitly requests a dense suite.
-- If a required field, dataset, filter, action payload, permission scope, or layout span is unknown, create a named assumption or placeholder contract and include a validation case.
-- Do not output a final implementation mapping without the binding matrix columns defined in `06-binding-implementation-contract.md`.
-- Do not use a chart or interaction whose fallback rule in `08-generation-stability.md` says it is unsupported by the available data.
-
-## Integrated Workflow
-
-For every report requirement or extracted information set:
-
-1. Normalize the input: theme, audience, scenario, primary question, decision, time scope, organization scope, object, metrics, dimensions, baseline, process stage, rules, risks, tasks, evidence, source, permissions.
-2. Preserve display theme and selected pattern cards from upstream when present; otherwise infer whether the component map is detail-table, summary-stat, business-dashboard, exploratory-analysis, management-report, or monitoring-alert. If multiple themes compete, record the competing themes and choose one primary theme for the matrix.
-3. Apply the report decision anti-AI gate when the surface is a report/dashboard/BI/cockpit/detail-query/topic-analysis/report designer: metric system, metric tree, data story, realistic data, linkage, trust/action, industry sense, and designer behavior.
-4. Decompose the question into answer atoms: status, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, data trust, narrative.
-5. Map answer atoms and selected pattern cards to parent content blocks, optional internal sub-blocks, and component bundles with priority: must-have, should-have, optional. For sample/source restoration, also classify visible source modules as `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
-6. Define and validate the mock/data model before filter binding: dimensions, fact tables, row grain, formulas, rollups, signals, edge cases, time coverage, default state, non-default filter states, empty/no-permission states, domain-specific scenarios, realistic dirty-data cases, and resolver/API branch needs.
-7. Classify every control before placement: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. Controls that change metric set, component semantics, domain vocabulary, table schema, or report subject are perspective/navigation controls, not ordinary filters.
-8. Define the filter/query model only after the data model can support it: main filter surface, advanced filters, option sources, defaults, cascades, permission scope, query params, and affected components. For bundled templates, the main filter surface is the template's native `filters[]` invocation and binding contract, not a new toolbar component.
-9. Define interactions: tooltip/value reveal, cross-filtering, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, owner/action flow, and stale-state behavior.
-10. Produce the binding matrix: display theme/pattern cards/report decision gate -> parent block -> sub-block when present -> component -> dataset -> fields -> formulas -> controls/filters -> interactions -> update triggers -> validation cases.
-11. Route to primary and secondary report-type skills for business logic.
-12. Apply local layout and visual constraints from `references/07-routing-layout-quality.md`, including grid fit, component density, exact-value access, and visual QA notes.
-13. Validate that KPI totals, chart totals, table rows, drawers, exports, controls, filters, and jumps share the same context.
+It does not choose the whole report type and does not style the component. It decides which components are needed, what data each one consumes, how filters and interactions affect them, and what validation proves the mapping.
 
 ## Reference Map
 
-Read only the reference files needed for the current task. The files are numbered in workflow order.
+Read only the files needed for the current task. Files are ordered by workflow stage.
 
 | Need | Read |
 | --- | --- |
-| Decide answer atoms, content blocks, charts, tables, and component constraints | `references/01-question-component-flow.md` |
-| Use typical component bundles such as personnel attrition, target completion, variance diagnosis, anomaly monitoring, reconciliation, execution follow-up | `references/02-business-bundle-patterns.md` |
-| Design realistic mock data, dimensions, facts, formulas, time coverage, scenarios, rollups, and data consistency | `references/03-mock-data-modeling.md` |
-| Design filters, option data, defaults, cascades, query behavior, permissions, and filter-to-component linkage | `references/04-filter-scope-query.md` |
-| Design drilldowns, cross-filtering, hover/value reveal, drawers, modals, jumps, state preservation, and failure states | `references/05-interaction-state-flow.md` |
-| Produce implementation-ready component contracts, unified binding matrix, template config rules, and prototype technology choices | `references/06-binding-implementation-contract.md` |
-| Route to report-type skills, define layout/style constraints, output format, quality checklist, and avoid list | `references/07-routing-layout-quality.md` |
-| Make generation repeatable with controlled vocabularies, naming rules, quantity bounds, fallback rules, and acceptance gates | `references/08-generation-stability.md` |
+| Answer atoms, content blocks, chart/table/component selection | `references/01-question-component-flow.md` |
+| Typical scenario bundles and component sets | `references/02-business-bundle-patterns.md` |
+| Mock data, dimensions, facts, formulas, edge cases | `references/03-mock-data-modeling.md` |
+| Filters, option sources, query params, permissions, linkage | `references/04-filter-scope-query.md` |
+| Drilldown, cross-filtering, drawer/modal/jump/export states | `references/05-interaction-state-flow.md` |
+| Implementation-ready component contracts and binding matrix | `references/06-binding-implementation-contract.md` |
+| Report-type routing, layout/style constraints, output checklist | `references/07-routing-layout-quality.md` |
+| Controlled vocabularies, stable IDs, deterministic generation | `references/08-generation-stability.md` |
+| Detailed implementation gates for mapping decisions | `references/09-component-mapping-gates.md` |
+| Report requirement/metric/layout baseline | `$report-design-system-governance` relevant guideline references |
 
 Loading guidance:
 
-- For a quick conceptual mapping, use this `SKILL.md` plus `01-question-component-flow.md`.
-- For a concrete business scenario, also read `02-business-bundle-patterns.md` if a pattern matches.
-- For prototype/data tasks, read `03-mock-data-modeling.md`, `04-filter-scope-query.md`, and `06-binding-implementation-contract.md`.
-- For interaction-heavy tasks, read `05-interaction-state-flow.md` and `06-binding-implementation-contract.md`.
-- For final report design/spec output, always read `06-binding-implementation-contract.md`, `07-routing-layout-quality.md`, and `08-generation-stability.md`.
-- For any task that will generate files, widget config, mock data, API-facing contracts, or reusable specifications, `08-generation-stability.md` is mandatory.
-- For every report, dashboard, cockpit, BI, data-screen, business-analysis, detail-query, or topic-analysis mapping task, also use `$report-design-system-governance` `references/04-report-requirements-metrics-layout-guidelines.md` as the report baseline for requirement fields, metric dictionary, calculation口径, page hierarchy, and module priority.
+- For conceptual mapping, use this `SKILL.md` plus `01-question-component-flow.md`.
+- For implementation-ready specs, widget configs, mock data, API-facing contracts, or generated files, `06-binding-implementation-contract.md`, `08-generation-stability.md`, and `09-component-mapping-gates.md` are mandatory.
+- For report/dashboard/BI/detail-query/topic-analysis work, also apply the report decision gate from `$report-design-system-governance`.
 
-## Hard Constraints
+## Workflow
 
-- A component is valid only when it answers a named business question.
-- A report component is valid only when it participates in a decision path: state, target/baseline, trend, driver, abnormality, detail, trust, or action. Generic KPI cards and decorative charts without this role are rejected.
-- Every primary metric-bearing component must have formula/denominator, grain, period, source/freshness, unit/precision, baseline, and owner/action notes when the output is implementation-ready.
-- Generic marketing sections, decorative cards, generic AI/SaaS feature lists, empty slogan panels, and interchangeable icon blocks are not valid report components unless they map to a real user task, data object, decision, evidence, or workflow action.
-- Do not let "modern/high-end/tech" copy become an answer atom. Answer atoms must be business meanings such as status, trend, cause, detail, action, evidence, or data trust.
-- A selected pattern card is valid only when it maps to a visible component, control, data/API requirement, interaction, export/share behavior, operations note, or validation case. Otherwise mark it as a gap or backlog item.
-- For sample/source restoration, do not promote a visible sample module to `must-have` only because it exists in the source. Mark it as `businessRequired` only when it directly answers the user's stated report question; otherwise use `sampleStructure` or `optionalEnhancement`.
-- For status-overview reports, process/path/flow diagrams are secondary unless the core question explicitly asks for value chain, dependency, lineage, transmission, process conversion, or flow attribution.
-- A component without a data source is decorative unless it is explicitly static narrative.
-- Analysis & Insight components must be mapped as decision-support components, not loose copy. When `componentType` is `text-summary`, `card`, `task`, or `custom` and the content is a conclusion, insight, anomaly/risk explanation, attribution, recommendation, definition, data-quality note, forecast, annotation, explanatory empty state, or permission/no-result/delay note, declare `analysisInsightContract` with subtype, family, conclusion, evidence, affected object, comparison/change value when relevant, action/detail path when relevant, trust/source/freshness/definition when relevant, local-filter scope, tooltip payload, and validation rules.
-- Do not map a generic "智能洞察" or "分析说明" card without concrete evidence, affected object, next action, or data-trust context. If the source data cannot support the conclusion, mark the insight as `insufficient` and route to an explanatory state instead of inventing copy.
-- First-screen cards and large panels cannot remain unbound "暂无数据" placeholders.
-- Mock data must make KPI totals, chart totals, table rows, drawers, and exports reconcile under the same active filters.
-- Mock/offline data must not be unrealistically clean when it is used as prototype evidence. Include realistic variance, missing/zero/extreme values, non-default filter changes, long labels/high-cardinality dimensions, freshness/source metadata, and permission-limited cases where relevant.
-- A report page with only overview charts and no detail table, drawer, drilldown, export, owner, or action path cannot be marked implementation-ready unless the report is explicitly static/read-only and that limitation is documented.
-- Multi-period filters, trends, MoM, YoY, quarter, or rolling-period views require complete matching time rows.
-- Data completeness must be checked before filter binding. Do not finalize `filterMap`, `filterFields`, `requiredFilters`, API params, or resolver params until the underlying option data, row grain, required fields, default/non-default states, and resolver/API support are present or explicitly marked as gaps.
-- A filter without affected components is dead UI unless it controls navigation or permissions.
-- Control semantics must be classified before binding: `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. A control that changes the metric set, component semantic role, report subject, business-domain vocabulary, table columns/header groups, metric口径, or component collection must not be placed in ordinary/global/local filter surfaces.
-- Component-internal `local-filter` is allowed only when it affects the current component or explicitly declared local group, preserves the component schema, and operates on an already fetched/bounded component dataset. It must declare the affected component IDs, local dataset/grain, field mapping, default value, non-default state, and whether the filter is display-only or row-scope local.
-- If a supposed local filter changes metric names, formulas/口径, table columns, component collection, first-level report perspective, permission scope, pagination, backend aggregation, export scope, or another component's data, classify it as `perspective-switch` or `global-filter` instead of `local-filter`.
-- Business domain, report theme, management object, subject area, or first-level perspective belongs in navigation, tab, segment, route, or perspective layer. It may update active filters internally, but it must not be represented as a normal filter control without documenting the schema impact.
-- Data-bearing filter options must derive from dimension data, fact data, or a resolver unless they are stable enums.
-- Filter option `meta` may contain only dimensional attributes such as label/name aliases, sort order, permission scope, description, icon, stable category tags, or disabled reason. Dynamic metrics, KPI values, percentages, rankings, and status lights must come from business fact datasets or resolvers, not option `meta`.
-- Percentage, ranking, and status-light values shown in perspective navigation must declare metric lineage: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`. Do not place business/period-sensitive KPIs in `filterData.meta` unless they are explicitly labeled as static display copy.
-- Filter IDs must map explicitly to dataset fields or query params.
-- A primary/global filter expected to affect a component must map through `filterMap`, `filterFields`, `requiredFilters`, query params, or resolver params. Do not list that filter in `ignoredFilters`; `ignoredFilters` is only for components whose business scope is intentionally invariant under that filter and must be labeled in the scope notes.
-- Mock/offline data must have the same grain as the affected primary filters. View, month, period, organization, industry, status, or scenario switches need distinct rows or a resolver that returns different component values; one default snapshot plus selected-state changes is not an implementation-ready contract.
-- Filter/query execution must distinguish global/page-level filters from component-internal filters. Global/page-level and permission filters should execute through SQL `WHERE`, source/provider/repository queries, resolver params, Redis/precompute keys, or equivalent source-side scope. Component-internal filters may run locally on the already fetched component dataset. Do not design pages that fetch/build all candidate data and then apply global filters, pagination, ranking, grouping, or aggregation locally.
-- Clickable visual elements must define emitted event, target action, parameters, permission behavior, and stale-state behavior.
-- Drawers, exports, jumps, refresh, and fullscreen views must reuse the same filtered context as the source component.
-- Funnel charts are valid only for ordered conversion/process questions with a shared population or documented cohort logic. Component mappings must declare stage dataset/schema, stage order, metric basis/unit, entry/final values, entry share, stage conversion, drop value/rate, total conversion, stage density, target/comparison behavior when present, label strategy, component-local filter semantics, tooltip/detail payload, and table/path/Sankey/bar fallback for unordered stages, ranking/comparison-only tasks, time trends, multi-branch paths, mixed口径 stages, or too many stages.
-- Waterfall charts require additive contribution logic.
-- Matrix/time/calendar/correlation heatmaps are valid only for two-dimensional intensity, pattern, utilization, cohort, risk, or correlation reading. Component mappings must declare row dimension, column dimension, value metric, aggregation grain, unit, color-scale/visualMap rule, missing-vs-zero behavior, row/column density, label sampling, value-label threshold, tooltip payload, and table/detail fallback for exact cells or high-cardinality matrices.
-- Parallel-coordinate charts are valid only for `3+` metric object profile, similarity, anomaly, Top/selected comparison, or multi-factor screening tasks. Component mappings must declare object/sample dataset/schema, `3-12` dimension fields, meaningful dimension order, per-axis unit/range/direction, independent or standardized scaling, sample count/density, line opacity/sampling/aggregation strategy, group/highlight semantics, brush behavior when present, tooltip/detail payload, and table/scatter/bar fallback for `<3` dimensions, `>12` dimensions, too many samples, or exact-audit tasks.
-- Path/user/process path charts are valid only for ordered movement from start to end, such as behavior journey, conversion path, workflow/approval flow, task handoff, drop-off path, or abnormal path. Component mappings must declare step/node dataset/schema, directed transition dataset/schema, start node, end node, order/layer, metric basis, conversion/drop-off formulas, path depth, Top N and "other" aggregation rule, node/link density, main-path/branch strategy, label strategy, legend/filter separation, interactions, and table/detail fallback for exact node/link audit.
-- Funnel charts are valid only for ordered stage retention, conversion, or loss reading. Component mappings must declare stage dataset/schema, order, value, unit, shared population/cohort rule, entry/final values, entry share, stage conversion, drop value/rate, total conversion, stage-count fallback, target/comparison semantics when present, legend/filter separation, interactions, and exact stage tooltip/detail; if the question is only ranking, trend, composition, or complex branching, route to bar/line/pie/path/Sankey/table instead.
-- Sankey diagrams are valid only for source-to-target flow, allocation, transfer, conversion, loss, or many-stage distribution tasks. Component mappings must declare node dataset/schema, directed link dataset/schema with `source`/`target`/`value`, layer/stage order, metric basis and unit, node-value and flow-loss handling, Top N/`其他` aggregation, node/link density, flow-width/color semantics, label strategy, legend/filter separation, interactions, and table/path/funnel/bar fallback for no-flow data, simple ranking/composition, negative values, dense all-link displays, or exact row audit.
-- Treemap/rectangular tree maps are valid only for hierarchical composition and scale/share reading. Component mappings must declare hierarchy dataset/schema, parent-child or path fields, parent and leaf aggregation, a non-negative additive area metric, optional color metric, total and parent totals, percent of total, percent of parent, level depth, Top N and `其他` aggregation, node-density and label-threshold strategy, legend/filter separation, breadcrumb/drilldown when deeper than `2-3` levels, tooltip payload, and table/bar/tree fallback. Use tree for structural expansion, relation graph for many-to-many, and bar/table for precise ranking, trend, negative-area, or exact audit tasks.
-- Sunburst charts are valid only for hierarchy path plus composition share. Component mappings must declare hierarchy dataset/schema, parent-child or path fields, parent and child aggregation, a non-negative additive angle metric, optional color metric, total and parent totals, percent of total, percent of parent, visible depth/ring count, Top N and `其他` aggregation, node-density and sector-label threshold strategy, center content, legend/filter separation, breadcrumb/drilldown when deeper than `2-3` levels, tooltip payload, and Treemap/bar/table fallback. Use Treemap for area-size comparison, tree for structural expansion, and bar/table for precise ranking, trend, negative-angle, single-level composition, or exact audit tasks.
-- Tree/hierarchical tree charts are valid only for hierarchy, parent-child ownership, decomposition, directory/category, organization, permission, lineage, or dependency structures. Component mappings must declare root node, node dataset/schema, parent-child schema or children array, node id/name/type/status/value fields, depth/layer, visible depth, default expanded levels, child-count and Top N/`+N` aggregation rules, orientation, node/connector density, expand/collapse/search behavior, label strategy, legend/filter separation, interactions, and tree-list/table/detail fallback for exact node audit. Multiple-parent or many-to-many data should route to relation graph, not tree.
-- Relation/network graphs are valid only for entity connection, dependency, ownership/control, call path, transaction relation, risk cluster, or knowledge-graph tasks. Component mappings must declare node dataset/schema, edge dataset/schema, node id/name/type/status/value/group fields, edge source/target/type/direction/weight/status/time fields, layout type, node/edge density, label strategy, legend/filter separation, interactions, and table/detail fallback for exact node/edge audit.
-- Maps are valid only when geography itself matters. Map component mappings must declare geography grain, region code or lon/lat fields, map resource/projection, visualMap/legend meaning, label density, missing-geo behavior, and dense point/flow fallback such as clustering, heatmap, TopN, table, or detail view.
-- Candlestick/K-line charts are valid only for ordered OHLC price/quote data. Component mappings must declare `open/high/low/close`, time grain, unit, instrument/market, rise/fall color convention, volume/MA fields when present, dataZoom/recent-window behavior for dense histories, and line/table fallback for non-OHLC or exact-audit tasks.
-- Boxplot charts are valid only for distribution, stability, spread, or outlier comparison across categories. Component mappings must declare raw-sample or precomputed-statistics source, sample count, Q1/median/Q3/IQR, whisker/outlier rule, unit, category/group density, outlier display strategy, and table/detail fallback for raw samples, tiny samples, or exact-audit tasks.
-- Pie/donut charts are not the default for ranking, trend, or precise comparison.
-- Combo charts are valid only for two related metrics on one shared category/time grain where scale and rate/trend/target must be read together. Component mappings must declare paired business relationship, bar metric/unit, line or target metric/unit, left/right y-axis mapping, category density, visible series limits, dual-axis rationale when present, component-local filter semantics, tooltip/detail payload, and split-chart fallback for unrelated metrics, false-correlation dual axes, exact audit, dense labels, or too many series.
-- Detail Tables are valid only for row-level lookup, comparison, evidence, export, reconciliation, or action tasks. Component mappings must declare row grain, primary key/object identity, visible column priority, column type/width/alignment, default sort, search/sort/pagination/export execution scope, row detail/action payload, component-local filter semantics, empty/error/no-permission states, and fallback for too many columns or too few visible rows. Use simple Element Plus/project tables for ordinary detail rows; use AntV S2 only for pivot/cross/wide-matrix/frozen analytical table needs.
-- Pivot Tables are valid only for multidimensional aggregated cross-summary tasks. Component mappings must declare row dimensions, column dimensions, measures, aggregation grain, measure formulas/functions, rate numerator/denominator rules, subtotal/grand-total placement, row/column hierarchy depth, sort behavior, fixed header/frozen row dimension behavior, S2/project analytical renderer choice, row/column density fallback, component-local metric/display controls, tooltip/drilldown payload, and empty/error/no-permission states. Use visualType `pivot` for real pivot/cross-summary widgets and keep Detail Tables for row-level evidence.
-- Complex/grouped table headers are required whenever table fields naturally group or visible leaf columns exceed `8`. Component mappings must declare `groupedHeaderContract` with `columnTree`, parent groups, leaf field metadata, unit/definition metadata, computed `colSpan`/`rowSpan`, max depth `<=3` by default, fixed multi-level header behavior, frozen row/primary columns for horizontal scroll, component-local filter vs leaf-column header-filter separation, sort/filter icon limits, tooltip payload, group collapse/column settings/fullscreen fallback, and empty/error/no-permission geometry. Do not map grouped headers as decorative labels detached from the table fields.
-- Composite Panels / multi-component analysis cards are valid only when several child components answer one shared business question in one container. Component mappings must declare `compositePanelContract` with shared topic, analysis sequence, layout pattern, primary child id, child roles/priorities/min sizes, default child count `2-3` and normal max `4`, primary visual weight `50-70%`, `contentH >= CH * 0.60`, panel-level local filters, child-only filter exceptions, shared legend/unit behavior, linked hover/click interaction, detail-preview limit, responsive fallback, and parent/child state rules. Do not map unrelated charts into one panel just to make the page look complete.
-- Vue report prototypes should use Element Plus for standard UI controls: filters, inputs, selects, cascaders, date pickers, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables/lists when S2 analytical behavior is unnecessary.
-- Gauge charts are valid only for one bounded progress/status metric. Component mappings must declare metric name, current value, unit, `minValue`, `maxValue`, clamp/overflow behavior, target/threshold/status rule when present, business direction for status color, tooltip/detail payload, and KPI/progress/bar/line/table fallback for unbounded metrics, comparison, trend, composition, exact-value audit, or many gauges.
-- Dense analytical tables, Pivot Tables, cross tables, and wide metric matrices should use AntV S2.
-- Every implementation mapping must declare data source, grain, required fields, formulas, control semantics, filter mapping, interaction state, update triggers, and validation cases.
-- Every binding matrix row must include `controlSemantics` and `componentSchemaImpact`. `componentSchemaImpact` must state whether the control changes metric names, component collection, table headers, dimensions, formulas/口径, domain vocabulary, or only narrows rows.
-- Every layout must fit the local `8 * N` rectangular grid and legal span rules documented in `references/07-routing-layout-quality.md`.
-- The top-level `8 * N` grid maps to parent blocks. A parent block may define internal sub-blocks, and components are placed in those sub-blocks when the components answer one shared business question. Sub-block composition always preserves `5px` parent inset and `5px` sibling gap. Do not flatten every component into its own top-level block when a composed parent block is clearer and passes fit checks.
-- Generated IDs, dataset names, filter IDs, `visualType`, action types, and matrix columns must follow the controlled vocabulary and naming rules in `08-generation-stability.md`.
-- When information is missing, use the documented fallback rule and mark the assumption; do not invent unsupported component types, visual types, filters, or actions.
+1. Normalize the report theme, audience, primary question, decision, time/org/object scope, metrics, dimensions, baselines, risks, tasks, source, permissions, and acceptance target.
+2. Decompose the question into answer atoms such as state, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, and data trust.
+3. Map answer atoms to parent blocks, optional sub-blocks, and component bundles with `must-have`, `should-have`, or `optional` priority.
+4. Define data before controls: datasets, row grain, formulas, rollups, edge cases, realistic dirty-data cases, default/non-default states, empty/no-permission states, and resolver/API branch needs.
+5. Classify every control as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`; never hide metric/schema-changing perspectives inside ordinary filters.
+6. Define filter/query behavior after the data model proves it can support option data, defaults, cascades, permissions, affected components, and non-default variations.
+7. Define interactions: tooltip/value reveal, cross-filter, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, owner/action flow, and stale-state behavior.
+8. Produce the binding matrix linking business question, answer atom, parent block, component, dataset, fields, formulas, controls, filters, interactions, update triggers, and validation cases.
+9. Route to report-type, layout, component-style, API/model, frontend, and test skills as needed.
 
-## Minimal Output
+## Required Output
 
-When this skill is used, produce at least:
+- Theme, user scenario, primary question, decision, and report-decision risks or gaps.
+- Answer atom decomposition and component bundle map.
+- Dataset/mock model with grain, fields, formulas, realistic edge cases, and reconciliation rules.
+- Control semantics model and filter/query model.
+- Interaction and state model.
+- Unified binding matrix with stable IDs, controlled vocabularies, and validation cases.
+- Routing notes for report type, layout, component style, API/model, frontend, and testing.
 
-1. Report theme, primary question, business decision, and user scenario.
-2. Display theme and selected pattern-card set when available.
-3. Report decision gate result when applicable: `reportDecisionRisk`, five decision-question answers, metric tree/data story path, trust/action details, and `RPT-*` gaps.
-4. Answer atom decomposition.
-5. Parent block, sub-block, and component bundle mapping with priority.
-   For sample/source restoration, include `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
-6. Mock/data model: datasets, grain, fields, formulas, signals, realistic messy cases, edge cases.
-7. Filter/query model: filter surface, filters, option sources, defaults, cascades, permissions, query params.
-8. Control semantics model: perspective switches, global filters, local filters, and drilldown params, including schema impact.
-9. Navigation metric lineage: source dataset, field/formula, grain, affected filters, and period behavior for navigation percentages, rankings, and status lights.
-10. Interaction model: clickable objects, interaction type, parameters, state preservation, failure states.
-11. Unified parent-block/sub-block/data/filter/control/component/interaction binding matrix, including `sourcePatternIds` when pattern cards are used.
-12. Report type routing.
-13. Layout and style constraints.
-14. Missing information, assumptions, and removed decorative components.
+## Quality Gate
 
-For implementation tasks, items 5-9 are mandatory. Item 2 is also mandatory when the upstream workflow selected a display theme or reusable pattern-card set. Item 3 is mandatory for report/dashboard/BI/cockpit/detail-query/topic-analysis/report-designer work.
-
-## Quick Quality Gate
-
-Before finalizing, verify:
-
-- Every key business concern maps to at least one visible block or interaction.
-- The five report decision questions can be answered or have named gaps.
-- The component bundle includes a data story path appropriate to the report type: state -> target/baseline -> driver -> abnormality -> detail -> action.
-- Generic dashboard KPI/chart shells are removed or converted into metric-tree-backed components.
-- No component exists only to make the page look polished, AI-like, or template-complete.
-- Primary titles, summaries, empty states, and actions are specific enough to name the user task, data object, condition, or next step.
-- Every selected pattern card maps to at least one visible component, control, data/API rule, interaction, export/share rule, operations note, or validation case.
-- There is one primary answer area, not a flat wall of equal-weight charts.
-- Every component has a distinct semantic role, dimension, grain, or workflow purpose.
-- Parent blocks and sub-blocks are explicit when one `8 * N` block contains multiple components.
-- Analysis & Insight mappings have `analysisInsightContract`, one main point per component, conclusion-before-evidence copy, relevant action/trust/source/freshness fields, local-filter scope, and validation cases for default, filtered, empty/insufficient, and permission/data-delay states.
-- Composite Panels have one topic, one primary child, a declared child sequence, shared local filter context, child priorities, and a responsive fallback; otherwise split the children into separate blocks.
-- Exact-value tasks have table/card support.
-- Cause-analysis tasks have decomposition support.
-- Process/conversion tasks prove ordered stage logic before using funnel.
-- Action tasks have owner, deadline, status, operation entry, and closure evidence.
-- Data-trust tasks have source, version, difference, and audit evidence.
-- Parallel-coordinate mappings are used only for multi-metric object profile decisions and carry object schema, dimension order, axis/unit/range/direction, scaling mode, density strategy, highlight/brush semantics, tooltip/detail payload, and fallback.
-- Mock data includes enough time, hierarchy, contrast, and edge cases to prove the story.
-- Each primary filter has a real data-field, resolver-param, permission-scope, and affected-component binding.
-- Each control has a correct `controlSemantics` classification, and no domain/theme/management-object perspective is hidden as an ordinary filter.
-- Each perspective switch has validation cases proving metric names, titles/summaries, table dimensions, component set, specialty metrics, and口径 change when applicable, not only numeric values.
-- Each navigation percentage, ranking, or status light has lineage fields: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
-- No dynamic KPI, percentage, ranking, or status light is stored in filter option `meta` or `filterData.meta` unless explicitly marked as static display copy.
-- Each primary filter has an execution-stage contract proving it narrows data before full component/page construction, or a bounded exception is documented.
-- Each primary filter has at least one validation case proving the affected component's data changes, not only the control selected state.
-- Hovering or clicking dense chart marks reveals exact values or meaningful detail.
-- Filtered KPI totals, chart totals, table rows, drawer records, exports, jumps, and refresh share context.
-- Selected objects reset or show stale-selection state when filters remove them from scope.
-- Dense components have overflow, zoom, drawer, or fullscreen strategy.
-- Stable generation constraints pass: same input should produce the same primary report type, component IDs, dataset IDs, filter IDs, action names, and binding matrix structure unless the business question changes.
+- Every component must answer a named business question and participate in a decision path.
+- Primary metric-bearing components need formula/denominator, grain, period, source/freshness, unit/precision, baseline, and owner/action notes when implementation-ready.
+- Data completeness must be checked before filter binding.
+- KPI totals, chart totals, table rows, drawers, exports, jumps, and refresh must share the same active context.
+- Exact-value tasks need table/card/drawer support; cause-analysis tasks need decomposition support; action tasks need owner/status/closure evidence.
+- Generated IDs, dataset names, filter IDs, visual types, action types, and matrix columns must follow `08-generation-stability.md`.
+- Load `09-component-mapping-gates.md` before finalizing implementation-ready component contracts, mock data, or binding matrices.

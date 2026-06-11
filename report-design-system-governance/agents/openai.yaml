@@ -1,4 +1,4 @@
 interface:
   display_name: "报表设计系统治理"
-  short_description: "报表全流程设计系统与开发基线，覆盖设计、前端、QA和验收"
-  default_prompt: "当用户处理报表、仪表盘、经营分析、明细查询、专题分析、KPI、图表、表格、分析说明/Analysis & Insight、analysisInsightContract、多组件组合图/Composite Panel、compositePanelContract、复杂表头/多级表头/Grouped Table Header、columnTree、明细表格/Detail Table、透视表/Pivot Table、S2交叉汇总表、订单/客户/商品/门店/交易/工单明细、组合图/Combo Chart、Gauge仪表盘图、地图/地理坐标图、K线图/蜡烛图、盒须图/箱线图、热力图/矩阵热力图/时间热力图/相关性热力图、矩形树图/Treemap、旭日图/Sunburst、平行坐标系/Parallel Coordinates、漏斗图/Funnel、路径图/用户路径图/流程路径图、桑基图/Sankey、树图/层级树图、关系图/网络关系图、筛选、指标口径、报表前端实现、联调验收、数据对账、状态/权限/导出/性能或多报表风格一致性时，使用 $report-design-system-governance 作为报表全流程设计系统与开发基线，并输出治理规格、缺口审计、迁移计划或阶段验收依据。"
+  short_description: "创建、审计、合并、应用和验收报表设计系统，覆盖页面规范、组件规范、tokens、状态、工程和治理。"
+  default_prompt: "Use $report-design-system-governance to create, audit, merge, apply, or validate reusable report design-system standards across page layout, components, charts, tables, filters, states, tokens, QA, and governance."

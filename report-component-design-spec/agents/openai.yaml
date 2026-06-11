@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表组件设计规范"
+  short_description: "创建、审计或沉淀可复用报表组件规范，覆盖KPI、图表、表格、筛选、洞察、组合面板、状态、交互和验收门禁。"
+  default_prompt: "Use $report-component-design-spec to create or audit reusable report component-family standards with data contracts, placement, visual rules, states, interactions, implementation handoff, and acceptance gates."
