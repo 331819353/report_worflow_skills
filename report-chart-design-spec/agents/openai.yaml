@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表图表设计规范"
+  short_description: "为 ECharts 和报表图表提供可直接触发的图表选择、可读性、布局和验收规范入口。"
+  default_prompt: "Use $report-chart-design-spec when designing, reviewing, or fixing report/dashboard charts, ECharts options, legends, labels, tooltips, dense data, or chart placement."

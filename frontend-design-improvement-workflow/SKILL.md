@@ -19,7 +19,10 @@ This skill does not replace implementation skills. It creates the improvement ro
 | Design-improvement checklist | `references/02-design-improvement-checklist.md` |
 | Report/dashboard design-system baseline | `$report-design-system-governance` |
 | Report page layout/page规范 | `$report-visual-layout-design` |
+| Report block size and viewport fit | `$report-layout-size-constraint-spec` |
 | Report component design/组件规范 | `$report-component-design-spec` and `$report-component-style-design` |
+| Chart/table/filter-specific component standards | `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec` |
+| Implementation-ready component placement | `$report-component-placement-spec` |
 | Common enterprise app UI baseline | `$haier-enterprise-app-ui-design-spec` |
 | Runtime visual/browser QA | `$frontend-runtime-qa-validation` |
 | Implementation or repair | `$frontend-development-workflow` |
@@ -30,10 +33,11 @@ This skill does not replace implementation skills. It creates the improvement ro
 1. Classify the surface: report/dashboard/BI/data-screen, common enterprise app, mixed app, or unknown.
 2. Split the request into page-level, component-level, data/decision-readability, interaction/state, responsive, and runtime-QA work.
 3. Load the correct baseline: report design system for report surfaces; Haier enterprise UI for general enterprise application surfaces; both when mixed.
-4. Route page shell, navigation, grid, header/filter area, block size, responsive, and overlap work to `$report-visual-layout-design`.
-5. Route reusable component standards to `$report-component-design-spec`; route single component review/repair to `$report-component-style-design`.
-6. When code or a live URL exists, require runtime screenshot/DOM/interaction evidence through `$frontend-runtime-qa-validation` before marking visual work ready.
-7. Return a short action plan or execute the implementation workflow when the user asked for changes, not only advice.
+4. Route page shell, navigation, grid, header/filter area, responsive, and overlap work to `$report-visual-layout-design`; route block size, height budget, fixed-card clipping, and viewport fit to `$report-layout-size-constraint-spec`.
+5. Route reusable component standards to `$report-component-design-spec`; route chart, table, and filter-specific standards to `$report-chart-design-spec`, `$report-table-design-spec`, and `$report-filter-control-design-spec`.
+6. Route implementation-ready x/y/slot/alignment work to `$report-component-placement-spec`; route mixed single-component review/repair to `$report-component-style-design`.
+7. When code or a live URL exists, require runtime screenshot/DOM/interaction evidence through `$frontend-runtime-qa-validation` before marking visual work ready.
+8. Return a short action plan or execute the implementation workflow when the user asked for changes, not only advice.
 
 ## Required Output
 
@@ -47,4 +51,5 @@ This skill does not replace implementation skills. It creates the improvement ro
 - Do not treat "提高前端设计" as only color/radius/shadow polish.
 - Do not skip page规范 when the issue includes shell, navigation, grid, section order, filters, spacing, overlap, or responsive behavior.
 - Do not skip组件规范 when the issue includes KPI cards, charts, tables, filters, summaries, dialogs, drawers, labels, tooltips, states, or local controls.
+- Do not leave chart/table/filter/placement requests routed only to the broad component skill when a specific front-door skill exists.
 - Do not mark a runnable UI ready without runtime evidence when code or URL is available.

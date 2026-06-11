@@ -12,14 +12,14 @@ Every implementation-ready component spec must include a `Positioning And Alignm
 | --- | --- |
 | Required placement chapter, coordinate variables, local-filter geometry | `12a-placement-foundation-controls.md` |
 | Analysis & Insight, metric cards, KPI cards | `12b-placement-insight-kpi.md` |
-| Target/actual bars, line trends, combo charts, pie/donut | `12c-placement-basic-charts.md` |
-| Radar, gauge, scatter/bubble, parallel coordinates, maps, K-line, boxplot, heatmap | `12d-placement-specialized-charts.md` |
-| Path, sunburst, treemap, tree, relation graph, Sankey, funnel | `12e-placement-flow-hierarchy-charts.md` |
-| Composite Panel, grouped headers, pivot tables, detail tables, acceptance checks | `12f-placement-composite-tables.md` |
+| Basic charts | `12c-placement-basic-charts.md`, then exact `12c1`-`12c4` file |
+| Specialized charts | `12d-placement-specialized-charts.md`, then exact `12d1`-`12d8` file |
+| Flow/hierarchy charts | `12e-placement-flow-hierarchy-charts.md`, then exact `12e1`-`12e7` file |
+| Composite Panel and tables | `12f-placement-composite-tables.md`, then exact `12f1`-`12f5` file |
 
 ## Loading Guidance
 
 - Start with `12a-placement-foundation-controls.md` for any component-local filter or coordinate-system task.
-- Add only the component-family placement file that matches the current component.
+- Add only the exact component-family placement file that matches the current component. Prefer the `12c1`/`12d1`/`12e1`/`12f1` split file over loading a family index when the chart/table type is already known.
 - Also load the visual/content reference for the same family, such as `05-echarts-charts.md`, `06-analytical-tables.md`, `03-text-summary.md`, or `04-kpi-metric-cards.md`.
 - Do not load all split files for a single-component fix.

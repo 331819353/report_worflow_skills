@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表表格设计规范"
+  short_description: "为明细表、复杂表头、透视表、AntV S2 和大数据表格提供可直接触发的设计与验收入口。"
+  default_prompt: "Use $report-table-design-spec when designing, reviewing, or fixing report tables, detail tables, grouped headers, pivot/S2 tables, column widths, scrolling, pagination, or table acceptance."

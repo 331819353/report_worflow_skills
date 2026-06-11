@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表组件内部排布"
+  short_description: "为组件内部坐标、slot、局部筛选位置、图表/表格/KPI排布和实现级几何验收提供入口。"
+  default_prompt: "Use $report-component-placement-spec when defining implementation-ready component internal placement, coordinates, slots, alignment, local filter geometry, and state layout."

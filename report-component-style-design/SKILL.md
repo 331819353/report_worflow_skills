@@ -9,7 +9,7 @@ description: "用于报表组件级设计规范、组件规范、视觉样式、
 
 Use this skill for one component or one component family: design, critique, repair, or implementation-ready component guidance for report/dashboard/BI/business-analysis surfaces.
 
-Keep this `SKILL.md` as the router. Load only the references for the component family that actually appears in the task. For reusable component-system standards, use `$report-component-design-spec`; for page shell/layout, use `$report-visual-layout-design`; for whole-system governance, use `$report-design-system-governance`.
+Keep this `SKILL.md` as the router. Load only the references for the component family that actually appears in the task. For reusable component-system standards, use `$report-component-design-spec`; for chart-only standards use `$report-chart-design-spec`; for table-only standards use `$report-table-design-spec`; for filter-control standards use `$report-filter-control-design-spec`; for implementation-ready component coordinates use `$report-component-placement-spec`; for page shell/layout use `$report-visual-layout-design`; for whole-system governance use `$report-design-system-governance`.
 
 When common enterprise Web components are involved, load `$haier-enterprise-app-ui-design-spec` for company-level tokens and base controls. For report, dashboard, cockpit, data-screen, BI, or business-analysis components, load `$report-design-system-governance` as the report baseline before applying component-specific fit rules.
 
@@ -38,13 +38,17 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 | Flow/hierarchy placement: path, sunburst, treemap, tree, relation graph, Sankey, funnel | `references/12e-placement-flow-hierarchy-charts.md` |
 | Composite Panel and table placement | `references/12f-placement-composite-tables.md` |
 | Implementation-ready acceptance gates | `references/12-component-acceptance-gates.md` |
+| Direct chart front door | `$report-chart-design-spec` |
+| Direct table front door | `$report-table-design-spec` |
+| Direct filter-control front door | `$report-filter-control-design-spec` |
+| Direct component-placement front door | `$report-component-placement-spec` |
 | Report chart/table/filter/status baseline | `$report-design-system-governance` relevant guideline references |
 | Cross-stage design reasonableness or readiness | `$quality-gate-validation` |
 
 ## Workflow
 
 1. Classify the component family, business purpose, data grain, viewport/container size, interaction state, and priority.
-2. Load `00-component-reference-index.md`, shared foundation, the matching component reference, and the matching placement reference only.
+2. Load `00-component-reference-index.md`, shared foundation, the matching component reference, and the matching placement reference only. When the task is purely chart, table, filter, or coordinate placement, prefer the specific front-door skill above.
 3. Confirm the data and decision contract before styling: metric/formula, field grain, source/freshness, numeric display contract, filter scope, exact-value path, state set, and next action.
 4. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
 5. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.

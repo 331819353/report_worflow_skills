@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表布局尺寸约束"
+  short_description: "为区块尺寸、高度预算、固定高度裁切、8*N 网格和响应式溢出提供可直接触发的规范入口。"
+  default_prompt: "Use $report-layout-size-constraint-spec when checking report block sizes, viewport fit, height budgets, fixed-card clipping, overflow, grid spans, and responsive layout constraints."

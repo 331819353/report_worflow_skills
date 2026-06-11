@@ -19,7 +19,8 @@ It sits between `$report-design-system-governance` and `$report-component-style-
 | Reusable component spec template | `references/02-component-spec-template.md` |
 | Report design-system baseline | `$report-design-system-governance` relevant references |
 | Detailed component family rules | `$report-component-style-design` matching references |
-| Placement and acceptance gates | `$report-component-style-design` `references/12-internal-placement-algorithms.md` and `references/12-component-acceptance-gates.md` |
+| Chart/table/filter standards | `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec` |
+| Placement and acceptance gates | `$report-component-placement-spec` and `$report-component-style-design` `references/12-component-acceptance-gates.md` |
 | Common enterprise tokens/components | `$haier-enterprise-app-ui-design-spec` when inherited company UI is in scope |
 | Readiness/conflict gate | `$quality-gate-validation` |
 
@@ -28,7 +29,7 @@ It sits between `$report-design-system-governance` and `$report-component-style-
 1. Define component-standard scope: component families, target report types, surfaces, libraries, devices, and source-of-truth hierarchy.
 2. Load the report/common-app baseline and the smallest matching component-family references.
 3. For each component family, define anatomy, required/optional slots, data contract, metric/formula/unit/source needs, interaction contract, states, accessibility, responsive behavior, and exact-value disclosure.
-4. Define placement rules: coordinate variables, slot ownership, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
+4. Define placement rules through `$report-component-placement-spec`: coordinate variables, slot ownership, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
 5. Define visual tokens and variants as semantic rules, not one-off colors or decorative effects.
 6. Add implementation handoff: ECharts/S2/Element Plus usage, config fields, API/view-model expectations, QA crops, DOM overflow checks, and version/adoption notes.
 7. Run component acceptance gates and list any gaps, deprecated patterns, or project exceptions.

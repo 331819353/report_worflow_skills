@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表筛选控件规范"
+  short_description: "为页面级筛选、组件内筛选、默认值、重置、级联和筛选影响范围提供设计规范入口。"
+  default_prompt: "Use $report-filter-control-design-spec when designing or reviewing report filters, query bars, local filters, default/reset/cascade behavior, option sources, and filter scope."

@@ -2,7 +2,7 @@
 
 Use this reference when a backend/data-service project uses Python as the primary language and needs Flask APIs, enterprise SSO, local/business/enterprise/analytics database access, report queries, or production-style deployment.
 
-This standard complements `report-data-service-backend-implementation.md`. That file governs report query-service behavior; this file governs the concrete Python/Flask project shape for SSO and multiple databases.
+This standard complements `$backend-development-workflow` `references/report-data-service-backend-implementation.md`. That file governs report query-service behavior; this file governs the concrete Python/Flask project shape for SSO and multiple databases.
 
 ## Baseline Stack
 

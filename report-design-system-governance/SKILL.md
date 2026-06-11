@@ -9,7 +9,7 @@ description: "用于沉淀、应用和验收可复用报表/仪表盘/经营分�
 
 Use this skill to create, audit, merge, apply, or validate reusable report design-system standards across design, implementation, runtime QA, testing, acceptance, and handoff.
 
-It governs the shared baseline. Use `$report-visual-layout-design` for a page layout fix, `$report-component-style-design` for one component family, `$report-component-design-spec` for reusable component-family standards, and `$report-prototype-template-management` for bundled template assets.
+It governs the shared baseline. Use `$report-visual-layout-design` for a page layout fix, `$report-layout-size-constraint-spec` for block/viewport fit, `$report-component-style-design` for mixed component repair, `$report-component-design-spec` for reusable component-family standards, `$report-chart-design-spec` for charts, `$report-table-design-spec` for tables, `$report-filter-control-design-spec` for filters, `$report-component-placement-spec` for implementation-ready component coordinates, and `$report-prototype-template-management` for bundled template assets.
 
 When Haier enterprise UI is the required source of truth, load `$haier-enterprise-app-ui-design-spec` and keep inherited company rules separate from report-specific extensions and project exceptions.
 
@@ -41,7 +41,8 @@ Always choose the mode and then load only the matching references.
 | Detailed reusable-standard acceptance gates | `references/10-design-system-acceptance-gates.md` |
 | Number precision, rounding, unit scaling, and exact-value display | `references/11-number-precision-display-rules.md` |
 | Bundled template layout tokens | `$report-prototype-template-management` `references/template-layout-design-system.md` |
-| Component-family placement and fit | `$report-component-style-design` `references/12-internal-placement-algorithms.md` plus the smallest matching split placement reference |
+| Chart/table/filter-specific standards | `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec` |
+| Component-family placement and fit | `$report-component-placement-spec` |
 
 ## Workflow
 

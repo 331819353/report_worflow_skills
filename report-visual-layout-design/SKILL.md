@@ -21,6 +21,7 @@ For common enterprise app shells/forms/dialogs, load `$haier-enterprise-app-ui-d
 | Brand and Haier placement | `references/brand-style.md` |
 | `8 * N` grid and parent containers | `references/grid-containers.md` |
 | Block sizing and viewport constraints | `references/block-size-constraints.md` |
+| Direct block-size front door | `$report-layout-size-constraint-spec` |
 | Parent block and internal sub-block composition | `references/block-composition.md` |
 | Toolbar, drawer, modal, responsive interactions | `references/components-interactions.md` |
 | Output checklist | `references/output-checklist.md` |
@@ -37,7 +38,7 @@ For common enterprise app shells/forms/dialogs, load `$haier-enterprise-app-ui-d
 5. Place navigation, page/global filters, toolbar actions, brand/logo, refresh/export/fullscreen/status controls, and template-native filter entry when applicable.
 6. Plan the first meaningful viewport and downstream reading path.
 7. Lay out top-level parent blocks in legal `8 * N` spans, then decide whether each block contains one component or composed internal sub-blocks.
-8. Size blocks and sub-blocks from content needs: KPI, summary, chart, table, complex diagram, task list, evidence panel, drawer/detail, or action area.
+8. Size blocks and sub-blocks from content needs: KPI, summary, chart, table, complex diagram, task list, evidence panel, drawer/detail, or action area. Use `$report-layout-size-constraint-spec` when the task is mainly block size, height budget, overflow, or viewport fit.
 9. Define layout states and responsive fallback for parent blocks and sub-blocks.
 10. Use `layout-acceptance-gates.md` before accepting implementation-ready layout or repairing overlap/cropping defects.
 
