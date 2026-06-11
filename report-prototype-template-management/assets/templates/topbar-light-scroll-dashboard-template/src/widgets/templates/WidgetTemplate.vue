@@ -35,8 +35,8 @@
  *    };
  *
  * 5. 组件样式写在本文件底部的 <style scoped> 中。
- *    不要把自定义组件的 class 写到 src/styles.css：
- *    - src/styles.css 只放大屏页面骨架、标题区、网格、弹窗等模板级样式。
+ *    不要把自定义组件的 class 写到 src/styles/index.scss：
+ *    - src/styles/index.scss 只放大屏页面骨架、网格、弹窗等模板级样式。
  *    - 每个业务组件自己的布局、字体、图表、卡片、动效都放在自己的 .vue 文件里。
  *    - 这样复制组件、改组件、删除组件时，不会污染其他 Widget。
  *
@@ -108,13 +108,12 @@
  *    - filter 配置有 scope 时，只有 widget.filterScope 命中的组件能拿到。
  *    - 组件里 context.filters 是当前组件作用域内的筛选，context.allFilters 是全量筛选。
  *
- * 10. 组件标题区筛选通过 localFilters 控制：
+ * 10. 组件内部本地筛选通过 localFilters 控制：
  *    - 只过滤当前组件已加载的 data，不参与接口或 dataSource 参数传递。
  *    - field/valueField/labelField 指向 data 行里的字段名；未写 options 时会从 data 自动推导选项。
- *    - 标题带左侧为分块标题，右侧为功能区；功能区可放本地筛选或“查看详情”等轻量链接。
- *    - 单个筛选且 2-4 个短选项、标题区放得下时显示滑动胶囊按钮；>4 个选项、长标签或放不下时显示下拉框。
- *    - 多个筛选组显示筛选面板；localFilters 只影响当前组件已加载 data。
- *    - 组件里可读取 context.localFilters 获取当前本地筛选值。
+ *    - 标题、局部筛选、“查看详情”等轻量入口都由组件自己在内部渲染。
+ *    - 组件里可读取 context.localFilterConfigs、context.localFilters、context.getLocalFilterOptions。
+ *    - 组件内触发筛选变更时调用 context.setLocalFilter；需要重置时调用 context.clearLocalFilters。
  *
  * 11. 组件触发跳转、下钻、弹窗时，由组件内部独立实现。
  *    如需让外部系统感知，可额外 emit('dashboard-action', { name, payload })：
@@ -149,7 +148,7 @@
  * - WidgetRenderer/WidgetViewport 是外层能力，业务组件只写自己的展示逻辑和私有样式。
  * - WidgetRenderer 已经提供统一内容层次底纹，业务组件无需再重复外框。
  * - context.filters 已经按 filterScope 裁剪；需要全量筛选时读取 context.allFilters。
- * - context.localFilters 是组件标题区筛选的当前值；该筛选只处理组件 data，不请求接口。
+ * - context.localFilters 是组件内部本地筛选的当前值；该筛选只处理组件 data，不请求接口。
  * - 数据型筛选默认来自 filters[].source；options 仅用于状态、等级、周期粒度、是否类等稳定枚举。
  * - dashboard-action 只作为外部扩展接口，不再由壳层统一执行弹窗、跳转、下钻。
  * - 如果确实要做组件自己的内部卡片或图表背景，请写在当前组件的 <style scoped>。
@@ -181,7 +180,8 @@ interface Props {
    * - context.filters：当前组件作用域内的筛选项选中值
    * - context.allFilters：全量筛选项选中值
    * - context.filterScope：当前组件声明的筛选作用域
-   * - context.localFilters：组件标题区本地筛选项选中值
+   * - context.localFilters：组件内部本地筛选项选中值
+   * - context.localFilterConfigs / setLocalFilter / clearLocalFilters：组件自有筛选控件可用
    */
   context: WidgetContext;
 
@@ -228,7 +228,7 @@ const triggerExampleAction = () => {
 
 <style scoped>
 .custom-widget {
-  /* 必备：填满 WidgetRenderer 提供的组件视窗，也就是分块的组件区，不包含标题区。 */
+  /* 必备：填满 WidgetRenderer 提供的组件视窗，标题和局部控制也由当前组件自行排布。 */
   width: 100%;
   height: 100%;
   color: var(--text);
@@ -254,7 +254,7 @@ const triggerExampleAction = () => {
    * 组件私有样式写在这里。
    * 例如指标字号、柱状图颜色、表格行高、内部网格、组件自己的 hover/focus 边框或内发光等。
    *
-   * 不要写到 src/styles.css：
+   * 不要写到 src/styles/index.scss：
    * - 全局文件只维护驾驶舱壳层，不维护某一个 Widget 的视觉细节。
    * - scoped 能避免 MyWidget 的 .title、.chart、.value 等类名影响其他组件。
    * - 新人复制本模板开发新组件时，只需要改本文件、types.ts、registry.ts、dashboard.config.ts。

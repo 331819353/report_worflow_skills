@@ -25,7 +25,6 @@ import {
   getLocalFilterOptionsFromRows,
   getWidgetLocalFilterConfigs,
   resolveWidgetLocalFilterValues,
-  shouldUseInlineLocalFilter,
 } from '../widgets/localFilters';
 import type { RegisteredWidgetConfig, WidgetContext, WidgetLocalFilterConfig } from '../widgets/types';
 
@@ -47,6 +46,13 @@ interface WidgetActionRuntime {
   event: DashboardWidgetActionEvent;
   widget: RegisteredWidgetConfig;
   context: WidgetContext;
+}
+
+interface BlockState {
+  kind: 'unbound' | 'empty';
+  label?: string;
+  title: string;
+  message?: string;
 }
 
 interface PersistedDashboardState {
@@ -213,7 +219,6 @@ const activeFilters = ref<Record<string, string>>(getInitialFilters());
 const filterOptionMap = ref<Record<string, DashboardFilterOption[]>>({});
 const widgetDataMap = ref<Record<string, unknown[]>>({});
 const localWidgetFilters = ref<Record<string, Record<string, string>>>({});
-const activeLocalFilterPanel = ref<string | null>(null);
 const isNavOpen = ref(props.config.screen.defaultNavOpen);
 const isFiltersOpen = ref(props.config.screen.defaultFiltersOpen);
 const theme = ref<ThemeMode>(getInitialTheme());
@@ -277,13 +282,10 @@ let hasInitializedFilters = false;
 const setNav = (id: string) => {
   if (props.config.nav.some((item) => item.id === id)) {
     activeNavId.value = id;
-    activeLocalFilterPanel.value = null;
   }
 };
 
 const getWidgetForBlock = (blockId: string): RegisteredWidgetConfig | undefined => activeNavItem.value?.widgets?.[blockId];
-
-const getBlockTitle = (blockId: string) => getWidgetForBlock(blockId)?.title ?? blockId;
 
 const isFilterVisibleForWidget = (group: DashboardFilterGroup, widget?: RegisteredWidgetConfig) => {
   const filterScopes = normalizeScope(group.scope);
@@ -314,8 +316,33 @@ const getWidgetInstanceKey = (blockId: string) => getWidgetDataKey(getWidgetOwne
 
 const getRawWidgetDataForBlock = (blockId: string) => widgetDataMap.value[getWidgetInstanceKey(blockId)] ?? [];
 
+const getBlockState = (blockId: string): BlockState | null => {
+  const widget = getWidgetForBlock(blockId);
+
+  if (!widget) {
+    return {
+      kind: 'unbound',
+      title: '建设中',
+    };
+  }
+
+  if (widget.data && getRawWidgetDataForBlock(blockId).length === 0) {
+    return {
+      kind: 'empty',
+      label: '暂无数据',
+      title: widget.emptyState?.title ?? '暂无数据',
+      message: widget.emptyState?.message ?? '当前筛选条件或数据源没有返回可展示记录。',
+    };
+  }
+
+  return null;
+};
+
 const getLocalWidgetFilterValues = (blockId: string, widget = getWidgetForBlock(blockId)) =>
   resolveWidgetLocalFilterValues(widget, localWidgetFilters.value[getWidgetInstanceKey(blockId)]);
+
+const getLocalFilterOptions = (blockId: string) => (filter: WidgetLocalFilterConfig) =>
+  getLocalFilterOptionsFromRows(getRawWidgetDataForBlock(blockId), filter);
 
 const getWidgetContext = (blockId: string, widget = getWidgetForBlock(blockId)): WidgetContext => ({
   area: 'page',
@@ -326,80 +353,16 @@ const getWidgetContext = (blockId: string, widget = getWidgetForBlock(blockId)):
   allFilters: activeFilters.value,
   filterScope: getWidgetFilterScope(widget),
   localFilters: getLocalWidgetFilterValues(blockId, widget),
+  localFilterConfigs: getWidgetLocalFilterConfigs(widget),
+  getLocalFilterOptions: getLocalFilterOptions(blockId),
+  setLocalFilter: (filterId, value) => setLocalWidgetFilter(blockId, filterId, value),
+  clearLocalFilters: () => clearLocalWidgetFilters(blockId, widget),
 });
 
 const getWidgetDataForBlock = (blockId: string) => {
   const widget = getWidgetForBlock(blockId);
 
   return applyWidgetLocalFilters(getRawWidgetDataForBlock(blockId), widget, getLocalWidgetFilterValues(blockId, widget));
-};
-
-const hasLocalFilterTools = (blockId: string, widget = getWidgetForBlock(blockId)) =>
-  getWidgetLocalFilterConfigs(widget).length > 0;
-
-const getLocalFilterOptions = (blockId: string, filter: WidgetLocalFilterConfig) =>
-  getLocalFilterOptionsFromRows(getRawWidgetDataForBlock(blockId), filter);
-
-const getInlineLocalFilter = (blockId: string, widget = getWidgetForBlock(blockId)) => {
-  const filters = getWidgetLocalFilterConfigs(widget);
-  const filter = filters[0];
-
-  if (!filter) {
-    return undefined;
-  }
-
-  return shouldUseInlineLocalFilter(filters.length, filter, getLocalFilterOptions(blockId, filter).length)
-    ? filter
-    : undefined;
-};
-
-const getInlineLocalFilterId = (blockId: string) => getInlineLocalFilter(blockId)?.id ?? '';
-
-const getInlineLocalFilterOptions = (blockId: string) => {
-  const filter = getInlineLocalFilter(blockId);
-
-  return filter ? getLocalFilterOptions(blockId, filter) : [];
-};
-
-const getDropdownLocalFilter = (blockId: string, widget = getWidgetForBlock(blockId)) => {
-  const filters = getWidgetLocalFilterConfigs(widget);
-  const filter = filters[0];
-
-  if (!filter || filters.length !== 1 || filter.mode === 'panel') {
-    return undefined;
-  }
-
-  return shouldUseInlineLocalFilter(filters.length, filter, getLocalFilterOptions(blockId, filter).length)
-    ? undefined
-    : filter;
-};
-
-const getDropdownLocalFilterId = (blockId: string) => getDropdownLocalFilter(blockId)?.id ?? '';
-
-const getDropdownLocalFilterOptions = (blockId: string) => {
-  const filter = getDropdownLocalFilter(blockId);
-
-  return filter ? getLocalFilterOptions(blockId, filter) : [];
-};
-
-const getSelectEventValue = (event: Event) =>
-  event.target instanceof HTMLSelectElement ? event.target.value : '';
-
-const getLocalFilterValue = (blockId: string, filterId: string) =>
-  getLocalWidgetFilterValues(blockId)[filterId] ?? '';
-
-const getWidgetLocalFilterCount = (blockId: string, widget = getWidgetForBlock(blockId)) =>
-  Object.values(getLocalWidgetFilterValues(blockId, widget)).filter(Boolean).length;
-
-const isLocalFilterPanelOpen = (blockId: string) => activeLocalFilterPanel.value === getWidgetInstanceKey(blockId);
-
-const closeLocalFilterPanel = () => {
-  activeLocalFilterPanel.value = null;
-};
-
-const toggleLocalFilterPanel = (blockId: string) => {
-  const key = getWidgetInstanceKey(blockId);
-  activeLocalFilterPanel.value = activeLocalFilterPanel.value === key ? null : key;
 };
 
 const setLocalWidgetFilter = (blockId: string, filterId: string, optionId: string) => {
@@ -676,7 +639,6 @@ const toggleFullscreen = async () => {
 const closePanels = () => {
   isNavOpen.value = false;
   isFiltersOpen.value = false;
-  closeLocalFilterPanel();
 };
 
 const toggleNavPanel = () => {
@@ -1001,114 +963,7 @@ watch(
             }"
             :aria-label="block.label"
           >
-            <div class="placeholder-cell-inner">
-              <div class="placeholder-cell-title">
-                <span class="placeholder-cell-title-text" :title="getBlockTitle(block.label)">
-                  {{ getBlockTitle(block.label) }}
-                </span>
-                <div
-                  v-if="hasLocalFilterTools(block.label)"
-                  class="widget-local-filter-tools"
-                  @click.stop
-                >
-                  <div v-if="getInlineLocalFilter(block.label)" class="widget-local-filter-strip">
-                    <button
-                      class="widget-local-filter-chip"
-                      :class="{ active: getLocalFilterValue(block.label, getInlineLocalFilterId(block.label)) === '' }"
-                      type="button"
-                      :aria-pressed="getLocalFilterValue(block.label, getInlineLocalFilterId(block.label)) === ''"
-                      @click="setLocalWidgetFilter(block.label, getInlineLocalFilterId(block.label), '')"
-                    >
-                      全部
-                    </button>
-                    <button
-                      v-for="option in getInlineLocalFilterOptions(block.label)"
-                      :key="option.id"
-                      class="widget-local-filter-chip"
-                      :class="{ active: getLocalFilterValue(block.label, getInlineLocalFilterId(block.label)) === option.id }"
-                      type="button"
-                      :aria-pressed="getLocalFilterValue(block.label, getInlineLocalFilterId(block.label)) === option.id"
-                      :disabled="option.disabled"
-                      :title="option.reason ?? option.label"
-                      @click="setLocalWidgetFilter(block.label, getInlineLocalFilterId(block.label), option.id)"
-                    >
-                      <span>{{ option.label }}</span>
-                    </button>
-                  </div>
-                  <label v-else-if="getDropdownLocalFilter(block.label)" class="widget-local-filter-select">
-                    <span>{{ getDropdownLocalFilter(block.label)?.label }}</span>
-                    <select
-                      :value="getLocalFilterValue(block.label, getDropdownLocalFilterId(block.label))"
-                      @change="setLocalWidgetFilter(block.label, getDropdownLocalFilterId(block.label), getSelectEventValue($event))"
-                    >
-                      <option value="">全部</option>
-                      <option
-                        v-for="option in getDropdownLocalFilterOptions(block.label)"
-                        :key="option.id"
-                        :value="option.id"
-                        :disabled="option.disabled"
-                        :title="option.reason ?? option.label"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </label>
-                  <div v-else class="widget-local-filter-panel-wrap">
-                    <button
-                      class="widget-local-filter-trigger"
-                      :class="{ active: isLocalFilterPanelOpen(block.label) || getWidgetLocalFilterCount(block.label) > 0 }"
-                      type="button"
-                      @click="toggleLocalFilterPanel(block.label)"
-                    >
-                      <SlidersHorizontal :size="13" />
-                      <span>筛选</span>
-                      <em v-if="getWidgetLocalFilterCount(block.label) > 0">{{ getWidgetLocalFilterCount(block.label) }}</em>
-                    </button>
-                    <section v-if="isLocalFilterPanelOpen(block.label)" class="widget-local-filter-panel">
-                      <header>
-                        <strong>组件筛选</strong>
-                        <button type="button" @click="clearLocalWidgetFilters(block.label)">清空</button>
-                        <button type="button" aria-label="关闭组件筛选" @click="closeLocalFilterPanel">×</button>
-                      </header>
-                      <section
-                        v-for="filter in getWidgetLocalFilterConfigs(getWidgetForBlock(block.label))"
-                        :key="filter.id"
-                        class="widget-local-filter-group"
-                      >
-                        <p>{{ filter.label }}</p>
-                        <div>
-                          <button
-                            class="widget-local-filter-chip"
-                            :class="{ active: getLocalFilterValue(block.label, filter.id) === '' }"
-                            type="button"
-                            :aria-pressed="getLocalFilterValue(block.label, filter.id) === ''"
-                            @click="setLocalWidgetFilter(block.label, filter.id, '')"
-                          >
-                            全部
-                          </button>
-                          <button
-                            v-for="option in getLocalFilterOptions(block.label, filter)"
-                            :key="option.id"
-                            class="widget-local-filter-chip"
-                            :class="{ active: getLocalFilterValue(block.label, filter.id) === option.id }"
-                            type="button"
-                            :aria-pressed="getLocalFilterValue(block.label, filter.id) === option.id"
-                            :disabled="option.disabled"
-                            :title="option.reason ?? option.label"
-                            @click="setLocalWidgetFilter(block.label, filter.id, option.id)"
-                          >
-                            <span>{{ option.label }}</span>
-                            <em v-if="option.count !== undefined">{{ option.count }}</em>
-                          </button>
-                          <span v-if="getLocalFilterOptions(block.label, filter).length === 0" class="widget-local-filter-empty">
-                            暂无选项
-                          </span>
-                        </div>
-                      </section>
-                    </section>
-                  </div>
-                </div>
-              </div>
+            <div class="placeholder-cell-inner" :class="{ 'is-block-masked': getBlockState(block.label) }">
               <div class="placeholder-cell-body">
                 <WidgetRenderer
                   :context="getWidgetContext(block.label)"
@@ -1116,6 +971,18 @@ watch(
                   :widget="getWidgetForBlock(block.label)"
                   @dashboard-action="handleWidgetAction(block.label, $event)"
                 />
+              </div>
+              <div
+                v-if="getBlockState(block.label)"
+                class="placeholder-cell-mask"
+                :class="`placeholder-cell-mask-${getBlockState(block.label)?.kind}`"
+                aria-live="polite"
+              >
+                <span v-if="getBlockState(block.label)?.label" class="placeholder-cell-mask-badge">
+                  {{ getBlockState(block.label)?.label }}
+                </span>
+                <strong>{{ getBlockState(block.label)?.title }}</strong>
+                <p v-if="getBlockState(block.label)?.message">{{ getBlockState(block.label)?.message }}</p>
               </div>
             </div>
           </div>

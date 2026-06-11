@@ -3,7 +3,8 @@ import type {
   DashboardDataSourceRef,
   DashboardDataSourceRequest,
 } from '../types/data-source';
-import axios, { AxiosHeaders, type AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
+import httpRequest from '@/utils/request';
 import { readDashboardBusinessRows, readDashboardFilterRows } from '../data/dashboard.loader';
 import { resolveDashboardParams, resolveDashboardValue } from '../utils/dashboardExpressions';
 
@@ -120,10 +121,6 @@ const getByPath = (source: unknown, path?: string) => {
 
 const toRowArray = (payload: unknown) => (Array.isArray(payload) ? payload : []);
 
-const dashboardHttp = axios.create({
-  timeout: 15000,
-});
-
 const resolveDashboardAuthHeaders = () => {
   if (typeof window === 'undefined' || !window.__DASHBOARD_AUTH_HEADERS__) {
     return {};
@@ -138,33 +135,6 @@ const resolveDashboardAuthHeaders = () => {
     Object.entries(headers ?? {}).filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== ''),
   );
 };
-
-dashboardHttp.interceptors.request.use((config) => {
-  const authHeaders = resolveDashboardAuthHeaders();
-
-  if (Object.keys(authHeaders).length > 0) {
-    const headers = AxiosHeaders.from(config.headers);
-
-    Object.entries(authHeaders).forEach(([key, value]) => headers.set(key, value));
-    config.headers = headers;
-  }
-
-  return config;
-});
-
-dashboardHttp.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status ?? 'network';
-      const statusText = error.response?.statusText || error.message;
-
-      return Promise.reject(new Error(`Dashboard API source failed: ${status} ${statusText}`));
-    }
-
-    return Promise.reject(error);
-  },
-);
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -288,7 +258,12 @@ const resolveApiData: DashboardDataSourceResolver = async (request) => {
   }
 
   const method = api.method ?? 'GET';
-  const headers = normalizeHeaders(resolveApiParams(api.headers, request));
+  const requestHeaders = normalizeHeaders(resolveApiParams(api.headers, request));
+  const authHeaders = normalizeHeaders(resolveDashboardAuthHeaders());
+  const headers = {
+    ...requestHeaders,
+    ...authHeaders,
+  };
   const config: AxiosRequestConfig = {
     method,
     url: buildApiUrl(api, request),
@@ -310,9 +285,7 @@ const resolveApiData: DashboardDataSourceResolver = async (request) => {
     config.withCredentials = false;
   }
 
-  const response = await dashboardHttp.request(config);
-
-  const payload = response.status === 204 ? [] : (response.data ?? []);
+  const payload = (await httpRequest(config)) as unknown;
   const selectedPayload = getByPath(payload, api.responsePath);
   const adapter = api.adapter ? responseAdapterRegistry[api.adapter] : responseAdapterRegistry.rows;
 
@@ -337,18 +310,20 @@ const resolveApiData: DashboardDataSourceResolver = async (request) => {
 // - 组件确实不受某个全局筛选影响时，写 source.ignoredFilters 显式声明。
 // - 组件必须受某个筛选影响时，写 source.requiredFilters 防止字段漏配后静默失效。
 // - 固定 params 也必须参与过滤时，写 source.requiredParams 防止字段漏配后静默失效。
-// - apiData/httpData 通过带拦截器的 dashboardHttp 发起 axios 请求，支持 query、headers、body、responsePath 和 adapter。
+// - apiData/httpData 通过 src/utils/request.ts 的 axios 实例发起请求，支持 query、headers、body、responsePath 和 adapter。
 // - 宿主系统可通过 window.__DASHBOARD_AUTH_HEADERS__ 注入统一鉴权头。
 //
 // 示例：
 // export const dataSourceRegistry = {
 //   ...builtinDataSourceRegistry,
 //   signedRevenueRows: async ({ filters }) => {
-//     const response = await dashboardHttp.get('/api/revenue/rows', {
+//     const payload = await httpRequest({
+//       url: '/api/revenue/rows',
+//       method: 'GET',
 //       params: { regionId: filters.regionId },
 //       headers: { 'X-Signature': createSignature(filters) },
 //     });
-//     return response.data.data.rows;
+//     return payload.data.rows;
 //   },
 // };
 export const builtinDataSourceRegistry: Record<string, DashboardDataSourceResolver | undefined> = {

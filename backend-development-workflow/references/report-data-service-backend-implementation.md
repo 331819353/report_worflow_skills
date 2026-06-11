@@ -64,14 +64,29 @@ Use `data-service-design-template.md` when the deliverable is design rather than
 
 ## Default Backend Stack
 
-For default report backend/data-service planning or implementation, use `Python + Flask + database/upstream connection pools + Redis` unless the user specifies another stack or an existing project has an authoritative backend stack.
+For default report backend/data-service planning or implementation, use `Python + Flask + SQLAlchemy + database/upstream connection pools + Redis` unless the user specifies another stack or an existing project has an authoritative backend stack. When SSO and multiple databases are part of the backend, also apply `$python-flask-sso-multidatabase-backend`.
 
 - Flask owns HTTP routing, request validation handoff, service composition, error envelopes, health/readiness endpoints, and auth middleware integration.
+- SQLAlchemy owns engine/session management, DBAPI dialect integration, parameter-bound SQL/ORM execution, and a stable abstraction over SQLite/MySQL/Oracle/StarRocks access.
 - Database/upstream connection pools own bounded resource usage, acquire timeout, idle/validation behavior, overload protection, and guaranteed release/close on success and exception paths.
 - Repository/source adapters must pair every pool acquire with `finally`, context-manager cleanup, `defer`, `using`, or an equivalent guard. `ApiError`, timeout, cancellation, validation error after acquire, formatter error, early return, and generic exception paths must return the connection to the pool or close it before the error envelope is produced.
 - For StarRocks-backed services, record the max pool config such as `STARROCKS_POOL_MAX`. A default max such as `STARROCKS_POOL_MAX=5` means a handful of leaked `ApiError` paths can exhaust the pool and block later requests.
 - Redis owns cache/precompute, hot query acceleration, dictionary/permission cache where safe, canonical snapshot cache when declared, stampede protection, stale fallback, rate/concurrency support, idempotency keys, distributed locks, and short-lived job progress when needed.
 - Document an override reason before choosing FastAPI, Spring, Express, Node, or another backend stack by default.
+
+## Python Flask SSO And Multi-Database Baseline
+
+When the backend project is a Python/Flask service with enterprise SSO and multiple databases, load `$python-flask-sso-multidatabase-backend` and include these decisions in the handoff:
+
+- app factory, config profiles, versioned Blueprints, middleware, service, repository, model, db, schema, utils, SQL, test, WSGI, Docker, and deployment file ownership;
+- `Access-Token` header contract and optional `Application-Key` behavior when Haier IAMA/clientId is active;
+- backend token validation path, local user mapping, role/permission loading, and strict 401 vs 403 behavior;
+- database role map: SQLite local/test, MySQL business/user/permission/config, Oracle enterprise legacy/core source, StarRocks analytics/report/metric query;
+- SQLAlchemy engine/session registry, per-database pool config, context-manager or `try/finally` connection release, and dialect-specific SQL directories;
+- dependency baseline: Flask, Flask-SQLAlchemy/SQLAlchemy, Flask-Migrate, PyMySQL, oracledb, requests, python-dotenv, redis when used, pytest, gunicorn;
+- deployment/runtime baseline: `wsgi.py`, Gunicorn config, Nginx/gateway contract, Docker, env profiles, health/readiness endpoint, and structured logging.
+
+Do not collapse the SSO check, permission logic, SQL query, result mapping, and response formatting into one Flask route handler.
 
 ## Required Backend Responsibilities
 

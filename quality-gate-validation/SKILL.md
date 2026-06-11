@@ -25,7 +25,7 @@ Primary shared gates:
 - `references/shared-quality-gate-blockers.md`
 - `$delivery-version-management` `references/code-file-change-ledger.md` when frontend/backend/prototype code changed.
 - `$haier-enterprise-app-ui-design-spec` when judging common enterprise app UI readiness.
-- `$report-design-system-governance` relevant references when judging report/dashboard/BI/data-screen readiness.
+- `$report-design-system-governance` relevant references, especially `references/11-number-precision-display-rules.md`, when judging report/dashboard/BI/data-screen readiness.
 
 ## Gate Types
 
@@ -40,6 +40,7 @@ Primary shared gates:
 | Delivery pipeline | Handoffs must stay aligned across requirement, prototype, model, API, backend, frontend, test, release, and retest artifacts. |
 | Code change ledger | Changed code needs file-level traceability, pre-change read evidence, code ranges, verification, and rollback/blocker notes. |
 | Backend logging | Backend/data-service readiness depends on diagnosable structured logs. |
+| Numeric precision/display | Metric-bearing artifacts need consistent value type, units, scale, precision, rounding, null/zero behavior, and formatter ownership. |
 | Common app UI baseline | Common enterprise app pages need company UI baseline checks. |
 | Report UI baseline | Report/dashboard/analysis pages need report guideline checks. |
 
@@ -64,5 +65,6 @@ Primary shared gates:
 ## Quality Gate
 
 - Do not mark `ready` when high-impact conflicts, missing production controls, missing runtime evidence, or untested required behavior remain.
+- Do not mark `ready` when governed report metrics lack numeric display contracts or show inconsistent units, decimals, percent scale, rounding, tooltip/export precision, null/zero/denominator-zero behavior, or formatter ownership across design/API/frontend/backend/export.
 - Do not use this skill to restate full domain rules; cite the loaded references and summarize the blocking evidence.
 - Load `shared-quality-gate-blockers.md` before final readiness decisions or when a finding can block delivery.

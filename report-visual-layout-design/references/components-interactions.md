@@ -81,9 +81,9 @@ Primary actions may use icon + text. Secondary actions should generally use icon
 
 ## 2.1 Block-Owned Title Function Area Handoff
 
-Page layout does not design the block title/function area. It only records what the block needs to expose and which downstream owner implements it. The block, template block renderer, or business widget owns the internal title/function layout.
+Page layout does not design the component title/function area. It only records what the block needs to expose and which downstream owner implements it. The business widget or composite parent widget owns the internal title/function layout.
 
-When a block exposes a title/function area, the downstream block contract should use a stable two-zone layout:
+When a component exposes a title/function area, the downstream component contract should use a stable two-zone layout:
 
 ```text
 left: block title, left-aligned
@@ -111,11 +111,11 @@ Control selection:
 Fit rules:
 
 - The block title owns left priority inside the block. The function area may shrink, collapse, or move to `更多`, but the title must remain readable.
-- Function controls stay within the block-owned title/function area and do not wrap into the body.
+- Function controls stay within the component-owned title/function area and do not wrap into the chart/table body.
 - Keep at least `8px` gap between title text and the right function area.
 - Avoid placing chart legends in the function area; legends explain data encoding and belong near the chart.
 - Component-local filters affect only the current block/component. They must not replace page/global filters, change permission scope, or drive backend aggregation/pagination unless separately modeled as a page/global filter.
-- If the block-owned title/function area cannot fit both title and controls, keep the most frequent local control visible and collapse the rest into dropdown, panel, or menu.
+- If the component-owned title/function area cannot fit both title and controls, keep the most frequent local control visible and collapse the rest into dropdown, panel, or menu.
 - Never float local filters over KPI values, plot areas, legends, axes, table headers, pagination, or state messages. Collapse the filter before compressing the component body below its fit budget.
 
 ## 3. Drawers, Popovers, And Modals

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import DashboardShell from './components/DashboardShell.vue';
-import { cockpitConfig } from './config/dashboard.config';
+import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <DashboardShell :config="cockpitConfig" />
+  <RouterView />
 </template>

@@ -1,0 +1,9 @@
+:root {
+  --el-color-primary: #005aaa;
+  --el-border-radius-base: 4px;
+  --el-font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.el-popper {
+  max-width: min(420px, calc(100vw - 32px));
+}

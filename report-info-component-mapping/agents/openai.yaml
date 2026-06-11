@@ -1,4 +1,4 @@
 interface:
   display_name: "报表组件数据流程"
-  short_description: "将业务问题映射为组件组合、数据模型、控制语义、筛选查询、交互状态和绑定矩阵。"
-  default_prompt: "Use $report-info-component-mapping to turn report questions into answer atoms, component bundles, datasets, filters, control semantics, interactions, binding matrices, and validation cases."
+  short_description: "将业务问题映射为组件组合、数据模型、数值显示契约、控制语义、筛选查询、交互状态和绑定矩阵。"
+  default_prompt: "Use $report-info-component-mapping to turn report questions into answer atoms, component bundles, datasets, numeric precision/display contracts, filters, control semantics, interactions, binding matrices, and validation cases."

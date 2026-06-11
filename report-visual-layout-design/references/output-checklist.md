@@ -35,7 +35,7 @@ Before finalizing, verify:
 - HTML-replica and custom layouts use global UI tokens for palette, typography, spacing, radius, semantic colors, shadows, and control states unless exact color restoration is explicitly requested.
 - Custom pages use one coherent page identity/navigation/filter control area when possible, instead of mechanically splitting three independent strips.
 - Template-based pages follow the selected template's shell, logo slot, navigation, filter pattern, and grid mechanics.
-- Template-based pages do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer when the selected template already owns filter invocation. The filter plan maps to `filters[]`, native trigger/panel/popover/drawer, local title-band filters, and binding rules.
+- Template-based pages do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer when the selected template already owns filter invocation. The filter plan maps to `filters[]`, native trigger/panel/popover/drawer, component-owned local filters, and binding rules.
 - If a template is used, the chosen template is justified: topbar dark scroll, topbar light scroll, left-nav workbench, or frozen-title sci-fi cockpit.
 - Template adjustment points are named: `dashboard.config.ts`, `dashboard.dataset.json`, `dashboard.loader.ts`, `dataSources/registry.ts`, `demo/config-templates.ts`, widget files, registry/types, actions, styles, and assets as relevant.
 - The first viewport reaches the report's core question.
@@ -51,10 +51,10 @@ Before finalizing, verify:
 - The content area uses an `8 * N` rectangular grid.
 - Every top-level parent block occupies complete rectangular page-grid cells.
 - Components may be placed inside internal sub-blocks of a parent block; sub-blocks are local layout regions and do not count as page-grid cells.
-- Page layout owns page shell identity and block placement, not block title-area design. Each block owns its own title/function/local-filter area; component bodies do not duplicate a visible block-owned title through chart/table/card internal title options.
+- Page layout owns page shell identity and block placement, not block title-area design. Business components own visible title/function/local-filter areas inside their widget viewport.
 - Every chosen block span has been checked against `1920x1080` or `1280x768` practical viewport constraints.
 - `1920x1080` and `1280x768` are not treated as total report height limits.
-- If one parent grid block contains multiple sub-blocks/components, the block-owned title/function area carries one clear business title and the internal sub-block labels/components remain visually subordinate.
+- If one parent grid block contains multiple sub-blocks/components, the composite parent component carries one clear business title/control area and the internal sub-block labels/components remain visually subordinate.
 - Every sub-block has a declared purpose, component owner, local size, `5px` parent inset, `5px` sibling gap, state behavior, and overflow rule.
 - Analysis & Insight blocks declare `analysisInsightContract`, reserve conclusion/evidence/action/trust/source/freshness/state zones, fit summary bars/cards/side panels/annotation bubbles to their size tier, and stay visually subordinate to the primary chart/table unless the block is explicitly explanation-first.
 - Composite Panel blocks declare one shared topic, one primary child, child roles/priorities/min sizes, default `2-3` children and normal max `4`, primary child visual weight `50-70%`, `contentH >= CH * 0.60`, shared local filter/legend/unit, linked interaction, detail-preview limit, responsive fallback, and parent/child state scope before layout acceptance.

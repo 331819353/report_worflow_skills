@@ -23,6 +23,8 @@ Use these prefixes consistently:
 - Observability signals: `OBS-001`
 - Code file ledgers: `CODELOG-001`
 - Environments/source modes: `ENV-001`
+- SSO/auth decisions: `SSO-001`
+- Database role/runtime decisions: `DB-001`
 - Gaps: `GAP-001`
 - Risks: `RISK-001`
 
@@ -81,6 +83,7 @@ Required areas:
 - Redis/cache/precompute;
 - async job/export worker;
 - auth/SSO middleware;
+- Python/Flask SSO and multi-database baseline when applicable;
 - config/secrets/environment;
 - logging/metrics/tracing;
 - deployment/runtime target;
@@ -188,6 +191,28 @@ Cover:
 - secret/config handling;
 - query/export/download/config-change audit;
 - no-permission and unauthorized response shape.
+
+## 11A. Python Flask SSO And Multi-Database Contract
+
+Use this section when Python/Flask, SSO, or multiple databases are in scope.
+
+| Contract ID | Area | Decision | Config/env | Runtime owner | Status |
+| --- | --- | --- | --- | --- | --- |
+| SSO-001 | SSO token validation | `Access-Token`, optional `Application-Key`, token-check service, local user mapping, 401/403 split | `SSO_VALIDATE_URL`, `SSO_TOKEN_HEADER`, `APPLICATION_KEY_HEADER` | middleware + SSO service + permission service | ready / partial / blocked |
+| DB-001 | SQLite role | local/test/fixture/demo only unless explicitly approved | `SQLITE_DATABASE_URL` | sqlite repository / fixture setup | ready / partial / blocked |
+| DB-002 | MySQL role | users, roles, permissions, configs, ordinary business data | `MYSQL_DATABASE_URL`, pool vars | MySQL repository / SQLAlchemy engine | ready / partial / blocked |
+| DB-003 | Oracle role | enterprise legacy/core source integration | `ORACLE_DATABASE_URL`, pool vars | Oracle repository / SQLAlchemy engine | ready / partial / blocked |
+| DB-004 | StarRocks role | analytics/report/metric/wide-table aggregation queries | `STARROCKS_DATABASE_URL`, `STARROCKS_POOL_SIZE` | StarRocks repository / SQLAlchemy engine | ready / partial / blocked |
+
+Required decisions:
+
+- app factory, versioned Blueprint, service, repository, db engine/session, schema, middleware, utils, SQL, tests, and deployment file ownership;
+- SSO token validation sequence and public-route allowlist;
+- local user, role, permission, org/data-scope mapping;
+- per-database SQLAlchemy engine/session lifecycle and guaranteed release/close behavior;
+- SQL directory split by database/dialect and no raw user-controlled SQL;
+- dependency and deployment baseline: requirements, WSGI, Gunicorn, Docker, Nginx/gateway, health/readiness, env profile separation;
+- test proof for missing token, invalid token, valid-token/no-permission, and at least one declared database-backed query path.
 
 ## 12. Export And Long-Running Work
 

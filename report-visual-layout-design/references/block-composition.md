@@ -6,7 +6,7 @@ Use this file when one `8 * N` parent content block needs to contain internal su
 
 At the page grid level, one parent block is still one rectangular `8 * N` grid occupant. Inside that parent block, the layout may define internal sub-blocks. Each internal sub-block may contain one component or one tightly related micro-group.
 
-Do not treat internal sub-blocks as separate page-grid blocks. They live inside the parent block body viewport and respect the parent block's padding, block-owned title/function area, and overflow strategy.
+Do not treat internal sub-blocks as separate page-grid blocks. They live inside the parent widget viewport and respect the parent component's padding, title/function area, and overflow strategy.
 
 Before deciding to create sub-blocks, choose the parent span from the default distribution in `grid-containers.md`, then check the usable pixel size in `block-size-constraints.md`. Parent blocks must have enough space for the dominant sub-block plus internal labels, controls, dividers, legends, gaps, and states.
 
@@ -15,7 +15,7 @@ Hierarchy:
 ```text
 page content grid: 8 * N
   parent block: rectangular page-grid occupant
-    parent block-owned title/action band: one business title for the whole parent block
+    parent component-owned title/action area: one business title for the whole parent block
     parent body viewport
       internal sub-block grid/flex layout
         sub-block: stable local viewport
@@ -57,7 +57,7 @@ Create internal sub-blocks inside one parent block when they answer one business
 Split into separate `8 * N` parent blocks when:
 
 - The sub-blocks/components answer different business questions.
-- Each sub-block/component needs its own independent title, filters, actions, or drilldown path; independent visible titles usually mean the content should become separate page-grid parent blocks, each with its own block-owned title/function area.
+- Each sub-block/component needs its own independent title, filters, actions, or drilldown path; independent visible titles usually mean the content should become separate page-grid parent blocks, each with its own component-owned title/function area.
 - The body becomes too dense for readable labels, legends, or table columns.
 - Internal scroll becomes the primary way to use the block.
 - A sub-block/component needs more space than the parent block can safely provide.

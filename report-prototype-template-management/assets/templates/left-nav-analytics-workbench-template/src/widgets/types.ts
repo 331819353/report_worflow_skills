@@ -1,8 +1,6 @@
 import type { DashboardActionMap, DashboardRuntimeContext } from '../types/actions';
 import type { DashboardDataSourceRef, DashboardFilterScope } from '../types/data-source';
 
-export interface WidgetContext extends DashboardRuntimeContext {}
-
 export interface WidgetViewportConfig {
   pannable?: boolean;
   zoomable?: boolean;
@@ -34,6 +32,14 @@ export interface WidgetLocalFilterConfig {
   mode?: 'auto' | 'buttons' | 'panel';
   // Override only for deliberate exceptions; default is 2 so 3+ auto filters render as dropdown.
   maxButtonOptions?: number;
+}
+
+export interface WidgetContext extends DashboardRuntimeContext {
+  // 组件自有标题区/控制区可读取并渲染本地筛选；Shell 只维护筛选值和数据过滤。
+  localFilterConfigs?: WidgetLocalFilterConfig[];
+  getLocalFilterOptions?: (filter: WidgetLocalFilterConfig) => WidgetLocalFilterOption[];
+  setLocalFilter?: (filterId: string, value: string) => void;
+  clearLocalFilters?: () => void;
 }
 
 
@@ -109,7 +115,13 @@ export type WidgetVisualType =
 
 export interface BaseWidgetConfig<TType extends string, TProps extends Record<string, unknown>> {
   type: TType;
+  // Optional component metadata. Visible titles are rendered by the business component itself.
   title?: string;
+  // Optional copy for the block-level no-data mask when widget.data resolves to no rows.
+  emptyState?: {
+    title?: string;
+    message?: string;
+  };
   props: TProps;
   // 组件视觉类型。框架校验会用它检查当前 layoutRows 占位是否属于允许尺寸。
   visualType: WidgetVisualType;
@@ -124,7 +136,7 @@ export interface BaseWidgetConfig<TType extends string, TProps extends Record<st
   analysisInsightContract?: WidgetAnalysisInsightContract;
   // 筛选作用域。未配置时只接收全局筛选；配置后会接收全局筛选 + 匹配 scope 的筛选。
   filterScope?: DashboardFilterScope;
-  // 组件标题区本地筛选。只过滤当前组件已加载的全量 data，不参与接口或数据源传参。
+  // 组件内部本地筛选。可视控件由组件自己渲染，只过滤当前组件已加载的全量 data，不参与接口或数据源传参。
   localFilters?: WidgetLocalFilterConfig[];
   viewport?: boolean | WidgetViewportConfig;
 }

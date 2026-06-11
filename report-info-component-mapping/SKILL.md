@@ -28,6 +28,7 @@ Read only the files needed for the current task. Files are ordered by workflow s
 | Report-type routing, layout/style constraints, output checklist | `references/07-routing-layout-quality.md` |
 | Controlled vocabularies, stable IDs, deterministic generation | `references/08-generation-stability.md` |
 | Detailed implementation gates for mapping decisions | `references/09-component-mapping-gates.md` |
+| Number precision/display baseline | `$report-design-system-governance` `references/11-number-precision-display-rules.md` |
 | Report requirement/metric/layout baseline | `$report-design-system-governance` relevant guideline references |
 
 Loading guidance:
@@ -41,7 +42,7 @@ Loading guidance:
 1. Normalize the report theme, audience, primary question, decision, time/org/object scope, metrics, dimensions, baselines, risks, tasks, source, permissions, and acceptance target.
 2. Decompose the question into answer atoms such as state, target gap, trend, structure, ranking, process, cause, anomaly, detail, action, evidence, and data trust.
 3. Map answer atoms to parent blocks, optional sub-blocks, and component bundles with `must-have`, `should-have`, or `optional` priority.
-4. Define data before controls: datasets, row grain, formulas, rollups, edge cases, realistic dirty-data cases, default/non-default states, empty/no-permission states, and resolver/API branch needs.
+4. Define data before controls: datasets, row grain, formulas, rollups, numeric display contracts, edge cases, realistic dirty-data cases, default/non-default states, empty/no-permission states, and resolver/API branch needs.
 5. Classify every control as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`; never hide metric/schema-changing perspectives inside ordinary filters.
 6. Define filter/query behavior after the data model proves it can support option data, defaults, cascades, permissions, affected components, and non-default variations.
 7. Define interactions: tooltip/value reveal, cross-filter, drilldown, drawer, modal, jump, export, refresh, fullscreen, batch action, owner/action flow, and stale-state behavior.
@@ -52,7 +53,7 @@ Loading guidance:
 
 - Theme, user scenario, primary question, decision, and report-decision risks or gaps.
 - Answer atom decomposition and component bundle map.
-- Dataset/mock model with grain, fields, formulas, realistic edge cases, and reconciliation rules.
+- Dataset/mock model with grain, fields, formulas, numeric display contracts, realistic edge cases, and reconciliation rules.
 - Control semantics model and filter/query model.
 - Interaction and state model.
 - Unified binding matrix with stable IDs, controlled vocabularies, and validation cases.
@@ -61,7 +62,8 @@ Loading guidance:
 ## Quality Gate
 
 - Every component must answer a named business question and participate in a decision path.
-- Primary metric-bearing components need formula/denominator, grain, period, source/freshness, unit/precision, baseline, and owner/action notes when implementation-ready.
+- Primary metric-bearing components need formula/denominator, grain, period, source/freshness, numeric display contract, baseline, and owner/action notes when implementation-ready.
+- Numeric display contracts must define value type, raw/display unit, display scale, precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formula precision policy before API/frontend handoff.
 - Data completeness must be checked before filter binding.
 - KPI totals, chart totals, table rows, drawers, exports, jumps, and refresh must share the same active context.
 - Exact-value tasks need table/card/drawer support; cause-analysis tasks need decomposition support; action tasks need owner/status/closure evidence.

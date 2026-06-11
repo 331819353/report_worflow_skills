@@ -1,4 +1,4 @@
 interface:
   display_name: "技术方案 Workflow"
-  short_description: "编排专业技术方案阶段，产出技术架构、技术选型/ADR、实现路径、运行时与生产准备、API 清单、数据模型、权限、质量、缺口、风险和版本链路。"
-  default_prompt: "Use $technical-solution-workflow to produce a professional technical solution: architecture blueprint, technology selection/ADR, implementation roadmap, runtime and production readiness, backend structured logging plan with requestId/traceId/redaction/log points/slow thresholds when backend is in scope, API inventory, data model, metric governance, permissions, quality rules, gaps, risks, and version handoff."
+  short_description: "编排专业技术方案阶段，产出技术架构、技术选型/ADR、实现路径、Python后端基线、运行时与生产准备、API 清单、数据模型、数值精度、权限、质量、缺口、风险和版本链路。"
+  default_prompt: "Use $technical-solution-workflow to produce a professional technical solution: architecture blueprint, technology selection/ADR, implementation roadmap, Python/Flask/SQLAlchemy SSO and multi-database backend baseline when applicable, runtime and production readiness, backend structured logging plan with requestId/traceId/redaction/log points/slow thresholds when backend is in scope, API inventory, data model, numeric precision/display contracts, metric governance, permissions, quality rules, gaps, risks, and version handoff."

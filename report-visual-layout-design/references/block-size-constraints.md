@@ -286,7 +286,7 @@ Classify every component into one of the following component types. `min_outer_w
 - The table body must still show at least `4` useful rows by default. If grouped headers leave fewer than `3` rows, enlarge/split, collapse groups, remove header subtext, compact rows, use fullscreen/detail, or redesign.
 - Leaf columns `<=8` display directly; `9-16` may use horizontal scroll; `17-30` need frozen key columns plus column settings; `31-50` need group collapse or settings; `>50` needs redesign, pivot, column paging, or configuration view.
 - The whole multi-level header fixes during vertical body scroll. When horizontal scroll exists, the top-left grouped header and row-dimension/primary columns freeze together.
-- Component-local filters sit in the block title/function area and must not be confused with leaf-column filter icons inside the grouped header.
+- Component-local filters sit in the component-owned title/function area and must not be confused with leaf-column filter icons inside the grouped header.
 
 ### Pivot Table Rules
 

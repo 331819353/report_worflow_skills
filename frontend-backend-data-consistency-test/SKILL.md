@@ -30,7 +30,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
    For each component, record endpoint, method, request params, active filters, response payload, status code, and timing. Capture adapter output if the frontend exposes it or if it can be inferred.
 
 3. Map fields to display.
-   For every displayed value, identify backend field, adapter rule, raw scale, display scale, unit conversion, date/period conversion, precision rule, null/empty rule, and label/legend meaning. Rate/change/completion fields in Chinese report UI should visibly use `%` unless the accepted contract says otherwise.
+   For every displayed value, identify backend field, adapter rule, value type, raw unit, display unit, raw scale, display scale, unit conversion, date/period conversion, screen precision, tooltip/export precision, rounding rule, null/zero/denominator-zero rule, negative-zero behavior, small-nonzero behavior when relevant, formatter owner, and label/legend meaning. Rate/change/completion fields in Chinese report UI should visibly use `%` unless the accepted contract says otherwise.
 
 4. Recalculate expected values.
    Independently derive displayed KPIs, ratios, totals, subtotals, chart series, table cells, ranking, top N, and trend values from backend responses.
@@ -59,6 +59,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 
 - Components checked in Z order:
 - Endpoint and field mapping:
+- Numeric display/precision contract mapping:
 - Backend response samples:
 - Expected display calculations:
 - Matched values:
@@ -77,6 +78,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Every API-backed component has a known endpoint, request params, response fields, and display mapping.
 - Frontend values match backend values after documented transformations.
 - Units, precision, percentages, date formats, sorting, and totals are consistent.
+- KPI/chart/table/tooltip/drawer/export share the same numeric display contract, and raw numeric values rather than rounded labels drive logic.
 - Perspective switches are not treated as ordinary filters when they change schema, and non-default perspectives update metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels.
 - Navigation percentages, overview KPIs, journey cards, and chart summaries reconcile to the same backend/API/provider fields for each domain and statistical口径.
 - Filter data completeness is checked before binding: option data, default/non-default rows or responses, required fields, and resolver/API branches are present or recorded as data gaps.

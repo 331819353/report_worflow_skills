@@ -115,6 +115,42 @@ type AnalysisInsightContract = {
   validationRules: string[];
 };
 
+type NumericFormatContract = {
+  metricId: string;
+  field: string;
+  valueType:
+    | 'count'
+    | 'amount'
+    | 'currency'
+    | 'percent'
+    | 'rate'
+    | 'ratio'
+    | 'average'
+    | 'score'
+    | 'duration'
+    | 'rank'
+    | 'index'
+    | 'geo'
+    | 'scientific'
+    | 'project-enum';
+  rawUnit: string;
+  displayUnit: string;
+  displayScale: string;
+  precision: number | string;
+  tooltipPrecision: number | string;
+  exportPrecision: number | string;
+  roundingMode: 'half-up' | 'bankers' | 'floor' | 'ceil' | 'truncate' | 'project-defined';
+  trimTrailingZeros?: boolean;
+  thousandsSeparator?: boolean;
+  nullDisplay: string;
+  zeroDisplay: string;
+  zeroDivisionDisplay?: string;
+  negativeZeroRule: string;
+  smallNonZeroRule?: string;
+  formulaPrecisionPolicy?: string;
+  formatterOwner: 'frontend' | 'backend-export' | 'shared-contract' | 'project-defined';
+};
+
 type ComponentMapping = {
   id: string;
   // Metadata for the layout/block title. Do not render this again inside the component body.
@@ -145,6 +181,7 @@ type ComponentMapping = {
   requiredFields: string[];
   formulas?: string[];
   rollupLogic?: string;
+  numericFormatContracts?: NumericFormatContract[];
   analysisInsightContract?: AnalysisInsightContract;
   compositePanelContract?: {
     topic: string;
@@ -266,6 +303,7 @@ Rules:
 - `apiId`/`apiEndpoint` should identify the API that serves this component when the output feeds API planning or frontend integration. Default to one component or coherent component group per API.
 - `frontendComputePolicy` must be `component-ready` or `format-only` for implementation handoff. Use `blocked` when required business formulas, aggregations, rankings, filters, or series shaping are still expected to happen in the frontend.
 - `grain` must state row level: employee-month, org-month, order, contract, project, alert, task, or reconciliation-pair.
+- `numericFormatContracts` are required for visible metric-bearing fields. Each contract must define value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, formula precision policy when derived, and formatter ownership. Use `$report-design-system-governance` `references/11-number-precision-display-rules.md` as the default baseline.
 - `analysisInsightContract` is required when a text-summary/card/task/custom component is used as a conclusion card, insight card, anomaly/risk explanation, attribution summary, recommendation/action card, definition/data-quality/forecast note, chart annotation, explanatory empty state, permission/no-result/delay note, or any analysis copy that influences a decision. It must declare subtype, family, conclusion, evidence or explicit insufficiency, affected object, comparison/change value when relevant, action/detail path when relevant, confidence/source/freshness/definition when relevant, local-filter scope, tooltip payload, and state rules.
 - `compositePanelContract` is required when multiple child components live inside one report component container as one analysis unit. It must declare the shared topic, sequence, layout pattern, primary child, child roles/priorities/minimum sizes, default child-count limit, primary visual weight, content-height rule, panel-level local filters, any child-only filter exception, shared legend/unit behavior, linked interaction, detail-preview limit, responsive fallback, and parent/child state rules. Use it only when child components answer one question; split unrelated children into separate parent blocks.
 - `groupedHeaderContract` is required when a table has `>8` visible columns or natural field groups such as metric families, actual/target/variance, current/YoY/MoM, amount/count/rate, time periods, finance sections, or pivot columns. It must declare the grouped column tree, leaf-field metadata, computed `colSpan`/`rowSpan`, max depth, fixed header, frozen row/primary columns, component-local filters vs per-column header filters, tooltip fields, and density fallback.
@@ -303,6 +341,7 @@ Minimum columns:
 - API ID/path and frontend compute policy when an API/backend handoff is in scope.
 - Row grain, primary key, and required fields.
 - Metric formulas and rollup logic.
+- Numeric display contracts for every visible metric-bearing field, including percent/rate scale and denominator-zero behavior.
 - `analysisInsightContract` when the component is an analysis/explanation/decision-support text summary, card, annotation, task, or state note.
 - `compositePanelContract` when `visualType` is `composite-panel` or multiple child components are intentionally combined into one component container.
 - Control semantics for each control that affects the component.

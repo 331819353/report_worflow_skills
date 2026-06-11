@@ -37,9 +37,9 @@ filters: [],
 
 ## Shared Layout Contract
 
-- This family follows `template-layout-design-system.md`; shared spacing, cockpit card radius, block-owned title/function placement, widget viewport, and hover/focus behavior are template-level design decisions.
+- This family follows `template-layout-design-system.md`; shared spacing, cockpit card radius, component title/control handoff, widget viewport, and hover/focus behavior are template-level design decisions.
 - Default content range is `118 -> 1080`; visible title band is `116px`; block gap is `contentGap: 10`.
-- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> body viewport -> `widget-renderer`; visible block titles and local controls are component-owned.
 - Card padding and card radius are both `8px`; `cellPadding: 5` leaves a small outer inset for cockpit frame effects.
 
 ## `nav[]` Content Gate

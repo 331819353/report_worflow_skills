@@ -39,6 +39,7 @@ Always choose the mode and then load only the matching references.
 | Generic anti-AI design gate | `references/08-anti-ai-design-gate.md` |
 | Report decision anti-AI gate | `references/09-report-decision-anti-ai-gate.md` |
 | Detailed reusable-standard acceptance gates | `references/10-design-system-acceptance-gates.md` |
+| Number precision, rounding, unit scaling, and exact-value display | `references/11-number-precision-display-rules.md` |
 | Bundled template layout tokens | `$report-prototype-template-management` `references/template-layout-design-system.md` |
 | Component-family placement and fit | `$report-component-style-design` `references/12-internal-placement-algorithms.md` plus the smallest matching split placement reference |
 
@@ -49,14 +50,14 @@ Always choose the mode and then load only the matching references.
 3. Classify whether the work is report/dashboard/BI/data-screen, common enterprise app, or mixed. Load the matching baseline before judging or defining rules.
 4. Run the generic anti-AI gate and report decision gate before stabilizing tokens or accepting a visual standard.
 5. Define semantic tokens and reusable rules: color roles, typography, spacing/grid, radius, border, shadow, density, icon size, z-index, responsive breakpoints, states, accessibility, and motion limits.
-6. Define page, component, visualization, filter, state, performance, and handoff standards. For implementation-ready component families, delegate details to `$report-component-design-spec` and `$report-component-style-design`.
+6. Define page, component, visualization, numeric precision/display, filter, state, performance, and handoff standards. For implementation-ready component families, delegate details to `$report-component-design-spec` and `$report-component-style-design`.
 7. Define governance: stable vs experimental rules, allowed variants, deprecated patterns, exception process, versioning, migration status, owners, and review checklist.
 8. Route implementation or remediation to layout, component, frontend, runtime QA, testing, or template skills.
 
 ## Required Output
 
 - Mode, source-of-truth hierarchy, input inventory, and scope.
-- Token, page-layout, component, visualization, filter, state, accessibility, interaction, and performance standards.
+- Token, page-layout, component, visualization, numeric precision/display, filter, state, accessibility, interaction, and performance standards.
 - Report guideline mapping: requirements, metric dictionary, calculation口径, page hierarchy, chart/table/filter/state rules, engineering handoff, and acceptance checklist.
 - Anti-AI and report-decision gate result with `AI-*` and `RPT-*` findings or explicit pass status.
 - Governance matrix: version, owner/source, status, allowed variants, deprecated patterns, exception approval, migration impact, and review checklist.
@@ -67,6 +68,6 @@ Always choose the mode and then load only the matching references.
 - Do not output an empty table-only template; each required rule needs values, inherited source references, or explicit `gap` status.
 - Do not create one-off colors, spacings, hover effects, chart semantics, or component variants without semantic tokens or approved exceptions.
 - Do not accept generic "modern SaaS", "高级科技感", purple-blue gradients, glass cards, glow buttons, floating decoration, oversized radius, or abstract AI imagery as default report style.
-- Reusable standards must cover responsive behavior, edge states, accessibility, data density, exact-value access, engineering tokens, and migration impact.
+- Reusable standards must cover responsive behavior, edge states, accessibility, data density, numeric display contracts, exact-value access, engineering tokens, and migration impact.
 - Report standards must preserve metric口径, metric tree/driver path, realistic data states, drilldown/detail/action, trust metadata, and industry vocabulary.
 - Load `10-design-system-acceptance-gates.md` before accepting a reusable standard, audit result, merge, or migration plan.

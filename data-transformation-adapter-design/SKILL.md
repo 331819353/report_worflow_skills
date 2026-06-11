@@ -23,8 +23,8 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 ## Workflow
 
 1. Identify source payload, target API contract, and UI/view model contract.
-2. Define grain, required fields, optional fields, defaults, null behavior, precision, units, enum dictionaries, date/time formats, and locale labels.
-3. For rate/percentage/change fields, keep calculation value, display value, display unit, rounding, and label wording explicit. Chinese report UI display values should render `%` for rates unless the user or contract intentionally requires another term.
+2. Define grain, required fields, optional fields, defaults, null behavior, precision, units, numeric display contract, enum dictionaries, date/time formats, and locale labels.
+3. For metric-bearing fields, keep raw numeric value, calculation value, display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter owner explicit. For rate/percentage/change fields, keep calculation value, display value, display unit, rounding, and label wording explicit. Chinese report UI display values should render `%` for rates unless the user or contract intentionally requires another term.
 4. Decide execution boundary: SQL/source query, backend service/DTO, API gateway/BFF, frontend adapter, or component-local display formatting.
 4a. When the backend source table/upstream/fixture changes, freeze the target API contract first. Map every existing response field from old source to new source and keep field name, nesting, type, unit, precision, enum meaning, nullability, formula, grain, and empty/no-permission behavior stable. Put new source names behind adapter rules; expose new fields only as additive fields named by convention and documented with compatibility status.
 5. Verify filter data support before adapter binding.
@@ -39,6 +39,7 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 
 - Source contract, target contract, and owner boundary.
 - Field mapping table with formulas, units, precision, enums, defaults, and required status.
+- Numeric display/precision contract for metric-bearing fields, including percent scale and formatter owner.
 - Source replacement compatibility table when applicable: existing target field, old source, new source, transform/default/null rule, unchanged behavior evidence, additive fields, and blocked breaking changes.
 - Transformation/adaptation rules and examples.
 - Filter data support proof before binding: option source, row grain, default/non-default examples, fields, and resolver/API branch coverage.
@@ -56,6 +57,7 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 - Examples must prove the transformation for at least one non-default case when filters or formulas matter.
 - Do not claim a filter-aware adapter is ready until data completeness is proven first; missing non-default rows, fields, option data, or resolver/API branches are data gaps.
 - Do not collapse raw numeric values and formatted display strings into one ambiguous field when downstream calculations, sorting, tooltips, exports, or tests need the original value.
+- Do not use adapters to round before aggregation, totals, ranking, threshold comparison, or reconciliation; formatting happens at the display/export edge unless metric governance explicitly says otherwise.
 - Do not use a frontend adapter to fake filter variation over one default snapshot; add provider/resolver branches, query params, or row grain that proves non-default states.
 - Do not use an adapter to make metrics/trend/table/export data from an undocumented snapshot API payload when the API contract requires independent backend/source data. Declared canonical/shared snapshot reuse is valid; accidental payload reuse is not.
 - Do not use response transformation to hide missing backend filtering. If version, business filter, or permission scope affects correctness, it must be applied by the backend source/precompute/cache query before adapter formatting.

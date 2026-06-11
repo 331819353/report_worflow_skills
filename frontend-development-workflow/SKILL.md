@@ -41,7 +41,7 @@ If the request is vague design improvement rather than implementation, route fir
 - Vue3 visualization sample architecture: `$vue3-visualization-project-architecture` when the target should follow the uploaded Vue3 + TypeScript + Vite + Pinia + Vue Router + Element Plus + ECharts + Axios project structure.
 - Code-file ledger: `$delivery-version-management` `references/code-file-change-ledger.md`
 - Common app baseline: `$haier-enterprise-app-ui-design-spec`
-- Report baseline and anti-AI/report-decision gates: `$report-design-system-governance`
+- Report baseline, numeric precision rules, and anti-AI/report-decision gates: `$report-design-system-governance`
 
 ## Workflow
 
@@ -53,7 +53,7 @@ If the request is vague design improvement rather than implementation, route fir
 6. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
 7. Verify env/proxy/base path/auth/SSO behavior before wiring requests.
 8. Before each source edit, read or create the sidecar code ledger for the scoped file.
-9. Replace or isolate mock data, wire provider calls, filters, pagination, sorting, exports, refresh, interactions, and state handling.
+9. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
 10. Use component/layout/design-system skills when visual, metric, chart/table, state, or design baseline behavior is touched.
 11. Append code-ledger version entries after edits.
 12. Run build/start and `$frontend-runtime-qa-validation`; then produce frontend function docs when handoff is needed.
@@ -62,6 +62,7 @@ If the request is vague design improvement rather than implementation, route fir
 
 - Source/target decision and stack decision.
 - Provider mapping, adapter notes, env/auth/deployment notes.
+- Numeric display/precision proof: formatter ownership, value type, raw/display unit, scale, screen/tooltip/export precision, rounding, null/zero/denominator-zero, and `%` wording when relevant.
 - Vue3 sample-architecture alignment when applicable: directory placement, Axios/request pattern, env mode, route/store/component ownership, and build commands.
 - Changed files, code-ledger proof, and verification commands.
 - Data completeness and control semantics proof for filters/perspectives.
@@ -76,5 +77,6 @@ If the request is vague design improvement rather than implementation, route fir
 - Do not leave production paths on unapproved mocks, fake timers, generated rows, or demo-only SDKs.
 - Do not claim filter integration until option data, business rows, required fields, default/non-default states, and resolver/API branches are proven or recorded as gaps.
 - Standard ECharts requirements need ECharts-owned options/series/runtime behavior, not hand-authored chart marks plus an import.
-- Report interfaces must preserve metric口径, data story, filter/drilldown/export context, trust details, realistic data states, and `%` wording for Chinese rate/change labels unless explicitly overridden.
+- Report interfaces must preserve metric口径, numeric display contracts, data story, filter/drilldown/export context, trust details, realistic data states, and `%` wording for Chinese rate/change labels unless explicitly overridden.
+- Do not mark frontend work ready when governed report metrics are formatted through scattered `toFixed`, `Math.round`, `parseInt`, string slicing, ad hoc `%` concatenation, or component-local decimal assumptions instead of a central formatter/metadata contract.
 - Load `frontend-implementation-gates.md` before changing frontend code or judging production/readiness.

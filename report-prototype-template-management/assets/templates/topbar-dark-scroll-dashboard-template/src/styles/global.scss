@@ -1,0 +1,8 @@
+$dashboard-radius-sm: 4px !default;
+$dashboard-radius-md: 8px !default;
+$dashboard-focus-color: rgba(0, 90, 170, 0.34) !default;
+
+@mixin dashboard-focus-ring {
+  outline: 2px solid $dashboard-focus-color;
+  outline-offset: 2px;
+}

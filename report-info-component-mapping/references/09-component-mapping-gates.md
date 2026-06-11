@@ -6,7 +6,8 @@ Detailed mapping constraints moved out of `SKILL.md`. Load this for implementati
 
 - A component is valid only when it answers a named business question.
 - A report component is valid only when it participates in a decision path: state, target/baseline, trend, driver, abnormality, detail, trust, or action. Generic KPI cards and decorative charts without this role are rejected.
-- Every primary metric-bearing component must have formula/denominator, grain, period, source/freshness, unit/precision, baseline, and owner/action notes when the output is implementation-ready.
+- Every primary metric-bearing component must have formula/denominator, grain, period, source/freshness, numeric display contract, baseline, and owner/action notes when the output is implementation-ready.
+- Every visible metric field must declare value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero display, negative-zero handling, small-nonzero behavior when relevant, formula precision policy, and formatter ownership. Ambiguous `0-1` vs `0-100` percent scale or display-only formatted strings are not implementation-ready.
 - Generic marketing sections, decorative cards, generic AI/SaaS feature lists, empty slogan panels, and interchangeable icon blocks are not valid report components unless they map to a real user task, data object, decision, evidence, or workflow action.
 - Do not let "modern/high-end/tech" copy become an answer atom. Answer atoms must be business meanings such as status, trend, cause, detail, action, evidence, or data trust.
 - A selected pattern card is valid only when it maps to a visible component, control, data/API requirement, interaction, export/share behavior, operations note, or validation case. Otherwise mark it as a gap or backlog item.
@@ -75,7 +76,7 @@ When this skill is used, produce at least:
 4. Answer atom decomposition.
 5. Parent block, sub-block, and component bundle mapping with priority.
    For sample/source restoration, include `sampleModuleRole`: `businessRequired`, `sampleStructure`, or `optionalEnhancement`.
-6. Mock/data model: datasets, grain, fields, formulas, signals, realistic messy cases, edge cases.
+6. Mock/data model: datasets, grain, fields, formulas, numeric display contracts, signals, realistic messy cases, edge cases.
 7. Filter/query model: filter surface, filters, option sources, defaults, cascades, permissions, query params.
 8. Control semantics model: perspective switches, global filters, local filters, and drilldown params, including schema impact.
 9. Navigation metric lineage: source dataset, field/formula, grain, affected filters, and period behavior for navigation percentages, rankings, and status lights.
@@ -114,6 +115,7 @@ Before finalizing, verify:
 - Each control has a correct `controlSemantics` classification, and no domain/theme/management-object perspective is hidden as an ordinary filter.
 - Each perspective switch has validation cases proving metric names, titles/summaries, table dimensions, component set, specialty metrics, and口径 change when applicable, not only numeric values.
 - Each navigation percentage, ranking, or status light has lineage fields: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
+- Each visible metric-bearing field has a numeric display contract, and KPI/chart/table/tooltip/drawer/export use the same unit, scale, rounding, and null/denominator-zero rules.
 - No dynamic KPI, percentage, ranking, or status light is stored in filter option `meta` or `filterData.meta` unless explicitly marked as static display copy.
 - Each primary filter has an execution-stage contract proving it narrows data before full component/page construction, or a bounded exception is documented.
 - Each primary filter has at least one validation case proving the affected component's data changes, not only the control selected state.

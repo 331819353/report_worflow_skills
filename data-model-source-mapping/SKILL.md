@@ -54,7 +54,7 @@ Loading guidance:
    Combine sources into business objects such as customer, order, project, inventory, contract, payment, task, alert, organization, or period. Define joins, relationship cardinality, aggregation grain, and ownership.
 
 4. Define response/view models.
-   Map prototype/API-facing fields to logical/source fields. Include display labels, field types, units, precision, enum labels, sorting, empty-state behavior, and whether the field is calculated.
+   Map prototype/API-facing fields to logical/source fields. Include display labels, field types, units, precision, numeric display contracts, enum labels, sorting, empty-state behavior, and whether the field is calculated.
 
 4a. Preserve response contract compatibility during source replacement.
    When the source table, upstream API, fixture schema, or serving model changes, keep existing response/view field codes and behavior stable. Produce a before/after mapping: response field -> old source field/formula -> new source field/formula -> transformation/default/null rule -> verification evidence. New response fields must be additive and named by the project convention; if absent, use stable English lowerCamel field codes. Any required rename, type/unit/precision/enum/nullability/formula/grain change is a breaking `DESIGN-*` or `GAP-*` item until versioning and downstream impact are explicit.
@@ -66,7 +66,7 @@ Loading guidance:
    When consuming pages or APIs have filters, document the filter option source, fact/business row grain, required fields, default state, at least one non-default state, empty/no-permission state when relevant, and resolver/API branch dependency before declaring the response/view model filter-ready. Single default snapshots are not enough for affecting filters unless the component is explicitly invariant.
 
 7. Define metric formulas.
-   For each metric, document formula, numerator, denominator, filter scope, period logic, baseline, threshold, direction, unit, precision, and reconciliation rule.
+   For each metric, document formula, numerator, denominator, filter scope, period logic, baseline, threshold, direction, unit, precision, numeric display contract, and reconciliation rule.
 
 8. Define transformation notes.
    Capture date conversion, period aggregation, unit conversion, enum mapping, rounding, default fill, hierarchy rollup, deduplication, and permission filtering.
@@ -80,10 +80,11 @@ Loading guidance:
 ## Hard Constraints
 
 - Every response/view field must trace to a source field, formula, static enum, or `GAP-*` item.
+- Every metric-bearing response/view field must define value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, small-nonzero behavior when relevant, formula precision policy, and formatter ownership.
 - Response/view field names, nesting, types, units, precision, enum meanings, nullability, formulas, grain, and empty/no-permission behavior are stable compatibility contracts across source/table replacement. Source names may change; response contracts may not drift silently.
 - New response/view fields must follow the project naming convention, or stable English lowerCamel when no convention exists, and must declare source, meaning, type, unit, nullability, permission/sensitivity, compatibility status, and downstream consumers.
 - Do not resolve contradictory source/model/API/frontend evidence by preference or convenience; unresolved `P0`/`P1` conflicts keep affected models `partial` or `blocked`.
-- Every metric must have formula, grain, dimensions, period logic, source dependency, and precision, or a `GAP-*` item.
+- Every metric must have formula, grain, dimensions, period logic, source dependency, precision, and numeric display contract, or a `GAP-*` item.
 - Snapshot/latest-period response models must trace to source/logical/precompute/cache/snapshot models through explicit data-version fields and source/filter predicates. Do not define one response model as the authoritative source for another response model unless it is explicitly modeled as a canonical/shared snapshot with grain, fields, scope, and reuse rules.
 - Filterable response/view models must prove data completeness before filter binding: option dimensions, matching fact/business rows, required fields, default/non-default states, empty/no-permission states when relevant, and resolver/API branch coverage. Missing evidence is a `GAP-*`, not a frontend binding assumption.
 - Source ownership, refresh cadence, and permission must be explicit, assumed, or blocked.
@@ -102,11 +103,11 @@ Use this structure for the 数据模型文件:
 2. Data sources: source name, type, location, owner, refresh, permission, reliability notes.
 3. Source models: physical fields and metadata.
 4. Logical models: business objects, keys, relationships, grain, joins.
-5. Response/view models: API/frontend fields, types, units, null rules, examples.
+5. Response/view models: API/frontend fields, types, units, numeric display contracts, null rules, examples.
 5a. Source replacement compatibility: old source, new source, unchanged response fields, additive fields, transform/default/null rules, and breaking/versioning decisions.
 6. Data-version/snapshot semantics: snapshot role, business time, snapshotDate/latestPeriod, loadBatch, dataVersion, freshness, invalidation/backfill, exposing response metadata, source fields/partitions, filter predicate mapping, and reuse rules when canonical/shared.
 7. Filter-support completeness: option source, row grain, fields, default/non-default states, empty/permission states, resolver/API branches.
-8. Metrics: formulas, dimensions, baselines, thresholds, reconciliation.
+8. Metrics: formulas, dimensions, baselines, thresholds, numeric display contracts, reconciliation.
 9. Transformation mapping: source -> logical -> response.
 10. Security rules: sensitivity, masking, field-level permission, no-permission behavior.
 11. Data-quality rules: uniqueness, completeness, enum validation, range checks, freshness.
@@ -118,7 +119,7 @@ Use this structure for the 数据模型文件:
 - Every response/view field traces to a source field, formula, or pending item.
 - Existing response/view contracts remain stable when source tables or data sources change; any drift is blocked unless explicitly versioned.
 - Additive fields are named and documented by convention before downstream API/front-end/test use.
-- Every metric in the indicator list has formula, grain, dimensions, and source dependency.
+- Every metric in the indicator list has formula, grain, dimensions, source dependency, and numeric display contract.
 - Data-version and snapshot semantics are explicit when current/latest/snapshot endpoints exist.
 - Data-version and scope params map to source fields, partitions, logical filters, precompute keys, or cache keys before response/view models are declared ready.
 - Filter-support completeness is documented before downstream `filterFields`, query params, or resolver params are accepted.

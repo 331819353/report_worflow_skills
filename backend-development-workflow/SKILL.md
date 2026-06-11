@@ -23,6 +23,7 @@ It owns data-service runtime boundaries, route/service/query layering, contracts
 
 | Stage | Skill |
 | --- | --- |
+| Python Flask SSO multi-database architecture | `$python-flask-sso-multidatabase-backend` |
 | API documentation | `$api-documentation-design` |
 | API contract validation | `$api-contract-validation` |
 | Data model/source mapping | `$data-model-source-mapping` |
@@ -40,9 +41,9 @@ Decide endpoint families, request context, response envelope, service/query/sour
 
 ## Workflow
 
-1. Inventory technical solution, API inventory, model/source mapping, metric口径, permissions, env/auth, and existing code.
+1. Inventory technical solution, API inventory, model/source mapping, metric口径, numeric display/precision contracts, permissions, SSO/token header contract, database role map, env/auth, and existing code.
 2. Run quality gates when source/API/model/frontend expectations conflict.
-3. Define data-service design: boundaries, layers, request context, response model, data-version contract, permission scope, cache/precompute, and observability.
+3. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, multi-database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope.
 4. Produce or update API documentation through `$api-documentation-design`.
 5. Validate contracts against frontend expectations, source samples, OpenAPI, mocks, routes, and runtime responses.
 6. Design transformation adapters for source-to-response and response-to-view-model compatibility.
@@ -55,7 +56,9 @@ Decide endpoint families, request context, response envelope, service/query/sour
 
 - Backend/data-service design or implemented service summary.
 - API documentation/contract status.
+- Python/Flask SSO and multi-database architecture when applicable: app factory, route/service/repository/db layers, token validation, 401/403, database role map, env vars, and pool ownership.
 - Source/model/adapter mapping and response compatibility notes.
+- Numeric precision/display contract: value type, raw/display unit, scale, precision, tooltip/export precision, rounding, null/zero/denominator-zero, and data-vs-presentation ownership.
 - Runtime model: pools, Redis/cache/precompute, timeout/fallback, export/async behavior, env/auth, health, logging, observability.
 - Code-ledger proof when backend source changed.
 - Verification commands, URL/smoke result, blockers, and readiness.
@@ -64,6 +67,9 @@ Decide endpoint families, request context, response envelope, service/query/sour
 
 - Do not implement routes from UI fields alone; trace endpoints to source/model/metric/permission contracts.
 - Existing API response fields are stable across source/table/upstream replacement unless a versioned breaking change is documented.
+- Existing numeric response semantics are stable across source/table/upstream replacement: type, raw unit, display unit, scale, precision, formula, nullability, denominator-zero behavior, and export precision cannot drift without a versioned change.
+- Python/Flask SSO + multi-database backends must separate API, service, repository, db engine/session, middleware, schema, and SQL-file responsibilities; do not place complex SQL, token validation, permission checks, and response formatting all inside route handlers.
+- SSO readiness requires backend token validation, clear `Access-Token`/optional `Application-Key` header contract, distinct 401 and 403 behavior, local user/role/permission mapping, and token/log redaction.
 - Data-bearing endpoints must use request/defaulted version params, backend-injected permission/data scope, source predicates or cache/precompute keys; echoing metadata is not enough.
 - Backend/data-service readiness needs diagnosable structured logs, connection release on errors/timeouts, env separation, and runtime verification.
 - Load `backend-development-gates.md` before implementing, documenting, or accepting backend/data-service work.

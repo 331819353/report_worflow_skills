@@ -4,11 +4,14 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite --mode development --host 0.0.0.0",
     "dev:auto": "node scripts/start-available-port.mjs --mode dev",
     "validate:dashboard": "node scripts/validate-dashboard-contract.mjs",
     "ledger:code": "node scripts/update-code-ledger.mjs",
-    "build": "npm run validate:dashboard && vue-tsc --noEmit && vite build",
+    "build": "npm run build:prod",
+    "build:preview": "npm run validate:dashboard && vue-tsc --noEmit && vite build --mode preview",
+    "build:test": "npm run validate:dashboard && vue-tsc --noEmit && vite build --mode test",
+    "build:prod": "npm run validate:dashboard && vue-tsc --noEmit && vite build --mode production",
     "preview": "vite preview --host 0.0.0.0",
     "preview:auto": "node scripts/start-available-port.mjs --mode preview"
   },
@@ -16,11 +19,15 @@
     "@lucide/vue": "^1.16.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "axios": "^1.17.0",
+    "dayjs": "^1.11.21",
     "echarts": "^6.1.0",
     "element-plus": "^2.14.1",
+    "pinia": "^3.0.4",
+    "sass": "^1.100.0",
     "typescript": "^5.6.3",
     "vite": "^6.0.1",
     "vue": "^3.5.13",
+    "vue-router": "^4.6.4",
     "vue-tsc": "^2.1.10"
   },
   "devDependencies": {

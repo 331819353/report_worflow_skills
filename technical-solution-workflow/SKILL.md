@@ -24,6 +24,7 @@ It does not implement backend APIs, frontend pages, SQL jobs, or tests unless th
 | Stage | Skill |
 | --- | --- |
 | Requirement normalization | `$report-requirement-structure-extraction` |
+| Python Flask SSO multi-database backend baseline | `$python-flask-sso-multidatabase-backend` |
 | UI/design baseline | `$frontend-design-improvement-workflow`, `$report-design-system-governance`, `$haier-enterprise-app-ui-design-spec` |
 | Data/source/model mapping | `$data-model-source-mapping` |
 | API inventory | `$api-inventory-design` |
@@ -41,15 +42,15 @@ Production-bound solutions should decide business capability, system context, lo
 
 ## Workflow
 
-1. Inventory inputs: requirements, source metadata, metric lists, prototype/mock contracts, API candidates, permissions, environments, constraints, and prior versions.
+1. Inventory inputs: requirements, source metadata, metric lists, numeric display expectations, prototype/mock contracts, API candidates, permissions, environments, constraints, and prior versions.
 2. Normalize rough inputs and classify delivery type: demo/prototype, internal tool, production report, platform service, migration/replacement, or mixed.
 3. Classify UI/design baseline for page-bearing work: report/dashboard, common enterprise app, or mixed.
 4. Run `$quality-gate-validation` when inputs conflict on source authority, metric口径, grain, field meaning, permission, UI baseline, architecture boundary, runtime assumption, or response shape.
 5. Build architecture views: business, system context, logical modules, data flow, integration/API, runtime/deployment, security, operations, and roadmap.
 6. Make technology-selection/ADR decisions with default stack and override reasons.
-7. Define data-service runtime model: sync/async boundary, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
+7. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy baseline when applicable, SSO/auth flow, multi-database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
 8. Define data architecture and source authority with `$data-model-source-mapping`.
-9. Define backend-friendly API boundaries, response compatibility, data-version/snapshot contract, and data-vs-presentation boundary.
+9. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract, data-version/snapshot contract, and data-vs-presentation boundary.
 10. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, and gap ledger when in scope.
 11. Build API inventory and implementation roadmap.
 12. Align versioned handoffs and run readiness gates before marking consumable.
@@ -60,7 +61,9 @@ Production-bound solutions should decide business capability, system context, lo
 - Architecture blueprint and ADR/technology-selection table.
 - UI/design baseline decision for page-bearing work.
 - Data-service runtime model and backend structured logging plan when backend/data-service is in scope.
+- Python/Flask SSO and multi-database backend baseline when applicable: app factory, Blueprints, middleware, service/repository/db layers, `Access-Token`/optional `Application-Key`, 401/403 split, SQLite/MySQL/Oracle/StarRocks roles, SQLAlchemy engine/session ownership, dependencies, tests, and deployment entrypoints.
 - Data architecture/source mapping and API/response compatibility plan.
+- Numeric precision/display plan for metric-bearing fields: value type, raw/display unit, scale, precision, tooltip/export precision, rounding, null/zero/denominator-zero, and formatter ownership.
 - Security/permission, data quality, performance, observability, test, release, rollback, and owner-action plan.
 - API inventory, model/metric/permission/quality references, gaps, version links, and readiness status.
 
@@ -69,5 +72,6 @@ Production-bound solutions should decide business capability, system context, lo
 - Do not hand off API清单 plus 数据模型 alone as a production-ready technical solution.
 - Do not hide unresolved source, metric, permission, runtime, deployment, ownership, or response-shape gaps as assumptions.
 - Do not mark page-bearing work ready without a UI/design baseline decision.
-- Do not mark backend/data-service work ready without runtime, performance, observability, error, and logging decisions.
+- Do not mark metric-bearing work ready without a numeric precision/display contract that can be consumed by API, frontend, export, and QA.
+- Do not mark backend/data-service work ready without runtime, stack, SSO/auth, database ownership, performance, observability, error, and logging decisions.
 - Load `05-technical-solution-gates.md` before finalizing a production-bound technical solution.

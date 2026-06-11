@@ -37,9 +37,9 @@ filters: [],
 
 ## Shared Layout Contract
 
-- This family follows `template-layout-design-system.md`; shared spacing, card radius, block-owned title/function placement, widget viewport, and hover/focus behavior are template-level design decisions.
+- This family follows `template-layout-design-system.md`; shared spacing, card radius, component title/control handoff, widget viewport, and hover/focus behavior are template-level design decisions.
 - Default right-content range is `0 -> 1032`; expanded sidebar is `256px`, collapsed sidebar is `80px`, and block gap is `contentGap: 16`.
-- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> body viewport -> `widget-renderer`; visible block titles and local controls are component-owned.
 - Card padding and card radius are both `8px`; `cellPadding` is `0` for the clean workbench-card surface.
 
 ## `nav[]` Content Gate

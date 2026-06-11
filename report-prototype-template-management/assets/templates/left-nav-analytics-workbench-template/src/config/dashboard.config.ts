@@ -17,7 +17,7 @@ export const cockpitConfig: DashboardConfig = {
     navTitle: '功能导航',
     // 筛选浮层标题。
     filterTitle: '查询筛选',
-    // 该框架按浅色企业分析台设计；如果改为 dark，需要同步调整 src/styles.css 的变量。
+    // 该框架按浅色企业分析台设计；如果改为 dark，需要同步调整 src/styles/index.scss 的变量。
     defaultTheme: 'light',
     // 左侧导航默认展开。用户点击底部“收起导航”后会折叠为图标栏。
     defaultNavOpen: true,
@@ -80,9 +80,9 @@ export const cockpitConfig: DashboardConfig = {
   // 11. filterScope 用来声明当前组件受哪些有 scope 的筛选项影响。
   //     组件的数据源用 filterFields 映射筛选字段；用 requiredFilters 防止漏配后静默失效；
   //     用 ignoredFilters + ignoredFilterReasons 显式声明组件不受某些全局筛选影响。
-  // 12. localFilters 用来声明组件标题区筛选，只过滤组件已加载 data，不作为接口参数。
-  //     标题带左侧为分块标题，右侧为功能区；功能区可放本地筛选或“查看详情”等轻量链接。
-  //     单个筛选且 2-4 个短选项、标题区放得下时显示滑动胶囊按钮；>4 个选项、长标签或放不下时显示下拉框；多个筛选组显示筛选面板。
+  // 12. localFilters 用来声明组件内部本地筛选，只过滤组件已加载 data，不作为接口参数。
+  //     可视标题、局部筛选、轻量链接等都由组件自己渲染，页面 Shell 只传递上下文和维护筛选值。
+  //     单个筛选、多个筛选组、详情入口等控件形态由组件根据自身布局决定。
   // 13. 弹窗、跳转、下钻等业务交互由组件内部自行实现。
   //     如需让外部系统感知组件事件，可 emit('dashboard-action', { name, payload })；
   //     壳层只转发到 actions/registry.ts 的同名钩子或 dashboardAction 兜底钩子。

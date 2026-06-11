@@ -40,7 +40,7 @@ filters: [],
 
 - This family follows `template-layout-design-system.md`; change shared spacing/radius/title placement there first, then apply it consistently to both light and dark assets.
 - Default content range is `88 -> 1064`; topbar height is `72px`; block gap is `contentGap: 14`.
-- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- Default block anatomy is `placeholder-cell` -> `placeholder-cell-inner` -> body viewport -> `widget-renderer`; visible block titles and local controls are component-owned.
 - Card padding and card radius are both `8px`; `cellPadding` is `0` for the clean enterprise-card surface.
 
 ## Adjustments

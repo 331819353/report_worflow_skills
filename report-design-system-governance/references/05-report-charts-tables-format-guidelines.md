@@ -749,16 +749,18 @@ Text:
 | Body | `14px` | `22px` | `text.secondary` / Haier fallback `#595959` |
 | Note | `12px` | `18px` | `text.tertiary` / Haier fallback `#8C8C8C` |
 
-Number format:
+Number format follows `11-number-precision-display-rules.md`. The table below is only the compact default for common report UI; metric dictionaries or project contracts can override it with explicit `NumericFormatContract` evidence.
 
 | Type | Rule | Example |
 | --- | --- | --- |
-| Negative / change value | Color by metric direction and business meaning, not raw sign alone; Chinese report rate/change indicators default to positive-red-up and negative-green-down | `-1,234` |
-| Rate | YoY/completion no decimal | `86%` |
-| Number | Thousands separator, no decimal | `1,234,567` |
-| Amount | Thousands separator, business unit | `1,234 万元` |
-| Empty | `-` | `-` |
-| Extreme anomaly | Follow口径, display `-` or prompt | `-` |
+| Negative / change value | Color by metric direction and business meaning, not raw sign alone; avoid rounded `-0` | `-1,234` |
+| Count / integer | Thousands separator, no decimal | `1,234,567` |
+| Amount | Declare raw unit, display unit, scale, and precision | `1,234.5 万元` |
+| Percent / rate | Display `%`; main UI precision follows contract, default `0-1`, tooltip default `2` | `86.5%` |
+| Small non-zero share | Show configured threshold when rounded zero would hide meaning | `<0.1%` |
+| Empty / null | Missing data displays `--`; true zero displays `0` | `--` |
+| Denominator zero | Display `--` or `不可计算`, with tooltip explanation | `--` |
+| Extreme anomaly | Follow口径; never show raw `NaN`, `Infinity`, or `undefined` | `--` |
 
 Date/time:
 

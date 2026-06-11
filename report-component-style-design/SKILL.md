@@ -45,7 +45,7 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 
 1. Classify the component family, business purpose, data grain, viewport/container size, interaction state, and priority.
 2. Load `00-component-reference-index.md`, shared foundation, the matching component reference, and the matching placement reference only.
-3. Confirm the data and decision contract before styling: metric/formula, field grain, source/freshness, filter scope, exact-value path, state set, and next action.
+3. Confirm the data and decision contract before styling: metric/formula, field grain, source/freshness, numeric display contract, filter scope, exact-value path, state set, and next action.
 4. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
 5. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.
 6. Run the component acceptance gates when the output is implementation-ready or when a visual defect may hide decision evidence.
@@ -54,7 +54,7 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 ## Required Output
 
 - Component family and loaded reference files.
-- Business/data contract: purpose, grain, key fields, formulas/units, source/freshness, filters, exact-value path, and owner/action path.
+- Business/data contract: purpose, grain, key fields, formulas/units, numeric display contract, source/freshness, filters, exact-value path, and owner/action path.
 - Placement rules: container variables, slots, alignment, size tiers, responsive degradation, and state geometry.
 - Visual and interaction rules: tokens, labels, legends, tooltips, hover/focus, overflow, disclosure, and accessibility.
 - Acceptance result: `ready`, `partial`, or `blocked`, with `DESIGN-*`, `RPT-*`, `VIS-*`, or implementation gaps when relevant.
@@ -64,7 +64,8 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 - Do not style a component before the business purpose, data grain, key fields, filter scope, and interaction state are known.
 - Implementation-ready specs must include measurable placement rules, not only CSS layout or visual adjectives.
 - Component-internal filters must be current-component or declared local-group scoped; they cannot silently change page/global scope, backend aggregation, pagination, export scope, permission scope, or other components.
-- Report components must preserve decision evidence: metric口径, source/freshness, unit/precision, baseline, exact values, drilldown/detail/export/action path, and realistic data states.
+- Report components must preserve decision evidence: metric口径, source/freshness, numeric display contract, baseline, exact values, drilldown/detail/export/action path, and realistic data states.
+- Metric-bearing components must declare value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter ownership; arbitrary decimals or component-local `toFixed` assumptions are not accepted.
 - Standard ECharts charts must be implemented with ECharts-owned options/series/runtime behavior; do not hand-draw standard charts while importing ECharts.
 - SVG/canvas/ECharts/custom geometry must preserve aspect ratio and must not stretch, squeeze, or distort business shapes.
 - Do not use generic AI/SaaS polish, decorative gradients/glass/glow, oversized radius, vague copy, or ornamental motion when it competes with data reading.

@@ -1,4 +1,4 @@
 interface:
   display_name: "报表组件风格设计"
-  short_description: "设计、评审或修复报表组件视觉与响应式行为，覆盖KPI、洞察、图表、表格、筛选、组合面板、状态和防裁切。"
-  default_prompt: "Use $report-component-style-design for report component visual design, fit, placement, chart/table/KPI readability, local controls, states, overflow, aspect-ratio, and implementation-ready acceptance gates."
+  short_description: "设计、评审或修复报表组件视觉与响应式行为，覆盖KPI、洞察、图表、表格、筛选、数值精度、组合面板、状态和防裁切。"
+  default_prompt: "Use $report-component-style-design for report component visual design, fit, placement, chart/table/KPI readability, numeric precision/display contracts, local controls, states, overflow, aspect-ratio, and implementation-ready acceptance gates."

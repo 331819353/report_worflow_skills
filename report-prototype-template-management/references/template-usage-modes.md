@@ -43,19 +43,19 @@ Use when:
 Required changes:
 
 - Copy `assets/templates/<template-id>/` into the project.
-- Use `template-layout-design-system.md` before changing template-level spacing, block padding, card radius, block-owned title/function placement, content range, or shell hover/focus behavior.
+- Use `template-layout-design-system.md` before changing template-level spacing, block padding, card radius, component title/control handoff, content range, or shell hover/focus behavior.
 - Edit `src/config/dashboard.config.ts` for title, theme, navigation, `layoutRows`, `widgets`, global filters, and toolbar labels, but preserve the copied template's native nav/page shape, filter trigger/panel/popover pattern, toolbar placement, theme fields, and logo slot.
 - Adapt requirement-document title/filter/navigation/toolbar requirements into the copied template's existing config slots. Do not add a second title area, standalone filter bar, extra sidebar, or duplicate toolbar unless the task is explicitly a template-level redesign.
 - Put mock/static data in `src/data/dashboard.dataset.json`. Do not create generated `src/widgets/*Data.ts`, `src/data/*.ts`, or other TS fixture modules for rows, arrays, or payloads.
 - Register business widgets in `src/widgets/types.ts` and `src/widgets/registry.ts`.
 - Implement visual components under `src/widgets/components/`.
 - Bind widgets through `widget.data.id` and either `widget.data.params.key` for JSON mode or `widget.data.api` for standard API mode.
-- Bind component-title filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run only on the component's already loaded data. The block-owned title/function band keeps title left and function area right: one local filter with `2-4` short values and fit proof uses a sliding capsule, one local filter with `>4` values, long labels, or failed fit uses dropdown, multiple local filter groups use a filter panel trigger, and detail links stay lightweight in the right function area. `localFilters[]` must not replace template `filters[]`, page/global scope, permission scope, backend aggregation, pagination, export scope, or other widgets.
+- Bind component-local filters through `localFilters[].field`, `valueField`, and `labelField`; these filters run only on the component's already loaded data. Visible titles, local filter controls, and detail links are rendered by the component using the context values and setters supplied by the shell. `localFilters[]` must not replace template `filters[]`, page/global scope, permission scope, backend aggregation, pagination, export scope, or other widgets.
 - Before binding global/page filters, prove data completeness: options, business/API rows, required fields, default and non-default states, empty/no-permission states, and resolver/API branches exist for every affecting filter.
 - Bind global/page filters that affect widgets through `widget.data.filterFields`, `requiredFilters`, API query/body params, or resolver params. Do not put an affecting filter in `ignoredFilters`.
 - Configure `actions` only as event forwarding or integration hooks; component-level popup, navigation, drilldown, and detail behavior stays inside the component.
 - Add, remove, or relabel navigation/filter items through the template's existing `nav`/`page` and `filters` arrays. Do not create a new standalone sidebar, top navigation, filter bar, or filter drawer unless the task is explicitly a template-level redesign.
-- Treat "筛选工具栏", "主筛选栏", and "filter bar" wording as a filter contract request, not a visual-surface request. Implement it through `filters[]`, native template filter invocation, local title-band filters, and filter-to-widget binding.
+- Treat "筛选工具栏", "主筛选栏", and "filter bar" wording as a filter contract request, not a visual-surface request. Implement it through `filters[]`, native template filter invocation, component-owned local filters, and filter-to-widget binding.
 - When `screen.defaultTheme` is `dark`, the logo variant, grid/card surfaces, Element Plus controls, and component scoped backgrounds must follow the same dark token system as the shell; do not leave default white cards, `ElSelect`/`ElInput`/date-picker surfaces, or popovers in a dark page.
 
 Data options:
@@ -85,7 +85,7 @@ Use when:
 
 Implementation rules:
 
-- Preserve the selected template's shell and block contract: logo slot, shell title/control area, navigation model, filter mechanism, `8 * N` grid, block-owned title/function area, widget viewport, local filter tools, and action hook boundary.
+- Preserve the selected template's shell and block contract: logo slot, shell title/control area, navigation model, filter mechanism, `8 * N` grid, widget viewport, component-owned title/control/local filter tools, and action hook boundary.
 - Use the built-in `apiData` / `httpData` config for ordinary REST/BFF endpoints; templates use a shared axios instance with request/response interceptors under this data-source boundary. Move complex provider calls into `src/dataSources/registry.ts` or the existing project's equivalent service layer; do not scatter axios or legacy fetch calls inside widgets.
 - Keep adapters at the data-source boundary so widgets receive stable rows/props.
 - Global/page-level filters must be passed through `api.query`, `api.body`, or the provider resolver before shaping component data. Component-title `localFilters` may filter only the already fetched component dataset.

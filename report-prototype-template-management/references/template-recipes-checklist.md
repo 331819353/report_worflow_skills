@@ -23,7 +23,7 @@ Use this file for common adjustments and final verification after changing a tem
 1. Edit `layoutRows`.
 2. Keep 8 columns per row unless the template explicitly supports another grid.
 3. Keep repeated characters rectangular.
-4. Read `template-layout-design-system.md` when changing `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, or content range.
+4. Read `template-layout-design-system.md` when changing `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, component title/control handoff, or content range.
 5. Calculate the actual block width/height with `$report-visual-layout-design`.
 6. Verify each span can hold its chart/table/KPI/composite content at the target viewport size.
 7. Keep or add vertical scrolling when the report needs more rows than the first viewport can show.
@@ -66,7 +66,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Read/create the target source file ledger before editing `src/styles.css` or a widget scoped style; append after editing with style range, affected component state, and screenshot/build verification.
 - Shell-level changes go in `src/styles.css`.
 - Widget-level changes go in the widget scoped style.
-- Shared template layout style such as block gap, card radius, block-owned title/function band, cell padding, and hover/focus feedback follows `template-layout-design-system.md`.
+- Shared template layout style such as block gap, card radius, component title/control handoff, cell padding, and hover/focus feedback follows `template-layout-design-system.md`.
 - Keep Haier blue/white as the primary style for ordinary report pages.
 - For sci-fi, keep a dark cockpit theme with controlled semantic colors.
 
@@ -75,7 +75,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Template choice matches report scope and usage scenario.
 - Logo variant matches background.
 - `dashboard.config.ts` owns layout, filters, widgets, actions, and assets.
-- Each block-owned title/function band follows the default structure: left-aligned title plus right function area. Right function area uses capsule for one component-local filter with `2-4` short values and fit proof, dropdown for one local filter with `>4` values, long labels, or failed fit, filter panel for multiple local filter groups, and lightweight links for detail actions.
+- Each component-owned title/control area follows a stable structure chosen by the component: title remains readable; component-local filters use capsule/dropdown/panel rules by option count and fit; lightweight links cover detail actions.
 - Business data is not stored directly in config.
 - Standard API endpoints are configured with `apiData` / `httpData`; custom resolvers are reserved for complex providers.
 - Every widget has `visualType`.
@@ -89,7 +89,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Non-default primary filter states visibly change affected widget data in JSON/API/resolver mode, or the widget is clearly labeled static/invariant.
 - Non-default perspective states update metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, and口径 when specified by `componentSchemaImpact`; value-only changes are not enough.
 - Block spans match the size and component-count constraints from `$report-visual-layout-design`.
-- Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and 32px block-owned title/function band.
+- Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and component-owned title/control handoff.
 - Outer block validation does not replace component-internal fit checks. Composite widgets must be reviewed with `$report-component-style-design` for summary columns, nested KPI grids, text wrapping, min-height, and no critical nowrap/ellipsis clipping.
 - Composite widget no-data masks are scoped by child data states: if all child sub-blocks are no-data, show one parent-block mask; if only some child sub-blocks are no-data, mask only those sub-blocks and include their title/control area plus component body.
 - `1920 * 1080` and `1280 * 768` are used as viewport checks, not total report height caps.

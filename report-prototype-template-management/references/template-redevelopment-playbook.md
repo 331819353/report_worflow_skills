@@ -15,8 +15,8 @@ Use this file when building a new business report from a copied template or heav
    - Use 8 characters per row.
    - Use repeated characters for rectangular merged blocks.
    - Keep block ids stable.
-   - Use `template-layout-design-system.md` before changing shared template layout tokens such as `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, title band, content range, or hover/focus surfaces.
-   - Keep the shared block anatomy: grid block -> card frame -> 32px title band -> body viewport -> `widget-renderer`.
+   - Use `template-layout-design-system.md` before changing shared template layout tokens such as `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, component title/control handoff, content range, or hover/focus surfaces.
+   - Keep the shared block anatomy: grid block -> card frame -> body viewport -> `widget-renderer`.
    - Before finalizing `layoutRows`, calculate each block's actual size with `$report-visual-layout-design`.
    - Check whether the block can safely hold its component count and component mix at the `1920 * 1080` and `1280 * 768` viewport baselines.
    - Let `layoutRows` grow when the report needs more content; do not cap the report at one viewport.

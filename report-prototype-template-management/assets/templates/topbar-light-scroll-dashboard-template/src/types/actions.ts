@@ -21,7 +21,7 @@ export interface DashboardRuntimeContext {
   allFilters?: Record<string, string>;
   // 当前组件声明的筛选作用域。空数组表示只接收全局筛选。
   filterScope?: string[];
-  // 组件标题区本地筛选值，只作用于当前组件已加载数据，不参与接口或数据源传参。
+  // 组件内部本地筛选值，只作用于当前组件已加载数据，不参与接口或数据源传参。
   localFilters?: Record<string, string>;
 }
 

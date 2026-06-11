@@ -84,22 +84,22 @@ Avoid shell replacement in generated projects:
 
 Layout design rules:
 
-- Use `template-layout-design-system.md` for shared page layout, block spacing, block inner padding, radius, block-owned title/function band, hover/focus, and template-token decisions.
+- Use `template-layout-design-system.md` for shared page layout, block spacing, block inner padding, radius, component-owned title/control handoff, hover/focus, and template-token decisions.
 - Change layout tokens through `dashboard.config.ts` first: `contentGap`, `contentStartY`, `contentEndY`, `rowHeight`, `cellPadding`, `dominantTitleColor`, and `innerBackgroundColor`.
-- Keep the common block anatomy: `placeholder-cell` -> `placeholder-cell-inner` -> 32px title band -> body viewport -> `widget-renderer`.
+- Keep the common block anatomy: `placeholder-cell` -> `placeholder-cell-inner` -> body viewport -> `widget-renderer`.
 - For composite parent blocks, keep the same outer anatomy and define internal sub-blocks inside `widget-renderer`; use `padding: 5px` for parent-to-sub-block inset and `gap: 5px` between sub-blocks. Do not create additional `layoutRows` cells or nested card shells for sub-blocks.
-- Do not solve business-widget density by rewriting template shell padding, block-owned title/function band height, or card radius. Route component fit to `$report-component-style-design`.
+- Do not solve business-widget density by rewriting template shell padding or card radius. Route component title/control/body fit to `$report-component-style-design`.
 
 Filter binding rules:
 
-- Template filter UI is shell-owned. Add, remove, relabel, source, and scope global/page filters through `filters[]`; bind component-local title-band controls through `localFilters[]`.
+- Template filter UI is shell-owned only for global/page filters. Add, remove, relabel, source, and scope global/page filters through `filters[]`; bind component-local controls through `localFilters[]` and render those controls inside the component.
 - Template `filters[]` is only for horizontal constraints that preserve the same component schema, metric set, table headers, and metric口径 while narrowing row scope.
 - Business domain, report theme, management object, subject area, or first-level perspective belongs in `nav[]`, page route, tab/view segment, or explicit perspective state when it changes metric names, component collection, table headers, dimensions,口径, or domain vocabulary.
 - Controls with schema impact must declare `controlSemantics: perspective-switch` and `componentSchemaImpact` in the binding matrix and implementation handoff.
 - `filterData` option `meta` is for static dimensional attributes only: aliases, sort order, permission, description, icon, stable category, disabled reason, or UI hints.
 - Do not store dynamic KPI values, percentages, rankings, status lights, satisfaction scores, completion rates, or risk scores in `filterData.meta`. Perspective-navigation indicators must come from `businessData`, aggregate datasets, API/provider fields, or custom resolvers with lineage.
-- Block-owned title/function bands use a left title and right function area. Use the right function area for `localFilters[]`, filter-panel triggers, and lightweight links such as `查看详情` / `查看明细`; do not add a second widget header for these controls.
-- `localFilters[]` display rules: one component-local filter with `2-4` short values and fit proof uses sliding capsule/segmented pill; one local filter with `>4` values, long labels, or failed width fit uses compact dropdown/select; multiple local filter groups use a filter panel/popover/drawer trigger with active count or summary.
+- Component-owned title/control areas use a clear title and compact function area when needed. Use that component area for `localFilters[]`, filter-panel triggers, and lightweight links such as `查看详情` / `查看明细`; the template shell must not add its own title band for these controls.
+- `localFilters[]` display rules inside the component: one component-local filter with `2-4` short values and fit proof uses sliding capsule/segmented pill; one local filter with `>4` values, long labels, or failed width fit uses compact dropdown/select; multiple local filter groups use a filter panel/popover/drawer trigger with active count or summary.
 - `localFilters[]` affect only the current widget's already loaded data. They must not replace template `filters[]`, page/global scope, permission scope, backend aggregation, pagination, export scope, or other widgets.
 - If a global/page filter should affect a widget, configure `widget.data.filterFields`, `requiredFilters`, API query/body mapping, or a custom resolver param.
 - Use `widget.data.ignoredFilters` only for widgets that are intentionally invariant under that filter. Record each scope reason in `widget.data.ignoredFilterReasons`; do not use it because mock rows lack the filter field or because the resolver is missing.

@@ -1,4 +1,4 @@
 interface:
   display_name: "报表设计系统治理"
-  short_description: "创建、审计、合并、应用和验收报表设计系统，覆盖页面规范、组件规范、tokens、状态、工程和治理。"
-  default_prompt: "Use $report-design-system-governance to create, audit, merge, apply, or validate reusable report design-system standards across page layout, components, charts, tables, filters, states, tokens, QA, and governance."
+  short_description: "创建、审计、合并、应用和验收报表设计系统，覆盖页面规范、组件规范、tokens、数值精度、状态、工程和治理。"
+  default_prompt: "Use $report-design-system-governance to create, audit, merge, apply, or validate reusable report design-system standards across page layout, components, charts, tables, numeric precision/display contracts, filters, states, tokens, QA, and governance."
