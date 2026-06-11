@@ -1,4 +1,4 @@
 interface:
   display_name: "前端功能说明文档"
   short_description: "从前端源码、数据源绑定、交互和运行验证沉淀功能说明"
-  default_prompt: "Use $frontend-function-description-documentation to produce a frontend feature description from source code, data-provider bindings, routes, filters, interactions, and verification notes."
+  default_prompt: "Use $frontend-function-description-documentation to produce a frontend feature description from source code, sidecar code ledgers with feature/code-range/modified-content/version records, data-provider bindings, routes, filters, interactions, and verification notes."

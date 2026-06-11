@@ -19,6 +19,7 @@ Use this file for common adjustments and final verification after changing a tem
 
 ### Change Layout Blocks
 
+0. Run `npm run ledger:code -- --file src/config/dashboard.config.ts --stage before` and read the sidecar ledger before editing.
 1. Edit `layoutRows`.
 2. Keep 8 columns per row unless the template explicitly supports another grid.
 3. Keep repeated characters rectangular.
@@ -27,18 +28,21 @@ Use this file for common adjustments and final verification after changing a tem
 6. Verify each span can hold its chart/table/KPI/composite content at the target viewport size.
 7. Keep or add vertical scrolling when the report needs more rows than the first viewport can show.
 8. Rename widget keys to match changed block ids.
-9. Run `npm run validate:dashboard`.
+9. Append the config ledger entry with changed layout ranges and affected widget/filter contracts.
+10. Run `npm run validate:dashboard`.
 
 ### Add A Data-Bound Widget
 
-1. Create/register the widget.
-2. Add static/mock rows in `src/data/dashboard.dataset.json`, configure `widget.data.id: 'apiData'` with `widget.data.api`, or register a custom API/provider resolver in `dataSources/registry.ts` for complex providers. Do not create TS fixture modules for mock rows.
-3. Verify data completeness before binding filters: every affecting primary/global filter has option rows, matching business rows or API/resolver support, required fields, default and non-default states, and empty/no-permission coverage when relevant.
-4. Configure `widget.data`.
-5. Add `filterFields`, `requiredFilters`, API params, resolver params, or `requiredParams` for every affecting global/page filter. Use `ignoredFilters` plus `ignoredFilterReasons` only for filters the widget intentionally does not consume.
-6. If mock/offline mode is used, ensure non-default filter values return different rows or values when the business state should change; add a custom resolver when plain rows cannot model the scenario.
-7. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
-8. Render from the `data` prop inside the widget.
+1. Read/create sidecar ledgers before editing each planned source file, usually `dashboard.config.ts`, `dashboard.dataset.json`, `src/widgets/types.ts`, `src/widgets/registry.ts`, and the new component file.
+2. Create/register the widget.
+3. Add static/mock rows in `src/data/dashboard.dataset.json`, configure `widget.data.id: 'apiData'` with `widget.data.api`, or register a custom API/provider resolver in `dataSources/registry.ts` for complex providers. Do not create TS fixture modules for mock rows.
+4. Verify data completeness before binding filters: every affecting primary/global filter has option rows, matching business rows or API/resolver support, required fields, default and non-default states, and empty/no-permission coverage when relevant.
+5. Configure `widget.data`.
+6. Add `filterFields`, `requiredFilters`, API params, resolver params, or `requiredParams` for every affecting global/page filter. Use `ignoredFilters` plus `ignoredFilterReasons` only for filters the widget intentionally does not consume.
+7. If mock/offline mode is used, ensure non-default filter values return different rows or values when the business state should change; add a custom resolver when plain rows cannot model the scenario.
+8. For line, area, and category-axis charts, sort row tuples first and derive labels, values, tooltip payloads, and click payloads from the same sorted rows.
+9. Render from the `data` prop inside the widget.
+10. Append sidecar ledger entries for every changed source file with feature list, code ranges, affected data/filter/API contracts, and verification.
 
 ### Add Or Change First-Level Perspective
 
@@ -59,9 +63,10 @@ Use this file for common adjustments and final verification after changing a tem
 
 ### Change Visual Style
 
+- Read/create the target source file ledger before editing `src/styles.css` or a widget scoped style; append after editing with style range, affected component state, and screenshot/build verification.
 - Shell-level changes go in `src/styles.css`.
 - Widget-level changes go in the widget scoped style.
-- Shared template layout style such as block gap, card radius, block title band, cell padding, and hover/focus feedback follows `template-layout-design-system.md`.
+- Shared template layout style such as block gap, card radius, block-owned title/function band, cell padding, and hover/focus feedback follows `template-layout-design-system.md`.
 - Keep Haier blue/white as the primary style for ordinary report pages.
 - For sci-fi, keep a dark cockpit theme with controlled semantic colors.
 
@@ -70,7 +75,7 @@ Use this file for common adjustments and final verification after changing a tem
 - Template choice matches report scope and usage scenario.
 - Logo variant matches background.
 - `dashboard.config.ts` owns layout, filters, widgets, actions, and assets.
-- Each block title band follows the default structure: left-aligned title plus right function area. Right function area uses capsule for one local filter with `< 3` values, dropdown for one local filter with `>= 3` values, filter panel for multiple filters, and lightweight links for detail actions.
+- Each block-owned title/function band follows the default structure: left-aligned title plus right function area. Right function area uses capsule for one component-local filter with `2-4` short values and fit proof, dropdown for one local filter with `>4` values, long labels, or failed fit, filter panel for multiple local filter groups, and lightweight links for detail actions.
 - Business data is not stored directly in config.
 - Standard API endpoints are configured with `apiData` / `httpData`; custom resolvers are reserved for complex providers.
 - Every widget has `visualType`.
@@ -84,12 +89,13 @@ Use this file for common adjustments and final verification after changing a tem
 - Non-default primary filter states visibly change affected widget data in JSON/API/resolver mode, or the widget is clearly labeled static/invariant.
 - Non-default perspective states update metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, and口径 when specified by `componentSchemaImpact`; value-only changes are not enough.
 - Block spans match the size and component-count constraints from `$report-visual-layout-design`.
-- Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and 32px block title band.
+- Layout tokens match the selected template family or deviations are documented: content range, `contentGap`, `rowHeight`, `cellPadding`, card padding/radius, and 32px block-owned title/function band.
 - Outer block validation does not replace component-internal fit checks. Composite widgets must be reviewed with `$report-component-style-design` for summary columns, nested KPI grids, text wrapping, min-height, and no critical nowrap/ellipsis clipping.
 - Composite widget no-data masks are scoped by child data states: if all child sub-blocks are no-data, show one parent-block mask; if only some child sub-blocks are no-data, mask only those sub-blocks and include their title/control area plus component body.
 - `1920 * 1080` and `1280 * 768` are used as viewport checks, not total report height caps.
 - Layout blocks do not clip titles, legends, charts, tables, empty states, or controls.
 - `npm run validate:dashboard` runs after the minimal required dependencies are installed.
+- Every changed source file has a sidecar code ledger under `__change_logs__`, the ledger was read before editing, and a post-change version entry records feature/function list, changed code ranges, affected widget/data/filter/API contracts, verification, and rollback notes.
 - If npm dependency installation is blocked by domestic network access, retry with a temporary command-level mirror such as `npm install --registry=https://registry.npmmirror.com` or `npm install <package-name> --registry=https://registry.npmmirror.com`; if unavailable, replace the registry URL with `https://npm.aliyun.com/`, `https://mirrors.cloud.tencent.com/npm/`, `https://mirrors.ustc.edu.cn/npm/`, or `https://mirrors.tuna.tsinghua.edu.cn/npm/`. Do not persist registry changes unless explicitly requested.
 - `npm run build` runs before handoff when implementation code changed.
 - A local dev/preview URL is started and verified when a runnable project is part of the task.

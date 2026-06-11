@@ -6,7 +6,7 @@ Use this file when one `8 * N` parent content block needs to contain internal su
 
 At the page grid level, one parent block is still one rectangular `8 * N` grid occupant. Inside that parent block, the layout may define internal sub-blocks. Each internal sub-block may contain one component or one tightly related micro-group.
 
-Do not treat internal sub-blocks as separate page-grid blocks. They live inside the parent block body viewport and respect the parent block's padding, title area, and overflow strategy.
+Do not treat internal sub-blocks as separate page-grid blocks. They live inside the parent block body viewport and respect the parent block's padding, block-owned title/function area, and overflow strategy.
 
 Before deciding to create sub-blocks, choose the parent span from the default distribution in `grid-containers.md`, then check the usable pixel size in `block-size-constraints.md`. Parent blocks must have enough space for the dominant sub-block plus internal labels, controls, dividers, legends, gaps, and states.
 
@@ -15,7 +15,7 @@ Hierarchy:
 ```text
 page content grid: 8 * N
   parent block: rectangular page-grid occupant
-    parent title/action band: one business title for the whole parent block
+    parent block-owned title/action band: one business title for the whole parent block
     parent body viewport
       internal sub-block grid/flex layout
         sub-block: stable local viewport
@@ -46,20 +46,23 @@ Create internal sub-blocks inside one parent block when they answer one business
 
 - KPI number + sparkline + target gap.
 - Conclusion text + evidence chart.
+- Analysis & Insight card + evidence chart/table, where the insight carries `analysisInsightContract` and stays subordinate to the evidence unless the block is explicitly a written review.
 - Chart + compact ranking/list.
 - Map + regional risk legend.
 - Table + row-level mini summary.
 - Main chart + small reason tags.
 - Two alternate views shown by tabs or segmented control.
+- Composite Panel: one shared topic with KPI/metric strip, one primary child, one or two auxiliary children, optional short detail preview, shared local filter, shared legend/unit, and linked hover/click behavior.
 
 Split into separate `8 * N` parent blocks when:
 
 - The sub-blocks/components answer different business questions.
-- Each sub-block/component needs its own independent title, filters, actions, or drilldown path; independent visible titles usually mean the content should become separate layout-owned parent blocks.
+- Each sub-block/component needs its own independent title, filters, actions, or drilldown path; independent visible titles usually mean the content should become separate page-grid parent blocks, each with its own block-owned title/function area.
 - The body becomes too dense for readable labels, legends, or table columns.
 - Internal scroll becomes the primary way to use the block.
 - A sub-block/component needs more space than the parent block can safely provide.
 - The combined sub-block/component count exceeds the limits in `block-size-constraints.md`.
+- The intended Composite Panel lacks one primary child, has unrelated child questions, or needs more than four visible analytical child components without a split/tab/fullscreen reason.
 
 ## Title Design
 
@@ -125,6 +128,12 @@ Body:
 
 Use when the text and chart must be read together.
 
+Analysis & Insight version:
+
+- The insight sub-block declares `analysisInsightContract`, one main conclusion, evidence pointer, affected object, and action/trust/source/freshness when relevant.
+- If placed beside a chart, use `insightW = clamp(200px, W * 0.28, 320px)` and keep the insight area within `25%` of the parent block unless this is an explanation-first review block.
+- Chart annotations are not separate sub-blocks; they live in the chart coordinate layer, max `3` visible, with bounded bubbles that do not cover axes, legends, selected marks, or the data point they explain.
+
 ### 3. Chart Plus Ranking
 
 Header: dimension comparison question.
@@ -136,7 +145,20 @@ Body:
 
 Use 5+3, 6+2, or vertical split depending on the parent block shape.
 
-### 4. Tabs Or Segmented Views
+### 4. Composite Panel
+
+Header: one shared business topic, with at most one panel-level local filter group in the right function area.
+
+Body:
+
+- Optional metric strip: 1-3 metrics that summarize the whole panel.
+- Primary child: main chart/table/KPI evidence, visibly largest.
+- Auxiliary child: Top list, composition, small chart, insight, or status summary.
+- Optional detail preview: 3-6 rows and 3-5 columns, with a route to full detail when needed.
+
+Use when the panel answers one small loop such as current result -> trend -> driver -> exception/detail. Keep default children at 2-3 and normal maximum at 4. If all children feel equally important, the block is not ready; choose a primary child or split the panel.
+
+### 5. Tabs Or Segmented Views
 
 Header:
 
@@ -150,7 +172,7 @@ Body:
 
 Use when views are alternatives, not simultaneous evidence.
 
-### 5. Dense Table With Summary Strip
+### 6. Dense Table With Summary Strip
 
 Header: table question and table actions.
 

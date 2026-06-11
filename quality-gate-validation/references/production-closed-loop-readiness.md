@@ -16,6 +16,8 @@ Production delivery is closed only when these links are traceable:
 6. Testing integration -> executable cases, evidence-backed results, defects routed to owner workflows.
 7. Repair workflow -> retest evidence, status update, and closure criteria.
 
+For any stage that creates or changes frontend, backend, or runnable prototype source code, file-level code change ledgers are part of the closed loop. Each changed scoped code file must have a sidecar ledger that was read before editing and appended after editing with version, feature list, changed code ranges, affected contracts, verification, and rollback notes.
+
 If any link is missing, the stage may still be `partial`, but it is not production-closed.
 
 ## Production Readiness Dimensions
@@ -32,6 +34,8 @@ Check these dimensions before marking a technical solution, data service, or tes
 - Report data-visualization frontend readiness: apply `$frontend-development-workflow` for report/BI/dashboard frontends; user purpose, first-screen conclusion, chart/table choice, metric formatting/口径, filters/linkage/drill-through, provider mapping, state coverage, freshness/quality display, frontend performance controls, theme/accessibility, and runtime QA evidence are documented or implemented.
 - Report integration testing readiness: apply `$testing-integration-workflow` for report/BI/dashboard integration, UAT, release acceptance, or retest closure; metric口径, golden/baseline data, model reconciliation, API/backend behavior, frontend binding, filters, permissions, cache isolation, export parity, performance/stability, exception states, UAT/smoke, monitoring, rollback, regression, automation scope, and defect retest evidence are documented or executed for the stated scope.
 - Reliability and observability: logging, request IDs, metrics, traces, health checks, timeout/retry, upstream failure handling, alert owner, and SLA/SLO where needed.
+- Code change traceability: every changed frontend/backend/prototype source file has a sidecar `__change_logs__/<file>.changes.md` ledger, pre-change read evidence, post-change version entry, changed code ranges/stable anchors, affected API/props/events/env/data/filter/logging contracts, verification, and rollback notes.
+- Backend logging depth: structured backend logs include requestId/traceId, service/env/version, route/method/status/latency, safe user/tenant/role hash where allowed, report/widget/query/dataVersion context when relevant, cache/source/pool/export/job indicators, sanitized error code/summary, redaction rules, slow-query/report thresholds, and log level/config controls.
 - Performance and capacity: apply `$performance-optimization`; expected volume, latency target, concurrency/thread/worker model, Redis/cache/precompute rule with key/TTL/invalidation/fallback/observability details when used, pagination/export limits, max page size, total-count strategy, source-side filter/sort/page execution, component-local filter boundary, database/upstream/cache connection-pool behavior including `ApiError`/timeout/exception release/close evidence, full-materialize-then-filter absence for global scope, slow-query risk, async/offline job strategy for long-running work, timeout/retry/circuit-breaker/fallback behavior, rate/concurrency limits, overload handling, and batch/async behavior.
 - SQL query readiness: apply `$performance-optimization` for database-backed data-service APIs; projection, sargable predicates, join cardinality, dedup/order necessity, pagination/keyset strategy, aggregation/window placement, dynamic filter generation, and `EXPLAIN` / slow-query evidence are documented for risky P0/high-volume queries.
 - Testability: seed data, SQLite fixture database when simulated API data is used, test account/role, executable case matrix, smoke checks, API/display consistency checks, filter/pagination/permission/export cases, and visual regression evidence.
@@ -58,6 +62,8 @@ Do not add child skills mechanically. Add the skill when its trigger condition e
 
 Do not mark production readiness `ready` when any of these are unknown for a production-bound scope: authoritative source, P0 metric口径, auth/permission, API version/contract, runtime URL/health, `.env.production` profile/config evidence, report data-visualization frontend evidence when report UI is in scope, report integration testing evidence when report acceptance is in scope, performance/resilience decisions, rollback path, or retest criteria for open blocker/major defects.
 
+Do not mark implementation readiness `ready` when changed frontend/backend/prototype code files lack sidecar code ledgers with pre-change read evidence and post-change version entries. Do not mark backend/data-service production readiness `ready` when request/query/cache/pool/export/error logs cannot be correlated by requestId/traceId or are missing redaction and slow-query/report thresholds.
+
 ## Required Production Handoff
 
 For technical architecture / technical solution:
@@ -79,6 +85,8 @@ For data service / backend:
 - Runtime backend URL or startup blocker.
 - Health/smoke evidence, contract validation, source mode, transformation validation, auth behavior, and missing-info document.
 - Report data-service backend evidence when applicable: report metadata/version source, query-chain layer mapping, whitelist and parameter validation behavior, permission/tenant/cache safety, component-ready response metadata, freshness/quality fields, export lifecycle, audit logs, and monitoring/slow-report signals.
+- Code file ledger proof for changed backend files: ledger path, pre-change read/create status, appended version, route/service/repository/query/logging ranges, affected API/env/source/permission contracts, verification, and rollback notes.
+- Backend logging evidence: logger config, request/trace id middleware, structured fields, redaction list, safe examples, request/auth/validation/query/cache/pool/export/error log points, slow-query/report thresholds, sampling/retention, and error-envelope correlation.
 - Deployment/config notes, observability notes, pagination/performance limits, concurrency/thread/worker model, Redis/cache notes, database/upstream/cache connection-pool notes including `ApiError`/timeout/exception cleanup and pool max such as `STARROCKS_POOL_MAX`, async/offline job contract for long-running work, timeout/retry/circuit-breaker/fallback behavior, rate/concurrency limits, proof that global filters/sort/page/aggregation are pushed to the source/provider/repository instead of full-materialize-then-filter, SQL query-writing evidence for risky database-backed endpoints, SQLite fixture/source-mode proof when simulation data is used, and rollback notes.
 - Test/production profile evidence: `.env.test` and `.env.production`, loaded profile, backend/API base URL, source mode, auth/SSO endpoint, CORS allowlist, health/readiness path, and any sensitive values supplied through external secret channels.
 
@@ -88,6 +96,7 @@ For frontend integration:
 - Backend/API/provider base URL, source mode, auth/SSO behavior, and retained mock/offline status.
 - Report data-visualization frontend evidence when applicable: user purpose, first-screen answer, component/chart choice, metric formatting/口径/freshness, filter/linkage/drill-through behavior, provider mapping, state coverage, performance controls, theme/accessibility, screenshots, and `VIS-*` findings or no-issue result.
 - Runtime QA evidence: build/start command, browser URL, console/network check, interaction smoke, screenshot paths, visual regression/multimodal review status, and known blockers.
+- Code file ledger proof for changed frontend/prototype files: ledger path, pre-change read/create status, appended version, component/config/API-client/style ranges, affected props/events/API/env/filter contracts, verification, and rollback notes.
 - Testing handoff: page/module behavior, filters, interactions, permissions, export/download, edge states, accounts/data, and retest criteria.
 
 For testing integration:

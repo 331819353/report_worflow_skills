@@ -32,6 +32,7 @@ Load only the references needed for the current request:
 - `references/api-document-template.md` only for legacy/simple API-document formatting; prefer `$api-documentation-design` for new standardized API docs.
 - `references/missing-info-template.md` when unresolved backend/source/runtime facts must travel with the handoff.
 - `$performance-optimization` references when Redis, cache, precompute, SQL, export, concurrency, connection pools, timeout, or capacity are in scope.
+- `$delivery-version-management` `references/code-file-change-ledger.md` before creating, editing, repairing, or refactoring backend source code, route/config/query/test code, or prototype service code.
 
 ## Child Skills
 
@@ -48,6 +49,7 @@ Load only the references needed for the current request:
 | Haier SSO | `$haier-sso-integration` |
 | Performance/runtime | `$performance-optimization` |
 | Production observability | `$production-observability-feedback` |
+| Delivery/code versioning | `$delivery-version-management` |
 | Quality gates | `$quality-gate-validation` |
 
 ## Data-Service Architecture Scope
@@ -72,6 +74,7 @@ Every production-bound data service should decide these layers and boundaries:
 
 - Data-service design mode must consume upstream technical-solution decisions when available: architecture blueprint, ADR, implementation roadmap, API清单, 数据模型文件, runtime/NFR, permission strategy, and gaps. If missing, mark the design `partial` or create `GAP-*`.
 - For default backend/data-service work without an authoritative existing stack or user-specified override, use `Python + Flask + database/upstream connection pools + Redis`. Flask owns HTTP routing and service composition; connection pools own database/upstream resource control; Redis owns cache/precompute/session-like transient state, hot query acceleration, stampede protection, distributed locks where appropriate, idempotency keys, job progress, and rate/concurrency support when needed.
+- For every backend code file that will be changed, locate or create its sidecar code ledger before editing, read it, and use its feature inventory/range history to decide the edit. After editing, append a version entry with route/service/repository/query/logging changes, changed code ranges, affected API/env/source/permission contracts, verification, and rollback notes. Default sidecar path: `<code-file-dir>/__change_logs__/<code-file-name>.changes.md`.
 - Treat API docs as the contract source of truth for downstream frontend/testing. Implemented routes, examples, errors, auth behavior, and docs must stay aligned after every change.
 - When consumer evidence, API docs, models, routes, source samples, env/auth notes, technical-solution decisions, or runtime traces disagree, run `$quality-gate-validation`; run `$api-contract-validation` before and after route or response changes.
 - Treat the API response model as the external compatibility contract. When replacing a database table, upstream API, SQLite fixture, or data source path, keep existing response field names, nesting, types, units, precision, enum meanings, nullability, grain, formulas, empty/no-permission behavior, and display semantics stable unless an approved versioned breaking change is documented. Source column/table names must be absorbed by the mapping/adapter layer, not leaked into existing API fields.
@@ -80,6 +83,8 @@ Every production-bound data service should decide these layers and boundaries:
 - For snapshot/latest-period report services, classify the snapshot role before design or implementation. Data-bearing endpoints may be independent query-service entry points or may derive from a declared canonical/shared snapshot when the contract proves matching data-version, filters, permission scope, grain, fields, cache key, and invalidation. Do not make metrics/trend/table/export routes depend on undocumented snapshot route responses, controller memory, or frontend call order.
 - Build a backend query context before querying: validated client params, backend-defaulted data-version params, backend-injected tenant/user/role/data-scope params, pagination/sort, and route/drilldown params. Pass that context into repository/source/provider/precompute/cache lookups so the correct data version and scope are enforced by parameters.
 - When Redis is used, document its exact role and operational contract: key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, stale/fallback behavior, connection pool/timeouts, and observability. Do not leave Redis as a generic "cache" note.
+- Backend implementation must include enough structured logging configuration for problem discovery and root-cause analysis. At minimum, define log format, level, request/trace id propagation, redaction rules, slow-query thresholds, and log points for request ingress/egress, auth/permission result, validation rejection, query context, query plan, source/SQL/upstream execution, cache hit/miss/stale fallback, pool acquire/release saturation, export/job lifecycle, data refresh, and exception/error envelopes.
+- Backend logs must be structured and correlatable. Required fields include timestamp, level, service, environment, release/version, requestId, traceId when available, route, method, status, latencyMs, user/tenant/role hash when safe, reportId/widgetId/queryId when relevant, dataVersion/snapshotDate/loadBatch when relevant, cache status, source/upstream name, row/page/export counts when relevant, errorCode, and sanitized error summary. Do not log secrets, tokens, raw personal data, raw permission scopes, raw SQL with sensitive literals, or full request/response payloads.
 - Every database/upstream connection acquired from a pool must be returned or closed on every path. `ApiError`, timeout, cancellation, validation error after acquire, formatter error, early return, and generic exception paths must use `finally`, a context manager, or an equivalent cleanup guard. For StarRocks, document `STARROCKS_POOL_MAX` and treat an `ApiError` path that leaks a connection as a blocker because repeated leaks can exhaust the default small pool.
 - For report/database endpoints, push global filters, permission scope, sorting, pagination, joins, aggregation, counts, Top/Bottom, and export scope into the source/repository/query layer. Broad load-then-filter behavior is blocked except for tiny static enums or documented component-internal display filters.
 - Before implementing or accepting filter-bound endpoints, prove data completeness first: filter option rows, source/provider rows, required fields, default and non-default request/response states, empty/no-permission states when relevant, and resolver/API branches must exist at the required grain.
@@ -94,16 +99,18 @@ Every production-bound data service should decide these layers and boundaries:
 3. Run `$quality-gate-validation` when docs, models, routes, source samples, runtime traces, frontend contracts, or upstream technical-solution decisions conflict.
 4. In `data-service-design` mode, define service boundary, layered architecture, runtime model, metadata/query chain, source-adapter strategy, compatibility strategy, security/permission strategy, observability, deployment/rollback, and handoff readiness. Use `references/data-service-design-template.md`.
 5. In `api-documentation` mode, use `$api-documentation-design` and mark partial/blocked endpoints visibly.
-6. In `backend-implementation` mode, design transformations with `$data-transformation-adapter-design`, validate contracts with `$api-contract-validation`, and record gaps with `$gap-ledger-management`.
-7. In `backend-repair-debug` mode, compare implementation, docs, response contracts, source samples, logs, and consumer expectations before patching. Keep the fix scoped to the failing contract.
+6. In `backend-implementation` mode, design transformations with `$data-transformation-adapter-design`, validate contracts with `$api-contract-validation`, record gaps with `$gap-ledger-management`, and read/create sidecar code ledgers before each backend code edit.
+7. In `backend-repair-debug` mode, compare implementation, docs, response contracts, source samples, logs, and consumer expectations before patching. Keep the fix scoped to the failing contract, and read the sidecar code ledger for every target file before editing.
 8. When a source table/upstream/fixture is replaced, create a compatibility mapping before route changes: existing response field -> old source -> new source -> transformation/default/null rule -> verification evidence. Route source mapping questions to `$data-model-source-mapping`; route breaking/API-field decisions to `$change-impact-analysis` and `$api-documentation-design`.
 9. For filter-bearing endpoints, run or cite data-completeness checks before binding or route acceptance. Add SQLite seed rows, query branches, resolver branches, or upstream samples for default and non-default states before treating filter linkage as ready.
-10. Use `$data-quality-validation` when real data trust, refresh SLA, completeness, uniqueness, accuracy, anomalies, drift, or cross-source reconciliation affects the backend/API handoff.
-11. Use `$haier-sso-integration` when Haier IAM/IAMA auth or `Application-Key`/`Access-Token` validation is in scope.
-12. Use `$performance-optimization` for SQL, pagination, cache, connection pool, export, latency, concurrency, rate limit, or capacity concerns.
-13. Keep API docs, implemented routes, examples, auth behavior, errors, runtime notes, and missing-info notes consistent.
-14. Run focused tests/smoke checks and start the service when a URL is requested.
-15. Use `$production-observability-feedback` for production-bound monitoring and feedback closure.
+10. Design or verify backend logging configuration before marking implementation-ready: log config/env vars, middleware/request id, structured formatter, redaction, route/service/repository log points, slow-query/report thresholds, pool/cache/export/job logs, and error-envelope correlation.
+11. After each backend code edit, append the sidecar code ledger version entry before treating the file as complete.
+12. Use `$data-quality-validation` when real data trust, refresh SLA, completeness, uniqueness, accuracy, anomalies, drift, or cross-source reconciliation affects the backend/API handoff.
+13. Use `$haier-sso-integration` when Haier IAM/IAMA auth or `Application-Key`/`Access-Token` validation is in scope.
+14. Use `$performance-optimization` for SQL, pagination, cache, connection pool, export, latency, concurrency, rate limit, or capacity concerns.
+15. Keep API docs, implemented routes, examples, auth behavior, errors, runtime notes, and missing-info notes consistent.
+16. Run focused tests/smoke checks and start the service when a URL is requested.
+17. Use `$production-observability-feedback` for production-bound monitoring and feedback closure.
 
 ## Required Output
 
@@ -114,6 +121,8 @@ Every production-bound data service should decide these layers and boundaries:
 - Query-service chain design: report metadata, dimension/metric/filter/sort whitelist, parameter guardrails, permission injection, query plan, source/precompute/cache lookup, result formatting, audit, and monitoring.
 - Data-service runtime model: sync/async boundary, source and cache pools, Redis role matrix, cache/precompute/invalidation strategy, rate/concurrency limits, timeout/fallback, stale policy, and observability.
 - Connection lifecycle contract: pool config such as `STARROCKS_POOL_MAX`, acquire/release owner, `ApiError`/timeout/exception cleanup path, and repeated-failure evidence that connections are returned or closed.
+- Backend logging contract: logger config/env vars, structured format, requestId/traceId propagation, required fields, redaction rules, log levels, request/auth/validation/query/cache/pool/export/error log points, slow-query/report thresholds, sampling/retention, and examples of safe log lines.
+- Code file ledger proof when implementation or repair changed code: each changed backend code file, sidecar ledger path, pre-change read/create status, appended version, route/service/query code ranges or stable anchors, affected API/env/source/permission/logging contracts, and verification.
 - Backend-friendly API design or implementation plan: endpoint families, common request/response models, service-layer mapping, error envelope, health/status endpoints, and custom endpoint exceptions.
 - Data-vs-presentation boundary: which fields are raw/structured data, which metadata supports frontend display, which text is server-owned by exception, and which conclusions/copy must be composed by frontend.
 - Source/table replacement compatibility matrix when source changes: old source, new source, unchanged response fields, additive fields, transforms/defaults, and breaking-change/versioning decisions.
@@ -132,6 +141,7 @@ Every production-bound data service should decide these layers and boundaries:
 ## Quality Gate
 
 - Do not implement backend code when the user only asked for data-service design or API documentation.
+- Do not mark backend implementation or repair `ready` when any changed scoped backend code file lacks a sidecar code ledger, pre-change read evidence, or a post-change version entry with code ranges, modified content, affected contracts, and verification/blocker.
 - Do not leave the backend stack vague or switch to FastAPI/Spring/Express/Node by default; use Python/Flask with connection pools and Redis unless the user or existing project explicitly overrides it.
 - Data-service design cannot be `ready` when service boundaries, layered architecture, query-service chain, runtime model, security/permission, observability, deployment/rollback, and downstream handoff are missing for production-bound scope.
 - Do not accept a production-bound API handoff that would require one custom controller/query/DTO shape per similar widget unless the custom reason is explicit.
@@ -140,6 +150,7 @@ Every production-bound data service should decide these layers and boundaries:
 - Do not make data services assemble avoidable display text, conclusions, HTML/Markdown, or combined text/value/unit payloads that prevent frontend styling, localization, responsive layout, or emphasis control. Return structured facts and metadata instead; document any server-owned text exception and why it cannot be composed safely by the frontend.
 - Do not implement metrics/trends/rankings/tables/drilldowns/exports by reading an undocumented snapshot API response or app-memory snapshot. Declared canonical/shared snapshot reuse is allowed; hidden response-payload dependency is not.
 - Do not use Redis without key dimensions, TTL/invalidation, permission safety, miss/stampede behavior, fallback, pool/timeouts, and observability.
+- Do not claim backend/data-service implementation readiness when structured logging is missing or too thin to diagnose production issues. Missing requestId/traceId propagation, log level/config controls, redaction, request/auth/validation/query/cache/pool/export/error log points, slow-query thresholds, or error-envelope correlation keeps readiness `partial` or `blocked` depending on production scope.
 - Do not claim backend/data-service readiness when any query path can raise `ApiError` or another exception after acquiring a database/upstream connection without guaranteed release/close in `finally`, a context manager, or equivalent guard. A pool leak that can exhaust `STARROCKS_POOL_MAX` is a blocker.
 - Do not return correct-looking version/scope metadata while querying unscoped or default-only data. Data-version, business filters, and permission/data scope must be part of repository/source/precompute/cache parameters.
 - Do not publish broad unbounded list endpoints without pagination/performance notes.

@@ -20,7 +20,7 @@ All template families use the same conceptual layers:
 4. `8 * N` block grid: `layoutRows` characters resolve into rectangular blocks.
 5. Block frame: `.placeholder-cell` reserves `cellPadding` around the block.
 6. Block card: `.placeholder-cell-inner` owns the visible card/frame surface, title band, body viewport, radius, shadow, and theme surface.
-7. Block title band: `.placeholder-cell-title` is a 32px reserved band with a left-aligned title zone and a right-aligned function area for local filters, panel triggers, or links.
+7. Block-owned title/function band: `.placeholder-cell-title` is a 32px reserved band inside each block, with a left-aligned title zone and a right-aligned function area for local filters, panel triggers, or links.
 8. Widget viewport: `.placeholder-cell-body > .widget-renderer` fills the remaining area and gives the business component or composite parent widget a stable `100% * 100%` viewport.
 9. Optional internal sub-blocks: when a parent widget contains multiple components, the widget defines local grid/flex sub-blocks inside `.widget-renderer`; these are not page-grid blocks. The sub-block grid uses `5px` inset from the parent widget viewport and `5px` gap between sibling sub-blocks.
 
@@ -36,7 +36,7 @@ Normal report delivery should change these fields through `src/config/dashboard.
 | `contentGap` | `screen.layout` | Gap between resolved grid blocks. | Controls block-to-block spacing only, not card internal padding. |
 | `rowHeight` | `screen.grid`, scroll templates | Minimum resolved grid-row height. | Never shrink below 220px; grow/scroll instead of squeezing content. |
 | `cellPadding` | `screen.grid` | Space between grid cell and visible card surface. | Use `0` for clean enterprise cards; use small values such as `5px` for cockpit frames. |
-| `dominantTitleColor` | `screen.grid` | Accent color for block title, glow, and weak highlights. | Keep aligned with brand/template theme. |
+| `dominantTitleColor` | `screen.grid` | Accent color for block-owned title, glow, and weak highlights. | Keep aligned with brand/template theme. |
 | `innerBackgroundColor` | `screen.grid` | Block body/frame background hint. | Do not use as business-widget data surface when component scoped styles own the body. |
 
 ## 3. Default Family Values
@@ -81,19 +81,20 @@ placeholder-cell
 
 Rules:
 
-- Block/page titles are layout-owned. Widgets should not duplicate a visible internal title when the block title exists.
-- The 32px block title band is a reserved layout region, not optional decoration.
+- Block titles are owned by the block/template renderer, not by the page-layout skill. Widgets should not duplicate a visible internal title when the block-owned title exists.
+- The 32px block-owned title/function band is a reserved block-internal region, not optional decoration.
 - The title band is split into two zones: `.placeholder-cell-title-text` on the left, left-aligned, and a right function area. Keep them on one line with at least `8px` gap; the function area must not push the title into unreadable truncation.
 - Local filter control selection in the right function area:
-  - One local filter and value count `< 3`: sliding capsule / segmented pill.
-  - One local filter and value count `>= 3`: compact dropdown/select.
-  - Multiple local filters: filter panel/popover/drawer trigger with active count or active summary.
+  - One local filter with `2-4` short values and fit proof: sliding capsule / segmented pill.
+  - One local filter with `>4` values, long labels, or failed width fit: compact dropdown/select.
+  - Multiple local filter groups: filter panel/popover/drawer trigger with active count or active summary.
   - Detail actions: text links such as `详情`, `查看详情`, `查看明细`, or `进入分析`; rare actions collapse into `更多`.
 - Local filter chips in the title band use compact pill controls, normally `24px` high, `0 8px` padding, and `999px` radius.
+- `localFilters[]` affect only the current widget's already loaded data. They do not replace template `filters[]`, page/global scope, permission scope, backend aggregation, pagination, export scope, or other widgets.
 - The body viewport has no extra padding by default for single-component widgets. For composite parent widgets, the widget-owned sub-block grid adds `padding: 5px` and `gap: 5px`.
 - `WidgetRenderer` keeps `min-width: 0`, `min-height: 0`, `width: 100%`, `height: 100%`, and overflow policy. Table visuals may use internal scroll; charts/canvas/SVG must fill a measurable viewport.
 - If the widget contains internal sub-blocks, each sub-block keeps `min-width: 0`, `min-height: 0`, a declared local track/area, `5px` sibling gap through the parent sub-block grid, overflow policy, and state behavior.
-- Composite widgets own no-data mask scope. Compute every child sub-block data state first. If all child sub-blocks are no-data, render one parent-block mask over `.placeholder-cell-inner`, including the block title band and widget body. If only some child sub-blocks are no-data, render masks inside those sub-blocks only, covering each sub-block label/control strip plus its component body.
+- Composite widgets own no-data mask scope. Compute every child sub-block data state first. If all child sub-blocks are no-data, render one parent-block mask over `.placeholder-cell-inner`, including the block-owned title/function band and widget body. If only some child sub-blocks are no-data, render masks inside those sub-blocks only, covering each sub-block label/control strip plus its component body.
 
 ## 5. Spacing And Radius Rules
 
@@ -111,7 +112,7 @@ Rules:
 - Topbar family: title/control ownership is the topbar shell. Content blocks start at `contentStartY`; do not add a second persistent page header above the grid.
 - Left-nav family: page identity is carried by the left navigation/header area. The right content area should not introduce another large page heading unless the user requests a subpage section.
 - Frozen cockpit family: title image, logo, and header controls are shell-owned. Content starts below the frozen title band.
-- Block title text lives in `.placeholder-cell-title-text`; long text uses one-line overflow with `title` disclosure at the block title level. Component-critical long labels still need component-level wrapping/disclosure.
+- Block title text lives in `.placeholder-cell-title-text`; long text uses one-line overflow with `title` disclosure at the block-owned title level. Component-critical long labels still need component-level wrapping/disclosure.
 - The block right function area is for local, block-scoped controls or links only. Page/global filters stay in the template's native filter entry.
 - If title and function area conflict, keep the title readable, then collapse secondary controls into dropdown, filter panel, or `更多`.
 - Do not place chart legends, metric units that belong to axes, or explanatory prose in the right function area.
@@ -134,7 +135,7 @@ Rules:
 | Change block accent/surface | `dominantTitleColor`, `innerBackgroundColor`, theme tokens | One-off colors per block without design-system reason. |
 | Change business component padding | Widget scoped style | `placeholder-cell-body` padding. |
 | Add internal sub-blocks inside one parent block | Widget scoped CSS/config view model with `padding: 5px; gap: 5px` | Extra page-grid blocks, nested card shadows, or collapsed sub-block gaps. |
-| Change block title behavior | Template shell only when redesigning the template | Adding chart/table/KPI internal duplicate titles. |
+| Change block-owned title behavior | Template block renderer only when redesigning the template | Adding chart/table/KPI internal duplicate titles. |
 | Add right title-band function controls | Template title-band function area through `localFilters`, link/action config, or existing action slots | Floating controls over chart/table body or adding a second component header. |
 | Add no-data masks in composite blocks | Parent widget state calculation: all child sub-blocks empty -> parent-block mask; partial empty -> affected sub-block masks including sub-block title + component | Masking only the chart/table body, or masking the whole parent when siblings still have data. |
 
@@ -143,8 +144,8 @@ Rules:
 - The selected template family is named and its shell contract is preserved.
 - `layoutRows` remains rectangular and every row is compatible with the `8 * N` grid.
 - `contentGap`, `rowHeight`, `cellPadding`, card padding, radius, and title band height are not changed ad hoc.
-- Block title, right function area, local filter/link controls, and body viewport have reserved geometry.
-- Right function area follows control-selection rules: one filter with `< 3` values uses sliding capsule; one filter with `>= 3` values uses dropdown; multiple filters use panel trigger; detail actions use lightweight links.
+- Block-owned title, right function area, local filter/link controls, and body viewport have reserved geometry.
+- Right function area follows control-selection rules: one component-local filter with `2-4` short values and fit proof uses sliding capsule; one filter with `>4` values, long labels, or failed fit uses dropdown; multiple filter groups use panel trigger; detail actions use lightweight links.
 - Widgets receive a stable measurable viewport and do not depend on the parent block title for internal component labels.
 - Composite widgets declare internal sub-blocks and component ownership; sub-blocks do not pretend to be top-level `layoutRows` cells.
 - Composite widgets preserve `5px` parent-to-sub-block inset and `5px` sibling sub-block gaps.

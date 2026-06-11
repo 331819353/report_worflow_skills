@@ -7,7 +7,7 @@ description: "用于报表项目交付物版本管理、交付物索引、版本
 
 ## Overview
 
-Use this skill to create a single delivery index that links prototype, requirements, API docs, data models, backend, frontend, test reports, automation, defects, and release notes across iterations.
+Use this skill to create a single delivery index that links prototype, requirements, API docs, data models, backend, frontend, test reports, automation, defects, and release notes across iterations. It also owns the reusable file-level code change ledger convention for frontend, backend, and runnable prototype source code.
 
 The goal is to answer: "Which version of each artifact belongs together, and what changed?"
 
@@ -15,8 +15,10 @@ The goal is to answer: "Which version of each artifact belongs together, and wha
 
 - Artifact folders/files, current version naming, PRD/prototype/API/model/frontend/backend/test documents, release notes, branch/commit, environment, or defect reports.
 - Optional: target version, release date, owner, status, dependency chain, and change request IDs.
+- Frontend/backend/prototype source code paths when a task needs per-file change ledgers, changed code ranges, or implementation traceability.
 
 Use `$delivery-artifact-template-management` when producing the delivery index table. Use `scripts/build_delivery_index.py` to create a first-pass index from files.
+Read `references/code-file-change-ledger.md` when source code is created, edited, repaired, or refactored.
 
 ## Workflow
 
@@ -38,6 +40,9 @@ Use `$delivery-artifact-template-management` when producing the delivery index t
 6. Maintain index.
    Update the index after every approved change, test result, defect repair, or release. Do not overwrite history; append a new version row.
 
+7. Maintain code file ledgers when code changes.
+   For every scoped frontend/backend/prototype code file, read or create its sidecar ledger before editing, then append a version entry after editing with feature list, code ranges, modified content, affected contracts, verification, and rollback notes. Use `references/code-file-change-ledger.md` as the source of truth.
+
 ## Script
 
 Create a first-pass Markdown index:
@@ -48,10 +53,18 @@ python3 delivery-version-management/scripts/build_delivery_index.py <artifact-ro
 
 Use `--version release-v1` to stamp a target bundle version.
 
+Create or append a per-code-file ledger:
+
+```bash
+python3 delivery-version-management/scripts/update_code_change_ledger.py --file <code-file> --stage before
+python3 delivery-version-management/scripts/update_code_change_ledger.py --file <code-file> --stage after --summary "<change summary>" --ranges "L10-L42"
+```
+
 ## Required Output
 
 - Version chain: requirement/prototype/model/API/backend/frontend/test/release mapping.
 - Delivery artifact index: artifact type, name, version, path, owner, status, upstream/downstream versions, change IDs, evidence.
+- Code file change ledger status when code changed: changed code file, sidecar ledger path, pre-change read evidence, appended version, changed code ranges, verification, and unresolved follow-up.
 - Compatibility and freshness check: stale, missing, obsolete, breaking, partial, or ready.
 - Release bundle: included artifacts, excluded drafts, required approvals, rollout/rollback notes.
 - Follow-up actions: missing versions, required updates, owner workflows, and blockers.
@@ -63,3 +76,4 @@ Use `--version release-v1` to stamp a target bundle version.
 - Test reports and automation runs point to the exact frontend/backend/API versions tested.
 - Obsolete documents are marked obsolete rather than left ambiguous.
 - Breaking or mismatched versions route to `$change-impact-analysis`.
+- Frontend, backend, and runnable prototype code changes are not version-complete unless every changed scoped code file has a sidecar ledger that was read before edit and appended after edit with feature/code-range/version/verification information.

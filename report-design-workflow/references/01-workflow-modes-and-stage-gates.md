@@ -49,7 +49,7 @@ Deliver:
 
 - All prototype design outputs.
 - Display theme, pattern-card-to-component mapping, and pattern acceptance cases.
-- Technical architecture based on `TypeScript + Vue 3 + Element Plus + ECharts`, with AntV S2 installed and used only when the binding matrix contains S2-class analytical tables.
+- Technical architecture based on `TypeScript + Vue 3 + Element Plus + ECharts`, with ECharts standard charts including Combo through shared `xAxis` plus `bar` and `line`/`markLine` series, funnel through `series.type: 'funnel'` or a data-driven horizontal `bar` funnel, parallel coordinates through `parallelAxis` plus `series.type: 'parallel'`, and AntV S2 installed and used only when the binding matrix contains S2-class analytical tables.
 - Template choice.
 - Data files or mock data.
 - Component implementation.
@@ -180,7 +180,7 @@ Extract before designing:
 
 - Page shell: title, logo, navigation, filters, toolbar actions, tabs, sidebars, drawers, modals, footer, and visible states.
 - Content structure: first-viewport answer, section order, card/table/chart grouping, hierarchy, and repeated blocks.
-- Component inventory: KPI cards, text summaries, charts, tables, lists, task cards, alerts, comparison panels, controls, and legends.
+- Component inventory: KPI cards, Analysis & Insight components, text summaries, Composite Panels, charts, tables, lists, task cards, alerts, comparison panels, controls, and legends.
 - Data intent: visible metric names, units, comparison baselines, dimensions, row grain, chart axes, table columns, status labels, and totals.
 - Interaction clues: clickable controls, active filters, selected tabs, highlighted marks, buttons, download/fullscreen/refresh/share actions, and disabled states.
 - Visual style: palette, typography scale, spacing, radius, shadow, density, contrast, and any brand/logo rules.
@@ -404,7 +404,7 @@ Template and custom implementations must both pass the same audit:
 - Component viewport audit: every rendered widget has a full-size viewport layer between block body and business component; the viewport owns background, clipping, scroll, and resize bounds.
 - Span audit: every component declares `visualType` and uses one of the legal `columns * rows` spans from `report-visual-layout-design`.
 - Block-height audit: for scrollable page templates, every resolved content block is at least 220px tall; when the total grid height exceeds 1080px, the page or content region scrolls vertically instead of shrinking blocks. Fixed sci-fi/big-screen templates are exempt.
-- Table viewport audit: every native table, AntV S2 table, wide matrix, and comparison grid declares `visualType: 'table'`, mounts inside the block body, and scrolls internally instead of expanding or clipping the block.
+- Table viewport audit: every native table, Detail Table, Pivot Table, AntV S2 table, wide matrix, and comparison grid declares `visualType: 'table'` or `visualType: 'pivot'` as appropriate, mounts inside the block body, and scrolls internally instead of expanding or clipping the block; Detail Tables preserve row grain, primary key, default sort, column priority, row budget, pagination/search/export scope, and row detail/action behavior; complex/grouped table headers preserve `columnTree`/nested columns, leaf fields, computed spans/depth, fixed whole-header behavior, frozen row/primary columns, filter separation, tooltip definitions, and useful body rows; Pivot Tables preserve row/column dimensions, measures, aggregation formulas, subtotal/grand-total rules, frozen headers, density fallback, and exact cell tooltip/drilldown behavior.
 - Download/print audit: scrollable pages taller than 1080px export or print their full resolved height across multiple 1920x1080 pages; no print/download path may clip to only the first viewport.
 - Regression audit: changing one filter cannot leave any KPI, chart, table, drawer, or export on the previous scope.
 
@@ -420,7 +420,7 @@ Minimum smoke tests before delivery:
 - Download/print of a page taller than 1080px includes the lower content on later PDF/print pages.
 - Block body QA passes: titles remain readable, and charts/tables/empty states do not overlap the header after default and filtered data changes.
 - Component viewport QA passes: charts, tables, KPI cards, text blocks, canvases, SVGs, and empty states do not paint outside the component-area background.
-- Table body QA passes: each table shows either all columns within the block or a visible internal horizontal scroll path; no table content is silently clipped at the right or bottom edge.
+- Table body QA passes: each table shows either all columns within the block or a visible internal horizontal scroll path; no table content is silently clipped at the right or bottom edge. Detail Tables show only prioritized first-view columns by default and disclose secondary fields through tooltip, column settings, drawer, export, or a detail page. Complex/grouped table headers keep parent groups aligned to leaf columns, fix the whole multi-level header during vertical scroll, and keep the top-left header synchronized with frozen row/primary columns during horizontal scroll. Pivot Tables keep row and column context visible through frozen row dimensions, fixed column headers, and tooltip/drilldown for hidden or scrolled cells.
 - Radar/chart label QA passes: category labels, dimension labels, legends, and graphics do not overlap after default and filtered data changes.
 - Component span QA passes: line/bar/K-line/heatmap, pie/radar/path/sunburst/gauge, scatter/box/parallel, map/graph/tree/treemap/sankey/funnel, metric cards, tables, and other components all use their legal span sets.
 
@@ -475,8 +475,8 @@ Default technical architecture:
 
 - Language and framework: TypeScript + Vue 3 single-file components with Composition API.
 - Build tool: Vite.
-- UI component framework: Element Plus for page controls, filters, form fields, buttons, tabs, tags, popovers, dropdowns, dialogs, drawers, tooltips, pagination, and simple data tables unless an existing project design system explicitly supersedes it.
-- Charting: ECharts for KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and most dashboard charts.
+- UI component framework: Element Plus for page controls, filters, form fields, buttons, tabs, tags, popovers, dropdowns, dialogs, drawers, tooltips, pagination, and simple data tables or Detail Tables unless an existing project design system explicitly supersedes it.
+- Charting: ECharts for KPI trends, bars, lines, scatter, Gauge through `series.type: 'gauge'` with one bounded progress/status metric, heatmaps, maps, funnel through `series.type: 'funnel'` or a data-driven horizontal `bar` funnel, Sankey through `series.type: 'sankey'` with node/link `source`/`target`/`value`, treemap through `series.type: 'treemap'`, sunburst through `series.type: 'sunburst'`, path/user/process paths through sankey/graph/custom series when appropriate, tree/hierarchical trees through `series.type: 'tree'` or a declared data-driven hierarchy component, relation/network graphs, waterfalls, and most dashboard charts.
 - Analytical tables: install and use AntV S2 through `@antv/s2` and `@antv/s2-vue` only for pivot tables, cross tables, wide metric matrices, frozen headers, dense comparison grids, and analysis-style tables.
 - Icons and controls: use the template's existing icon/control system; keep business widgets typed and scoped.
 - Data: keep mock/static data in data files or data-source resolvers, not inside visual components.
@@ -539,10 +539,10 @@ Implementation must:
 - Implement the data/filter/component linkage contract in the template config or custom runtime before visual polish.
 - Run the template `validate:dashboard` script or equivalent custom checks to block unbound widgets, missing filter contracts, invalid action configs, and unsafe radar chart options.
 - Avoid naked native `<select>` in primary filters; use Element Plus `ElSelect`/`ElTreeSelect`/`ElCascader`/`ElDatePicker` or project design-system equivalents. Fully styled native select is allowed only for baseline non-final prototypes.
-- For flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, reserve rail, node, label, gutter, and edge-bend space before drawing.
-- Use ECharts before custom SVG/canvas for standard charts.
+- For funnel, flow, Sankey, graph, tree, decomposition, lineage, DuPont, and process-chain visuals, reserve stage/rail, node, label, gutter, value, and edge-bend space before drawing.
+- Use ECharts before custom SVG/canvas for standard charts; funnel uses ECharts `funnel` or a data-driven ECharts horizontal `bar` funnel, treemap uses ECharts `treemap`, sunburst uses ECharts `sunburst`, tree/hierarchical trees use ECharts `tree` or a declared data-driven hierarchy component, and relation/network graphs use ECharts `graph` unless a custom-diagram exception is documented.
 - Use AntV S2 before hand-rolled tables for analytical tables, cross tables, pivot tables, and dense metric matrices.
-- Use Element Plus before hand-rolled DOM for filters, forms, buttons, tabs, tags, tooltips, popovers, dialogs, drawers, pagination, and simple operation/detail tables.
+- Use Element Plus before hand-rolled DOM for filters, forms, buttons, tabs, tags, tooltips, popovers, dialogs, drawers, pagination, and simple operation/detail tables; reserve AntV S2 for analytical matrix/pivot/cross-table needs.
 - Implement component overflow and responsive behavior from earlier stages.
 - Run the self-check report and repair loop in Stage 10.4 before deployment or final handoff; start or preview the page inside the loop when runtime visual checks are needed.
 - Run and verify the page when a dev server is required. Do not finish by asking the user to start the project manually.

@@ -1,6 +1,12 @@
 <script setup lang="ts">
 /**
  * Widget 组件开发模板
+ * 组合图/Combo 必须声明主柱指标、辅助折线/目标指标、共享 x 轴、左/右 y 轴单位、系列上限、双轴理由、tooltip 证据；必须用 ECharts bar/line/markLine，不要手写柱线/坐标轴。
+ * 明细表格/Detail Table 必须声明行粒度、主键/对象字段、默认排序、列元数据、可见列优先级、分页/搜索/导出作用域、行详情/操作、局部筛选和状态；普通明细用 Element Plus/项目表格，透视/交叉/宽矩阵再用 S2。
+ * 透视表/Pivot Table 必须使用 visualType: 'pivot'，声明行维度、列维度、指标、聚合函数/公式、小计/总计、百分比指标分子分母、S2 渲染、冻结表头/行维度、密度降级、tooltip/下钻和状态。
+ * 复杂表头/Grouped Header 必须声明 columnTree/groupedColumns、叶子字段、单位/定义、colSpan/rowSpan 或 maxDepth/leafColumnCount、固定多级表头、冻结行维度/主键列、组件内筛选与表头筛选分离、tooltip、密度降级和状态；不要用绝对定位文字伪造合并表头。
+ * 多组件组合图/Composite Panel 必须声明 compositePanelContract、共同主题、分析顺序、主组件、子组件角色/优先级/最小尺寸、共享局部筛选、共享图例/单位、hover/click 联动、明细预览、响应式降级和父子状态；不要把无关 widgets 塞成迷你 Dashboard。
+ * 分析说明/Analysis & Insight 可使用 visualType: 'text-summary'，但结论卡、洞察卡、异常/风险、归因/建议、口径/数据质量、预测/标注、解释型空态/权限/延迟说明必须声明 analysisInsightContract、结论、证据、影响对象、行动/可信度/来源/新鲜度、tooltip/detail 和状态；不要写泛泛的“智能洞察/建议关注”。
  *
  * 使用方式：
  * 1. 复制本文件到 src/widgets/components，例如：
@@ -91,7 +97,8 @@
  *    折线/面积/柱状等类目轴图表必须先排序整行数据，再从同一个 sortedRows 同步生成 xAxis labels 和 series.data。
  *    不要只对 labels/xAxisData/categories 排序后继续用原始 data.map(...) 生成数值，否则点位和值会错位。
  *    可复用 src/widgets/chartDataUtils.ts 的 sortRowsForCategoryAxis 或 buildSingleSeriesCategoryData；这里是工具函数，不存放 mock 行数据。
- *    说明、摘要、总结类文本组件使用 visualType: 'text-summary'，合法占位为 4x1/5x1/6x1/7x1/8x1 或 3x2。
+ *    仪表盘/Gauge 必须声明单个有界指标、min/max、当前值、unit、目标/阈值/状态规则、溢出显示、中心值与 tooltip 证据；必须用 ECharts `series.type: 'gauge'`，不要手写装饰性表盘/指针。
+ *    说明、摘要、总结类文本组件使用 visualType: 'text-summary'，合法占位为 4x1/5x1/6x1/7x1/8x1 或 3x2；承担分析判断时同步写 analysisInsightContract。
  *
  * 9. 筛选作用域通过 filterScope 控制：
  *    - filter 配置没有 scope 时是全局筛选，所有组件都能拿到。
@@ -102,8 +109,8 @@
  *    - 只过滤当前组件已加载的 data，不参与接口或 dataSource 参数传递。
  *    - field/valueField/labelField 指向 data 行里的字段名；未写 options 时会从 data 自动推导选项。
  *    - 标题带左侧为分块标题，右侧为功能区；功能区可放本地筛选或“查看详情”等轻量链接。
- *    - 单个筛选且选项数 < 3 时显示滑动胶囊按钮；单个筛选且选项数 >= 3 时显示下拉框。
- *    - 多个筛选项显示筛选面板。
+ *    - 单个筛选且 2-4 个短选项、标题区放得下时显示滑动胶囊按钮；>4 个选项、长标签或放不下时显示下拉框。
+ *    - 多个筛选组显示筛选面板；localFilters 只影响当前组件已加载 data。
  *    - 组件里可读取 context.localFilters 获取当前本地筛选值。
  *
  * 11. 组件触发跳转、下钻、弹窗时，由组件内部独立实现。
@@ -144,9 +151,18 @@
  * - 数据型筛选默认来自 filters[].source；options 仅用于状态、等级、周期粒度、是否类等稳定枚举。
  * - dashboard-action 只作为外部扩展接口，不再由壳层统一执行弹窗、跳转、下钻。
  * - 如果确实要做组件自己的内部卡片或图表背景，请写在当前组件的 <style scoped>。
- * - 大图、关系图、杜邦图这类组件建议声明 naturalWidth/naturalHeight，
+ * - 大图、平行坐标系、路径图、桑基图、矩形树图、旭日图、树图、关系图、杜邦图这类组件建议声明 naturalWidth/naturalHeight，
  *   再用 viewport 承接拖拽和缩放。
  * - 雷达图必须显式配置 axisName/nameGap、legend 和 radius，避免维度标签与分类/图例重叠。
+ * - 盒须图/箱线图必须声明样本量、Q1/中位数/Q3/IQR、须线/异常值规则和 tooltip 五数摘要，不要手写伪箱体。
+ * - 热力图必须声明行维度、列维度、数值指标、聚合口径、visualMap/色阶、缺失值与0值区分和 tooltip 精确值，不要把每个格子都塞满文字。
+ * - 平行坐标系必须声明对象/样本数据、3-12 个有顺序的维度、每轴单位/范围/方向、标准化或独立轴模式、线密度/抽样/高亮/刷选和对象 tooltip，不要做装饰性线网。
+  * - 漏斗图/Funnel 必须声明有序阶段数据、共享人群/队列口径、value/unit、入口占比、阶段转化、流失值/率、总转化、目标/对比和 tooltip 证据；报表默认横向条形漏斗，不要手写装饰性梯形。
+ * - 桑基图/Sankey 必须声明节点数据、source/target/value 流向数据、阶段/层级顺序、TopN/其他聚合、流带宽度映射、主流突出、流失/未知节点和节点/流向 tooltip，不要手写装饰性流带。
+ * - 矩形树图/Treemap 必须声明层级数据、非负可累加面积指标、TopN/其他聚合、标签阈值、颜色语义、面包屑/下钻和路径/占比 tooltip，不要在小矩形硬塞文字。
+ * - 旭日图/Sunburst 必须声明层级数据、非负可累加角度指标、可见层级/环宽、TopN/其他聚合、扇区标签阈值、中心指标、面包屑/下钻和路径/总占比/父级占比 tooltip，不要做装饰性多环饼图。
+ * - 树图/层级树图必须声明根节点、父子关系、层级/展开层级、TopN/+N 聚合、展开收起和节点 tooltip，不要一次性展开所有节点。
+ * - 关系图/网络关系图必须声明节点数据、边数据、source/target、关系方向/权重、布局类型、密度控制、fitView/缩放拖拽和节点/边 tooltip，不要一次性铺满所有关系。
  * - 组件占位必须符合 visualType 的合法尺寸；不够用时换更大的合法分块，不要靠溢出或缩字解决。
  */
 import type { DashboardWidgetActionEvent } from '../../types/actions';
@@ -224,7 +240,8 @@ const triggerExampleAction = () => {
   /*
    * 必备：不要给根节点或图表容器写大于组件视窗的固定宽高。
    * ECharts、AntV S2、SVG、Canvas 都应从当前根节点读取尺寸并在 resize 时重算。
-   * 如果组件是柱线饼图、地图、仪表盘等标准图表，必须由 ECharts 渲染；SVG/Canvas 只用于图标、装饰或明确的自定义关系图。
+   * 如果组件是柱线饼图、地图、仪表盘、盒须图、热力图、平行坐标系、漏斗图、桑基图、矩形树图、旭日图、路径图、关系图等标准图表，必须由 ECharts 或声明的数据驱动可视化渲染；SVG/Canvas 只用于图标、装饰或明确的自定义可视化。
+   * 仪表盘/Gauge 还必须用 ECharts gauge 选项表达有界进度/状态，不要用 CSS/SVG 画固定圆弧、刻度或机械指针来冒充数据图表。
    */
 
   /* 可选：如果组件内部自己滚动，打开下面两行；否则交给 WidgetRenderer 兜底裁剪。 */

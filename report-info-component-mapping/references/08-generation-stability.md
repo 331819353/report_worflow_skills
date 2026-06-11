@@ -37,7 +37,7 @@ Use these values unless the target project explicitly defines a different vocabu
 - `block`: `header`, `filter`, `summary`, `kpi`, `targetVariance`, `trend`, `structure`, `ranking`, `process`, `decomposition`, `alert`, `detail`, `taskAction`, `evidence`, `dataTrust`, `footer`.
 - `priority`: `must-have`, `should-have`, `optional`.
 - `componentType`: `card`, `chart`, `table`, `text-summary`, `drawer`, `task`, `action`, `custom`.
-- `visualType`: `line`, `bar`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, `other`.
+- `visualType`: `line`, `bar`, `combo`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, `pivot`, `other`.
 - `actionType`: `openModal`, `closeModal`, `setFilters`, `resetFilters`, `navigateUrl`, `print`, `fullscreen`, `refresh`, or a named custom action registered in the project.
 - `filterValueType`: `single`, `multiple`, `range`, `keyword`, `date`, `treePath`, `enum`, `toggle`.
 - `controlSemantics`: `perspective-switch`, `global-filter`, `local-filter`, `drilldown-param`.
@@ -80,7 +80,7 @@ Use these default bounds to reduce random output drift.
 - Advanced filters: 0-12 filters.
 - KPI strip: 3-8 cards.
 - Top/Bottom lists: default Top 5 or Top 10; state which one.
-- Detail table: 8-12 visible columns by default, with drawer/export for full fields.
+- Detail table: 5-8 visible columns by default, 8-12 only in large blocks, with row drawer/export/column settings for full fields.
 - Mock time coverage: 12-13 months for monthly trend, 30 days for daily rolling view, selected + previous period for MoM, selected + prior-year comparable period for YoY.
 
 If more components are needed, group them into tabs, drawers, secondary sections, or follow-up pages rather than flattening them into one screen.
@@ -91,19 +91,24 @@ When several components are plausible, choose in this order:
 
 1. KPI/status card for current judgment.
 2. Target/variance card or bullet/progress when target exists.
-3. Trend chart when time movement matters or period filters exist.
-4. Structure/ranking chart when the user must locate objects.
-5. Process/funnel only when ordered stages exist.
-6. Decomposition/waterfall only when cause or additive contribution exists.
-7. Detail table/drawer when exact records or evidence matter.
-8. Task/action block when closure or responsibility matters.
-9. Data-trust block when sources, versions, or differences matter.
+3. Gauge only when one bounded status/progress metric needs range and threshold judgment.
+4. Combo chart only when scale + rate/trend/target must be read together on one shared category/time axis.
+5. Trend chart when time movement matters or period filters exist.
+6. Structure/ranking chart when the user must locate objects.
+7. Process/funnel only when ordered stages, shared population/cohort logic, and conversion/drop formulas exist.
+8. Decomposition/waterfall only when cause or additive contribution exists.
+9. Detail table/drawer when exact records or evidence matter.
+10. Task/action block when closure or responsibility matters.
+11. Data-trust block when sources, versions, or differences matter.
 
 If two components answer the same atom, keep the one earlier in this order unless the later one provides necessary evidence or action.
 
 ## Fallback Rules
 
-- Missing ordered stages: do not use funnel; use structure bar, ranking table, or process table.
+- Missing ordered stages, shared population/cohort logic, or conversion/drop formulas: do not use funnel; use structure bar, ranking table, process table, path chart, or Sankey according to the actual question.
+- Missing Gauge min/max range, status/threshold rule, or bounded metric semantics: do not use Gauge; use KPI card, progress bar, target card, bar/table, or line chart according to the actual question.
+- Missing paired business relationship, shared ordered category/time grain, axis units, or valid series limit: do not use Combo; use separate bar and line charts, target/variance card, trend chart, or table according to the actual question.
+- Missing row grain, primary key, default sort, visible column priority, or pagination/search/export scope: do not finalize a Detail Table; use a bounded list/summary card while row evidence is pending, or mark the table contract as a data gap.
 - Missing additive contribution: do not use waterfall; use driver table, contribution bar, or narrative explanation.
 - Missing geographic meaning: do not use map; use organization bar/matrix.
 - Missing stable row IDs: do not create click-through drawer; use tooltip/popover until IDs are defined.

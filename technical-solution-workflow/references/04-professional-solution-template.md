@@ -47,7 +47,7 @@ List participating systems and boundaries:
 - IAM/auth;
 - export/file service;
 - scheduler/job worker;
-- monitoring/logging.
+- monitoring/logging, including structured backend log fields, requestId/traceId propagation, redaction, request/auth/validation/query/cache/pool/export/error log points, and slow-query/report thresholds when backend is in scope.
 
 Use a simple text diagram or Mermaid diagram when helpful.
 

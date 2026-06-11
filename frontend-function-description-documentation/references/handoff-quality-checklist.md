@@ -1,6 +1,7 @@
 # Handoff Quality Checklist
 
 - The document can drive test-case design without requiring source-code reading.
+- Changed source-code features cite sidecar code ledgers, functional code ranges or stable anchors, version entries, affected contracts, verification, and rollback notes.
 - Every data-backed feature names its provider or source, not just "接口" generically.
 - Every provider-backed feature includes version/evidence or an explicit accepted assumption.
 - Filters include defaults, option source, reset behavior, cascade behavior, and affected modules.

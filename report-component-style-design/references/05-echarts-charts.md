@@ -1,6 +1,6 @@
 # ECharts Chart Rules
 
-Use for standard charts built with ECharts: bar, line, area, pie, radar, scatter, heatmap, map, funnel, waterfall, and mixed charts.
+Use for standard charts built with ECharts: bar, line, area, combo/mixed, pie, radar, scatter, parallel coordinates, heatmap, Sankey, sunburst, treemap, map, funnel, waterfall, and mixed charts.
 
 ## Base Option Contract
 
@@ -14,11 +14,11 @@ Use for standard charts built with ECharts: bar, line, area, pie, radar, scatter
 - Keep tooltip complete enough to recover hidden labels and exact values.
 - Resize charts on container resize, tab activation, drawer open/close, fullscreen, and legend toggles.
 - Initialize and resize from the measured chart body viewport. Do not use CSS transforms or stretched parent boxes to scale a previously rendered chart.
-- Preserve geometry for charts whose shape carries meaning, including pie/donut/rose, radar, gauge, map, graph, Sankey, funnel, custom paths, and pictorial/custom series.
+- Preserve geometry for charts whose shape carries meaning, including pie/donut/rose, radar, gauge, map, sunburst, graph, Sankey, funnel, custom paths, and pictorial/custom series.
 
 ## Chart Engine Fidelity
 
-Use this gate whenever the design or mapping says ECharts, chart, bar, line, area, pie, donut, radar, scatter, heatmap, map, funnel, waterfall, gauge, mixed chart, or KPI trend chart.
+Use this gate whenever the design or mapping says ECharts, chart, bar, line, area, pie, donut, radar, scatter, heatmap, treemap, map, funnel, waterfall, gauge, mixed chart, or KPI trend chart.
 
 Pass:
 
@@ -41,7 +41,7 @@ Allowed non-ECharts SVG/canvas use:
 
 ## Proportional Geometry
 
-- Use an aspect-safe inner plot box for shape-sensitive charts. For square or near-square graphics such as pie, radar, gauge, map symbols, and custom path diagrams, use the smaller of width/height as the geometry baseline and center the chart in the remaining space.
+- Use an aspect-safe inner plot box for shape-sensitive charts. For square or near-square graphics such as pie, radar, gauge, sunburst, map symbols, and custom path diagrams, use the smaller of width/height as the geometry baseline and center the chart in the remaining space.
 - Do not force shape-sensitive charts to fill both width and height of a non-square container. Extra horizontal or vertical breathing space is preferable to warped arcs, paths, circles, symbols, or maps.
 - For ECharts `graphic`, custom series, pictorial paths, or hand-authored SVG overlays, define a logical design box and map it to the body viewport with uniform scale. Avoid separate x-scale/y-scale factors unless the graphic is intentionally a data-coordinate chart.
 - If a graphic uses an image or SVG asset, keep the asset aspect ratio. Use `contain`/letterbox behavior, not `fill` stretching.
@@ -69,23 +69,231 @@ Allowed non-ECharts SVG/canvas use:
 - End labels must not collide with bar ends, axis edge, or neighboring bars.
 - For long category names, prefer horizontal bars with a label column and value column.
 - Use `label column + visual column + value column` for ranked bars when exact values matter.
+- Target/actual comparison column charts must also follow `12-internal-placement-algorithms.md`: reserve title/subtitle, metric strip, legend, y-axis band, plot, x-axis label band, target-label right gap, and footer before setting ECharts `grid` and `barWidth`.
+
+### Target / Actual Comparison Bars
+
+Use this pattern when a chart shows actual values with target, attainment, gap, unit, and YoY/MoM/change-rate context.
+
+Target encoding:
+
+- Unified target: use one `bar` series for actual values and ECharts `markLine` or a constant `line` series for the shared target.
+- Per-category target: use one `bar` series for actual values plus an ECharts `custom` series that draws short horizontal target ticks at each category target coordinate.
+- Target bar comparison: use two grouped `bar` series only when category count is small and exact actual-vs-target gap comparison is the main task.
+
+Do not hand-draw target lines, ticks, axes, legends, or bars with HTML/CSS/SVG while claiming the component is an ECharts chart.
+
+Required ECharts budget when the complete chart surface is inside one ECharts container:
+
+```text
+grid.left = yAxisW
+grid.right = 40-64px when target labels sit outside the plot, else 8-16px
+grid.top = titleH + titleMetricGap + metricH + metricLegendGap + legendH + legendPlotGap
+grid.bottom = xAxisH + footerH
+grid.containLabel = true
+```
+
+If title, metric strip, unit, or legend are rendered by approved DOM outside ECharts, subtract those bands before mounting ECharts and set `grid` relative to the measured plot viewport. ECharts must still own bars, axes, target line/ticks/bars, tooltip, emphasis, and data labels.
+
+Bar geometry:
+
+```text
+groupBand = plotWidth / categoryCount
+groupGap = clamp(8px, groupBand * 0.28, 28px)
+singleSeriesBarWidth = clamp(8px, groupBand - groupGap, 48px)
+groupedSeriesBarWidth = clamp(6px, (groupBand - groupGap - innerGap) / 2, 32px)
+```
+
+Axis and label rules:
+
+- Column charts start from `0` unless negative values exist; negative values require a visible zero baseline.
+- Y-axis max includes both actual and target values, with a readable headroom such as `niceMax(max(actual, target) * 1.1)`.
+- X-axis labels align to category centers. When `N > 12`, use readable rotation or sampling; when `N > 20`, sample labels by budget; when `N > 30`, use horizontal scroll/dataZoom; when `N > 50`, prefer horizontal bar, pagination, Top N, or table fallback.
+- Permanent data labels are allowed for `N <= 8` when they do not collide. For `9-16`, show only max/min/anomalies/selected values. For `N > 16`, hide permanent labels by default.
+- Category change-rate labels default to tooltip; show them on the chart only when `N <= 6` and label collision checks pass.
+- If value labels collide with target labels or target lines, preserve the target indicator and move value labels to tooltip.
+
+Tooltip must include category, actual, target, attainment, target gap, unit, and YoY/MoM/change-rate when available. If a comparison denominator is `0`, show `--` and explain the denominator condition in tooltip.
+
+Component-internal local filter:
+
+- Suitable filters include `实际 / 目标 / 完成率`, `销售额 / 订单量 / 利润`, `同比 / 环比`, `按金额 / 按完成率`, or `Top5 / Top10 / 全部`.
+- The filter affects only this chart and must not replace the page/global filter surface.
+- Place the filter in the title/header right side when it fits: `filterH = 28px`, `filterW <= min(CW * 0.45, 280px)`, `filterX = W - P - filterW`, and `titleMaxW = CW - filterW - 12px`.
+- Keep hierarchy separate: title + filter, metric strip = summary values, legend = visual encoding, plot = bars.
+- If the filter crowds the unit, move unit to subtitle/metadata. If `plotH < CH * 0.45`, collapse the filter or secondary metric-strip items before compressing the plot.
+- Responsive: `W >= 600px` may show full capsule; `420px <= W < 600px` keeps at most three visible options; `320px <= W < 420px` moves under title or collapses; `W < 320px` uses dropdown; `H < 260px` cannot add a filter row.
 
 ## Line And Area Charts
 
 - Sort the source row tuples before deriving `xAxis.data`, `series.data`, tooltip payloads, and click payloads. Do not sort category labels independently while series values still map the unsorted rows.
+- Line/area charts must also follow `12-internal-placement-algorithms.md`: reserve title/subtitle, optional metric strip, legend/control band, y-axis band, plot, x-axis label band, reference-line right gap, optional footer, and point/label density before setting ECharts `grid`.
 - Do not label every point on dense time series.
 - Permanently label endpoints, anomalies, max/min, or selected points.
 - For one data point, center the point in the plot area.
 - For two data points, place them symmetrically around center.
 - Use axis pointer and tooltip for exact period values.
+- Do not smooth a line by default. Use `smooth: true` only when the business task is broad trend shape; keep straight segments when volatility, spikes, missing values, or operational anomalies matter.
+- Missing values must remain missing. Use `null`/gap behavior and do not convert missing values to `0`.
+
+Required ECharts behavior:
+
+- Lines, area fills, points, axes, reference lines, axisPointer, brush/dataZoom, tooltip, legend, and emphasis must be generated by ECharts `option`/`series`, `markLine`, `markArea`, `visualMap`, `dataZoom`, or equivalent project wrapper behavior.
+- Target, average, warning, upper/lower limit, and forecast split lines use ECharts `markLine`, `markArea`, or data-driven line series. Do not hand-draw these with DOM/SVG/CSS over the chart.
+- Time axes default to ascending chronological order. Period granularity must be consistent; do not mix day/week/month unless aggregation is explicit.
+- Multi-series line charts should normally show `2-5` visible series. For `6-8`, use a focus series plus muted secondary series or a selector. For more than `8`, use filtering, facets, small multiples, or another component.
+- Area fill is appropriate for a single metric or at most two series where magnitude matters. Avoid heavy area fills in dense multi-series comparisons.
+
+Required plot budget when the complete chart surface is inside one ECharts container:
+
+```text
+grid.left = yAxisW
+grid.right = 40-64px when target/average labels sit outside the plot, else 8-16px
+grid.top = titleH + titleMetricGap + metricH + metricLegendGap + legendH + legendPlotGap
+grid.bottom = xAxisH + footerH
+grid.containLabel = true
+```
+
+If title, metric strip, unit, or legend are rendered by approved DOM outside ECharts, subtract those bands before mounting ECharts and set `grid` relative to the measured plot viewport. ECharts must still own lines, points, axes, reference lines, axisPointer, dataZoom/brush, tooltip, emphasis, and data labels.
+
+Point and label density:
+
+- `N <= 12`: points may be visible; labels only if they pass collision checks.
+- `13-30`: hide normal points and ordinary labels; show on hover/emphasis.
+- `31-100`: hide points and labels by default; use tooltip.
+- `101-500`: use zoom/brush or aggregation.
+- `N > 500`: sample, aggregate, paginate, virtualize, or switch to a table/detail flow.
+- Permanent labels are allowed for first/last, latest/current, max/min, anomaly, selected point, max growth, or max drop. Ordinary point change-rate labels default to tooltip.
+
+Y-axis range:
+
+- Default to `yMin = 0` when absolute magnitude comparison matters.
+- Non-zero `yMin` is allowed for bounded/ratio metrics such as temperature, conversion rate, margin, or inventory ratio when it improves trend readability, but the axis must make the range clear and avoid exaggerated visual treatment.
+- Negative values require a visible zero baseline.
+
+Tooltip must include period/category, series name, value, unit, target/reference value when relevant, attainment or gap when relevant, YoY/MoM/change-rate when available, and source/period context when relevant. For multi-series tooltip, highlight the hovered series and sort series values when useful.
+
+Component-internal local filter:
+
+- Suitable filters include time range, time granularity, metric口径/view, and `同比 / 环比`.
+- Priority is `time range -> granularity -> metric口径 -> YoY/MoM`.
+- Use one visible group by default. Two groups are allowed only when `W >= 720px` and title/subtitle fit passes.
+- Place the primary filter in the title/header right side: `filterH = 28px`, `filterW <= min(CW * 0.48, 300px)`, `filterX = W - P - filterW`, and `titleMaxW = CW - filterW - 12px`.
+- Keep filter and legend separate. The filter changes state; the legend explains series.
+- If `plotH < CH * 0.45`, collapse secondary filter, hide secondary metric values, reduce legend height, hide normal data labels, or enlarge the component before compressing the trend plot.
+- Responsive: `W >= 720px` may show one or two groups; `480px <= W < 720px` one group; `320px <= W < 480px` main filter with at most three options; `W < 320px` dropdown; `H < 260px` no added filter row.
+
+## Combo Charts
+
+Use Combo charts only when two related metrics must be read on the same category/time axis, such as sales amount + growth rate, order volume + conversion rate, revenue + margin, actual + target attainment, traffic + CTR, cost + ROI, or actual value + target/reference. A Combo chart is not a container for unrelated charts.
+
+Business fit:
+
+- Default encoding: `bar` = scale/amount/count, `line` = rate/trend/efficiency, target/reference = standard or benchmark.
+- Valid types include bar + line, bar + target/reference line, grouped bar + line, stacked bar + line, area + line, and dual-y-axis bar + line.
+- Split into separate charts when metrics are unrelated, series exceed density limits, the right axis would imply false correlation, the user needs exact audit, or the component is too small.
+- Do not use Combo just because a dashboard needs visual variety. It must state the paired relationship such as `规模与效率`, `实际与达成`, `投入与产出`, or `流量与转化`.
+
+Required data and option contract:
+
+- Category/time field and deterministic order.
+- Primary bar metric name, unit, value field, and axis mapping.
+- Secondary line/target metric name, unit, value field, and axis mapping.
+- `xAxis`, one or two `yAxis` definitions, `legend`, `tooltip`, `axisPointer`, and data-driven `series`.
+- ECharts owns bars, lines, target/reference lines, axes, grid, tooltip, legend, hover emphasis, and label layout. Do not hand-draw bars, lines, axes, targets, or legends with DOM/SVG/CSS/canvas while claiming ECharts Combo.
+- Use `dataset` or a shared ordered row array so `xAxis.data`, bar data, line data, target values, tooltip payloads, and click payloads all come from the same sorted rows.
+
+Series and axis limits:
+
+- Recommended: `1` bar series + `1` line series.
+- Bar series `<= 2`, line series `<= 2`, target/reference lines `<= 2`, total visible series `<= 4`; legend items should be `<= 4` and hard max `5`.
+- Grouped bar + line supports at most `2` bar series and normally `N <= 12` categories.
+- Stacked bar + line supports at most `4` stacked bar parts and `1` main line.
+- Dual axis is allowed only when the units differ and the business relationship is explicit. Left axis normally carries amount/count, right axis carries percent/rate. Both axes must show units, tooltip must show both units, and axis label color may weakly match the series without becoming decorative.
+- Avoid dual axes for unrelated indicators, hidden right axis, exaggerated right-axis ranges, or synchronized-looking curves without a real relationship.
+
+Plot budget:
+
+```text
+titleAreaH = 36-56px
+metricH = 0-48px
+legendH = 20-28px
+xAxisH = 32-56px
+footerH = 0-24px
+plotH = CH - titleAreaH - metricH - legendH - xAxisH - footerH - gaps
+require plotH >= CH * 0.48
+
+leftAxisW = clamp(40px, maxLeftAxisLabelWidth + 8px, 80px)
+rightAxisW = hasRightAxis ? clamp(36px, maxRightAxisLabelWidth + 8px, 72px) : 0
+grid.left = leftAxisW
+grid.right = rightAxisW + 8-16px
+grid.containLabel = true
+```
+
+If title, metric strip, local filter, or legend are DOM outside ECharts, subtract those bands before mounting ECharts. Collapse footer, secondary metric strip, legend detail, local filters, and ordinary labels before shrinking the plot below the floor.
+
+Category density and geometry:
+
+- `N <= 8`: show all x-axis labels; labels may be horizontal.
+- `9-16`: tilt or sample labels after measuring; show only key data labels.
+- `17-30`: sample x-axis labels and hide ordinary labels; consider dataZoom.
+- `N > 30`: use scroll/dataZoom, switch to a trend chart, or split/table fallback.
+- Single bar width: `barW = clamp(8px, bandW * 0.48, 40px)`.
+- Grouped bars: `barW = clamp(6px, (bandW * 0.72 - innerGap * (S - 1)) / S, 28px)`, with `innerGap = 4-8px`.
+- Line points align to category centers. Line width is `2px`; emphasis width `2.5-3px`; point radius `3-4px`, hover `5-6px`; hide normal points when `N > 20`.
+- Draw order: grid -> bars -> target/reference -> line -> points -> key labels -> tooltip guide.
+
+Labels, legend, and tooltip:
+
+- Legend sits above the plot or in the title-function area, separate from component-local filters. Use items such as `■ 销售额`, `— 增长率`, `┄ 目标`.
+- Legend interaction may toggle series, but it must preserve at least one primary bar/scale series or switch to an explicit split/empty state; never leave only a secondary rate line that implies an unsupported story.
+- Permanent bar labels are off by default. For `N <= 6`, show all only if they fit; for `7-12`, show max/min/anomaly/selected; for `>12`, hide.
+- Line labels show only latest, max/min, selected, or anomaly. If labels collide, preserve the line/target evidence and move ordinary bar labels to tooltip.
+- Target/reference labels use `11-12px`, dashed `1-1.5px` line, and right-edge label only when the right gap fits; otherwise move the label to legend/tooltip.
+- Metric strip is optional and should show at most `3` summary values: primary total/latest value, line/rate change, and target attainment or anomaly evidence.
+- Tooltip is required with `trigger: 'axis'` and should list category, bar metrics first, line/rate metrics after, target/reference last, units, target gap or attainment when relevant, active filter, period, source, and denominator-zero notes. Keep tooltip width about `180-320px`, flip away from right/top/bottom boundaries, and do not use static labels as a substitute for exact values.
+
+Component-internal local filter:
+
+- Suitable filters: main metric basis, time range, time grain, actual/target/attainment, YoY/MoM, amount/count/share.
+- Unsuitable filters: large region/channel/category/store/user/status sets that change report scope or component schema; move them to page/global filters or perspective controls.
+- Place one local filter in the title/header right side when it fits: `filterH = clamp(24px, H * 0.08, 32px)`, `filterMaxW = min(CW * 0.45, 280px)`, `filterX = W - P - filterW`, `titleMaxW = CW - filterW - 12px`.
+- If the filter does not fit, collapse to a single compact dropdown such as `销售额 ▾`; do not add a new filter row until the chart's legend/axis/plot budget still passes.
+
+States:
+
+- Loading: reserve title/filter and show bar + line skeletons.
+- Empty: show `暂无数据` in the plot body.
+- Small `W < 360px` or `H < 260px`: keep only title, collapsed local filter, main bar, main line/target, axes, and tooltip; hide subtitle, metric strip, ordinary labels, footer, and noncritical legend detail.
+- Missing bar series: hide bar only and keep line if the relationship still makes sense; missing line/target hides that series and explains in tooltip/state.
+- Missing category breaks the line and omits the bar rather than converting to `0`; real zero renders at baseline.
+- Negative values require visible zero baseline on the relevant axis.
+- Too many categories trigger label sampling, dataZoom/scroll, aggregation, or split-chart fallback.
 
 ## Pie, Donut, Rose
 
-- Use only when category count is small and proportions matter.
-- If slices exceed readable count, use Top N plus `其他`.
-- Hide labels for low-value slices and expose details in tooltip/legend.
-- Do not allow outside labels and guide lines to form a dense ring.
-- Switch to bar/table when exact comparison matters.
+- Use only when category count is small and part-to-whole proportions matter. Do not use pie/donut for trend, exact ranking, precise audit comparison, negative values, or visually similar shares that users must compare exactly.
+- Donut is the default report shape. Plain pie is allowed when center content is unnecessary or the component is too small. Semi-donut/progress donut is a separate single-progress pattern and must not be mixed with normal category composition.
+- Recommended category count: `2-6`; maximum before merging is `8`. When category count is `> 8`, or when small categories make the legend/label ring unreadable, use `Top5 + 其他`, ranked bar, table, or detail drawer.
+- Merge small items deterministically:
+
+```text
+sort by value desc
+keep TopN, default TopN = 5
+otherValue = total - sum(TopN)
+merge when categoryCount > 6 or singleCategoryPercent < 3%
+```
+
+- `其他` must stay last and use a weaker/neutral color. If `其他` becomes the largest item, warn that categories are too fragmented or switch to ranked bar/table.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, optional metric strip, legend band/side width, pie area, optional outside label budget, center metric, footer, local filter, and state geometry before setting ECharts options.
+- Use ECharts `series: [{ type: 'pie' }]`, `radius`, `center`, `startAngle`, `minAngle`, `avoidLabelOverlap`, `labelLayout`, `labelLine`, `legend`, `tooltip`, and emphasis behavior. Do not hand-draw slices, arcs, labels, guide lines, legends, or center text with SVG/HTML/CSS/canvas while claiming an ECharts pie/donut.
+- Set `startAngle: 90` or the project-equivalent top start convention so the first slice starts from the top and proceeds clockwise. Slice order should follow value descending or a declared business order; `其他` stays last.
+- Negative values are invalid for pie/donut. All-zero values must render an empty/all-zero state such as `暂无有效占比`, not fake shares. A single category may render a full ring/slice labeled `100%`.
+- Default label strategy: legend shows category + percent; tooltip shows exact values. Do not show every outside label by default.
+- Outside labels are allowed only for large components with category count `<= 5` and passing collision checks. Reserve `labelLineBudget = 24-48px`, set label max width/wrap/truncation disclosure, enable overlap hiding, and configure edge/bleed margins.
+- Inside labels show percent only and hide when slice angle is `< 18deg`. Do not place long category names inside slices.
+- Center text is donut-only by default: total value, selected category, Top1 share, or empty/all-zero message. Keep `centerTextMaxW = innerR * 1.5`, shorten units/decimals when needed, and disclose full values in tooltip.
+- Tooltip must include category, value + unit, percent, rank, change-rate when available, and source/period/filter context.
 
 ### Small-Card Donut Hard Rules
 
@@ -94,6 +302,7 @@ For donut charts inside small cards, KPI tiles, compact sub-blocks, or narrow da
 - Use a bottom legend by default. Bottom legends must declare `legendBandHeight` before choosing chart body height, `center`, and `radius`.
 - If outside labels are enabled, a right-side legend must first pass a width budget. If the budget does not pass, use a bottom legend instead.
 - Right-side legends are allowed only when the card is wide enough and outside labels are disabled or limited to key labels such as Top N, selected, anomaly, or current focus categories.
+- For wide report components (`W >= 480px`), a right legend is allowed when `legendSideWidth = clamp(120px, CW * 0.28, 200px)` passes and the pie area remains readable. For narrower components, use a bottom legend with `legendBandHeight = 36-56px`.
 - Declare the donut space budget explicitly:
 
 ```text
@@ -104,6 +313,17 @@ center = [x, y]
 radius = [inner, outer]
 ```
 
+- Recommended radius algorithm:
+
+```text
+labelReserve = 0px when outside labels are hidden
+labelReserve = 24-48px when outside labels are visible
+outerR = min(pieAreaWidth - 2 * labelReserve, pieAreaHeight - 2 * labelReserve) / 2
+outerR = clamp(48px, outerR, 160px)
+innerR = outerR * 0.62
+```
+
+- Recommended donut inner radius ratio: small `0.56-0.60`, standard `0.60-0.66`, large `0.64-0.70`.
 - Shrink radius deliberately after legend and `labelLineBudget` reservation; do not use a large default radius that pushes labels into card edges or legends.
 - Set label constraints explicitly: maximum label width, wrapping or truncation policy, tooltip/full label disclosure, `labelLayout: { hideOverlap: true }`, `bleedMargin`, and `edgeDistance` where supported.
 - Low-share categories may hide permanent outside labels. Full category name, value, percentage, and status must remain available through tooltip and legend. Do not force every low-value slice to keep an outside label when it creates a crowded label ring.
@@ -113,21 +333,386 @@ radius = [inner, outer]
 
 ## Radar
 
-- Use only for a small number of dimensions, normally 3-6 and rarely 7.
-- Keep indicator names short. Abbreviate long names and show full text in tooltip.
-- Reserve separate zones for radar labels and legend.
-- Set `axisName`, `nameGap`, `radar.center`, and `radar.radius` deliberately.
-- Keep the radar coordinate system circular. Do not let the radar stretch into an ellipse because the container is wide or tall.
-- If radar labels collide with title, edge, or legend, reduce radius, move legend, increase span, or switch chart type.
+- Use radar only for multi-dimensional score/health/profile comparison where shape, balance, strengths, weaknesses, or actual-vs-target gap is the main task. Do not use it for precise value lookup or unrelated raw-unit comparison.
+- Recommended dimensions: `5-8`. `3-4` is allowed but weak; `9-10` requires abbreviated labels and hidden ordinary value labels; `>10` should become facets, bar chart, or table.
+- Recommended visible series: `1-2`; maximum normal visible series is `3`. More objects require a selector, facets, small multiples, bar chart, or table.
+- Radar values must share one comparable scale, normally `0-100`. If raw fields use different units, plot standardized scores and expose raw value, target, and score in tooltip.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, optional metric strip, legend, plot, dimension-label outer ring, optional footer, local filter, and state geometry before setting ECharts options.
+- Component-local filters are allowed only for lightweight current-chart changes such as `本月 / 本季 / 本年`, `实际 / 达成率 / 评分`, `本期 / 上期`, or one small object switch. Keep filters separate from legend and collapse to dropdown before shrinking the radar body below budget.
+- Use ECharts `series: [{ type: 'radar' }]`, `radar.indicator`, `radar.center`, `radar.radius`, `radar.shape`, `radar.splitNumber`, `axisName`/`name.textStyle`, `nameGap`, `tooltip`, `legend`, and ECharts emphasis/blur. Do not hand-draw radar polygons, rings, axes, points, or legends with SVG/HTML/CSS/canvas while claiming an ECharts radar.
+- Set the radar center and radius from a measured plot viewport:
 
-## Scatter, Bubble, Heatmap, Map
+```text
+labelOuterGap = 12-20px
+labelMaxW = 48-80px
+labelMaxH = 16-32px
+R = min(plotW / 2 - labelMaxW - labelOuterGap, plotH / 2 - labelMaxH - labelOuterGap)
+R = clamp(48px, R, 180px)
+```
 
-- Label only selected, outlier, high-risk, or major region points/cells.
-- Use tooltip, visualMap, brush, zoom, and selection for detail.
-- Dense maps and heatmaps should show exact value on hover and avoid permanent labels in every cell.
-- Maps and symbol maps must preserve geography/symbol aspect ratio. If the container aspect ratio differs, center and scale uniformly; do not stretch to fit.
+- Keep the radar coordinate system circular. Do not let the radar stretch into an ellipse because the container is wide or tall. Use uniform scale, square/near-square inner geometry, and centered unused space.
+- Default grid: polygon shape for BI reports, `splitNumber` `3-5` by radius, weak `1px` axis/split lines. Circular grid is a named variant for softer big-screen display, not the default.
+- Keep indicator names short: `2-6` Chinese characters preferred. `7-10` may wrap to two lines if fit passes; longer names must abbreviate and expose the full label in tooltip.
+- Dimension labels sit outside the outer ring with `nameGap`/label gap `12-20px` and quadrant alignment. Do not shrink labels below `11px`; reduce radius, abbreviate labels, enlarge the chart, or switch chart type first.
+- Actual series uses solid line `2px`, point radius `3-4px`, hover radius `5-6px`, and light area fill opacity `8%-18%`.
+- Target series uses dashed or weak outline around target values, `1.5px`, with no fill or very weak fill. A shared target such as `80分` may be a target ring. Previous period should be weak/dashed.
+- Permanent value labels are not default. Show all values only when `N <= 5` and collision checks pass; for `6-8`, show max/min/anomaly/selected; for `>8` or multi-series, use tooltip.
+- Tooltip must include dimension, actual, target, attainment/gap, previous/change-rate when available, unit/score scale, raw value when standardized, and period/source context.
+- If labels collide with title, edge, legend, metric strip, filter, or each other, collapse filter/legend/metrics, reduce radius, abbreviate labels, hide value labels, enlarge the component, or switch chart type. Do not solve collisions with clipping.
 
-## Funnel, Waterfall, Contribution
+## Gauge
+
+Use Gauge only for one bounded progress/status metric, such as completion rate, attainment, resource usage, risk score, health score, SLA attainment, budget consumption, or target progress. Do not use Gauge for multi-category comparison, time trend, composition, exact-value audit, unbounded metrics, or many same-weight gauges on one screen. If the user only needs a number, use a KPI card; if they need comparison, use bar/table; if they need movement, use line.
+
+Data contract:
+
+- Required fields: metric name, current value, unit, `minValue`, `maxValue`, period/source, and status rule.
+- Target, thresholds, change rate, and metric strip items are optional but must declare formulas and units when shown.
+- `ratio = (currentValue - minValue) / (maxValue - minValue)` and `ratio` is clamped to `0-1` for arc drawing. When true value is below min or above max, the center value shows the real value and tooltip explains overflow.
+- `maxValue == minValue`, missing current value, missing target, missing thresholds, denominator zero, and comparison-period zero all need explicit display behavior.
+- Status color is driven by business meaning, not raw high/low. High risk, complaint rate, failure rate, CPU load, and cost consumption cannot reuse positive-progress colors without a declared threshold rule.
+
+Default report shape:
+
+- Use a semicircle Gauge by default: `startAngle = 180`, `endAngle = 0`, center value prominent, light target tick, only key min/max ticks.
+- A `240deg` arc or circular Gauge is allowed for large screens/monitoring when height is sufficient.
+- Pointer Gauge is optional and should be used only for risk, pressure, load, temperature, or health-score monitoring. Completion/progress gauges should usually use progress arc only.
+- Threshold segments are limited to `3-4` by default and `<=5` maximum. More status levels require a table, legend, or simplified state mapping.
+
+Placement and geometry:
+
+- Follow `12-internal-placement-algorithms.md`: reserve title, local filter, subtitle, optional metric strip, Gauge area, status/footer, and state geometry before setting ECharts options.
+- The Gauge body should keep `gaugeAreaH >= CH * 0.50`. If space is tight, hide footer, reduce metric strip, collapse filter, hide middle ticks, hide threshold labels, and keep only center value plus progress arc.
+- Use ECharts `series: [{ type: 'gauge' }]`, `min`, `max`, `startAngle`, `endAngle`, `radius`, `center`, `progress`, `axisLine`, `axisTick`, `splitLine`, `axisLabel`, `pointer`, `anchor`, `detail`, `data`, `markPoint`/custom target marker when needed, `tooltip`, and emphasis behavior. Do not hand-draw arcs, ticks, labels, needles, legends, or targets with SVG/HTML/CSS/canvas while claiming an ECharts Gauge.
+- Preserve arc geometry. Do not stretch a circular or semicircular Gauge independently on X/Y; use a measured inner fit box and center unused space.
+- Default Gauge area formulas:
+
+```text
+centerX = plotX + plotW / 2
+centerY = plotY + plotH * 0.72 for 180deg semicircle
+centerY = plotY + plotH * 0.58-0.64 for 240deg arc
+R = min(plotW / 2, plotH * 0.82) - labelReserve
+R = clamp(44px, R, 220px)
+arcW = clamp(8px, R * 0.12, 22px)
+valueFontSize = clamp(24px, R * 0.32, 42px)
+unitFontSize = valueFontSize * 0.45-0.55
+```
+
+Labels and targets:
+
+- Center value plus unit is the primary visual anchor and must be measured as one centered group. Status text sits `4-6px` below the value.
+- Keep ticks sparse: show min/max by default, optional midpoint only when radius and label space pass. Tick labels use `11-12px`.
+- Target marker default is a short radial tick. Target label is optional; hide the label and keep tooltip when it collides with ticks, arc, center value, or card edge.
+- Legend is normally unnecessary. Use a legend only when threshold segments are not self-explanatory and keep legend items `<=4`, maximum `5`.
+
+Tooltip and interaction:
+
+- Tooltip must include metric, current value, range, target, gap, status, threshold interval, change rate when present, period, source, and overflow/denominator notes.
+- Hovering progress arc highlights the current arc and weakens the background track. Hovering target marker shows target tooltip.
+- Clicking Gauge may pin tooltip, open metric detail, or link sibling components only when an event contract exists.
+
+States:
+
+- Loading skeleton preserves title/filter/arc/value geometry.
+- Empty or missing current value shows center `--` and does not draw progress arc.
+- Missing target hides target marker. Missing thresholds uses a single progress color.
+- Out-of-range current value clamps the arc but displays the real center value.
+- Many gauges in one view must use unified range, status colors, type, typography, and radius ratio; otherwise switch to KPI cards or a comparison table.
+
+## Scatter And Bubble
+
+- Use scatter only when the task is relationship, clustering, outlier detection, or quadrant diagnosis between two numeric variables. Do not use scatter for one numeric metric, pure category comparison, time trend, part-to-whole composition, or dense row lookup without aggregation.
+- Bubble charts add a third metric through point size. They must declare the size metric, unit, radius mapping, min/max radius, and size legend or tooltip disclosure.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, metric strip, legend/size legend, y-axis band, plot, x-axis band, optional footer, component-local filter, and state geometry before setting ECharts options.
+- Use ECharts `series: [{ type: 'scatter' }]` or equivalent project wrapper, data-driven `xAxis`, `yAxis`, `dataset`/`series.data`, `symbolSize`, `tooltip`, `legend`, `markLine`, `markArea`, `visualMap`, `dataZoom`/`brush`, and emphasis/blur. Do not hand-draw points, bubbles, axes, grid, reference lines, quadrant labels, or legends with SVG/HTML/CSS/canvas while claiming an ECharts scatter/bubble chart.
+- X and Y axes must state metric names and units. Prefer subtitle wording such as `X：客单价 / 元 · Y：转化率 / %`; axis titles may also be shown when space allows.
+- Axis ranges must be declared:
+  - Use padded `niceMin/niceMax` for relationship reading.
+  - Use `0` baseline when the metric is a positive magnitude and absolute comparison matters.
+  - Show a visible zero baseline when negative values exist.
+  - Add fallback range when all X or Y values are identical.
+- Point density:
+  - `N <= 50`: radius `5-6px`, selected/key labels allowed.
+  - `51-300`: radius `3-5px`, hide ordinary labels, use hover and opacity.
+  - `301-1000`: radius `2-3px`, lower opacity, use zoom/brush/sampling when needed.
+  - `N > 1000`: aggregate, sample, density plot, hexbin, or table/detail flow.
+- Default point style: radius `4px`, hover radius `6px`, opacity `65%-85%`, muted opacity `20%-35%`. Do not add heavy borders to every point; reserve outlines for selected/outlier points.
+- Bubble radius uses square-root mapping:
+
+```text
+minR = 4px
+maxR = 20px
+bubbleR = minR + sqrt((sizeValue - sizeMin) / (sizeMax - sizeMin)) * (maxR - minR)
+```
+
+- For small components, `maxR <= 16px`; for large components, `maxR <= 24px`. Bubble opacity should be `45%-70%`, and hover/selected bubbles should move to the top.
+- Target/average lines use ECharts `markLine` or data-driven line series. Quadrant backgrounds use `markArea` or an approved custom layer generated by the chart wrapper. Do not draw these as unmanaged DOM overlays.
+- Quadrant backgrounds must be weak, `4%-8%` opacity. Quadrant labels are `11-12px`, placed in corners with `8-12px` edge padding.
+- Trend line is optional and only when correlation is the task. Use `1.5-2px` line width, `50%-70%` opacity, and avoid overpowering the point cloud.
+- Point labels are not default. Show permanent labels only for Top 3, outliers, selected point, or small sparse charts. For `N > 100`, ordinary labels hide by default and exact values stay in tooltip.
+- Color legend should normally show `<= 5` visible categories. More categories require dropdown, Top groups, muted secondary groups, faceting, or another component.
+- Tooltip must include object name, X metric + unit, Y metric + unit, bubble size metric when present, category/color group, target/average comparison, quadrant, YoY/MoM/change-rate when available, and source/period/filter context.
+
+## Parallel Coordinates
+
+- Use parallel coordinates only when the task is multi-metric object comparison, profile pattern recognition, anomaly detection, or feature exploration across `3+` metrics. Use scatter for two metrics, bar/table for single ranking or precise comparison, and S2/table for exact row audit.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, local filter, optional metric strip, legend/control band, axis-title band, plot, bottom axis-label band, optional footer, and brush/state geometry before setting ECharts options.
+- Use ECharts/project-wrapper parallel capabilities: `series.type: 'parallel'`, `parallelAxis`, `parallel`, data-driven `dataset`/`series.data`, `lineStyle`, `emphasis`, `tooltip`, `legend`, optional `brush`/axis area selection, and normal `setOption`/resize lifecycle. Do not hand-draw parallel axes, polylines, brush handles, legends, or hover states with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts parallel-coordinate chart.
+- Source must declare object id/name, dimension fields, dimension label, unit, min/max or domain, scale direction, whether lower is better, standardization mode, group/status/highlight fields, sample count, period/source, and missing-value rule.
+- Dimension count controls rendering: `3-5` is clearest, `6-8` is the default upper range, `9-12` requires abbreviated labels and reduced ticks, and `>12` requires dimension filtering, horizontal scroll, or another view.
+- Sample count controls rendering: `N <= 30` may show all lines at `45%-70%` opacity; `31-100` uses `25%-45%`; `101-500` uses `8%-25%` and highlights only Top/anomaly/selected lines; `501-2000` requires sampling, group median/quantile bands, or density mode; `>2000` should not render all lines directly.
+- Main plot stays dominant: `plotH >= CH * 0.48`. Axis spacing must stay readable: `axisGap >= 56px`, and long dimension titles should budget `72-96px`. If spacing fails, reduce dimensions, abbreviate labels with tooltip, enable horizontal scroll, or switch to table/scatter/bar.
+- Each axis uses independent scaling by default. When units differ heavily, support standardized display such as `0-100` or `0-1`, and state this in subtitle. Tooltip must still expose original values and units.
+- Axis direction must be explicit. For lower-is-better metrics such as cost, refund rate, complaint rate, or failure rate, set a reverse axis and disclose direction in axis tooltip.
+- Axis ticks are restrained: show min/max by default and at most `2-4` ticks per axis. In dense components, show ticks only on first/last or hovered axis.
+- Ordinary sample labels are hidden. Permanent labels are limited to selected, Top, anomaly, or sparse charts. Exact values belong in tooltip/detail.
+- Color semantics are limited: ordinary lines use neutral or low-saturation theme color; highlighted lines use theme/status color; anomaly lines use restrained warning color; grouped charts should keep visible groups `<=5` and never give every line a unique color.
+- Brush is optional but must be data-driven. Brush on an axis selects a value range; multiple axis brushes default to intersection. Selected lines remain normal/highlighted, non-matching lines dim, and metric strip updates selected sample count.
+- Legend explains line group/status only and must remain separate from component-local filters. Local filters may switch sample scope, standardized/raw mode, period, object type, or Top/anomaly view.
+- Tooltip must include object name, every visible dimension value and unit, standardized value when used, group/status, active brush ranges, rank/Top/anomaly reason when present, period/source, and missing-value handling.
+- States include loading, empty, error, no-permission, dimensions fewer than `3`, too many dimensions, too many samples, all-same axis values, missing dimension values, incompatible units without standardization, brush no result, and aggregate/sampled display state.
+
+## Map And Geographic Coordinate
+
+- Use maps only when geography is the actual decision dimension: regional distribution, spatial cluster, location abnormality, coverage, target attainment by geography, or origin-destination flow. Do not use a map for a few named region categories when a bar/table would answer faster.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, local filter, metric strip, map viewport, legend/size legend, zoom/reset controls, optional footer, and state geometry before setting ECharts options.
+- Use ECharts/project-wrapper map capabilities: `echarts.registerMap`, `geo`, `series.type: 'map'`, `scatter`/`effectScatter` on `coordinateSystem: 'geo'`, `heatmap`, `lines`, `visualMap`, `tooltip`, `legend`, `roam`, `emphasis`, `select`, and `labelLayout` where supported. Do not hand-draw administrative regions, point layers, bubbles, heat layers, route lines, legends, or zoom controls with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts map.
+- Administrative maps must declare the map resource, geography level, and join key. Prefer `regionCode` over display name; if names are used, document the matching table. Unmatched regions render neutral/no-data and report the mismatch count.
+- Point maps must declare longitude/latitude fields, coordinate system/projection, missing-coordinate handling, and whether coordinates represent object locations, event locations, or aggregated centroids.
+- Preserve geographic proportion. Use the map engine's fit/zoom/center, a measured `mapViewport`, and uniform scaling. Do not stretch a map, route, symbol layer, or custom geo overlay independently on X/Y to fill a wide or tall card.
+- Choropleth maps use `visualMap` with `5-6` bins. Business metrics default to quantile bins; risk/status maps use declared business thresholds; negative-plus-positive values require a divergent scale with zero semantics.
+- Base map and boundaries stay weak: boundary width `0.5-1px`, hover `1-1.5px`, selected `1.5-2px`. Data color must be stronger than the basemap, but not decorative or neon.
+- Bubble maps require a declared size metric, unit, bounded sqrt radius mapping, min/max radius, and size legend or tooltip disclosure. Use `maxR <= 14px` in small cards, `maxR <= 20px` by default, and `maxR <= 24px` only in large maps.
+- Point density controls rendering: `N <= 100` may show normal points; `101-500` hides ordinary labels and lowers opacity; `501-2000` uses clustering or heatmap; `N > 2000` uses heatmap, bins, server aggregation, sampling, or a table/detail flow.
+- Heatmap maps express density, not exact point reading. Use `heatRadius = clamp(12px, mapViewportW * 0.03, 36px)`, opacity `10%-80%`, no ordinary permanent point labels, and tooltip/detail for aggregated values.
+- Flow maps require origin/destination coordinates, line-width sqrt mapping, and a Top N limit: small Top `5`, standard Top `10`, large Top `20`. If paths become tangled, split/filter or switch to a table/detail view.
+- Permanent labels are limited to Top `3-5`, selected, hover, abnormal/high-risk, or current drilldown focus. Do not show every province, city, store, or route label by default.
+- Legend strategy must match the layer: color scale for choropleth/heat, size legend for bubble/flow, category legend for point status. Place legend at map bottom-right or bottom-left with weak background only when it does not cover high-value regions, dense points, or key routes.
+- Zoom/reset controls are optional and appear only when the map supports exploration, drilldown, or dense point navigation. Static dashboard maps can rely on hover tooltip.
+- Tooltip must include region/object/route identity, value + unit, target/gap or attainment when relevant, rank/share/status, missing/aggregation context when relevant, source, period, and active filter context.
+- Map states must include loading skeleton, empty data, map-resource load failure, no-permission, unmatched region code, missing coordinates, all-zero values, negative value scale, too-many-points, and too-many-flows. State masks preserve the same map viewport geometry.
+
+## Candlestick / K-Line
+
+- Use candlestick only when each time point has `open`, `high`, `low`, and `close`, and the task is price/quote volatility, trend, range, or market movement. If the source has only one value per time point, use line/area instead.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, local filter, metric strip, indicator legend, main candlestick plot, optional volume/indicator subplots, price axis, time axis, brush/dataZoom, footer, and state geometry before setting ECharts options.
+- Use ECharts/project-wrapper candlestick capabilities: `series.type: 'candlestick'`, line series for MA values, bar series for volume, shared `xAxis` categories/time, multiple `grid` areas when volume/indicators exist, `axisPointer` crosshair, `tooltip`, `legend`, `dataZoom`, `markPoint`/`markLine` for high/low/current/reference when needed, and normal `setOption`/resize lifecycle. Do not hand-draw candles, wicks, MA lines, volume bars, axes, crosshair, or brush with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts candlestick chart.
+- Source rows must be sorted ascending by time before deriving `xAxis.data`, candlestick data, MA series, volume bars, tooltip rows, and click payloads. Do not sort labels independently from OHLC rows.
+- Validate OHLC before rendering: `high >= max(open, close)`, `low <= min(open, close)`, numeric values share one unit, and missing invalid rows are exposed as data gaps instead of drawn as normal candles.
+- Declare time spacing mode: trading-calendar/category spacing or real elapsed-time spacing. Financial daily K usually uses trading-calendar/category spacing; intraday/realtime may require actual time gaps.
+- Declare market color convention. Chinese market default is usually red-up/green-down; international markets are often green-up/red-down. Configure `itemStyle.color`, `color0`, `borderColor`, `borderColor0`, and neutral flat styling; do not silently use generic report positive/negative colors when they conflict with market convention.
+- Price range covers visible lows/highs and MA values with headroom. Equal-price ranges need fallback padding so candles do not sit on the plot edge.
+- Candle density:
+  - `N <= 30`: wide candles, high/low markers allowed.
+  - `31-80`: standard candle width.
+  - `81-150`: narrow candles, sampled time labels.
+  - `151-300`: dataZoom/brush required, thin body.
+  - `N > 300`: default to recent window plus dataZoom, aggregation, or table/detail.
+- Candle body width should follow `bodyW = clamp(3px, bandW * 0.55, 14px)`, with `18px` maximum for sparse wide charts. When `bandW < 3px`, use thin-line mode, reduce visible range, or enable dataZoom.
+- Volume subplot shares candle x positions. Volume bar width follows candle body width, color follows candle direction, and opacity is `45%-70%` so volume remains secondary.
+- Main candlestick plot must remain dominant: `mainChartH >= CH * 0.45`. When volume exists, it should normally use `22%-28%` of chart area. When an additional technical indicator exists, all subplots together stay `<= 38%` of chart area.
+- Default MA lines are at most `3`, usually MA5/MA10/MA20. More indicators require legend toggles, dropdown, fullscreen, or professional-analysis mode. MA lines use `1-1.5px` width and must not obscure candles.
+- Technical indicators such as MACD/KDJ/RSI are off by default unless the component is explicitly for professional market analysis.
+- Time labels are sampled by width. Keep first/last and month/year boundaries before regular sampling. Do not rotate dense time labels into unreadable vertical text.
+- Permanent labels are limited to latest/current, visible-range highest high, visible-range lowest low, selected, or hover. Do not print OHLC values on every candle.
+- Crosshair/axisPointer is recommended: vertical + horizontal guide, current time label, current price label, and tooltip. Keep line width `1px`, opacity `50%-70%`, and avoid heavy interaction chrome.
+- Tooltip must include time, open, high, low, close, unit, change, change rate, volume, MA values when present, adjustment mode, source, period, and delay/freshness when relevant.
+- Candlestick states include loading, empty, error, no-permission, missing OHLC, missing volume, equal prices, time discontinuity, missing adjustment data, insufficient MA period, and delayed data.
+
+## Boxplot / Box-And-Whisker
+
+- Use boxplot only when the task is distribution comparison, stability/variance, median/IQR reading, or outlier detection across categories. Do not use it for a single aggregate ranking, composition, time trend, or audiences that need exact row audit as the primary task.
+- Follow `12-internal-placement-algorithms.md`: reserve title/subtitle, local filter, metric strip, legend, value axis, category axis, plot area, optional footer, and state geometry before setting ECharts options.
+- Use ECharts/project-wrapper boxplot capabilities: `series.type: 'boxplot'`, data shaped as `[lowerWhisker, Q1, median, Q3, upperWhisker]` or the project transform equivalent, `scatter` series for outliers, optional scatter/custom mark for mean, `markLine` for target/reference, `tooltip`, `legend`, `dataZoom`/scroll when dense, and normal `setOption`/resize lifecycle. Do not hand-draw boxes, whiskers, median lines, outlier points, axes, or legends with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts boxplot.
+- Source must declare whether data is raw samples or precomputed statistics. Raw samples require a deterministic quantile method; precomputed statistics must include the same quantile/outlier rule used by the source.
+- Default outlier rule is Tukey `1.5 * IQR`: `IQR = Q3 - Q1`, fences are `Q1 - 1.5 * IQR` and `Q3 + 1.5 * IQR`, whiskers are the nearest in-range sample values. Min/max whiskers are allowed only when explicitly labeled.
+- Require sample count per category. `0` is empty, `1` draws a point/short line, `2-4` is partial distribution and should not support strong comparison claims, and `>=5` supports a normal boxplot.
+- Category density controls layout: `N <= 8` vertical with all labels; `9-16` tilt/sample labels, horizontal boxplot, or scroll; `17-30` horizontal/scroll/pagination; `N > 30` filter, paginate, Top N, or distribution summary table.
+- Grouped boxplot is allowed only when visible series `S <= 3` and categories `N <= 8`, unless a scroll/fullscreen fallback is declared. More series require filter, small multiples, or table.
+- Box geometry should keep the median readable: box fill opacity `8%-18%`, border `1-1.5px`, median line `1.5-2px`, whisker/cap `1px`. Boxes must not look like heavy bars.
+- Outlier scatter uses radius `2.5-4px`, stable jitter within the box band, opacity `70%-90%`, and hover emphasis. Dense outliers aggregate, lower opacity, or show only extreme Top N.
+- Mean point is optional and weaker than the median. Do not show mean when it duplicates a metric strip or clutters the box.
+- Axis range must include whiskers, outliers, and reference lines. Positive magnitude metrics may start at `0` when absolute scale matters; negative values need a visible zero baseline.
+- Permanent labels are limited to target/reference label, optional median label, selected category, and key extreme outlier. Full five-number summary belongs in tooltip/detail, not on the chart surface.
+- Tooltip must include category, sample count, min, lower whisker, Q1, median, Q3, upper whisker, max, IQR, outlier count, target/gap when present, unit, period, source, and outlier rule. Outlier tooltip includes sample identity when allowed, value, type, and distance beyond whisker/fence.
+- Boxplot states include loading, empty, error, no-permission, sample too small, category sample too small, no outliers, all values equal, negative values, missing unit, and too many outliers.
+
+## Heatmap
+
+- Use this section for non-geographic matrix heatmaps, time heatmaps, calendar heatmaps, and correlation heatmaps. Map heat layers follow the map/geographic section instead.
+- Use heatmap only when the task is to find high/low concentration, distribution patterns, hotspots, anomalies, cohort behavior, utilization bands, or correlation structure across two dimensions. Do not use heatmap for a single dimension, precise comparison of a few values, tiny value variance, ordinary ranking, or unbounded row/column cardinality.
+- Use ECharts/project-wrapper heatmap capabilities: `series.type: 'heatmap'`, two category axes for matrix/time heatmaps, `calendar` coordinate system for calendar heatmaps, `visualMap`, `tooltip`, `emphasis`/`select`, optional `brush` or `dataZoom`/scroll, and normal `setOption`/resize lifecycle. Do not hand-draw heatmap cells, axes, labels, legends, or selections with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts heatmap.
+- Data must declare row dimension, column dimension, value metric, aggregation grain, unit, period, and whether missing combinations are absent or explicit null. Zero is a real lowest value; missing is a neutral/blank/hatch state and must not be colored like zero.
+- Color scale must be declared: sequential for positive magnitude metrics, stepped thresholds for business levels, and diverging for signed deltas, deviations, profit/loss, or correlations. Correlation heatmaps use a diverging scale from `-1` to `1` with `0` as the center.
+- `visualMap` must show color meaning and range. Default range may use data min/max, but outlier-heavy datasets should declare percentile clipping such as P5-P95; values outside the range clamp to the end colors and remain exact in tooltip.
+- Main matrix remains dominant: `matrixH >= CH * 0.45`. Metric strip, footer, value labels, and secondary filters collapse before shrinking the matrix body.
+- Cell size drives labels. Target cells are `16-36px`, hard floor `12px`, hard cap `44px`. Permanent value labels require `cellW >= 36px` and `cellH >= 24px`; correlation labels require `cellW >= 36px` and `cellH >= 28px`. Dense heatmaps show exact values through tooltip instead of printing every cell.
+- Row/column density controls layout: `R <= 12` and `C <= 12` may show complete labels; `R <= 20` and `C <= 24` sample labels and hide cell values; `R > 20`, `C > 30`, or `R * C > 600` requires scroll, pagination, aggregation, Top N, virtual rendering, or table/detail fallback.
+- Cell style uses quiet rounded rectangles: gap `1-4px`, radius `1-4px`, no heavy borders. Selected cells may use a stronger border; Top/high-risk/anomaly cells may use a subtle outline or corner marker. Do not add strong icons, blinking effects, or full red overlays for every high cell.
+- Labels are secondary: row labels align right to row centers, column labels align to column centers, and long labels truncate/wrap only within reserved label bands with tooltip disclosure. First/last/time-boundary labels have priority during sampling.
+- Tooltip is the primary exact-value surface. It includes row value, column value, metric name, formatted value, unit, share/rank/change when present, aggregation grain, period/source, color-scale rule, missing/zero state, and anomaly/threshold reason when present.
+- Heatmap states include loading, empty, error, no-permission, missing cells, zero cells, all values equal, extreme values dominating scale, too many rows/columns, unit missing, invalid color range, and no correlation variation.
+
+## Path / User Journey / Process Path
+
+- Use path charts only when the task is ordered movement from a start to an end: user behavior path, conversion path, business workflow, approval process, task handoff, drop-off path, abnormal path, or multi-branch journey. Do not use path charts for simple ranking, composition, unordered entity relationships, geographic routes, or exact row audit as the primary task.
+- For geographic routes, vehicle tracks, logistics lines, or city migration, use map/geographic flow rules. For "who is connected to whom", use relation/network graph rules. For high-volume many-to-many flow, switch to Sankey rather than overloading a path chart.
+- Implementation may use ECharts/project-wrapper `sankey`, `graph` with fixed coordinates, or an explicitly approved custom diagram, but the visual must remain data-driven. Do not hand-draw decorative journey lines, nodes, arrows, labels, legends, or hover states without a declared path node/link contract and lifecycle sizing.
+- Source must declare path nodes/steps and directed transitions: node id/name/type/order/layer/status/value, link source/target/value/conversionRate/dropoffRate/status/pathRank/period, start node, end node, metric basis, path depth, and Top N/aggregation rule.
+- Main path area remains dominant: `pathAreaH >= CH * 0.52`. Footer, metric strip, legend, secondary filters, ordinary path labels, and minor branches collapse before the path body is compressed.
+- Linear paths place `N` main nodes on the horizontal centerline. Node width uses `nodeW = clamp(72px, canvasW / (N * 1.6), 132px)` and node height uses `nodeH = clamp(32px, H * 0.09, 48px)`. Keep `stepGap >= 32px`; otherwise reduce node width, hide secondary node text, show key nodes only, or enable horizontal scroll.
+- Branch paths arrange steps by layer. Main-path/high-flow nodes stay near the centerline, drop-off nodes sit below the source step, and anomaly nodes may sit above or below without interfering with the main path. Branches are sorted by weight and bounded by Top N.
+- Node counts control rendering: `N <= 8` may show the full path; `9-20` hides secondary labels and keeps key labels; `21-40` shows Top paths and aggregates low-weight nodes; `N > 40` requires filtering, pagination, Sankey, relation graph, or table fallback.
+- Transition counts control rendering: `E <= 8` may show all links; `9-20` shows Top path labels only; `21-50` filters low-weight links; `E > 50` requires aggregation or another visualization.
+- Default filtering should show Top 5 paths, depth `<= 5`, hide paths below `1%` share, keep Top 3 drop-off paths, and preserve abnormal paths when relevant.
+- Node content stays compact: node name plus one value. Do not place node name, count, share, YoY, MoM, rank, and status all inside the node. Exact details belong in tooltip/detail.
+- Path width maps traffic with bounded square-root scaling: `linkW = minW + sqrt((value - minValue) / (maxValue - minValue)) * (maxW - minW)`, default `minW = 1.5px`, `maxW = 10px`, large max `14px`, small max `8px`.
+- Path styling keeps the main path strongest. Main path opacity `80%-100%`, ordinary path `35%-60%`, weak path `15%-30%`; drop-off and abnormal paths use restrained warning color or dashed line. Avoid saturated colors on every branch.
+- Arrows clarify direction and stop at the target node edge. Arrow size is `5-8px`; when all paths flow left-to-right or links are very thick, arrows may be weakened or hidden.
+- Path labels are key-only: main path conversion rate, important drop-off amount/rate, or anomaly marker. `E <= 5` may show main labels; `6-12` shows Top labels; `E > 12` hides default path labels and uses tooltip.
+- Legend and component-local filters must be separate. Filters switch scope such as all/main/abnormal, 7/30/90 days, users/count/amount, conversion/drop-off path, Top3/Top5/Top10, or path depth. Legend explains main path, secondary path, drop-off path, abnormal path, node type, and width meaning.
+- Interactions include hover path highlight, endpoint node highlight, unrelated path/node dimming, click node for inbound/outbound/drop-off detail, click path for transition detail, optional expand/collapse for `+N` branches, and optional search/locate only when node count is high.
+- Tooltip must include node details or transition details. Node tooltip includes node name, value, share, inbound/outbound path count, conversion/drop-off metrics, period/source. Link tooltip includes source, target, value, conversion rate, drop-off rate, average dwell/time when present, change, period/source, and aggregation rule.
+- Path states include loading, empty, error, no-permission, missing start, missing end, too many paths, too many nodes, zero-value path hidden, conversion unavailable, change unavailable, isolated node, circular path, and aggregated "other" node.
+
+## Sankey Diagram
+
+- Use Sankey only when the task is source-to-target flow, allocation, transfer, conversion, loss, or many-stage distribution: channel-to-registration-to-purchase, fund movement, order status flow, inventory flow, traffic routing, customer pipeline, or energy flow. Use bar/table for simple ranking, pie/donut for one-level composition, funnel/stage table for a single ordered cohort, and path chart for individual ordered journeys.
+- Use ECharts/project-wrapper Sankey capabilities: `series.type: 'sankey'`, node `data`/`nodes`, `links`/`edges` with `source`, `target`, and `value`, `nodeWidth`, `nodeGap`, `nodeAlign` or layout direction when available, `layoutIterations`, `lineStyle.curveness`, `emphasis.focus: 'adjacency'`, `tooltip`, and normal `setOption`/resize lifecycle. Do not hand-draw ribbons, nodes, legends, or hover states with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts Sankey.
+- Source must declare node id/name/layer/type/status/value and link source/target/value/unit/stage/path/share/conversion/loss fields. Missing source or target is normalized as `未知来源` or `未知去向`; non-conserved behavior must show `流失`, `未知`, or `其他` nodes rather than letting flow disappear.
+- Main Sankey area remains dominant: `sankeyAreaH >= CH * 0.55`. Footer, metric strip, legend, secondary filters, ordinary link labels, and small node values collapse before the Sankey body is compressed.
+- Default visible layers are `3-4`; `5` layers require a large block and restrained labels; `>5` visible layers require drilldown, pagination, path chart, or table fallback. Default direct display is Top10 + `其他`; large components may use Top20 + `其他`.
+- Node density: `<=12` may show complete nodes; `13-30` shows only Top labels; `31-60` must aggregate long-tail nodes; `>60` requires filtering, drilldown, pagination, or table fallback. Link density: `<=20` may show all links; `21-50` hides ordinary link labels and weakens long tail; `51-100` requires Top N + `其他`; `>100` should not render as a full Sankey by default.
+- Flow width maps `value` through a bounded scale. Link width uses `clamp(1-2px, value * valueScale, plotH * 0.28)`. Node width is `8-20px`; node gap is `6-20px`. Avoid negative values; `0` value links are hidden with tooltip/detail or state explanation.
+- Labels are restrained. Node labels show name by default; show name + value only when `nodeH >= 28px`, name-only when `nodeH >= 16px`, and tooltip-only below that. Permanent link labels require `linkW >= 8px` and no overlap; otherwise keep exact values in tooltip.
+- Color defaults to source node/category so users can trace where flow comes from. Target/status coloring is allowed only when the report explicitly emphasizes result state. Loss or anomaly flows may use restrained warning color, but avoid high-saturation color on every ribbon.
+- Legend explains node type, flow status, color meaning, or width meaning. Component-local filters switch metric basis, path range, stage, period comparison, or Top N; filters and legends must be visually separate and filters must not compress the Sankey body.
+- Hover on a link highlights the link, its source and target nodes, related upstream/downstream path, and dims unrelated ribbons. Hover on a node highlights inbound/outbound links and adjacent nodes. Click may pin a node/link, open detail, or expand downstream when declared.
+- Tooltip is the primary exact-value surface. Node tooltip includes node name, layer, inbound value, outbound value, loss value/rate, conversion rate, total share, period, and source. Link tooltip includes source, target, value + unit, source share, target share, total share, change when present, period, source, and aggregation rule for `其他`.
+- Sankey states include loading, empty, error, no-permission, missing source, missing target, zero-value link hidden, negative value invalid, too many nodes, too many links, unbalanced flow, labels hidden, and aggregated `其他`.
+
+## Treemap / Rectangular Tree Map
+
+- Use treemap only when the task is hierarchical composition and scale/share reading: which parts make up the whole, which parent/leaf contributes most, how long-tail categories behave, or how value is distributed inside a hierarchy. Use tree/hierarchical tree when the task is expansion and parent-child context; use bar/table for precise ranking; use line for trend.
+- Use ECharts/project-wrapper treemap capabilities: `series.type: 'treemap'`, hierarchical `data.children` or deterministic parent/path transform, `value` for area, `levels`, `leafDepth`, `visibleMin`, `upperLabel`, `breadcrumb`, `roam` when supported, `visualMap` or level/itemStyle color mapping, `tooltip`, `emphasis`, and normal `setOption`/resize lifecycle. Do not hand-draw rectangles, labels, legends, or hover states with unmanaged HTML/SVG/CSS/canvas while claiming an ECharts treemap.
+- Source must declare hierarchy id/name/parentId or path/children, depth/level, parentValue, leaf value, area metric, optional color metric, total value, percent of total, percent of parent, rank, period/source, and aggregation rule. The area metric must be non-negative and additive, such as amount, orders, quantity, users, cost, inventory, or file size. Rates, scores, satisfaction, conversion rate, and signed changes may be color metrics or tooltip fields, not area.
+- Main treemap area remains dominant: `treemapAreaH >= CH * 0.55`. Footer, metric strip, legend, secondary filters, child values, and tiny labels collapse before the rectangle body is compressed.
+- Directly visible levels are limited. Default to `1-2` levels; `3` levels need a large block and clear parent labels; deeper hierarchies use drilldown with breadcrumb instead of showing every level at once.
+- Leaf density controls rendering: `N <= 12` may show complete labels; `13-30` shows Top N and hides small labels; `31-80` requires Top N + `其他`; `N > 80` requires drilldown, filtering, paging, search, or table fallback rather than full rendering.
+- Default aggregation is Top20 + `其他`; small components use Top10 + `其他`; large components may use Top30 + `其他`. `其他` stays last, uses weaker color, and its tooltip shows included count and total. If `其他` dominates, surface the fragmentation and offer drilldown/detail.
+- Rectangle label thresholds are mandatory: `W >= 96px && H >= 56px` may show name + value + share; `W >= 72px && H >= 40px` may show name + value; `W >= 48px && H >= 28px` shows name only; smaller rectangles are tooltip-only; `W < 16px || H < 16px` should aggregate or hide as a color block.
+- Parent groups need clear but weak boundaries. Parent label shows only when `parentW >= 80px && parentH >= 48px`; otherwise parent info moves to tooltip. Child labels align top-left and must not be centered or forced into tiny rectangles.
+- Color semantics must be explicit. Area is the primary metric; color may encode parent category, status, change rate, attainment, risk, or another numeric color metric. Parent category colors should stay `<= 6` visible groups by default; signed change uses a diverging color scale with `0` as the midpoint; status colors stay `<= 4` levels.
+- Legend explains color and/or area meaning and must not be mixed with component-local filters. Use text such as `面积：销售额 · 颜色：同比变化率` or a compact legend/visualMap. Component-local filters switch area metric, period, hierarchy, display metric, or TopN, and collapse before shrinking the treemap body.
+- Interactions include hover rectangle highlight, same-parent preservation, unrelated-parent dimming, click parent drilldown when enabled, click leaf detail, breadcrumb return, selected path highlight, and table/detail fallback for exact audit.
+- Tooltip is the primary exact-value surface. It includes full path, value and unit, percent of total, percent of parent, color metric when present, rank, parent summary for parent nodes, aggregation rule for `其他`, period/source, and active filter context.
+- Treemap states include loading, empty, error, no-permission, all zero, negative-area invalid, zero-value leaves, missing hierarchy, too many leaves, too many levels, tiny labels hidden, color metric missing, drilldown leaf/no child, and aggregated `其他`.
+
+## Sunburst / Sunburst Chart
+
+- Use sunburst only when the task is hierarchical path plus part-to-whole composition: which first-level branch dominates, how each parent splits into children, how a current path contributes to the whole, or where long-tail branches sit in a hierarchy. Use Treemap when area comparison and space efficiency matter more; use tree/hierarchical tree when expansion and parent-child context matter more; use bar/table for precise ranking; use line for trend.
+- Use ECharts/project-wrapper sunburst capabilities: `series.type: 'sunburst'`, hierarchical `data.children` or deterministic parent/path transform, `value` for sector angle, `radius`, `center`, `levels`, `label`, `labelLayout`, `itemStyle`, `nodeClick`, `highlightPolicy`, `emphasis`, `tooltip`, and normal `setOption`/resize lifecycle. Do not hand-draw arcs, rings, labels, legends, breadcrumbs, or hover states with unmanaged HTML/SVG/CSS/canvas while claiming an ECharts sunburst.
+- Source must declare hierarchy id/name/parentId or path/children, depth/level, parentValue, node value, angle metric, optional color metric, total value, percent of total, percent of parent, rank, period/source, and aggregation rule. The angle metric must be non-negative and additive, such as amount, orders, quantity, users, cost, inventory, visits, or file size. Rates, scores, satisfaction, conversion rate, profit rate, and signed changes may be color metrics or tooltip fields, not sector angle.
+- Main sunburst area remains dominant: `sunburstAreaH >= CH * 0.55`. Footer, metric strip, legend, secondary filters, deep labels, and minor breadcrumbs collapse before the radial body is compressed.
+- Visible levels are limited. Default to `2-3` visible levels; `4` levels require a large block with restrained labels; `5+` levels must use drilldown, search, or another view instead of showing all rings at once.
+- Radius and ring budget are mandatory: `innerR = outerR * 0.22-0.34`, default `0.28`; `ringW = clamp(18px, (outerR - innerR - ringGap * (D - 1)) / D, 44px)`; `ringGap = 1-3px`. If `ringW < 18px`, reduce visible depth, hide deep labels, enlarge the block, or switch to drilldown.
+- Node density controls rendering: total nodes `<= 20` may show directly; `21-50` requires Top N + `其他`; `51-100` requires drilldown or only `2` visible levels; `> 100` should not render full sunburst by default. Children per parent `<= 6` may show; `7-12` hides small/deep labels; `13-20` uses Top N + `其他`; `> 20` uses Top N plus drilldown/search/detail.
+- Default aggregation is Top8 + `其他` per parent; small components use Top5 + `其他`; large components may use Top10 + `其他`. `其他` stays last, uses a weak/neutral color, and its tooltip shows included count and total. If `其他` dominates, surface fragmentation and offer drilldown or TopN adjustment.
+- Sector angle mapping is deterministic: `total = sum(level1 value)`, parent value defaults to the sum of children when not provided, first-level angle is `value / total * 360`, and children split within the parent angle. Use `startAngle = -90deg`/top start and clockwise flow unless the project has a documented convention. Sector gaps are `0.5-1.5deg`; sectors below `1%` should merge, hide labels, or move to drilldown.
+- Label thresholds are mandatory. Show internal labels only when `sectorAngle >= 10deg`, `ringW >= 22px`, and `arcLength = ((innerR + outerR) / 2) * sectorAngleRad >= labelTextWidth + 8px`. Permanent labels prioritize first-level branches, large second-level branches, current selected path, Top branches, and anomalies. Ordinary deep labels and tiny sectors are tooltip-only.
+- Center content is a decision surface, not decoration. It may show total value, current node, selected path, Top branch, or all-zero/empty state. Fit center text within `centerTextMaxW = innerR * 1.5`, use `centerValueFontSize = clamp(18px, innerR * 0.36, 28px)`, and shorten decimals/units before clipping.
+- Color semantics must be explicit. First-level branches use stable distinct colors, children inherit hue with controlled lightness. If color encodes status, change, risk, or another metric, the legend must say so with text such as `角度：销售额 · 颜色：同比变化率`. Do not use warning colors across every ring without a status metric.
+- Legend and component-local filters must be separate. Filters may switch angle metric, period, hierarchy dimension, TopN scope, or visible level; legend explains angle and color encodings. Filters collapse before reducing `outerR`, `ringW`, or the main sunburst area.
+- Interactions include hover current/ancestor/descendant highlight, unrelated-sector dimming, click sector detail or drilldown, center click return to parent when drilldown is active, breadcrumb path return, and optional table/detail fallback for exact audit. Drilldown animation should be short and stateful, not decorative.
+- Tooltip is the primary exact-value surface. It includes full path, node value and unit, percent of total, percent of parent, color metric when present, rank, parent summary, aggregation rule for `其他`, period/source, active filter context, and any parent-child total reconciliation rule.
+- Sunburst states include loading, empty, error, no-permission, all zero, negative-angle invalid, zero-value node, missing hierarchy, parent-child total mismatch, too many nodes, too many levels, tiny sectors merged/hidden, label overflow, color metric missing, drilldown leaf/no child, and aggregated `其他`.
+
+## Tree / Hierarchical Tree
+
+- Use tree charts only when the task is a hierarchy or parent-child structure: organization, category, product/module, metric decomposition, cost breakdown, permission tree, system/data lineage, directory, task breakdown, or upstream/downstream hierarchy with a clear parent. Do not use tree charts for many-to-many relationship networks, part-to-whole area comparison, ordinary ranking, or exact row audit as the primary task.
+- Treemap is a different chart type. Use Treemap when the primary task is area-based composition by value; use tree/hierarchical tree when the primary task is parent-child structure, expansion, and node context.
+- Use ECharts/project-wrapper tree capabilities: `series.type: 'tree'`, hierarchical `data.children` or a deterministic transform from `id`/`parentId`, `orient: 'LR' | 'TB' | 'RL' | 'BT'`, `initialTreeDepth`, `expandAndCollapse`, `roam`/fit behavior when supported, `tooltip`, `emphasis`, and normal `setOption`/resize lifecycle. Do not hand-draw decorative node cards, connectors, legends, or expand controls while claiming an ECharts tree.
+- Source must declare root node, node id/name/type/status/value, parent id or children array, depth/layer, child count, leaf flag, sort key, metric basis, period/source, and whether multiple roots or multiple parents exist. Multiple roots require a virtual root or separate trees. Multiple parents usually mean relation graph, not tree.
+- Main tree area remains dominant: `treeAreaH >= CH * 0.55`. Footer, metric strip, legend, secondary filters, node values, and ordinary labels collapse before the tree body is compressed.
+- Orientation follows structure: horizontal left-to-right is the default for deep hierarchies and long labels; vertical top-to-bottom is allowed for shallow organization/category trees; indented tree list is the fallback for many nodes or precise name reading; radial trees are display-only exceptions and not the BI default.
+- Node density controls rendering: `N <= 30` may show the visible tree; `31-80` defaults to `2-3` expanded levels with deep branches collapsed; `81-150` requires expand/collapse plus search/locate and Top N child display; `N > 150` should use an indented tree list, virtual scroll, pagination, or search-first view instead of full canvas rendering.
+- Depth controls rendering: `D <= 4` may show complete levels; `5-6` prefers horizontal tree with partial collapse; `7-10` requires horizontal scroll, search, or tree list; `D > 10` should not render as an ordinary static tree.
+- Child count controls rendering: child count `<= 5` may expand; `6-12` requires sorting; `13-30` shows Top N plus `+N`; `>30` aggregates as `其他` or switches to list/table detail. Default child display is Top 5, Top 8 for large blocks, and Top 3 for small blocks.
+- Node content stays compact: node name plus one value and optional status marker. Do not place name, value, share, YoY, MoM, owner, status, child count, and warning reason all inside one node. Exact details belong in tooltip/detail.
+- Node geometry uses readable information-card proportions: compact `72-96px * 28-36px`, standard `96-132px * 36-48px`, information node `120-160px * 48-64px`. Root node may be `8-16px` wider than ordinary nodes but must not overpower the hierarchy.
+- Parent nodes align to their visible children. Horizontal trees place levels on x bands and compute parent `y` as the average of child centers; vertical trees place levels on y bands and compute parent `x` as the average of child centers. Simple equal spacing is acceptable only for sparse trees.
+- Connectors stay weaker than nodes. Default line width is `1px`, important path `1.5-2px`, opacity `45%-65%`, weak `15%-30%`. Connectors stop at node edges and avoid crossing labels; direct, orthogonal, or smooth curves are allowed only when they improve hierarchy readability.
+- Expand/collapse controls are small and local: `16-20px`, `11-12px`, near the right edge for horizontal trees or bottom/right-bottom for vertical trees. Use `+N`, `▸`, or `▾`; do not use full-size buttons inside the canvas.
+- Labels must fit inside node boxes or have tooltip disclosure. Recommended node names are `2-8` Chinese characters; `9-14` may ellipsize with tooltip; `>14` should abbreviate or move to tree list/detail. Dense trees show only root, current path, selected, abnormal, and Top labels.
+- Legend and component-local filters must be separate. Filters switch scope such as all/key/abnormal, visible depth, current/history, metric basis, or expanded/collapsed mode. Legend explains normal, abnormal, key, collapsed, and leaf node semantics.
+- Metric strip is optional and capped at `3` items such as node count, depth, expanded nodes, abnormal nodes, leaf count, max branch, total value, or completion rate. Do not let summary metrics consume the tree body.
+- Interactions include hover node highlight, root-to-current and current-to-child path highlight, unrelated node/link dimming, click select/detail, expand/collapse with stable local layout, optional search/locate that expands to target node, and fullscreen/tree-list fallback when dense.
+- Tooltip must include node name, level, parent, child count, leaf flag when useful, value, share of parent when useful, status/anomaly reason, owner when relevant, period/source, update time, and aggregation rule for `其他`/`+N` nodes. Decomposition nodes include current value, parent share, change, and child dimensions when available.
+- Tree states include loading, empty, error, no-permission, missing root, empty children, child loading, too many nodes, too many levels, branch too dense, circular reference, multiple parent conflict, long node name, search no result, and aggregated "other"/`+N` nodes.
+
+## Relation / Network Graph
+
+- Use relation/network graph only when the task is entity connection: who relates to whom, central nodes, communities, upstream/downstream impact, suspicious clusters, ownership/control, dependency/call paths, or knowledge graph structure. Do not use it for simple numeric ranking, time trend, composition, or exact row audit as the primary task.
+- Use ECharts/project-wrapper graph capabilities: `series.type: 'graph'`, `data`/`nodes`, `links`/`edges`, `categories`, `layout: 'force' | 'circular' | 'none'`, `force`, `edgeSymbol`/arrows, `roam`, `draggable`, `focusNodeAdjacency`, `emphasis`, `tooltip`, `legend`, and normal `setOption`/resize lifecycle. Do not hand-draw graph nodes, edges, arrows, labels, legends, or zoom controls with unmanaged SVG/HTML/CSS/canvas while claiming an ECharts graph.
+- Source must declare node id/name/type/status/value/group and edge source/target/type/direction/weight/status/time. Invalid links whose source or target node is missing must be removed or surfaced as data gaps.
+- Layout must match the relationship: force for exploratory multi-center networks, hierarchical coordinates for directed dependencies and ownership chains, radial layout for one core subject, and grouped/circular layout for category or community comparison.
+- Main graph viewport remains dominant: `graphH >= CH * 0.55`. Footer, metric strip, legend, ordinary labels, and secondary controls collapse before the graph body is compressed.
+- Node density controls rendering: `N <= 30` may show the full graph; `31-80` hides ordinary labels and keeps core/anomaly labels; `81-150` aggregates low-weight nodes and preserves important edges; `151-300` requires filtering, aggregation, or layered loading; `N > 300` should not render the full graph by default.
+- Edge density controls rendering: `E <= 50` may show all edges; `51-150` weakens ordinary edges and hides edge labels; `151-300` shows key edges or selected neighborhoods; `E > 300` requires aggregation, filtering, or local exploration.
+- Node categories are limited to `3-5` visible types by default. More types require merging, filter, or tooltip disclosure. Shapes are limited to `2-3`; use size/color/status more than shape variety.
+- Node size mapping uses bounded square-root scaling: `nodeR = minR + sqrt((value - minValue) / (maxValue - minValue)) * (maxR - minR)`, default `minR = 5px`, `maxR = 18px`; dense graphs reduce to `3-10px`.
+- Edge styling stays weaker than nodes: default width `1px`, opacity `35%-60%`; weak edges `0.75-1px` and `20%-35%`; important edges `1.5-3px`; small components cap edge width at `2.5px`.
+- Directional edges use arrows only when direction matters. Arrow size is `5-8px` and should terminate at the target node edge, not the center. Multiple or bidirectional edges use slight curves, `curveOffset = 8-20px`.
+- Labels are not default for every node. Permanent node labels are limited to core, Top, anomaly, selected, or sparse graphs; ordinary labels show on hover. Permanent labels should stay `<= 10` normally and `<= 20` in large graphs. Edge labels default to hover/selected only.
+- Legend and local filters must be separate: local filters are operation controls such as all/direct/two-hop/strong/weak/upstream/downstream; legend explains node type, edge type, status, and relationship strength.
+- Interactions should include hover adjacency highlighting, click selection/detail, graph pan/zoom, reset/fit view, and optional search when node count is high. Hover lowers unrelated nodes to `20%-30%` and unrelated edges to `8%-15%`.
+- Tooltip must include node details or edge details. Node tooltip includes node name/type, degree or relation count, key metric, status/risk, period/source. Edge tooltip includes source, target, relationship type, direction, weight/count/amount, start or latest time, and status.
+- Graph states include loading, empty, error, no-permission, missing nodes, missing relationships, isolated nodes, too many nodes/edges, circular/self-links, layout failure, search no result, and aggregated nodes.
+
+## Funnel Chart
+
+Use funnel charts only for ordered process or conversion questions, such as exposure -> click -> visit -> order -> pay, lead -> opportunity -> quote -> contract, registration -> activation -> retention, approval stages, or ticket/order/recruiting flows. Do not use a funnel for unordered ranking, time trends, generic category comparison, simple composition, or complex multi-branch paths. Use a line chart for trends, a bar/table for stage comparison without conversion semantics, a path chart for explicit movement paths, and Sankey for many-to-many flow distribution.
+
+Data contract:
+
+- Stage rows must include stage id/name, stage order, value, unit/metric basis, period/source, and a shared population or documented cohort rule.
+- Required calculations are `entryRate = value / entryValue`, `stepConversionRate = value[i] / value[i - 1]`, `dropValue = value[i] - value[i + 1]`, `dropRate = 1 - value[i + 1] / value[i]`, and `totalConversionRate = finalValue / entryValue`.
+- The first stage conversion is `100%`. When the denominator is `0`, display `--` and explain the denominator state in tooltip.
+- Stage口径 must be consistent. Do not mix people, orders, and amount across stages unless the cohort conversion rule is explicitly documented.
+- Non-decreasing values may render when repeats, backflow, or re-entry are part of the口径; label the口径 instead of forcing a fake decreasing shape.
+
+Visual structure:
+
+- Default report component shape is a horizontal bar funnel: stage labels in a reserved left column, bars left-aligned in the plot body, and values plus entry share in a reserved right column.
+- Traditional centered trapezoid funnels are allowed only for large display/report storytelling with few stages, because area can mislead and labels have little room.
+- Keep `3-5` stages as the best default, `6-7` acceptable, `8-10` compact/folded, and `>10` routed to process table, path chart, or scroll/folded detail.
+- Highlight only the largest/key loss by default. Do not color every loss strongly or turn the whole funnel into warning red.
+- Default color uses one business hue or a restrained same-hue gradient. Use weak warning for target misses or maximum loss markers; avoid rainbow funnel layers.
+- Legend is normally unnecessary. Add legend only for actual vs target, current vs previous, normal vs abnormal, or at most two comparison groups.
+
+Placement and ECharts implementation:
+
+- For the default horizontal bar funnel, use ECharts `bar` series with ordered stage rows, encoded values, tooltip, emphasis, and optional target ticks/markLine. For traditional funnel, use ECharts `series.type: 'funnel'`. Do not hand-draw bars/trapezoids with DOM, SVG, or CSS while claiming an ECharts chart.
+- Reserve the header for title, subtitle/unit, and component-local filter. The local filter can switch metric basis, period, object type, or actual/target view for this component only.
+- The funnel body should keep `funnelAreaH >= CH * 0.52`. If space is tight, hide footer, reduce metrics, collapse filter, hide loss markers, hide legend, or enlarge the component before shrinking text.
+- Use `stageLabelW = clamp(56px, maxStageNameWidth + 8px, 120px)`, `valueLabelW = clamp(72px, maxValueTextWidth + conversionRateWidth + 16px, 160px)`, and `barAreaW = funnelAreaW - stageLabelW - valueLabelW - barGap * 2`.
+- Bar width maps to entry value: `barW[i] = barAreaW * value[i] / entryValue`, with `minBarW = 4-8px` for nonzero tiny values.
+- `barH = clamp(12px, stageH * 0.62, 28px)` and stage row gaps stay `6-14px`.
+
+Labels and tooltip:
+
+- Permanent labels show stage name, value, and entry share. Stage conversion and loss are secondary unless selected or key-loss.
+- Long stage names use one-line ellipsis with full name in tooltip. Exact values and raw denominator must remain available in tooltip/detail.
+- Tooltip is mandatory and includes stage, value, unit, entry share, step conversion, drop value, drop rate, target/attainment when present, MoM/YoY when present, period, source, and口径.
+- Hover highlights the current stage, dims other stages to `45%-70%`, strengthens the right value, and shows tooltip. Click may pin stage and open detail.
+
+States:
+
+- Loading skeleton preserves title/filter/funnel bar geometry.
+- Empty state says `暂无数据` or `当前筛选下暂无转化数据` in the funnel body.
+- Entry value `0`, missing stage, missing target, zero stage value, non-decreasing values, too many stages, and long values all need explicit display and tooltip behavior.
+
+## Waterfall And Contribution
 
 - Reserve side space for long stage/category labels and positive/negative values.
 - If labels or values exceed width, abbreviate visible label and show full label in tooltip.

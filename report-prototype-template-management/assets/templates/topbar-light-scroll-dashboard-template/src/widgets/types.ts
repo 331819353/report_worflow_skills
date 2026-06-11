@@ -36,9 +36,55 @@ export interface WidgetLocalFilterConfig {
   maxButtonOptions?: number;
 }
 
+
+export interface WidgetAnalysisInsightContract {
+  subtype:
+    | 'conclusion-card'
+    | 'insight-card'
+    | 'anomaly-alert'
+    | 'attribution-card'
+    | 'impact-factor-card'
+    | 'comparison-interpretation'
+    | 'trend-interpretation'
+    | 'target-diagnosis'
+    | 'recommendation-card'
+    | 'risk-card'
+    | 'definition-card'
+    | 'data-quality-card'
+    | 'chart-annotation'
+    | 'summary-bar'
+    | 'change-explanation'
+    | 'ranking-interpretation'
+    | 'forecast-note'
+    | 'review-card'
+    | 'explanatory-empty-state'
+    | 'task-card'
+    | 'permission-no-result-delay-note';
+  insightFamily: 'conclusion' | 'insight' | 'diagnosis' | 'recommendation' | 'explanation' | 'state';
+  conclusion: string;
+  evidence?: string[];
+  affectedObjects?: string[];
+  compareWith?: string;
+  changeValue?: string;
+  reasonFields?: string[];
+  recommendedActions?: string[];
+  confidence?: 'high' | 'medium' | 'low' | 'insufficient';
+  definitionRefs?: string[];
+  dataQualityScope?: string;
+  annotationTarget?: { componentId: string; field?: string; markId?: string; range?: string };
+  maxVisibleItems?: number;
+  localFilters?: string[];
+  tooltipPayload?: string[];
+  detailRoute?: string;
+  sourceDataset?: string;
+  freshnessField?: string;
+  validationRules: string[];
+}
+
 export type WidgetVisualType =
   | 'line'
   | 'bar'
+  | 'combo'
   | 'candlestick'
   | 'heatmap'
   | 'pie'
@@ -58,6 +104,7 @@ export type WidgetVisualType =
   | 'metric-card'
   | 'text-summary'
   | 'table'
+  | 'pivot'
   | 'other';
 
 export interface BaseWidgetConfig<TType extends string, TProps extends Record<string, unknown>> {
@@ -73,6 +120,8 @@ export interface BaseWidgetConfig<TType extends string, TProps extends Record<st
   data?: DashboardDataSourceRef;
   // 无 data 的组件必须声明原因：static 表示纯静态叙述/说明，external 表示自行管理外部运行态。
   dataPolicy?: 'static' | 'external';
+  // 结论卡/洞察卡/异常风险/归因建议/口径质量/预测标注/解释型状态等分析说明组件必须声明该契约。
+  analysisInsightContract?: WidgetAnalysisInsightContract;
   // 筛选作用域。未配置时只接收全局筛选；配置后会接收全局筛选 + 匹配 scope 的筛选。
   filterScope?: DashboardFilterScope;
   // 组件标题区本地筛选。只过滤当前组件已加载的全量 data，不参与接口或数据源传参。

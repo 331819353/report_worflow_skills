@@ -43,7 +43,10 @@ For self-developed report frontends, use `Vue 3 + TypeScript + ECharts + Element
 - Use Vue 3 single-file components and TypeScript for component contracts, provider models, and adapter output types.
 - Use axios for HTTP/provider calls and keep request params traceable to API/provider contracts.
 - Use Element Plus for filters, forms, buttons, tabs, tags, popovers, dialogs, drawers, pagination, and simple tables.
-- Use ECharts for standard KPI trends, bars, lines, scatter, heatmaps, maps, waterfalls, funnels, gauges, and dashboard charts.
+- Use Element Plus/project table components for ordinary Detail Tables: row-level records with row grain, primary key, prioritized columns, default sort, pagination/search/export scope, row detail/action, and stable states.
+- Use Element Plus/project grouped-column table behavior for ordinary complex/grouped headers: nested columns or `columnTree`, real leaf fields, units/definitions, computed span/depth rules, fixed multi-level header, frozen row/primary columns, tooltip definitions, and density fallback.
+- Use AntV S2/project S2-equivalent for Pivot Tables: row dimensions, column dimensions, measures, aggregation formulas/functions, subtotal/grand-total rules, frozen row/column headers, tooltip/drilldown, and density fallback.
+- Use ECharts for standard KPI trends, bars, lines, Combo charts through shared `xAxis` plus `bar` and `line`/`markLine` series, scatter, gauge charts through `series.type: 'gauge'`, parallel coordinates through `parallelAxis` plus `series.type: 'parallel'`, heatmaps, maps, funnel charts through `series.type: 'funnel'` or a data-driven horizontal `bar` funnel, Sankey diagrams through `series.type: 'sankey'` with node/link `source`/`target`/`value`, treemap/rectangular tree maps through `series.type: 'treemap'`, sunburst charts through `series.type: 'sunburst'`, path/user/process paths through sankey/graph/custom series when appropriate, tree/hierarchical trees through `series.type: 'tree'` or a declared data-driven hierarchy component, relation/network graphs, waterfalls, and dashboard charts.
 - Use AntV S2 for pivot tables, cross tables, frozen-header analytical tables, wide metric matrices, and dense comparison grids.
 - Record an override reason before using another stack.
 
@@ -56,7 +59,7 @@ For every production-bound or production-like visualization page, document or im
 | User and purpose | Target role, usage moment, primary question, decision/action, and whether the page is overview, analysis, monitoring, detail, self-service, or recap. |
 | Information hierarchy | First viewport conclusion, core KPIs, trend, breakdown, anomaly, detail/traceability, and action/export entry. |
 | Metric presentation | Name, value, unit, precision, format, numerator/denominator for ratios,同比/环比 baseline, target/threshold,口径 tooltip/detail, owner/source/freshness. |
-| Chart selection | Trend/line, ranking/bar, composition/stack/tree, detail/table, funnel, retention/cohort, map plus ranking, anomaly/control, target/bullet/progress. |
+| Chart selection | Trend/line, ranking/bar, Combo for scale + rate/target relationship, composition/stack/tree, detail/table, funnel, retention/cohort, map plus ranking, anomaly/control, target/bullet/progress, and Gauge only for one bounded progress/status metric with a meaningful range. |
 | Layout | Global filters, title, freshness, KPI strip, trend, breakdown, anomaly/detail, table/export, responsive behavior, and large-screen/mobile variants. |
 | Filters | High-frequency filters, advanced filters, default values, option sources, search/multi-select/cascade, reset, current filter summary, permission scope. |
 | Interactions | Chart click filter, drill-down, drill-through, tooltip, legend toggle, time brush, table row detail, drawer/modal, route jump, refresh, fullscreen, export. |
@@ -123,24 +126,42 @@ Use the chart that fits the question:
 | Question | Prefer | Avoid |
 | --- | --- | --- |
 | Trend over time | Line or area chart | Pie chart |
+| Scale + rate / target on one axis | Combo chart with shared x-axis, bar for amount/count/scale, line or target/reference for rate/trend/efficiency/standard, clear axis units, and exact tooltip | Dual-axis decoration, unrelated metrics, more than 4 visible series, hidden right-axis units, or dense labels without fallback |
 | Ranking/comparison | Horizontal bar, sorted table | Pie with many categories |
-| Composition | Stacked bar, donut for few categories, tree map | 3D pie |
+| Simple composition | Stacked bar, donut for few categories | 3D pie |
+| Hierarchical composition/scale | Treemap with hierarchy, non-negative additive area metric, Top N/other, label thresholds, and exact path/share tooltip | Decorative rectangle mosaic |
+| Hierarchical path/share | Sunburst with hierarchy, non-negative additive angle metric, visible depth/ring budget, Top N/other, sector label thresholds, center content, breadcrumb/drilldown, and exact path/total-share/parent-share tooltip | Decorative multi-ring pie |
 | Detail/exact values | Table/S2 grid | Decorative chart |
+| Row-level lookup/evidence/action | Detail Table with row grain, primary key, prioritized visible columns, default sort, pagination/search/export provider scope, row drawer/action, and hidden-field disclosure | Unprioritized source-table dump, all columns visible by default, checkbox/action columns without workflow |
+| Explain what/why/impact/action/trust | Analysis & Insight component with `analysisInsightContract`, conclusion-before-evidence, evidence/affected object, action or trust/source/freshness, tooltip/detail, and states | Generic "智能洞察", hardcoded essay text, insight card with no evidence/action/trust |
+| One-container mini analysis loop | Composite Panel with one topic, one primary child, child roles/priorities, shared local filter, shared legend/unit, linked interaction, detail-preview limit, and responsive fallback | Unrelated widgets in one card, nested card shells, equal-weight mini dashboard |
+| Many fields with business grouping | Table with complex/grouped headers: columnTree, business groups, leaf fields, computed colSpan/rowSpan, max depth <=3, fixed whole header, frozen row/primary columns, and tooltip definitions | Flat 20-column header, decorative color bands, absolute-positioned fake merged headers |
+| Multidimensional cross-summary | Pivot Table with row dimensions, column dimensions, measures, aggregation functions/formulas, subtotal/grand-total rules, frozen headers, exact tooltip/drilldown, and S2/project analytical renderer | Raw detail rows reshaped as columns, decorative matrix, hand-rolled merged headers, naive rate totals |
 | Distribution | Histogram, box plot, scatter | Average-only KPI |
 | Relationship | Scatter/bubble | Dense table-only reading |
-| Funnel conversion | Funnel plus step table | Decorative funnel without rates |
+| Multi-metric object profile | Parallel coordinates with object rows, ordered dimensions, axis/unit/range/direction, line density, highlight/brush, and exact tooltip | Decorative line web without object/dimension contract |
+| Funnel conversion | Funnel plus step table, ordered stage rows, shared population/cohort rule, entry share, stage conversion, drop value/rate, total conversion, and exact tooltip | Decorative funnel without rates or cohort口径 |
+| Single bounded progress/status | Gauge with one metric, min/max range, unit, target/threshold/status semantics, center value, sparse ticks, clamp/overflow behavior, and exact tooltip | Decorative dial, many gauges, unbounded score, exact audit, or category comparison |
 | Retention | Cohort heatmap | Plain line chart |
 | Geography | Map plus ranking/table | Map-only analysis |
-| Target/progress | Bullet chart, progress bar, KPI target card | Large gauge unless monitoring needs it |
+| Target/progress | Bullet chart, progress bar, KPI target card; Gauge only when the bounded range and status interval matter | Large gauge used only for visual variety |
 | Anomaly | Trend with threshold/markers, anomaly list | Isolated number |
 
 Hard rules:
 
-- Pie/donut normally stays within 5 categories. Use bar, stack, tree, or table when categories are many.
+- Pie/donut normally stays within 5 categories. Use bar, stack, treemap for hierarchical non-negative value share, tree for structural expansion, or table when categories are many.
+- Gauge charts are valid only for a single bounded progress/status metric with min/max, unit, current value, status direction, and exact tooltip/detail. Use KPI cards for a single number, bars/tables for comparison, lines for trends, and pie/stack for composition.
 - Small-card donut/pie defaults to bottom legend. When outside labels are enabled, right-side legend is allowed only after a width budget proves enough space; otherwise use bottom legend.
 - Compact donut/pie implementation must declare `legendBandHeight`, `labelLineBudget`, `radius`, and `center`. Right-side legend also requires a legend width budget and outside labels must be disabled or limited to key labels.
 - Low-share donut/pie categories may hide permanent outside labels to prevent label-ring crowding; complete name, value, and percentage must remain available through tooltip and legend.
 - Line charts should not default to many series. Show important series, Top N, or allow controlled selection.
+- Combo charts should not become two unrelated charts in one block. Keep visible series `<=4`, show units on both axes when dual axis is used, keep the shared x-axis ordered, expose bar/line/target exact values in axis-trigger tooltip, and split into separate bar/line/table views when the relationship or label budget fails.
+- Detail Tables should not become database dumps. Declare row grain and primary key, default sort, visible columns `5-8` by default and `8-12` only in large blocks, right-align numeric/rate fields, keep status tags lightweight, cap row operations, keep fixed header/frozen columns only when needed, and provide tooltip/detail/export for hidden exact values.
+- Analysis & Insight components should not become generic text. Implement conclusion cards, insight cards, anomaly/risk notes, attribution/recommendation cards, definition/data-quality/forecast notes, chart annotations, explanatory empty states, permission/no-result/delay notes, and task notes from a view model or props that expose `analysisInsightContract`, evidence, action/detail route, confidence/definition/source/freshness, local-filter scope, tooltip payload, and loading/insufficient/empty/error/no-permission/data-delay states.
+- Composite Panels should not become mini dashboards. Implement them as one cohesive widget with `compositePanelContract`, one shared topic, one primary child, child priorities and minimum sizes, panel-level local filter state, shared legend/unit semantics, linked hover/click selection state, short detail preview, responsive collapse order, and parent/child loading/empty/error/no-permission handling.
+- Complex/grouped headers should not become decoration. Declare the grouped column tree, leaf field metadata, unit/definition tooltips, `colSpan`/`rowSpan` or max-depth calculation, default depth `2` and max `3`, fixed whole-header behavior, frozen row/primary columns, component-local filter vs per-column header-filter separation, and density fallback. Do not implement merged headers as absolute overlays detached from the table's scroll/freeze model.
+- Pivot Tables should not become Excel clones or decorative matrices. Declare row dimensions, column dimensions, measures, aggregation functions/formulas, subtotal/grand-total behavior, natural time sorting, frozen row/column headers, density fallback, exact tooltip/drilldown, and S2/project renderer. Rate/percent totals must recompute from numerator/denominator instead of naive sum or unweighted average.
+- Funnel charts must not be generic descending decoration. Use them only for ordered conversion/process questions; declare stage order, value/unit, shared population/cohort logic, entry/final values, entry share, stage conversion, drop value/rate, total conversion, target/comparison behavior when present, and `3-6` preferred stage density with fold/scroll/table/path/Sankey fallback when stages are too many.
 - Bar/ranking charts must be sorted by the business metric unless a natural order is required.
 - Dual-axis charts need at most two metrics, clear units, axis-color pairing, and no hidden correlation implication; split into two charts if users may misread it.
 - Maps should be paired with ranking/detail because area size can distort perceived importance.
@@ -207,6 +228,10 @@ Do not let users assume stale, delayed, partial, or quality-risk data is realtim
 Frontend visualization performance is part of user experience.
 
 - Limit chart points, categories, visible series, and table rows.
+- For Detail Tables, send global search, pagination, sorting, permission, and export scope to provider/API/resolver for production-like data; component-local filters may only narrow the current bounded row set.
+- For Analysis & Insight components, do not derive decision copy from hardcoded strings alone when the component is data-backed. Bind conclusion, evidence, affected object, change/comparison, action, confidence, definition/source/freshness, and state from component-ready API/provider fields or a bounded frontend adapter, and keep insufficient-data behavior explicit.
+- For complex/grouped table headers, keep the column tree and leaf-field metadata in the component-ready schema or frontend view model. Backend/API/provider responses should not force the frontend to infer groups from display labels; include units, definitions, order, visibility, and fixed/frozen hints when the schema is dynamic.
+- For Pivot Tables, send dimensions, measures, aggregation grain, filters, permission scope, sorting, subtotal/grand-total needs, and export scope to provider/API/resolver or a bounded component-ready aggregation payload. Do not calculate large production pivots from unbounded raw rows in the browser.
 - Use backend/source aggregation or query grain adaptation for large time ranges.
 - Use Top N + other for long-tail dimensions.
 - Use pagination or virtual scrolling for large tables.
@@ -219,6 +244,8 @@ Frontend visualization performance is part of user experience.
 - Do not render many heavy charts simultaneously on first load when staged loading would preserve the first-screen answer.
 
 ## Component Architecture
+
+Before changing frontend source code, read or create the sidecar code ledger for each scoped file under `__change_logs__`. After changing it, append a version entry with feature list, changed code ranges or stable anchors, modified content, affected props/events/API/env/filter contracts, verification, and rollback notes.
 
 Prefer reusable visualization components and a data boundary:
 
@@ -236,7 +263,7 @@ Reusable components may include:
 - `TrendChart`
 - `RankingBarChart`
 - `CompositionChart`
-- `FunnelChart`
+- `FunnelChart` with ordered stage rows, conversion/drop formulas, target/comparison state, and tooltip/detail evidence
 - `CohortHeatmap`
 - `MapWithRanking`
 - `DataTable`

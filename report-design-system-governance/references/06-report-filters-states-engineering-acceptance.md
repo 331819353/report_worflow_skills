@@ -14,6 +14,7 @@ Rules:
 - Required filters have clear prompts.
 - Query and reset buttons are placed on the right side or at the end.
 - Keep labels, inputs, and buttons aligned.
+- Page/global filters define cross-component query scope. Component-internal local filters are separate controls and affect only the current component or declared local group.
 
 Recommended filter order:
 
@@ -27,6 +28,34 @@ Reason:
 - Organization/region decides permission and business boundary.
 - Product/customer further focuses analysis.
 - Status/type and auxiliary conditions come later.
+
+## Component-Internal Local Filters
+
+Use the fixed design item name `组件内筛选区 / 局部筛选区` when a component needs a local switch. It is not a page filter bar and should not look like a form.
+
+Rules:
+
+- Scope is current component only, or one explicitly declared local component group.
+- It may run locally only on already fetched and bounded component data.
+- It must not change page/global scope, permission scope, backend aggregation, pagination, export scope, or other components.
+- Suitable uses: time range, metric口径/view, display granularity, YoY/MoM, sort/ranking, or Top N when those choices belong to the component.
+- Unsuitable default uses: region, channel, store, category, owner, status, permission, and other complex business dimensions unless the component itself owns that local dimension.
+- Use capsule sliding buttons for `2-4` short options. Use a compact dropdown for `>4` options, long labels, or failed width fit. Use panel/popover/drawer only for multiple local filter groups.
+- Preferred placement is the component title/header right side; an under-title row is allowed only when vertical budget passes. Never overlay the KPI value, plot, legend, axis, table header, pagination, or state message.
+- Keep the component title readable first. Definition/help follows the title; units move to subtitle/metadata when the title-right area is crowded.
+
+Acceptance:
+
+```text
+filterH = clamp(24px, H * 0.08, 32px)
+optionW = clamp(44px, textWidth + 24px, 96px)
+filterMaxW = min(CW * 0.45, 280px)
+
+if filterW > filterMaxW:
+  collapse to compact dropdown
+```
+
+Responsive behavior: `W >= 480px` may show title-right capsule; `320px <= W < 480px` must pass title fit or collapse; `240px <= W < 320px` uses compact dropdown; `W < 240px` shows selected value plus chevron; `H < 180px` cannot add a new filter row.
 
 ## Filter And Control Colors
 
@@ -169,7 +198,7 @@ Data anomalies:
 | Empty/null | `-` |
 | Division by zero | Follow口径, display `-` |
 | Extreme YoY/completion | `>= 500%` or `<= -500%` displays `-` |
-| Negative | Red |
+| Negative | Follow metric direction and口径; negative values are not automatically red |
 | Infinity/NaN | `-` |
 | Data delay | Show update time or delay explanation |
 

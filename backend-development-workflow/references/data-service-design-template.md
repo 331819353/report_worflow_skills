@@ -21,6 +21,7 @@ Use these prefixes consistently:
 - Snapshot/version contracts: `SNAP-001`
 - Async jobs/exports: `JOB-001`
 - Observability signals: `OBS-001`
+- Code file ledgers: `CODELOG-001`
 - Environments/source modes: `ENV-001`
 - Gaps: `GAP-001`
 - Risks: `RISK-001`
@@ -202,16 +203,39 @@ Large export/report generation should be create task -> poll status -> download,
 | --- | --- | --- | --- | --- | --- | --- |
 | OBS-001 | latency P95/P99, error rate, cache hit, pool usage, queue length, slow query/report, stale fallback, source freshness | logs/metrics/traces |  |  | dashboard/log/query | ready / partial / blocked |
 
+| Log ID | Log point | Required fields | Level | Sampling/threshold | Redaction/privacy | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| LOG-001 | request ingress/egress | timestamp, service, environment, releaseVersion, requestId, traceId, method, route, status, latencyMs, user/tenant/role hash when safe | info | all requests or sampled by route | no tokens, secrets, raw PII, or full payloads | ready / partial / blocked |
+| LOG-002 | validation/auth/permission | requestId, route, validation error code, auth result, permission decision code, no-permission reason code | info/warn | all rejections | no raw token or raw permission scope | ready / partial / blocked |
+| LOG-003 | query plan and execution | requestId, reportId, widgetId, queryId, dataVersion/snapshotDate/loadBatch, source/upstream, query template/hash, durationMs, rows, page, cache status | info/warn/error | warn above slow-query/report threshold | no raw SQL with sensitive literals | ready / partial / blocked |
+| LOG-004 | cache/pool/export/job/error | requestId, cache key hash, hit/miss/stale, pool acquire wait, active/idle counts when safe, export task id/status, errorCode, sanitized error summary | info/warn/error | warn on saturation/retry/stale/error | no sensitive file path or raw export payload | ready / partial / blocked |
+
 Required operations:
 
 - request id / trace id;
 - redacted logs;
+- log level/env config such as `LOG_LEVEL`, `LOG_FORMAT`, `REQUEST_ID_HEADER`, `TRACE_ENABLED`, `SLOW_QUERY_MS`, `SLOW_REPORT_MS`, `LOG_SAMPLE_RATE`, and redaction toggles;
 - health/readiness endpoints;
 - source freshness and data quality signals;
 - pool/cache/queue metrics;
 - slow-report governance;
 - alert owner and runbook boundary;
 - deployment/rollback evidence.
+
+## 13A. Code File Change Ledgers
+
+Use this section only when backend implementation or repair changes code.
+
+| Ledger ID | Code file | Ledger path | Pre-change read evidence | Appended version | Changed ranges / anchors | Affected contracts | Verification | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| CODELOG-001 |  | `__change_logs__/<file>.changes.md` | yes / no |  | route/service/repository/query/logging anchors | API/env/source/permission/logging |  | ready / partial / blocked |
+
+Rules:
+
+- Every changed backend code file needs a same-directory sidecar ledger.
+- The ledger must be read before editing and appended after editing.
+- Version entries must include feature list, code ranges/stable anchors, modified content, affected contracts, verification, and rollback notes.
+- Chat summaries, commit messages, and delivery indexes do not replace file-level ledgers.
 
 ## 14. Environment, Deployment, And Source Mode
 

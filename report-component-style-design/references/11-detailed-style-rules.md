@@ -82,6 +82,7 @@ Use this contract as the default for any generated frontend component unless an 
 - Any chart with multiple data series must show a clear legend at the top-right or bottom-center, outside the plot area.
 - Weak gridlines by default: hide outer chart borders and vertical gridlines; use very light dashed horizontal gridlines such as `#EEEEEE`.
 - ECharts options should reserve space for legend, axis labels, and labels through `grid`, `legend`, `axisLabel`, and component-specific spacing.
+- Gauge charts must reserve body space for one bounded metric, center value/unit, arc, min/max ticks, target marker, threshold/status labels, and tooltip hit area. Keep `gaugeAreaH >= CH * 0.50`, use ECharts `series.type: 'gauge'`, and avoid decorative fixed arcs or needles.
 - Table status text such as "预警大差", "同比下滑", "已逾期", "未达标" must render as a badge/pill or icon+text, not plain unstyled text.
 - Badge defaults: rounded pill, 12px label, 4-8px horizontal padding, soft semantic background, darker semantic text.
 
@@ -175,10 +176,18 @@ Density strategies:
 - Data labels: default to hidden for dense series. Show only key points such as latest, max, min, target gap, anomaly, selected item, or hovered item.
 - Bar/column charts: when bar width becomes too small for labels, move exact values to tooltip, show end labels only for Top N or highlighted bars, or switch to horizontal bars with scroll.
 - Line/area charts: do not label every point. Label endpoints, anomalies, max/min, or selected comparison points; use tooltip and axis pointer for exact reading.
-- Pie/donut/rose charts: if slices exceed a readable count, use Top N plus "others", hide low-value slice labels, use legend/tooltip for details, or switch to bar/table. Small-card donut/pie defaults to bottom legend; right-side legend requires a passing width budget and outside labels disabled or key-label-only. Compact donut/pie must declare `legendBandHeight`, `labelLineBudget`, `radius`, and `center`. Do not let outside labels, guide lines, legends, titles, or center text form a dense ring or collide.
-- Scatter/bubble charts: when points are dense, label only selected/outlier points, use tooltip, brush, visualMap, and zoom. Do not print labels for every point.
-- Heatmap/calendar/map: prefer tooltip and selected labels; label only major regions or high-risk cells when space allows.
-- Tree/Sankey/flow/decomposition charts: collapse low-priority branches, provide zoom/pan/fullscreen, and label only visible nodes whose boxes can fully contain text.
+- Pie/donut/rose charts: pie/donut requires part-to-whole data, `2-6` preferred categories, `<=8` categories before merge, deterministic Top N plus `其他`, no negative values, and no fake all-zero shares. Hide low-value slice labels, use legend/tooltip for details, or switch to bar/table when exact comparison or too many categories matter. Small-card donut/pie defaults to bottom legend; right-side legend requires a passing width budget and outside labels disabled or key-label-only. Compact donut/pie must declare `legendBandHeight`, `labelLineBudget`, `radius`, `innerRadius` for donut, and `center`. Do not let outside labels, guide lines, legends, titles, or center text form a dense ring or collide.
+- Scatter/bubble charts: require explicit X/Y metric names and units, declared axis range/baseline behavior, point-count density tiers, and exact-value tooltip. Label only Top/selected/outlier/hover points; do not print labels for every point. Bubble charts require a bounded square-root size mapping, size metric disclosure, and overlap handling. Use weak target/average/quadrant/trend encodings, brush/zoom/sampling/aggregation for dense points, and table/detail fallback when exact row reading matters.
+- Parallel coordinates: use for `3+` metric object pattern, similarity, anomaly, or feature exploration, not `1-2` metric comparison, single ranking, or exact row audit. Require object id/name, dimension fields, dimension order, axis unit/range/direction, independent-axis or standardized display rule, `plotH >= CH * 0.48`, `axisGap >= 56px`, dimension count `3-8` preferred and `<=12` without filtering/scroll, sample-count opacity/sampling/aggregation rules, Top/anomaly/selected highlight semantics, optional brush behavior, legend/filter separation, and tooltip access to every visible dimension's original value and scale context.
+- Matrix/time/calendar/correlation heatmaps: use for two-dimensional intensity, density, cohort, utilization, or correlation patterns, not one-dimensional ranking or small exact comparisons. Require row dimension, column dimension, value metric, aggregation grain, unit, visualMap/color-scale rule, missing-vs-zero encoding, row/column density strategy, label sampling, cell-size budget, and tooltip exact values. Show permanent cell values only when cells are large enough; do not fill every cell with text by default.
+- Treemap/rectangular tree maps: use for hierarchical composition and scale/share reading, not trend, exact ranking, ordinary tree expansion, or many-to-many relationships. Require hierarchy fields, parent/leaf aggregation, non-negative additive area metric, optional color metric semantics, Top N plus `其他`, `treemapAreaH >= CH * 0.55`, rectangle label thresholds, parent labels only when space allows, breadcrumb/drilldown for deep levels, and tooltip access to full path, value, percent of total, percent of parent, rank, source, and aggregation rule. Never force text into tiny rectangles or use negative/rate/score values as area.
+- Sunburst charts: use for hierarchical path plus composition, not single-level share, trend, exact ranking, decorative multi-ring pie, or dense/deep hierarchies without drilldown. Require hierarchy fields or `children`, non-negative additive angle metric, total-share and parent-share formulas, `sunburstAreaH >= CH * 0.55`, visible levels `2-3` by default and `<= 4` without drilldown, `ringW >= 18px`, Top N plus `其他`, sector labels only when angle/ring/arc-length thresholds pass, center content, breadcrumb/drilldown, and tooltip access to full path, value, percent of total, percent of parent, rank, source, and aggregation rule. Never use negative/rate/score values as sector angle.
+- Path/user/process path charts: use for ordered movement from start to end, not unordered entity relationships, simple ranking, composition, or geographic routes. Require step/node schema, directed transition schema, start/end, order/layer, metric basis, conversion/drop-off formulas, path depth, Top N rule, node/link density strategy, main-path/branch strategy, path-width mapping, label limits, legend/filter separation, and tooltip/detail access. Do not render all branches, all path labels, or decorative journey lines without transition evidence.
+- Relation/network graphs: use for entity relationship structure, not simple ranking/trend/detail lookup. Require node and edge schemas, relationship direction, layout type, node/edge density strategy, node category and edge type limits, node-size and edge-width mapping, label limits, legend/filter separation, fitView/zoom/drag behavior, and node/edge tooltip/detail access. Do not render hairball graphs, all-node labels, all-edge labels, or dense networks without filtering, aggregation, neighborhood focus, or fullscreen.
+- Map/geographic heat layers: require a real geography field, region-code or lon/lat binding, declared map resource/projection, aspect-safe fitBounds, weak basemap, visualMap/legend semantics, clustering/heatmap/TopN fallback for dense points or flows, and exact values in tooltip/detail.
+- Candlestick/K-line charts: use only for ordered OHLC data. Require `open/high/low/close`, unit, market rise/fall color convention, valid OHLC relationships, price range padding, visible candle-count density strategy, main/volume/indicator height budget, crosshair tooltip, and dataZoom/recent-window fallback for dense histories. Do not replace a simple single-value trend with K-line, overload technical indicators, show OHLC labels on every candle, or hand-draw candles while claiming ECharts candlestick.
+- Boxplot charts: use only for distribution comparison. Require sample count, Q1/median/Q3/IQR, declared whisker/outlier rule, unit, category/group density strategy, outlier display strategy, and tooltip with five-number summary. Do not use boxplot for single aggregate ranking, unspecified outlier rules, tiny samples without fallback, all-stat labels on every category, or hand-drawn boxes while claiming ECharts boxplot.
+- Tree/Sankey/flow/decomposition charts: collapse low-priority branches, provide zoom/pan/fullscreen, and label only visible nodes whose boxes can fully contain text. Sankey diagrams specifically require node/link data with `source`/`target`/`value`, layer/stage order, non-negative flow values, Top N/`其他` aggregation, `sankeyAreaH >= CH * 0.55`, main-flow emphasis, hidden ordinary link labels, legend/filter separation, and tooltip access to exact source-target shares before styling. Tree/hierarchical tree charts specifically require a root node, parent-child fields, visible-depth/default-expanded rules, Top N/`+N` child aggregation, expand/collapse behavior, and tooltip access to full node context before styling.
 - Multi-series charts: use legend toggling, series grouping, small multiples, or tabs when the legend or labels become too dense.
 
 ECharts expectations:
@@ -237,7 +246,7 @@ Baseline feedback:
 
 ECharts interaction defaults:
 
-- Configure `tooltip` for every business chart: use `trigger: 'axis'` for line/bar comparison and `trigger: 'item'` for pie, scatter, map, tree, sankey, funnel, and node-like charts unless another trigger is clearly better.
+- Configure `tooltip` for every business chart: use `trigger: 'axis'` for line/bar comparison and `trigger: 'item'` for pie, gauge, scatter, map, tree, sankey, funnel, and node-like charts unless another trigger is clearly better.
 - Set `tooltip.confine: true` or an equivalent container-safe strategy so the tooltip stays readable inside the viewport.
 - Tooltip content must include category/name, series/metric name, value, unit, ratio/percentage when relevant, comparison/baseline when relevant, and active filter/time context when ambiguity is possible.
 - Configure `axisPointer` for axis charts and `emphasis`/`select`/`blur` states for mark-level charts.
@@ -428,16 +437,16 @@ Title rules:
 
 - Keep titles short and specific.
 - Put long definitions in popovers.
-- Align all layout-owned block titles consistently, usually top-left inside the block header.
+- Align all block-owned titles consistently, usually top-left inside the block header.
 - Vertically center title text with header actions.
 - Do not let title text overlap action icons.
 - Do not wrap ordinary component titles in a visible boxed title card. Use plain text plus a subtle underline/divider/accent mark unless a very specific visual system asks for boxed headers.
 - Do not truncate decision-critical titles; wrap to two lines or shorten wording.
 - If a template provides a one-line block title, the title must have `min-width: 0`, ellipsis, and full-title tooltip. If that hides decision-critical meaning, shorten the title or move口径 into subtitle/popover instead of letting it overflow.
-- Use a layout-owned title only when it helps scanning. Tiny KPI cards may use a compact label in the layout/header area.
-- For charts, the layout-owned title should state the measure and comparison dimension, such as "收入完成率 by 区域"; do not repeat it inside the chart option body.
-- For tables, the layout-owned title should describe the record set, such as "逾期回款明细"; table body should start with headers/rows, not another title.
-- For text summaries, the layout-owned title can be omitted if the summary itself starts with a clear conclusion.
+- Use a block-owned title only when it helps scanning. Tiny KPI cards may use a compact label in the block/container header area.
+- For charts, the block-owned title should state the measure and comparison dimension, such as "收入完成率 by 区域"; do not repeat it inside the chart option body.
+- For tables, the block-owned title should describe the record set, such as "逾期回款明细"; table body should start with headers/rows, not another title.
+- For text summaries, the block-owned title can be omitted if the summary itself starts with a clear conclusion.
 
 Recommended title hierarchy:
 
@@ -727,6 +736,7 @@ Layout rules:
 - For ECharts Cartesian charts with visible x-axis labels and a bottom legend, set `grid.containLabel = true`, set `grid.bottom >= 56px`, and keep a clear safe distance between legend and axis-label bands.
 - Use `label column + visual column + value column` structure for horizontal bar/list charts so end values never collide with bars.
 - For waterfall, funnel, decomposition, and contribution charts, reserve extra side padding for labels and negative/positive values.
+- For funnel charts, reserve a left stage-label column, a bar/funnel body column, and a right value/share column; declare ordered stage data, shared population/cohort logic, entry share, stage conversion, drop value/rate, total conversion, and tooltip detail before accepting the visual.
 - For line, area, and mini trend charts with sparse data, apply the Sparse Line And Trend Chart Rules so one point is centered and two points are center-symmetric.
 - If labels cannot fit, use Top N, abbreviation with tooltip, scroll, zoom, or fullscreen.
 - For dense charts, prefer partial label/value display plus hover tooltip over crowded permanent labels.
@@ -736,7 +746,7 @@ For dense charts:
 
 - Use data zoom, brush, scroll, pagination, or small multiples.
 - Allow series toggling.
-- Use Top N plus "others" instead of unreadable long tails.
+- Use Top N plus `其他` instead of unreadable long tails.
 - Hide nonessential labels by default and reveal details through tooltip, hover, selection, drawer, or fullscreen.
 - When exact value reading matters, prefer table/list/detail drawer over a visually saturated chart.
 - Switch to table when exact reading matters more than shape.
@@ -750,18 +760,21 @@ For dense charts:
 
 ### Radar Chart Rules
 
-Radar charts are high risk for label and legend collision. Use them only for a small number of dimensions and only when the component has enough space.
+Radar charts are high risk for label, legend, and scale collision. Use them only when dimensions share a defensible score scale and the component has enough space for an outer label ring.
 
 Rules:
 
 - Do not place a radar chart in a narrow or shallow card if it also needs an internal legend.
-- Reserve separate zones for title, radar dimension labels, plot area, and legend.
-- Put the legend outside the plot area, usually below or to the right; never let the legend sit on top of radar axis labels.
+- Reserve separate zones for title, component-local filter, metric strip, radar dimension labels, plot area, legend, and state message.
+- Keep the legend separate from component-local filters. Filters change chart state; legends explain actual, target, previous, or object series.
+- Recommended dimension count is `5-8`; `9-10` is allowed only with short labels and key-only value labels; `>10` should become a scorecard, horizontal bar group, facet, or matrix table.
+- Keep visible series to `1-2` by default and `<=3` maximum. More objects require a selector, facets, or another chart.
+- Plot standardized scores when raw metrics use different units, and expose raw values through tooltip/detail.
+- Put the legend outside the plot area, usually above/right of the plot band or centered in narrow cards; never let the legend sit on top of radar axis labels.
 - Keep `indicator.name` labels short. If a label exceeds 4-6 Chinese characters or 8-10 Latin characters, abbreviate it and provide tooltip/full text.
 - Configure ECharts radar label spacing explicitly with `axisName`/`nameGap`; do not rely on defaults.
-- Set `radar.center` and `radar.radius` after reserving legend and label space. As a rule of thumb, keep radius at or below 45%-55% when there are 5+ dimensions or long labels.
+- Set `radar.center` and `radar.radius` after reserving legend and label space, and preserve a circular coordinate system. Do not stretch the radar into an ellipse to fill a wide or tall card.
 - If top/bottom labels collide with title or legend, move the legend, reduce radius, shift center, or increase the block span. Do not hide overflow.
-- If there are more than 6-7 dimensions, use a scorecard, horizontal bar group, or matrix table instead of radar.
 - In runnable templates, radar components must pass `validate:dashboard`: radar options must include `axisName`/`nameGap` and legend handling.
 
 ## Table Component Rules

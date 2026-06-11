@@ -40,6 +40,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 
 6. Verify control semantics and non-default perspectives.
    Classify controls as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. For every non-default business domain/theme/management-object/subject-area perspective, capture API/provider evidence and frontend output for metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels as well as numeric values.
+   For component-internal `local-filter`, compare the frontend's locally filtered display against the already fetched bounded component dataset. Do not require a backend request change unless the contract marks the control as global/page-level.
    For every domain and statistical口径, compare navigation percentages, overview KPIs, journey cards, and chart summaries against the same backend/API/provider chain. Record at least one field-level assertion, such as navigation satisfaction equals current `experienceProfiles.satisfaction` under the same active filters and period behavior.
 
 7. Verify filter data completeness before binding.
@@ -63,6 +64,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Matched values:
 - Mismatched values:
 - Control semantics and non-default perspective proof:
+- Component-local filter display proof:
 - Cross-perspective consistency proof:
 - Data completeness before filter binding:
 - Filter-state proof:
@@ -80,5 +82,6 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 - Filter data completeness is checked before binding: option data, default/non-default rows or responses, required fields, and resolver/API branches are present or recorded as data gaps.
 - Visible Chinese report rate/change/completion labels use `%`, not `pt`, `p.p.`, or `percentage point`, unless that wording is explicitly required.
 - Affected components show real data variation for non-default filter states, or are explicitly scoped as invariant.
+- Component-internal local filters, when present, reconcile to the already fetched component dataset and do not imply missing backend/API data inconsistency unless they are incorrectly used as global/page filters.
 - No stale mock or hardcoded demo value appears in API-backed components.
 - Mismatches include enough evidence to identify whether the likely owner is frontend adapter, backend contract, data source, or documentation.

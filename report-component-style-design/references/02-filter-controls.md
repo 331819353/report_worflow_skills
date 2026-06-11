@@ -1,6 +1,8 @@
 # Filter Control Rules
 
-Use for filter bars, query panels, filter popovers, chips, and saved views.
+Use for page/global filter bars, query panels, filter popovers, chips, and saved views.
+
+Component-internal local filters are governed by `10-in-component-controls.md` and `12-internal-placement-algorithms.md`. They affect only the current component, default to lightweight capsule/dropdown controls in the title/header area, and must not be designed as page-level query forms.
 
 ## Final Visual Control Gate
 
@@ -15,6 +17,7 @@ Use for filter bars, query panels, filter popovers, chips, and saved views.
 ## Layout
 
 - High-frequency filters stay visible; low-frequency filters move into an advanced filter popover or drawer.
+- Page/global filters own cross-component scope. Component-local filters stay near the component title/header and must not duplicate the page/global filter surface.
 - Controls in one row share height, baseline, border radius, and label alignment.
 - Use a grid or flex wrap. Do not squeeze filters until labels or selected values overflow.
 - Keep label and input visually bound. If horizontal space is narrow, stack label above input.

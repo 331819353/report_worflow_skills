@@ -7,6 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "dev:auto": "node scripts/start-available-port.mjs --mode dev",
     "validate:dashboard": "node scripts/validate-dashboard-contract.mjs",
+    "ledger:code": "node scripts/update-code-ledger.mjs",
     "build": "npm run validate:dashboard && vue-tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "preview:auto": "node scripts/start-available-port.mjs --mode preview"

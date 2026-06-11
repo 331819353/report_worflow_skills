@@ -43,6 +43,13 @@ Hard boundary:
 - A perspective switch may update default filters internally, but the visible contract must still identify it as `perspective-switch`.
 - `componentSchemaImpact` must state whether the switch changes metric names, component set, table headers, dimensions, formulas/口径, domain vocabulary, or only row scope.
 
+Component-internal local-filter contract:
+
+- Name the design item as `组件内筛选区 / 局部筛选区` when it appears inside a KPI, chart, table, or component title/header.
+- It must declare affected component IDs, local dataset/grain, field/value/label mapping, default value, non-default state, and whether it is display-only or row-scope local.
+- It affects only the current component or explicitly declared local group. It must not change page/global scope, permission scope, backend aggregation, pagination, export scope, or other components.
+- Display rule for implementation handoff: `2-4` short values use capsule/segmented control; `>4` values, long labels, or failed fit use compact dropdown; multiple local filter groups use panel/popover/drawer trigger.
+
 ## Main Filter Surface Vs Advanced Filter
 
 Use the main filter surface for time period, organization scope, primary object/business line, status/severity when it changes the whole report, and keyword search for detail-heavy reports.

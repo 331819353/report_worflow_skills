@@ -30,6 +30,8 @@ When backend implementation replaces a data source, source table/view, upstream 
 
 When artifacts span more than one iteration, maintain a delivery version chain through `$delivery-version-management`. Every prototype/API/model/backend/frontend/test/release artifact should state which upstream version it consumes and which downstream version validated it.
 
+When frontend, backend, or runnable prototype source code is created, repaired, refactored, or modified, maintain file-level code change ledgers through `$delivery-version-management` `references/code-file-change-ledger.md`. Every changed scoped code file must have a sidecar ledger under `__change_logs__`, must be read before editing, and must receive a post-change version entry with feature list, changed code ranges/stable anchors, affected contracts, verification, and rollback notes.
+
 ## Stage Routing Matrix
 
 All expected user inputs are Chinese. Use this matrix before choosing a workflow:
@@ -57,6 +59,7 @@ Every stage output must include:
 - `Stage`: workflow name.
 - `Artifact version/source`: file paths, source URLs, commit, or user-provided document names when known.
 - `Delivery version chain`: upstream/downstream version mapping when the artifact participates in an iteration or release.
+- `Code file ledger`: for source-code changes, list changed code files, sidecar ledger paths, pre-change read/create status, appended version, changed ranges/stable anchors, affected contracts, and verification.
 - `Entry consistency`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `ENTRY-*` IDs when applicable.
 - `Design reasonableness`: `pass`, `partial`, `blocked`, or `not needed`, with unresolved `DESIGN-*` IDs when applicable.
 - `Production closed loop`: `ready`, `partial`, `blocked`, or `not needed`, with missing production controls or open retest items when applicable.
@@ -99,6 +102,8 @@ Do not mark an artifact `ready` when an unresolved `P0` or `P1` `ENTRY-*` confli
 Do not mark an artifact `ready` when an unresolved `P0` `DESIGN-*` finding exists, or when an unresolved `P1` `DESIGN-*` finding would affect user-visible behavior, data correctness, API/model feasibility, permissions, layout comprehension, or testability in the next stage.
 
 Do not mark a production-bound artifact `ready` when required source authority, runtime URL/health, auth/permission, deployment/config, observability, performance/resilience/capacity, testing evidence, or blocker/major/high defect retest closure is missing.
+
+Do not mark implementation, repair, or runnable prototype handoff `ready` when any changed scoped code file lacks a sidecar code ledger, pre-change read evidence, or a post-change version entry with changed code ranges, modified content, affected contracts, and verification/blocker.
 
 ## Cross-Stage Artifact Contract
 

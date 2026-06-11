@@ -25,6 +25,7 @@ Optional inputs: filter design documentation, API documentation, permission rule
 
 1. Inventory filters and control semantics.
    List all visible and hidden controls, then classify each as `perspective-switch`, `global-filter`, `local-filter`, or `drilldown-param`. Filters include time, organization, region, industry, product, customer, brand, status, owner, keyword, advanced filters, saved queries, and page/tab scoped filters. Business domain, report theme, management object, subject area, and first-level perspective controls are not ordinary filters when they change metric names, component set, table headers, metric口径, or domain vocabulary.
+   For component-internal `local-filter`, verify it is named/scoped as current component or declared local group only. It may update already loaded component data without a backend request; it must not change page/global scope, permission scope, backend aggregation, pagination, export scope, or unrelated components.
 
 2. Verify data completeness before binding.
    Before judging UI linkage, confirm that every primary/global filter has enough underlying data grain to work: option rows, matching fact/business rows, required fields, default state, at least one non-default state, empty/no-permission state when relevant, and resolver/API branches for scenario-style filters such as view, snapshot date, month, period, organization, industry, status, or permission. If this fails, classify it as a data-completeness or data-grain defect first; do not mark the filter binding as pass or treat the issue as a display-only problem.
@@ -41,6 +42,7 @@ Optional inputs: filter design documentation, API documentation, permission rule
 6. Verify component binding.
    Build a filter-to-component matrix. Confirm each filter updates intended KPI cards, charts, tables, drawers, drilldowns, exports, and route jumps while unrelated components remain stable.
    For template/config-driven pages, inspect or request evidence for `filterFields`, `requiredFilters`, API/resolver params, and `ignoredFilters`. Only judge binding after Step 2 data completeness has passed or a data gap has been explicitly recorded. An affecting filter listed in `ignoredFilters` or missing field mapping is a binding defect; single-snapshot mock/provider data, missing non-default rows, or missing resolver/API branches are data-completeness defects first.
+   For component-internal local filters, confirm only the affected component/local group changes and that no page/global API/query param, export scope, pagination, or permission scope changes unless that behavior is separately specified as a global filter.
 
 7. Verify data variation.
    For each primary filter, choose at least one non-default option and prove that an affected component's visible value, row set, series, total, or empty/no-permission state changes. Selected control state alone is not a pass.
@@ -71,6 +73,7 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Request parameter mapping:
 - Cascade behavior:
 - Filter-to-component matrix:
+- Component-local filter scope proof:
 - Data variation proof:
 - Non-default perspective proof:
 - Cross-perspective consistency proof:
@@ -86,6 +89,7 @@ Optional inputs: filter design documentation, API documentation, permission rule
 - Data completeness is verified before filter binding: every affecting primary filter has matching option data, fact/business rows or API/resolver support, required fields, and at least one default plus one non-default validation case.
 - Filter option values are supported by backend APIs and available data or explicitly permission-limited.
 - Changing filters changes the expected backend request and affected components.
+- Component-internal local filters are allowed to change only the component/local group without changing backend request params, provided they operate on already fetched bounded component data and are not standing in for page/global filtering.
 - For every affecting primary filter, at least one visible affected component changes data for a non-default value, or the component is explicitly documented and tested as invariant.
 - For every non-default perspective, metric names, titles/summaries, table dimensions/headers, component collection, specialty metrics, risk focus, and口径 labels update as specified.
 - For every domain and statistical口径, navigation percentages, overview KPIs, journey cards, and chart summaries reconcile to the same data chain, with at least one field-level assertion recorded.

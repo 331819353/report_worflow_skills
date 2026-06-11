@@ -17,12 +17,14 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 - Use `$delivery-artifact-template-management` to choose the frontend function description output structure.
 - Read `references/feature-inventory-fields.md` for page/module and provider-binding fields.
 - Read `references/handoff-quality-checklist.md` before finalizing the document.
+- Read `$delivery-version-management` `references/code-file-change-ledger.md` and changed-file sidecar ledgers when the function description must include feature inventory, code ranges, modified content, or version traceability.
 - Read `$haier-enterprise-app-ui-design-spec` when documenting common enterprise application pages so testers can verify page shell, standard components, states, feedback, and cross-platform behavior against the company UI baseline.
 - Read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and relevant report guideline reference(s) when documenting report/dashboard/BI/data-screen/analysis pages so testers can verify metric口径, layout hierarchy, chart/table formatting, filters, states, performance, export, and acceptance.
 
 ## Inputs
 
 - Frontend source project or changed files.
+- Code file sidecar ledgers under `__change_logs__`, when available.
 - API documentation, SDK/static-data notes, data-source mapping notes, or provider contract notes.
 - Prototype source or original mock contract, if relevant.
 - Runtime QA notes, build/startup result, screenshots, or known blockers.
@@ -38,17 +40,20 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 3. Extract functional behavior.
    For each page/module, describe user purpose, visible controls, control semantics, filters, data display, interactions, drilldowns, refresh, export/download, empty/error/loading states, and permission behavior.
 
-4. Map data providers to features.
+4. Extract code traceability from sidecar ledgers.
+   For changed frontend/prototype code files, read their `__change_logs__/<file>.changes.md` files and summarize feature list, functional code ranges, modified content, affected contracts, version entries, verification, and rollback notes. Mark missing ledgers as handoff gaps instead of reconstructing history from memory.
+
+5. Map data providers to features.
    Link each functional module to endpoint names/paths, SDK calls, static files, GraphQL operations, data-source IDs, request params, response adapter, displayed fields, raw/display value rules, and metric units. Do not repeat the whole provider document; reference it and summarize the frontend binding.
 
-5. Record control, data, and filter behavior.
+6. Record control, data, and filter behavior.
    Explain control semantics first, then data completeness before filter binding, then filter behavior. For every perspective switch, record `componentSchemaImpact` and the expected metric names, titles/summaries, table dimensions/headers, component set, specialty metrics, risk focus, and口径 labels for default and non-default perspectives. For every affecting filter, record option sources, default data, non-default data or response branch, required fields, empty/no-permission state when relevant, cascades, reset behavior, pagination, sorting, search, cross-component linkage, state persistence, and which visible component values/rows/series should change for non-default filters. Mark invariant components and retained mock/offline data explicitly.
    When perspective navigation shows percentages, rankings, or status lights, document `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`. Also document cross-perspective consistency checks across navigation percentages, overview KPIs, journey cards, and chart summaries, including at least one field-level assertion.
 
-6. Record interaction behavior.
+7. Record interaction behavior.
    Cover chart clicks, KPI/card clicks, table row actions, drawer/modal content, page jumps, parameter passing, back behavior, fullscreen, download, and refresh.
 
-7. Record verification and limitations.
+8. Record verification and limitations.
    Include commands run, URL verified, browser/runtime checks, known blockers, intentionally retained mock/offline data, and features not covered.
 
 ## Required Output
@@ -58,6 +63,7 @@ Produce the function description using the standard frontend function document s
 ## Quality Checklist
 
 - Testers can derive test cases from the function description without rereading source code.
+- Feature inventory and code ranges are sourced from sidecar code ledgers when code changed; missing ledgers are listed as gaps.
 - Each data-backed feature names its provider, source file, SDK call, endpoint, or document section.
 - Each page/module states whether the common enterprise app baseline, report development baseline, or both are the acceptance basis.
 - Filters, interactions, permissions, edge states, and exports are not omitted.

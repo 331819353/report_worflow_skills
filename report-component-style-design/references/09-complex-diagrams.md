@@ -2,6 +2,18 @@
 
 Use for decomposition trees, relation graphs, Sankey, flows, DuPont, attribution paths, process chains, and org/path diagrams.
 
+For relation/network graphs implemented as standard chart components, also apply `05-echarts-charts.md` and `12-internal-placement-algorithms.md`. Use ECharts `graph` before custom SVG/canvas unless the component is explicitly approved as a custom diagram with a reason.
+
+For path/user/process path charts, also apply `05-echarts-charts.md` and `12-internal-placement-algorithms.md`. Path charts must keep ordered start-to-end flow, main path emphasis, Top N branch limits, and exact transition evidence; do not let them drift into unordered relation graphs or decorative process arrows.
+
+For Sankey diagrams, also apply `05-echarts-charts.md` and `12-internal-placement-algorithms.md`. Sankey must keep source-target-value flow evidence, visible stage/layer order, flow-width mapping, Top N/`其他` aggregation, and exact node/link tooltip access; do not let it drift into decorative ribbons, simple rankings, one-level composition, or path charts without real many-to-many flow.
+
+For treemap/rectangular tree map charts, also apply `05-echarts-charts.md` and `12-internal-placement-algorithms.md`. Treemaps express hierarchy through rectangle area, non-negative additive value, Top N/`其他`, color semantics, and tooltip evidence; do not treat them as ordinary tree expansion diagrams or decorative mosaics.
+
+For sunburst charts, also apply `05-echarts-charts.md` and `12-internal-placement-algorithms.md`. Sunburst expresses hierarchy path and composition through rings, non-negative additive angle values, visible depth/ring budgets, Top N/`其他`, center/breadcrumb/drilldown, and exact path/share tooltip evidence; do not treat it as a decorative multi-ring pie, an ordinary tree, or a Treemap substitute when precise area comparison is the task.
+
+For tree/hierarchical tree charts, also apply `05-echarts-charts.md` and `12-internal-placement-algorithms.md`. Tree charts must keep one-root or declared-root hierarchy, parent-child integrity, expand/collapse, visible-depth limits, and exact node evidence; do not let them drift into relation graphs, Treemaps, or fully expanded node dumps.
+
 ## Safe Spacing Calculation Gate
 
 Run this gate before drawing or accepting any flow, Sankey, graph, tree, decomposition, DuPont, lineage, attribution, or process-chain diagram.
@@ -56,7 +68,7 @@ Acceptance:
 - Avoid edge labels unless they are necessary. Show edge values on hover when dense.
 - Use consistent edge thickness/value mapping and provide legend when mapping is not obvious.
 - Do not allow crossing edges to hide node labels. Change layout direction, spacing, or branch grouping.
-- For Sankey/flow, aggregate long tails into `其他` or secondary groups.
+- For Sankey/flow, aggregate long tails into `其他` or secondary groups. Sankey links must have `source`, `target`, and non-negative `value`; missing source/target becomes `未知来源`/`未知去向`, and unbalanced flow must show `流失`, `未知`, or `其他` rather than disappearing.
 
 ## Interaction
 

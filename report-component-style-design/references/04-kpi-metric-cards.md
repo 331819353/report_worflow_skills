@@ -7,9 +7,114 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 - Required zones: label, value, unit, status/trend, and optional baseline/target.
 - The value is the visual anchor. Status and trend support the value without competing with it.
 - The core value zone must be visually centered in the card body and occupy at least 40% of the card's main visual height. Do not stack title, subtitle, notes, or helper copy at the top in a way that leaves a large empty middle/lower area.
+- Implementation-ready metric cards must also follow `12-internal-placement-algorithms.md`: declare `W`, `H`, `P`, `CW`, `CH`, the card content origin, the main visual center, and every slot's x/y, width, height, alignment, and responsive fallback.
 - Cards in the same group share height, padding, value baseline, unit placement, and status position.
 - Fixed-height KPI cards must declare a height budget before style acceptance: padding + label line-height + value line-height + comparison/status/footer line-heights + gaps must be `<=` card body height. The value, label, unit, trend, and footer rows all need explicit `line-height`.
 - Clickable KPI cards need hover, active, selected, loading, and disabled states when applicable.
+
+## Standard Metric Card Placement
+
+Default metric cards use a centered-value layout:
+
+- Metric title sits top-left; definition/help entry sits top-right and does not affect the main content center.
+- The primary value plus unit is centered as one group, not as a number with a detached unit.
+- YoY/MoM, target text, progress, and sparkline align around the content center unless the card is explicitly split into a wide two-zone layout.
+- Summary and description are weaker than the value. Summary may center in standard cards; explanation and freshness metadata default to bottom-left or bottom-right based on content.
+
+Default coordinate variables:
+
+```text
+W = card width
+H = card height
+P = clamp(12px, W * 0.05, 24px)
+CW = W - 2P
+CH = H - 2P
+contentOrigin = (P, P)
+centerX = P + CW / 2
+```
+
+Slot algorithm:
+
+```text
+titleX = P
+titleY = P
+titleWidth = CW - helpIconWidth - helpGap
+
+helpIconSize = 14-16px
+helpX = W - P - helpIconSize
+helpY = P + (titleHeight - helpIconSize) / 2
+
+valueGroupWidth = valueTextWidth + 4-6px + unitTextWidth
+valueGroupX = centerX - valueGroupWidth / 2
+
+compareGroupX = centerX - compareGroupWidth / 2
+targetGroupX = centerX - targetGroupWidth / 2
+sparkX = centerX - sparkWidth / 2
+progressX = centerX - progressWidth / 2
+```
+
+Size tiers:
+
+| Tier | Condition | Required display |
+| --- | --- | --- |
+| Small | `W < 200px` or `H < 110px` | title, value group, one priority comparison |
+| Standard | `200px <= W < 360px` and `120px <= H < 180px` | title, value group, YoY/MoM, target text |
+| Enhanced | `W >= 360px` and `H >= 180px` | title, value group, YoY/MoM, target, optional sparkline, short summary |
+| Wide | `W >= 480px` | split primary value zone and auxiliary zone only when meaningful |
+
+Vertical fit must be proven before adding optional content:
+
+```text
+requiredContentHeight =
+  P * 2
+  + titleHeight
+  + valueHeight
+  + compareHeight
+  + visibleSparkHeight
+  + targetHeight
+  + visibleSummaryOrDescriptionHeight
+  + sum(verticalGaps)
+
+requiredContentHeight <= H
+```
+
+When the fit fails, remove or move optional content in this order: description, summary, sparkline, second comparison, target progress bar. Do not shrink the primary value below readable size or detach the unit from the centered value group.
+
+## Component-Internal Local Filter
+
+Use a `组件内筛选区 / 局部筛选区` section when a KPI card has its own time,口径, target, or unit switch.
+
+Suitable filters:
+
+- `今日 / 本周 / 本月`
+- `同比 / 环比`
+- `实际 / 目标 / 完成率`
+- `金额 / 数量`
+
+Rules:
+
+- The filter affects only this KPI card or an explicitly declared local KPI group.
+- Default to one visible group with no more than three short options. Use capsule/segmented control when it fits; collapse to a single capsule dropdown on small cards.
+- Do not use component-local filters for region, channel, store, owner, permission, backend aggregation, pagination, or export scope.
+- The filter sits in the header/title right side and must not change the visual center of the value. Keep `centerX = P + CW / 2` for value, comparison, and target unless the card uses an intentional wide split layout.
+- If title + help + filter do not fit, keep title and selected filter value; move help/definition or secondary actions to tooltip/drawer/more.
+
+Placement:
+
+```text
+filterH = 24-28px
+filterW = min(actualFilterWidth, CW * 0.45)
+filterX = W - P - filterW
+filterY = P
+titleMaxW = CW - filterW - 8px
+```
+
+Small-card fallback:
+
+```text
+W < 240px or H < 110px:
+  show selected value pill, for example `本月 ▾`
+```
 
 ## Pyramid KPI Card Pattern
 
@@ -40,6 +145,7 @@ Fit and overflow rules:
 
 - Main KPI value, unit, and primary trend/status must sit in a centered value group. If the card has a header/title, reserve it separately and keep the value group centered within the remaining body viewport.
 - A KPI card fails fit QA when the title/description cluster consumes the top while the core number is small, off-center, or visually below 40% of the card body height.
+- A KPI card fails placement QA when it lacks slot coordinates or when the value, unit, comparison, target, sparkline, summary, or metadata relies on vague auto layout without a measured fallback.
 - Apex value, unit, and status badge must never overlap. If the value is long, reduce precision, switch unit, or widen the card before shrinking below readable size.
 - `同比`, `环比`, and `目标` labels stay permanently visible. Long helper text moves to tooltip.
 - Comparison values use compact signed notation such as `+8.2%`, `-3.1%`, `达成 96%`, or `差 320万`.
@@ -102,7 +208,7 @@ Suggested CSS tokens:
 
 ## Typography And Fit
 
-- Main KPI value: 24-36px. Do not shrink below 22px for primary KPIs.
+- Main KPI value: 24-36px by default. Up to 40px is allowed only for wide or top-priority primary metric cards after fit proof. Do not shrink below 22px for primary KPIs.
 - Unit: 12-14px and placed close to the value baseline.
 - Label: 12-14px. Long labels wrap to two lines or move full name to tooltip.
 - Trend and status: 12px minimum with icon or sign.

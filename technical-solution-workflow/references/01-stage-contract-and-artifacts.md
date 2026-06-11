@@ -108,7 +108,7 @@ For production-bound or production-like backend/data-service design, the technic
 - cache-key dimensions: tenant/user/role/data-scope, report/source/data version, filters, pagination/sort, locale/unit, field visibility, and feature flags;
 - invalidation/freshness: TTL, jitter, source-version invalidation, publish/rollback invalidation, manual refresh, stale tolerance, and freshness metadata returned to the client;
 - traffic protection: rate limit, concurrency limit, request-size limit, max page/export rows, overload response, and backpressure;
-- observability: request id, latency percentiles, cache hit ratio, Redis errors/latency, pool usage, queue length, slow query, stale fallback count, data freshness, and alert owner.
+- observability: structured log format/level, request id, trace id, redaction rules, request/auth/validation/query/cache/pool/export/error log points, slow-query/report thresholds, latency percentiles, cache hit ratio, Redis errors/latency, pool usage, queue length, slow query, stale fallback count, data freshness, and alert owner.
 
 Do not call a backend/data-service plan `ready` when Redis is named but key dimensions, TTL/invalidation, permission safety, stampede protection, and fallback behavior are unknown.
 

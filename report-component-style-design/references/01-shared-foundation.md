@@ -6,7 +6,7 @@ Apply these rules to every component before applying component-specific rules.
 
 - Treat the assigned parent block body or internal sub-block as the component viewport. Inner content must not escape this viewport.
 - Measure usable `width` and `height` after subtracting card padding, header, actions, legends, notes, and pagination.
-- The page/block layout owns the visible component title. Do not render a duplicate title inside ECharts, AntV S2, SVG/canvas diagrams, KPI groups, or table bodies when the surrounding block already has one.
+- The surrounding block/container owns the visible title when it provides one. Do not render a duplicate title inside ECharts, AntV S2, SVG/canvas diagrams, KPI groups, or table bodies when the surrounding block already has one.
 - Use `min-width: 0`, `min-height: 0`, and an explicit overflow policy on every component body.
 - If the component is placed inside an internal sub-block, the sub-block must also have `min-width: 0`, `min-height: 0`, a stable grid/flex track, `5px` parent inset, `5px` gap to siblings, and an explicit overflow policy.
 - Mount ECharts, AntV S2, SVG, canvas, and custom diagrams only after the viewport has measurable size.
@@ -25,12 +25,12 @@ Apply these rules to every component before applying component-specific rules.
 
 ## Typography Hierarchy
 
-- Layout-owned title: 16px, weight 600. Component bodies should not add a second visible title when the block already has one.
+- Block-owned title: 16px, weight 600. Component bodies should not add a second visible title when the block already has one.
 - Axis text and table headers: 12-13px, readable neutral. Axis text must be larger than chart data-label values when both appear together.
 - Chart data labels and annotation values: 11-12px. Do not shrink below 11px to force density.
 - Body text and table cells: 12-14px.
 - Helper text, units, metadata: 12px minimum.
-- Core KPI value: 24-36px depending on block importance and available space.
+- Core KPI value: 24-36px by default depending on block importance and available space; up to 40px is allowed only for wide or top-priority primary metric cards after the height budget proves it fits.
 - Use tabular numerals for values that need comparison.
 - Fixed-height component text must declare explicit `line-height`, especially domain names, metric names, KPI values, percentage values, badges, helper text, and footer labels. Do not rely on browser default line boxes for large numbers or compact card rows.
 

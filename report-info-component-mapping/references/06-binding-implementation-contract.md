@@ -71,6 +71,50 @@ type PatternRole =
   | 'governance'
   | 'acceptance-only';
 
+type AnalysisInsightContract = {
+  subtype:
+    | 'conclusion-card'
+    | 'insight-card'
+    | 'anomaly-alert'
+    | 'attribution-card'
+    | 'impact-factor-card'
+    | 'comparison-interpretation'
+    | 'trend-interpretation'
+    | 'target-diagnosis'
+    | 'recommendation-card'
+    | 'risk-card'
+    | 'definition-card'
+    | 'data-quality-card'
+    | 'chart-annotation'
+    | 'summary-bar'
+    | 'change-explanation'
+    | 'ranking-interpretation'
+    | 'forecast-note'
+    | 'review-card'
+    | 'explanatory-empty-state'
+    | 'task-card'
+    | 'permission-no-result-delay-note';
+  insightFamily: 'conclusion' | 'insight' | 'diagnosis' | 'recommendation' | 'explanation' | 'state';
+  conclusion: string;
+  evidence?: string[];
+  affectedObjects?: string[];
+  compareWith?: string;
+  changeValue?: string;
+  reasonFields?: string[];
+  recommendedActions?: string[];
+  confidence?: 'high' | 'medium' | 'low' | 'insufficient';
+  definitionRefs?: string[];
+  dataQualityScope?: string;
+  annotationTarget?: { componentId: string; field?: string; markId?: string; range?: string };
+  maxVisibleItems?: number;
+  localFilters?: string[];
+  tooltipPayload?: string[];
+  detailRoute?: string;
+  sourceDataset?: string;
+  freshnessField?: string;
+  validationRules: string[];
+};
+
 type ComponentMapping = {
   id: string;
   // Metadata for the layout/block title. Do not render this again inside the component body.
@@ -101,6 +145,91 @@ type ComponentMapping = {
   requiredFields: string[];
   formulas?: string[];
   rollupLogic?: string;
+  analysisInsightContract?: AnalysisInsightContract;
+  compositePanelContract?: {
+    topic: string;
+    analysisSequence: Array<'summary' | 'trend' | 'structure' | 'contribution' | 'exception' | 'detail' | 'action'>;
+    layoutPattern:
+      | 'metric-main'
+      | 'main-side'
+      | 'main-detail'
+      | 'main-two-side'
+      | 'two-by-two'
+      | 'metric-main-side';
+    primaryChildId: string;
+    children: Array<{
+      id: string;
+      role:
+        | 'primary-metric'
+        | 'main-visual'
+        | 'auxiliary-visual'
+        | 'top-list'
+        | 'detail-preview'
+        | 'insight'
+        | 'legend'
+        | 'state';
+      visualType: string;
+      priority: 'P1' | 'P2' | 'P3' | 'P4';
+      minW: number;
+      minH: number;
+      datasetId?: string;
+      requiredFields?: string[];
+      unit?: string;
+      localFilterScope?: 'panel' | 'child-only';
+    }>;
+    childCountLimit: number;
+    primaryVisualWeight: '50-70%';
+    contentHeightRule: 'contentH>=CH*0.60';
+    sharedLocalFilters?: string[];
+    childLocalFilterException?: string;
+    sharedLegend?: boolean;
+    sharedUnit?: string;
+    linkedInteraction?: 'none' | 'hover-highlight' | 'click-select' | 'hover-and-click';
+    detailPreview?: { maxRows: number; maxColumns: number; detailRoute?: string };
+    responsiveFallback: string[];
+    stateRules: string[];
+  };
+  pivotContract?: {
+    rowDimensions: string[];
+    columnDimensions: string[];
+    measures: string[];
+    aggregationFunctions: Record<string, string>;
+    rateFormulas?: Record<string, { numerator: string; denominator: string; formula: string }>;
+    subtotalRules?: string[];
+    grandTotalRules?: string[];
+    rowHierarchyDepth?: number;
+    columnHierarchyDepth?: number;
+    sortRules?: string[];
+    densityFallback?: string[];
+    renderer?: 'antv-s2' | 'project-s2-equivalent' | 'static-preview';
+  };
+  groupedHeaderContract?: {
+    columnTree: Array<{
+      id: string;
+      title: string;
+      field?: string;
+      children?: string[];
+      unit?: string;
+      definition?: string;
+      align?: 'left' | 'center' | 'right';
+      width?: number;
+      minWidth?: number;
+      maxWidth?: number;
+      priority?: number;
+      sortable?: boolean;
+      filterable?: boolean;
+      fixed?: 'left' | 'right';
+    }>;
+    maxDepth: number;
+    leafColumnCount: number;
+    spanRules: 'computed-colSpan-rowSpan';
+    fixedHeader: boolean;
+    frozenColumns?: string[];
+    componentLocalFilters?: string[];
+    columnHeaderFilters?: string[];
+    densityFallback?: string[];
+    tooltipFields?: string[];
+  };
   controlSemantics: ControlSemantics[];
   componentSchemaImpact: ComponentSchemaImpactDetail;
   navigationMetricLineage?: NavigationMetricLineage[];
@@ -137,6 +266,9 @@ Rules:
 - `apiId`/`apiEndpoint` should identify the API that serves this component when the output feeds API planning or frontend integration. Default to one component or coherent component group per API.
 - `frontendComputePolicy` must be `component-ready` or `format-only` for implementation handoff. Use `blocked` when required business formulas, aggregations, rankings, filters, or series shaping are still expected to happen in the frontend.
 - `grain` must state row level: employee-month, org-month, order, contract, project, alert, task, or reconciliation-pair.
+- `analysisInsightContract` is required when a text-summary/card/task/custom component is used as a conclusion card, insight card, anomaly/risk explanation, attribution summary, recommendation/action card, definition/data-quality/forecast note, chart annotation, explanatory empty state, permission/no-result/delay note, or any analysis copy that influences a decision. It must declare subtype, family, conclusion, evidence or explicit insufficiency, affected object, comparison/change value when relevant, action/detail path when relevant, confidence/source/freshness/definition when relevant, local-filter scope, tooltip payload, and state rules.
+- `compositePanelContract` is required when multiple child components live inside one report component container as one analysis unit. It must declare the shared topic, sequence, layout pattern, primary child, child roles/priorities/minimum sizes, default child-count limit, primary visual weight, content-height rule, panel-level local filters, any child-only filter exception, shared legend/unit behavior, linked interaction, detail-preview limit, responsive fallback, and parent/child state rules. Use it only when child components answer one question; split unrelated children into separate parent blocks.
+- `groupedHeaderContract` is required when a table has `>8` visible columns or natural field groups such as metric families, actual/target/variance, current/YoY/MoM, amount/count/rate, time periods, finance sections, or pivot columns. It must declare the grouped column tree, leaf-field metadata, computed `colSpan`/`rowSpan`, max depth, fixed header, frozen row/primary columns, component-local filters vs per-column header filters, tooltip fields, and density fallback.
 - `validationCases` must include default state, filtered state, empty/no-permission state, and interaction state when clickable.
 - Use the controlled vocabularies and naming rules in `08-generation-stability.md`; do not invent enum values for `priority`, `componentType`, `visualType`, action type, data policy, or filter value type.
 
@@ -146,7 +278,7 @@ Use these values unless an existing project explicitly defines a different local
 
 - `priority`: `must-have`, `should-have`, `optional`.
 - `componentType`: `card`, `chart`, `table`, `text-summary`, `drawer`, `task`, `action`, `custom`.
-- `visualType`: `line`, `bar`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, `other`.
+- `visualType`: `line`, `bar`, `combo`, `candlestick`, `heatmap`, `pie`, `radar`, `path`, `sunburst`, `gauge`, `scatter`, `boxplot`, `parallel`, `map`, `graph`, `tree`, `treemap`, `sankey`, `funnel`, `metric-card`, `text-summary`, `table`, `pivot`, `composite-panel`, `other`.
 - Built-in action type: `openModal`, `closeModal`, `setFilters`, `resetFilters`, `navigateUrl`, `print`, `fullscreen`, `refresh`. Avoid `switchNav` for new components unless maintaining legacy config.
 - `controlSemantics`: `perspective-switch`, `global-filter`, `local-filter`, `drilldown-param`.
 - `componentSchemaImpact`: `none`, `row-scope-only`, `metric-name`, `metric-set`, `component-set`, `table-schema`, `dimension-set`, `definition-change`, `domain-vocabulary`, `mixed`.
@@ -171,6 +303,8 @@ Minimum columns:
 - API ID/path and frontend compute policy when an API/backend handoff is in scope.
 - Row grain, primary key, and required fields.
 - Metric formulas and rollup logic.
+- `analysisInsightContract` when the component is an analysis/explanation/decision-support text summary, card, annotation, task, or state note.
+- `compositePanelContract` when `visualType` is `composite-panel` or multiple child components are intentionally combined into one component container.
 - Control semantics for each control that affects the component.
 - Component schema impact: whether the control changes metric names, component set, table headers, dimensions, formulas/口径, domain vocabulary, or only row scope.
 - Navigation metric lineage when perspective navigation shows percentages, rankings, or status lights: `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, `periodBehavior`.
@@ -240,7 +374,11 @@ For custom Vue or non-template pages:
 
 - Use TypeScript + Vue 3 single-file components with Composition API unless the existing project uses another stack.
 - Use Element Plus for standard UI controls in Vue report prototypes: filter forms, selects, tree selects, cascaders, date pickers, inputs, buttons, tabs, tags, popovers, tooltips, dialogs, drawers, pagination, and simple operation/detail tables.
-- Use ECharts for standard visual charts: KPI trend cards, line, bar, area, scatter, heatmap, map, waterfall, funnel, gauge, mixed chart.
+- Detail Table mappings with `componentType: 'table'` and `visualType: 'table'` must carry row grain, primary key, default sort, column metadata, visible-column priority, search/sort/pagination/export scope, row detail/action payload, local-filter behavior, and state handling. Use Element Plus/project table for ordinary row-level details; use S2 only when the table is a pivot, cross table, wide metric matrix, frozen-header analytical table, or dense comparison grid.
+- Use ECharts for standard visual charts: KPI trend cards, line, bar, area, Combo through data-driven `bar` + `line`/`markLine` series on one shared x-axis, scatter, Gauge through `series.type: 'gauge'`, parallel coordinates through `parallelAxis` plus `series.type: 'parallel'`, heatmap, map, Sankey through `series.type: 'sankey'` with node/link `source`/`target`/`value`, path/user/process path when implemented through ECharts sankey/graph/custom series, treemap/rectangular tree map through `series.type: 'treemap'`, sunburst through `series.type: 'sunburst'`, tree/hierarchical tree through `series.type: 'tree'` or a declared data-driven hierarchy component, relation/network graph, waterfall, funnel, mixed chart.
+- Gauge implementation must use ECharts `series.type: 'gauge'` with declared `min`, `max`, `startAngle`, `endAngle`, `radius`, `center`, `progress`/`axisLine`, `detail`, `data`, target/threshold encoding when present, and tooltip evidence. Do not map a standard Gauge to hand-authored SVG/CSS arcs, needles, ticks, or labels while merely importing ECharts.
+- Combo implementation must use ECharts `xAxis`, one or two `yAxis` definitions, data-driven `bar` and `line`/`markLine`/reference series, `legend`, `tooltip`, and `axisPointer`. The mapping must carry the paired relationship, axis units, series limits, category-density fallback, and exact tooltip evidence; do not map unrelated metrics into a dual-axis Combo.
+- Funnel implementation may be ECharts `series.type: 'funnel'` for traditional trapezoids or ECharts horizontal `bar` series for the report-default bar funnel. In both cases the mapping must carry ordered stage rows, value/unit, conversion/drop formulas, tooltip evidence, and target/comparison semantics instead of hand-drawn decorative bars or trapezoids.
 - When the binding matrix maps a component to ECharts, implementation must use an actual ECharts instance or approved project wrapper with data-driven `option`/`series`. Do not mark a standard chart as ECharts if the intended implementation is hand-authored SVG/HTML/CSS/canvas. Use `customDiagram`, `svgIcon`, or another explicit non-standard component type only when the visual is genuinely not an ECharts chart.
 - Use AntV S2 through `@antv/s2` and `@antv/s2-vue` for analytical tables: pivot tables, cross tables, wide metric matrices, frozen-header tables, drillable comparison grids, and dense financial/operation tables. Treat those packages as on-demand dependencies; do not add or install them when the mapped components only use charts, KPI cards, simple Element Plus tables, lists, or text summaries.
 - Use regular Vue/HTML tables only when Element Plus and S2 are both unavailable or the existing project stack explicitly forbids them.

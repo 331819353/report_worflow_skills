@@ -6,11 +6,11 @@ When asked to design a report visual layout, use this structure:
 
 1. 页面定位: report type, user, core question, usage scenario, custom shell or template-based.
 2. 页面路径、样式来源、品牌模式与视觉模式: declare `pageShellPath`, `pageStyleSource`, exactly one `brandMode`, and exactly one `visualMode`; when custom, declare `customDesignPath` and exactly one `customLayoutPattern`.
-3. 页面外壳: unified title/navigation/filter control surface for custom pages, or the selected template's native title/navigation/filter slots for template-based pages; include logo placement, actions, and template mapping if applicable.
+3. 页面外壳: unified page identity/navigation/filter control surface for custom pages, or the selected template's native shell/navigation/filter slots for template-based pages; include logo placement, actions, and template mapping if applicable.
 4. 品牌风格: Haier logo asset discovery result, logo variant or placeholder, Haier blue/white palette, typography, spacing, density, surfaces.
 5. 内容结构: summary, breakdown, evidence, detail, action, or another report-appropriate flow.
 6. 栅格方案: `8 * N` parent block grid, parent spans, internal sub-block plan when used, row height/scroll strategy, chart/table/container/complex-diagram safety.
-7. 关键组件: parent block -> sub-block -> component placement for KPI cards, charts, tables, text summaries, drawers/popovers, toolbar actions.
+7. 关键组件: parent block -> sub-block -> component placement for KPI cards, charts, tables, Analysis & Insight components, text summaries, drawers/popovers, toolbar actions.
 8. 模板路由: chosen template and config files to adjust.
 9. 交互与状态: filters, drilldown, drawer/modal, refresh/export/fullscreen, empty/loading/error/no-permission, responsive behavior.
 10. 视角导航验收: domain navigation, Tabs, Segments, or other first-level perspective controls; include `1920x1080` and `1280x768` DOM no-clipping results.
@@ -33,7 +33,7 @@ Before finalizing, verify:
 - Any added filter, summary card, detail table, matrix, drawer, or jump in `sampleRestore` is labeled as an enhancement and does not change the first viewport or main body layout.
 - Any added conclusion, insight, or status summary in `sampleRestore` is embedded into an existing sample-equivalent region; a new standalone horizontal band fails unless the source has an equivalent band.
 - HTML-replica and custom layouts use global UI tokens for palette, typography, spacing, radius, semantic colors, shadows, and control states unless exact color restoration is explicitly requested.
-- Custom pages use one coherent title/navigation/filter control area when possible, instead of mechanically splitting three independent strips.
+- Custom pages use one coherent page identity/navigation/filter control area when possible, instead of mechanically splitting three independent strips.
 - Template-based pages follow the selected template's shell, logo slot, navigation, filter pattern, and grid mechanics.
 - Template-based pages do not add a standalone filter toolbar, persistent filter bar, or extra filter drawer when the selected template already owns filter invocation. The filter plan maps to `filters[]`, native trigger/panel/popover/drawer, local title-band filters, and binding rules.
 - If a template is used, the chosen template is justified: topbar dark scroll, topbar light scroll, left-nav workbench, or frozen-title sci-fi cockpit.
@@ -51,15 +51,18 @@ Before finalizing, verify:
 - The content area uses an `8 * N` rectangular grid.
 - Every top-level parent block occupies complete rectangular page-grid cells.
 - Components may be placed inside internal sub-blocks of a parent block; sub-blocks are local layout regions and do not count as page-grid cells.
-- Page, section, and block titles are owned by the layout layer. Component bodies do not duplicate those titles through chart/table/card internal title options.
+- Page layout owns page shell identity and block placement, not block title-area design. Each block owns its own title/function/local-filter area; component bodies do not duplicate a visible block-owned title through chart/table/card internal title options.
 - Every chosen block span has been checked against `1920x1080` or `1280x768` practical viewport constraints.
 - `1920x1080` and `1280x768` are not treated as total report height limits.
-- If one parent grid block contains multiple sub-blocks/components, it has one clear block-level business title and the internal sub-block labels/components remain visually subordinate.
+- If one parent grid block contains multiple sub-blocks/components, the block-owned title/function area carries one clear business title and the internal sub-block labels/components remain visually subordinate.
 - Every sub-block has a declared purpose, component owner, local size, `5px` parent inset, `5px` sibling gap, state behavior, and overflow rule.
+- Analysis & Insight blocks declare `analysisInsightContract`, reserve conclusion/evidence/action/trust/source/freshness/state zones, fit summary bars/cards/side panels/annotation bubbles to their size tier, and stay visually subordinate to the primary chart/table unless the block is explicitly explanation-first.
+- Composite Panel blocks declare one shared topic, one primary child, child roles/priorities/min sizes, default `2-3` children and normal max `4`, primary child visual weight `50-70%`, `contentH >= CH * 0.60`, shared local filter/legend/unit, linked interaction, detail-preview limit, responsive fallback, and parent/child state scope before layout acceptance.
 - Peer component groups inside one large block use the internal exact `M * N` distribution only when `actualTotal > 4`; for `actualTotal <= 4`, they use a small-group layout. When the algorithm applies, prime `actualTotal` first becomes `layoutTotal = actualTotal + 1`, `layoutTotal = M * N`, `M` is columns, `N` is internal rows, `M >= N`, and `M - N` is minimal among valid factor pairs.
 - Blocks with repeated internal sub-blocks/components obey the `actualTotal > 4` threshold, expand the parent block with `heightExpansionRows = ceil(N * 2 / 3)` when more height is needed, and are split, tabbed, paginated, or moved to drawers when the valid factor pair is too dense.
 - Components are not narrow, tiny, crowded, or forced into cramped spans. Increase span/height, split content, add scroll/zoom/fullscreen, or reduce visible labels before accepting the layout.
-- Shape-sensitive visuals such as gauges, radar, maps, pies, SVG/canvas diagrams, flow paths, and custom ECharts graphics use aspect-compatible blocks or centered uniform fit boxes. A warped curve, stretched map, oval radar/circle, or squeezed gauge fails layout QA.
+- Shape- or density-sensitive visuals such as gauges, radar, maps, pies, Combo charts, funnel charts, sunburst charts, treemap/rectangular tree maps, parallel-coordinate charts, path/user/process paths, tree/hierarchical trees, relation/network graphs, SVG/canvas diagrams, flow paths, and custom ECharts graphics use aspect-compatible or axis-density-compatible blocks or centered uniform fit boxes. A warped curve, stretched map, oval radar/circle, squeezed gauge, false/compressed dual axis, clipped/overcrowded Combo, clipped/overcrowded funnel, clipped/overcrowded sunburst, clipped/overcrowded treemap, clipped/overcrowded parallel-axis plot, clipped/overcrowded path, all-expanded/clipped tree, or clipped/hairball relation graph fails layout QA.
+- Parallel-coordinate blocks reserve plot height, axis-title and bottom-label bands, legend/filter zones, `axisGap >= 56px`, `plotH >= CH * 0.48`, and fallback to dimension filtering, horizontal scroll, sampling/aggregation, fullscreen, or table/scatter/bar when dimensions or sample lines exceed readability.
 - Scrollable report pages keep usable row/block heights and support vertical scrolling when content exceeds the first viewport.
 - Navigation is present only when it helps orientation and remains low-intrusion.
 - Domain navigation, Tabs, and Segments are checked at `1920x1080` and `1280x768`; each visible navigation/control item or card content viewport passes `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
@@ -82,10 +85,22 @@ Before finalizing, verify:
 - The right edge and bottom edge of every component are checked for clipping.
 - No component crosses into another component's rectangle.
 - Business-question text, titles, labels, legends, chart marks, diagrams, tables, KPI values, controls, and cards do not overlap, stack, or visually merge.
+- Analysis text, insight conclusions, evidence lines, action links, definition/source/freshness labels, and chart annotation bubbles do not overlap each other or the chart/table they explain; generic `智能洞察`/`建议关注` copy without evidence/action/trust context fails layout acceptance.
 - SVG/canvas/ECharts/custom graphics preserve proportions after responsive resizing; visual proportion defects are repaired before acceptance.
 - Section headers, group captions, layer labels, stage titles, lane titles, and column captions are checked as independent layout elements. They must not overlap, touch, or visually attach to card borders, node cards, node titles, connector paths, chart marks, legends, or child labels.
 - Complex diagram layer/stage titles reserve a separate top/side title band with at least 16px spacing from the nearest node/card/connector. A screenshot like a title sitting on the top edge of a node card fails visual QA.
-- Flow, Sankey, graph, tree, decomposition, and lineage visuals keep layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, and edges at least 16px apart and reserve rail, title-band, node, label, and edge-bend space.
+- Flow, Sankey, graph, tree, decomposition, and lineage visuals keep layer numbers, stage/layer/lane titles, group captions, labels, nodes, connectors, ribbons, and edges at least 16px apart and reserve rail, title-band, node, label, ribbon, and edge-bend space.
+- Detail Table blocks keep title/local filter, subtitle/freshness, optional metric strip, optional compact search/tools, fixed header, body rows, summary row, pagination/total, tooltip/detail trigger zones, and state messages in reserved zones; preserve `tableBodyAreaH >= CH * 0.55`, show `4-6` rows by default, never accept fewer than `3` visible rows unless it is a named preview with a detail route, and use horizontal scroll/frozen columns/column settings/drawer/S2 fallback when column density exceeds the span.
+- Complex/grouped table-header blocks keep parent group rows, leaf header rows, unit/subtext, sort/filter/definition icons, fixed whole-header behavior, frozen row/primary columns, body rows, pagination, and state messages in reserved zones; preserve default depth `2`, maximum depth `3`, at least `4` useful body rows, and group-to-leaf alignment. If leaf columns or header height exceed the span, use horizontal scroll, group collapse, column settings, fullscreen/detail, split table, Pivot Table, or redesign.
+- Pivot Table blocks keep title/local filter, subtitle/unit/aggregation note, optional metric strip, row dimension header, multi-level column headers, measure headers, data cells, subtotal/grand-total bands, scroll/virtual viewport, tooltip/drilldown trigger zones, and state messages in reserved zones; preserve `pivotAreaH >= CH * 0.55`, at least `4` visible body rows, frozen row dimensions for horizontal scroll, fixed column headers for vertical scroll, and fallback to metric switch, dimension reduction, fullscreen, split table, heatmap, or Detail Table drilldown when row/column/measure density exceeds the span.
+- Gauge blocks keep title, local filter, subtitle, metric strip, center value/unit, progress arc, target marker, threshold labels, min/max ticks, status label, legend, tooltip trigger zones, and state messages in reserved zones; preserve `gaugeAreaH >= CH * 0.50`, centered aspect-safe arc geometry, and center-value priority before accepting the block.
+- Combo chart blocks keep title/local filter, subtitle/unit, optional metric strip, legend, left/right axes, target/reference labels, x-axis labels, tooltip guide, and state messages in reserved zones; preserve `plotH >= CH * 0.48`, show both axis units when dual axis is used, limit total visible series to `<=4`, and split the chart when label density or false-correlation risk fails.
+- Funnel blocks keep stage labels, bar/funnel body, value/share labels, conversion/loss markers, target markers, local filters, metric strip, legends, tooltip trigger zones, and state messages in reserved zones; preserve `funnelAreaH >= CH * 0.52`, prefer `3-6` stages, fold/scroll/fallback when `>10`, and do not compress labels or hide exact conversion evidence.
+- Sankey blocks use at least a `3*2` span, preserve `sankeyAreaH >= CH * 0.55`, declare source-target-value links and layer order, aggregate long-tail nodes/links with Top N/`其他`, keep labels key-only, and collapse legend/filters before compressing the flow body.
+- Treemap blocks keep parent groups, child rectangles, breadcrumbs, legends/visualMap, local filters, metric strip, labels, tooltip trigger zones, and body viewport in reserved zones; `1*1` treemap blocks are not accepted. If the body cannot preserve readable parent groups and label thresholds, use Top N/`其他`, drilldown, ranked bar/table, or fullscreen instead of forcing tiny rectangles.
+- Sunburst blocks keep center content, visible rings, sector labels, breadcrumbs, legends/visualMap, local filters, metric strip, tooltip trigger zones, and body viewport in reserved zones; `1*1` sunburst blocks are not accepted. If the body cannot preserve `sunburstAreaH >= CH * 0.55`, `ringW >= 18px`, and sector label thresholds, use Top N/`其他`, drilldown, Treemap, ranked bar/table, or fullscreen instead of forcing tiny arcs.
+- Path charts keep start, middle steps, end, branches, arrows, labels, legends, local filters, and path body in reserved zones; `1*1` path blocks are not accepted. If only a tiny main-path-only state fits, use a KPI/list/step summary instead of calling it a path chart.
+- Tree charts keep root, visible levels, child branches, connectors, expand/collapse controls, search, labels, legends, local filters, and tree body in reserved zones; dense trees must collapse, search, scroll, or switch to tree list instead of expanding every node in a fixed block.
 - Main filter controls are Element Plus or project design-system select/dropdown/date/cascader controls, or a styled native select that declares baseline-only acceptance.
 - Dark template pages load Element Plus dark variables and set the `.dark` class or equivalent `--el-*` overrides; logo variant, `screen.grid.innerBackgroundColor`, cards, form/filter controls, and popovers do not render as white islands.
 - Advanced visual acceptance for option menus uses a custom popover select, not the operating system's native dropdown menu.
@@ -101,7 +116,7 @@ Before finalizing, verify:
 - Do not overwrite a template's original navigation/filter shell with newly generated standalone controls.
 - Do not generate a new filter toolbar/bar for a bundled template unless the user explicitly requested template-level redesign and the adaptation is documented.
 - Do not choose a template without explaining why it fits the report scope and usage scenario.
-- Do not force title, navigation, and filters into three separate areas when a unified control area is cleaner.
+- Do not force page identity, navigation, and page/global filters into three separate areas when a unified control area is cleaner.
 - Do not omit the Haier logo from a `brandMode: haierBranded` custom page's title/control area or a template's logo slot.
 - Do not omit the `brandMode` decision when a sample or custom shell might conflict with Haier branding.
 - Do not silently remove the logo slot when the logo asset is missing.
@@ -119,7 +134,7 @@ Before finalizing, verify:
 - Do not force every component into its own top-level `8 * N` block when a parent block with clear internal sub-blocks better answers one business question.
 - Do not make components too narrow, too small, or crowded when internal sub-block layout plus parent-block expansion can carry the content.
 - Do not let section/stage/layer/lane titles collide with or sit on top of component cards, node cards, connector lines, or child labels.
-- Do not let business-question text, labels, legends, chart marks, cards, or diagram nodes overlap, stack, or visually merge.
+- Do not let business-question text, labels, legends, chart marks, treemap rectangles, cards, or diagram nodes overlap, stack, or visually merge.
 - Do not create a marketing-style hero for operational reports.
 - Do not bury filters or primary actions.
 - Do not use many unrelated cards and charts with no visual hierarchy.

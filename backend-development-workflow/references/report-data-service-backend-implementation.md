@@ -356,6 +356,59 @@ Export requirements:
 - Audit query, export, download, report config change, permission change, datasource change, subscription, and snapshot behavior when in scope.
 - Logs should store SQL hash, query id, redacted SQL/parameter summary, duration, row count, cache hit, status, and error summary. Do not log secrets, tokens, raw sensitive payloads, or full SQL with sensitive literals.
 
+## Structured Backend Logging
+
+Backend logging must be strong enough to diagnose production and integration failures without exposing sensitive data.
+
+Minimum logging configuration:
+
+- `LOG_LEVEL`: per environment, normally `debug` only in local/dev, `info` in test/prod, `warn/error` for noisy subsystems.
+- `LOG_FORMAT`: `json` for test/prod and machine collection; console format is acceptable only for local development.
+- `REQUEST_ID_HEADER`: accepted inbound request id header and generated fallback.
+- `TRACE_ENABLED`: whether trace/span propagation is active.
+- `SLOW_QUERY_MS` and `SLOW_REPORT_MS`: thresholds for source query and full report request warnings.
+- `LOG_SAMPLE_RATE`: optional sampling for high-volume success logs; errors, warnings, validation rejects, auth rejects, export failures, and slow queries must not be sampled away.
+- Redaction config: token/header names, password/secret keys, personal identifiers, raw SQL values, raw permission scopes, and large request/response bodies.
+
+Required structured fields when available:
+
+```text
+timestamp, level, service, environment, releaseVersion,
+requestId, traceId, spanId,
+method, route, status, latencyMs,
+tenantHash, userHash, roleHash,
+reportId, widgetId, queryId, taskId,
+snapshotDate, latestPeriod, loadBatch, dataVersion,
+sourceName, cacheStatus, fromCache, stale,
+page, pageSize, rowCount, exportRowCount,
+poolName, poolActive, poolIdle, poolWaitMs,
+errorCode, errorType, sanitizedMessage
+```
+
+Required log points:
+
+- Request middleware: ingress and egress with request id, route, status, latency, and response error code.
+- Auth/permission: successful scope resolution at debug/info when safe, and all auth/permission rejects at info/warn with reason code.
+- Validation: rejected params, guardrail violations, heavy-query refusal, export-limit refusal, and no-permission response shape.
+- Query context: report id, data-version fields, filter/sort/page hashes, permission hash, and query grade. Do not log raw sensitive filters.
+- Query plan: selected dataset/source, metrics/dimensions codes, source predicate summary, pagination/count/export strategy, and cache key hash.
+- SQL/source/upstream execution: start/end duration, row count, timeout/retry, upstream status, redacted SQL template or hash, and slow-query warnings.
+- Cache/Redis: hit/miss/stale, key hash, TTL/freshness, rebuild/singleflight/lock behavior, and Redis errors.
+- Connection pools: acquire wait, timeout, release on error path, saturation, active/idle counts when safe, and repeated failure non-exhaustion evidence.
+- Export/jobs: task create/start/progress/success/failure/download/expiry with permission recheck and owner/request id.
+- Data refresh: batch id/loadBatch, source freshness, row count, data quality warning, stale fallback, and failed refresh.
+- Exceptions: error envelope correlation, sanitized message, stack trace only in controlled environments, and linked request id.
+
+Logging anti-patterns:
+
+- Raw tokens, cookies, access keys, database credentials, or SSO payloads.
+- Full request/response bodies for report data.
+- Full SQL with user values or sensitive literals.
+- Unhashed user names, phone numbers, emails, ID numbers, or raw organization scope unless explicitly permitted by the project privacy policy.
+- Only `print()` / `console.log()` statements without level, request id, route, or error code.
+- Success-only logs with no warning/error path.
+- Logs that state metadata such as `dataVersion` but cannot prove the source/precompute/cache query used that version.
+
 ## Monitoring And Governance
 
 Track enough signals to govern report health after release:
@@ -420,6 +473,8 @@ Backend/API documentation, implementation notes, and validation reports should i
 - Cache key dimensions, TTL, invalidation, warmup, stale fallback, and permission safety.
 - Redis role matrix and operational contract when Redis is used.
 - Database/upstream connection lifecycle evidence: pool max config such as `STARROCKS_POOL_MAX`, acquire/release owner, `ApiError`/timeout/exception cleanup path, and repeated-failure proof that the pool is not exhausted.
+- Structured logging evidence: logger config, request/trace middleware, required fields, redaction rules, log levels, request/auth/validation/query/cache/pool/export/job/error log points, slow-query/report thresholds, and error-envelope correlation.
+- Code file ledger evidence for changed backend code: sidecar ledger path, pre-change read/create proof, appended version, changed route/service/repository/query/logging ranges, affected API/env/source/permission contracts, verification, and rollback notes.
 - Pagination/count/export strategy.
 - Async export/job lifecycle evidence when applicable.
 - Result metadata for columns, precision, freshness, quality, cache status, and trace id.

@@ -27,6 +27,8 @@ Read `references/01-observability-feedback-template.md` when producing a reusabl
 3. Define instrumentation.
    List frontend events, API logs, trace IDs, request IDs, custom metrics, dashboard panels, synthetic probes, and data refresh jobs.
 
+   For backend/data-service surfaces, require structured logging configuration and safe fields: log level/format, requestId/traceId propagation, redaction rules, request/auth/validation/query/cache/pool/export/job/error log points, slow-query/report thresholds, sampling, retention, and error-envelope correlation.
+
 4. Define alert response.
    For every alert, include triage owner, diagnosis evidence, rollback/fallback, user communication, and retest/closure criteria.
 
@@ -41,6 +43,7 @@ Read `references/01-observability-feedback-template.md` when producing a reusabl
 - Monitoring scope: pages, APIs, jobs, data refresh, SSO, exports, roles.
 - Metric/alert matrix: indicator, threshold, severity, owner, channel, response.
 - Instrumentation plan: logs, metrics, traces, frontend events, synthetic checks.
+- Backend logging plan when backend/data-service is in scope: structured fields, log levels, request/trace id propagation, redaction, required log points, slow-query/report thresholds, sample safe log lines, retention, and owner dashboard/query paths.
 - Data refresh SLA and data-quality monitoring plan.
 - User behavior and feedback loop: event names, dashboard, review cadence, owner actions.
 - Incident/defect closure process: evidence, likely owner, rollback, retest, version linkage.
@@ -51,5 +54,6 @@ Read `references/01-observability-feedback-template.md` when producing a reusabl
 - API success, page rendering, data freshness, and business data quality are monitored separately.
 - Alerts have thresholds, owners, and response playbooks.
 - Frontend events avoid collecting sensitive data.
+- Backend logs avoid secrets, tokens, raw personal data, raw SQL values, raw permission scopes, and full report payloads while retaining enough request/query/cache/pool/export/error context for diagnosis.
 - User feedback routes to change-impact analysis before implementation.
 - Production conclusions link to exact delivery/release versions.

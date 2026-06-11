@@ -1,24 +1,111 @@
 # In-Component Control Rules
 
-Use for capsule switches, segmented controls, dropdown selects, mini menus, and component-level view controls inside cards, charts, tables, KPI groups, task lists, and drawers.
+Use for capsule switches, segmented controls, dropdown selects, mini menus, component-internal local filters, and component-level view controls inside cards, charts, tables, KPI groups, task lists, and drawers.
 
 In Vue report prototypes, prefer Element Plus `ElSegmented`, `ElRadioGroup`, `ElSelect`, `ElDropdown`, `ElButton`, `ElTooltip`, `ElPopover`, `ElSwitch`, `ElTag`, and `ElTabs` before custom DOM controls. Use custom controls only when Element Plus or the project design system cannot express the interaction.
 
 ## When To Use
 
-- Use capsule switches for 2-5 mutually exclusive modes that users compare frequently, such as `金额 / 数量`, `日 / 月 / 年`, `图表 / 表格`, `销售 / 利润 / 费用`.
+- Use capsule switches for 2-4 mutually exclusive short options that users compare frequently, such as `金额 / 数量`, `日 / 月 / 年`, `图表 / 表格`, `销售 / 利润 / 费用`.
 - Use dropdowns for larger option sets, lower-frequency choices, long labels, hierarchy, or scoped dimensions, such as organization, product, region, customer, project, metric library, ranking scope, or benchmark.
 - Do not use both a capsule switch and a dropdown for the same decision in one component.
-- Component controls must change only that component unless explicitly designed as a page-level filter.
+- Component-internal local filters must change only the current component or current block-scoped component group. They must not assume page/global filter responsibility.
+- A control that changes the metric set, component semantic role, table columns/header groups, domain vocabulary, or first-level report perspective is a perspective/control switch, not an ordinary component-internal local filter.
 
-For the default report block title band right function area, use the stricter local-filter rule:
+For the default block-owned title/function area's right side, use the stricter local-filter rule:
 
 | Right function area content | Control |
 | --- | --- |
-| One local filter with value count `< 3` | Sliding capsule / segmented pill |
-| One local filter with value count `>= 3` | Compact dropdown/select |
-| Multiple local filters | Filter panel/popover/drawer trigger |
+| One local filter with `2-4` short values and enough width | Sliding capsule / segmented pill |
+| One local filter with `> 4` values, long labels, or insufficient width | Compact capsule dropdown/select |
+| Two local filter groups | Keep the primary group visible and collapse the secondary group into a dropdown or panel; allow two visible groups only in wide components |
+| Multiple local filters | Filter panel/popover/drawer trigger with active count or summary |
 | Detail/jump action | Lightweight text link such as `查看详情` |
+
+## Component-Internal Local Filters
+
+Use the fixed section name `组件内筛选区 / 局部筛选区` in implementation-ready component specs.
+
+Scope:
+
+- It is a lightweight switch for the current component only.
+- It operates over the component's already fetched and bounded data unless the binding contract explicitly says otherwise.
+- It must not change page-level scope, permission scope, pagination, backend aggregation, export scope, or other components.
+- Prefer local display dimensions such as time range, metric view, display granularity, sort, Top N, or YoY/MoM view. Avoid complex business dimensions such as region, channel, store, category, owner, or status unless the dimension is truly local to this component.
+
+Default selection:
+
+| Option count / fit | Default |
+| --- | --- |
+| `2-4` short options | Capsule sliding button / segmented control |
+| `> 4` options | Single compact capsule dropdown |
+| Space does not fit within title band | Single compact capsule dropdown |
+| Two groups | Primary group visible; secondary group collapsed unless `W >= 720px` and the title still fits |
+| More than two groups | Local filter panel/popover/drawer trigger |
+
+Priority when choices compete:
+
+```text
+time range -> metric口径/view -> display granularity -> sort/ranking
+```
+
+Size algorithm:
+
+```text
+filterH = clamp(24px, H * 0.08, 32px)
+defaultFilterH = 28px
+smallFilterH = 24px
+optionW = clamp(44px, textWidth + 24px, 96px)
+filterW = sum(optionW) + capsulePadding * 2
+filterMaxW = min(CW * 0.45, 280px)
+
+if filterW > filterMaxW:
+  use compact capsule dropdown
+```
+
+Style:
+
+- Shape is a quiet pill/capsule, usually `999px` radius, 1px subtle border, 2px inner padding, and 12px text.
+- Option horizontal padding is `10-14px`; ordinary option width is `44-96px`.
+- Keep it restrained and close to the title or chart header. It should feel like a light switch, not a form.
+- Do not use large filled buttons, form rows, stacked field labels, or colorful tags as the default component-internal filter.
+
+Placement:
+
+```text
+filterX = W - P - filterW
+filterY = P + (titleLineH - filterH) / 2
+titleMaxW = CW - filterW - 12px
+```
+
+If the right side does not fit:
+
+```text
+filterX = P
+filterY = P + titleH + 6px
+filterRowH = filterH + 6px
+titleAreaH = titleH + filterRowH
+```
+
+Placement rules:
+
+- Prefer the title band right side.
+- Use an under-title lightweight row only when the title-right placement fails.
+- Do not place the filter over a plot, axis label, chart legend, KPI value, table header, or empty-state message.
+- Keep filter and legend separate. A filter changes state; a legend explains visual encoding.
+- Title remains readable first. Definition/help icon follows the title. Units move to subtitle or chart header metadata when the title-right area is crowded.
+
+Responsive collapse:
+
+| Condition | Behavior |
+| --- | --- |
+| `W >= 480px` | Title-right capsule is allowed when fit passes |
+| `320px <= W < 480px` | Use title-right only if title still fits; otherwise under-title row or dropdown |
+| `240px <= W < 320px` | Compact single capsule dropdown |
+| `W < 240px` | Show selected value plus chevron, for example `本月 ▾` |
+| `H < 180px` | Do not add a new filter row; inline or collapse |
+| Option count `> 4` | Compact dropdown |
+| More than one group in narrow width | Collapse secondary groups first |
 
 ## Placement
 
@@ -27,7 +114,7 @@ For the default report block title band right function area, use the stricter lo
 - Do not float controls over chart labels, legends, table headers, KPI values, or empty states.
 - Keep legend and controls visually separate. A control is interactive state; a legend explains visual encoding.
 - For narrow cards, collapse secondary controls into a single dropdown or `更多` menu.
-- In a report block title band, the left-aligned title keeps priority and the right function area stays one line. Collapse low-frequency controls into a panel or `更多` before shrinking the title below readability.
+- In a block-owned title/function band, the left-aligned title keeps priority and the right function area stays one line. Collapse low-frequency controls into a panel or `更多` before shrinking the title below readability.
 
 ## Capsule Switch Style
 
