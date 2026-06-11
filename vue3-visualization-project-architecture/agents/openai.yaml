@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vue3可视化项目架构"
+  short_description: "按上传样例沉淀 Vue3 + Vite + Pinia + Router + Element Plus + ECharts + Axios 数据可视化项目架构与开发约定。"
+  default_prompt: "Use $vue3-visualization-project-architecture when developing or reviewing a Vue3 data-visualization frontend that should follow the uploaded sample architecture, directory layout, Axios/env/build conventions, and chart component practices."

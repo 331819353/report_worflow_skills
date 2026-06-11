@@ -16,6 +16,7 @@ If the request is vague design improvement rather than implementation, route fir
 | Stage | Skill |
 | --- | --- |
 | Design-improvement routing | `$frontend-design-improvement-workflow` |
+| Vue3 visualization sample architecture | `$vue3-visualization-project-architecture` |
 | API/provider contract validation | `$api-contract-validation` |
 | Response adapter / data shaping | `$data-transformation-adapter-design` |
 | Env/proxy/build/deploy verification | `$frontend-env-deployment-verification` |
@@ -37,6 +38,7 @@ If the request is vague design improvement rather than implementation, route fir
 - Provider gaps: `references/provider-gap-ledger.md`
 - Report frontend implementation: `references/report-data-visualization-frontend-implementation.md`
 - Detailed implementation/readiness gates: `references/frontend-implementation-gates.md`
+- Vue3 visualization sample architecture: `$vue3-visualization-project-architecture` when the target should follow the uploaded Vue3 + TypeScript + Vite + Pinia + Vue Router + Element Plus + ECharts + Axios project structure.
 - Code-file ledger: `$delivery-version-management` `references/code-file-change-ledger.md`
 - Common app baseline: `$haier-enterprise-app-ui-design-spec`
 - Report baseline and anti-AI/report-decision gates: `$report-design-system-governance`
@@ -45,20 +47,22 @@ If the request is vague design improvement rather than implementation, route fir
 
 1. Resolve `prototypeSourcePath` and `frontendTargetPath`. Treat upstream prototypes as read-only unless explicitly targeted.
 2. Inspect stack, package manager, env, router, request utilities, stores/composables, mock/static data, component consumers, and runnable scripts.
-3. Classify UI baseline: common enterprise app, report/dashboard, or mixed. Load the matching baseline before implementation decisions.
-4. Run install/typecheck/lint/test/build when feasible and record pre-existing failures.
-5. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
-6. Verify env/proxy/base path/auth/SSO behavior before wiring requests.
-7. Before each source edit, read or create the sidecar code ledger for the scoped file.
-8. Replace or isolate mock data, wire provider calls, filters, pagination, sorting, exports, refresh, interactions, and state handling.
-9. Use component/layout/design-system skills when visual, metric, chart/table, state, or design baseline behavior is touched.
-10. Append code-ledger version entries after edits.
-11. Run build/start and `$frontend-runtime-qa-validation`; then produce frontend function docs when handoff is needed.
+3. If the target is a Vue3 data-visualization project or should follow the uploaded sample, load `$vue3-visualization-project-architecture` before file placement and request/env decisions.
+4. Classify UI baseline: common enterprise app, report/dashboard, or mixed. Load the matching baseline before implementation decisions.
+5. Run install/typecheck/lint/test/build when feasible and record pre-existing failures.
+6. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
+7. Verify env/proxy/base path/auth/SSO behavior before wiring requests.
+8. Before each source edit, read or create the sidecar code ledger for the scoped file.
+9. Replace or isolate mock data, wire provider calls, filters, pagination, sorting, exports, refresh, interactions, and state handling.
+10. Use component/layout/design-system skills when visual, metric, chart/table, state, or design baseline behavior is touched.
+11. Append code-ledger version entries after edits.
+12. Run build/start and `$frontend-runtime-qa-validation`; then produce frontend function docs when handoff is needed.
 
 ## Required Output
 
 - Source/target decision and stack decision.
 - Provider mapping, adapter notes, env/auth/deployment notes.
+- Vue3 sample-architecture alignment when applicable: directory placement, Axios/request pattern, env mode, route/store/component ownership, and build commands.
 - Changed files, code-ledger proof, and verification commands.
 - Data completeness and control semantics proof for filters/perspectives.
 - UI baseline applied and component/layout/design exceptions.
