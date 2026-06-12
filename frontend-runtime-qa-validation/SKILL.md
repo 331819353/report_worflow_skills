@@ -29,7 +29,7 @@ It is not a test-case design skill. For test matrices use `$integration-test-cas
 2. Classify the UI baseline: common enterprise app, report/dashboard, mixed, or unknown.
 3. Open the target URL and confirm the page loads without blocking runtime errors.
 4. Capture screenshots before visual judgment: full page, responsive states, interactions, and component crops when report/chart/table components exist.
-5. Run DOM overflow checks for fixed-height navigation/cards/KPI tiles and compact controls.
+5. Run DOM structural checks: expected card/component counts, fixed-height overflow, bounding-box overlap, and chart/table category uniqueness where inspectable.
 6. Inspect console, network, assets, routes, auth, and provider calls.
 7. Exercise filters, tabs, drawers, modals, chart clicks, table actions, pagination, sorting, export, refresh, fullscreen, hover, and focus states in scope.
 8. Apply anti-AI, report-decision, and multimodal/visual checks when relevant.
@@ -43,7 +43,7 @@ Use `references/qa-note-template.md` and include:
 - URL and viewport/screenshot evidence.
 - Console/network result.
 - Interaction/state checks.
-- Visual/DOM overflow findings.
+- Visual/DOM structural findings: overflow, card/component counts, bounding-box overlap, and category uniqueness.
 - Baseline references applied.
 - Readiness: `ready`, `partial`, or `blocked`.
 
@@ -52,6 +52,7 @@ Use `references/qa-note-template.md` and include:
 - Do not mark visual/runtime readiness without screenshots or a precise blocker.
 - Report/dashboard QA cannot rely only on full-page screenshots when component crops are needed.
 - Fixed-height content with `scrollHeight > clientHeight` or `scrollWidth > clientWidth` fails unless it is an intentional visible scroll region.
+- DOM QA must include count assertions for repeated cards/components, visible duplicate title/label checks inside the same block/card, bounding-box overlap checks for visible peer elements, KPI value-anchor bounding-box checks when metric cards exist, SVG/ECharts text-node overlap checks for legends, axis names, axis labels, and chart annotations when inspectable, and chart category uniqueness checks for rendered/configured category axes or equivalent categorical datasets when those elements exist.
 - Data completeness must be checked before filter-linkage pass/fail.
 - Standard ECharts charts must show ECharts-owned rendering and interaction when that renderer is claimed.
 - Load `runtime-qa-procedure.md` before full QA execution or final readiness judgment.

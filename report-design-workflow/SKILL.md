@@ -45,7 +45,7 @@ Default policy: use a bundled report template and `Vue 3 + TypeScript + Vite + E
 2. Normalize rough requirements when needed.
 3. Choose one `displayTheme`, one primary report type, and a small reusable pattern-card set. Record rejected competing themes.
 4. Run anti-AI and report-decision gates before layout, styling, or code.
-5. Use `$report-info-component-mapping` to produce answer atoms, component bundles, datasets, filters, interactions, and binding matrix.
+5. Use `$report-info-component-mapping` to produce answer atoms, component bundles, datasets, filters, interactions, binding matrix, and a filter/value semantics table.
 6. Decide `pageShellPath`: default `template`; use `custom` only for explicit custom/free design, exact restoration, existing shell preservation, or documented template limitation.
 7. Use `$report-visual-layout-design` for shell, navigation, filter surface, grid, block sizing, responsive plan, and page规范.
 8. Use `$report-prototype-template-management` for template selection/copy/validation and bundled assets.
@@ -59,6 +59,7 @@ Default policy: use a bundled report template and `Vue 3 + TypeScript + Vite + E
 - Workflow mode, input inventory, `displayTheme`, pattern cards, report type, and core question.
 - Anti-AI and report-decision gate result.
 - Component/data/filter/control/interaction binding matrix.
+- Filter/value semantics table with `detailValue`, `aggregateValue`, `emptyFilterValue`, display label, data-row role, query behavior, and primary-key eligibility.
 - Layout plan, selected template/custom reason, filter surface mapping, perspective-layer mapping, and implementation target path.
 - Files changed, code-ledger proof, verification commands, URL or blocker.
 - Quality-gate findings and readiness: `ready`, `partial`, or `blocked`.
@@ -67,6 +68,7 @@ Default policy: use a bundled report template and `Vue 3 + TypeScript + Vite + E
 
 - Do not use this workflow without prototype/demo/page-output intent.
 - Do not implement before display theme, report type, binding matrix, layout, and template/custom shell decision exist.
+- Do not reuse one sentinel value such as `all` for detail rows, aggregate rows, and empty/no-filter state. "All detail rows", "aggregate row", and "empty filter value" must be declared as separate semantics before implementation.
 - Do not choose custom development when a bundled template can satisfy the request.
 - Template-native filters and shell slots must be reused unless template-level redesign is explicitly requested.
 - Standard charts must be real ECharts option/series/runtime components; S2-class analytical tables must use S2/project-equivalent behavior.

@@ -6,11 +6,11 @@ Use this reference to choose the correct frontend SSO entrypoint before implemen
 
 | Entrypoint | Use When | Primary Files | Required Flow |
 | --- | --- | --- | --- |
-| Script-tag browser SDK | Static HTML, Vue/Vite, legacy webpack, non-NPM, mixed frontend, or quick standardization by global SDK | `index.html`, `App.vue`, auth adapter, request client | Load browser SDK, wait for `window.__USERCENTER__`, configure, login, persist token/clientId, attach headers, handle 401/403/logout. |
+| Script-tag browser SDK | Static HTML, Vue/Vite, legacy webpack, non-NPM, mixed frontend, or quick standardization by global SDK | `index.html`, `App.vue`, auth adapter, request client | Load browser SDK, wait for `window.__USERCENTER__`, configure, login, persist token, attach `Access-Token`, handle 401/403/logout. |
 | Package-based IAM SDK | Project already depends on package-based `@haier/iam` or has a stable module-based auth bootstrap | package auth module, router guard, request client | Keep package workflow, wrap SDK calls in adapter, avoid adding a second script SDK, align headers/recovery/logout. |
 | iHaier/Feishu container | Page runs inside iHaier/Feishu and product provides `appId` | container bootstrap, IAM adapter, request client | Configure `appId`, redirect URLs, and container permissions, then run the same login/header/recovery flow. |
 | Micro-frontend, iframe, or webview | Shell/sub-app boundary, iframe storage isolation, delayed script loading, or embedded browser behavior affects login | shell entry, sub-app entry, auth adapter, routing bridge | Decide SSO owner, load SDK once where possible, handle storage/redirect boundaries, pass only safe auth context, attach headers in each protected request layer. |
-| Existing SSO retrofit | SDK/login already exists but backend requests or recovery are broken | request client, route guard, auth store | Keep existing login, add missing `Application-Key`/`Access-Token`, token persistence, 401 single-flight recovery, 403 separation, and logout cleanup. |
+| Existing SSO retrofit | SDK/login already exists but backend requests or recovery are broken | request client, route guard, auth store | Keep existing login, add missing `Access-Token`, token persistence, 401 single-flight recovery, 403 separation, and logout cleanup. |
 
 ## Shared Frontend Contract
 
@@ -20,8 +20,10 @@ Every entrypoint must satisfy these rules:
 - Use environment-specific `ssoUrl`, `clientId`, backend `tokenUrl`, optional `redirectUri`, optional `exitUrl`, and optional `appId`.
 - Test uses `https://iam-test.haier.net`; production uses `https://iama.haier.net`.
 - `tokenUrl` is the business backend code-to-token service, not a browser-side call with `clientSecret`.
-- Persist only browser-safe auth values, normally configured `clientId` and access token.
-- Send `Application-Key: {clientId}` and `Access-Token: {token}` on protected backend APIs unless the backend contract explicitly defines aliases.
+- The backend `tokenUrl` response must expose `resultCode`, `resultMsg`, `access_token`, `expires_in`, `token_type`, `refresh_token`, and `account` as the canonical response contract.
+- Persist only browser-safe auth values, normally the access token. The configured `clientId` may remain in frontend SDK config, but it is not the authoritative token-check credential.
+- Send `Access-Token: {token}` on protected backend APIs unless the backend contract explicitly defines a compatibility alias.
+- Do not send `Application-Key` or `clientId` from the frontend for token check; backend code resolves the client ID from server-side configuration or a trusted tenant/app registry.
 - Treat 401/token-invalid as auth recovery; treat 403 as no-permission, not as re-login.
 - Clear local auth state on logout and invalid-token recovery.
 
@@ -50,10 +52,10 @@ Every entrypoint must satisfy these rules:
    Call `login()` from app bootstrap or a route guard. Do not use local token existence as the primary branch. If login fails, surface `errorMessage` and stop protected data loading.
 
 7. Persist safe auth state.
-   Store the configured `clientId` and access token using stable keys or the project's existing auth store. Do not store `clientSecret`, raw authorization codes, or full sensitive user payloads.
+   Store the access token using stable keys or the project's existing auth store. Store the configured `clientId` only if the local frontend adapter needs it for SDK/bootstrap diagnostics; do not use it as backend token-check input. Do not store `clientSecret`, raw authorization codes, or full sensitive user payloads.
 
 8. Attach request headers.
-   Add `Application-Key` and `Access-Token` in one shared request client or interceptor. This must cover page load, route changes, refresh, and component requests.
+   Add `Access-Token` in one shared request client or interceptor. This must cover page load, route changes, refresh, and component requests.
 
 9. Handle backend `tokenUrl` failure.
    If SDK login cannot exchange the code through `tokenUrl`, treat it as login failure. Do not let the app enter an anonymous success state.
@@ -75,8 +77,8 @@ Use this when the project already imports `@haier/iam` or has an established mod
 2. Keep the current package import and initialize with the same required config fields: `ssoUrl`, `clientId`, and `tokenUrl`.
 3. Wrap package SDK calls behind the same local adapter surface used by the app: `init`, `login`, `logout`, `getToken`, `getUserInfo`, and `refreshAfter401`.
 4. Ensure startup calls `login()` before protected requests and does not depend only on stale local storage.
-5. Persist only browser-safe `clientId` and token values.
-6. Add or verify `Application-Key` and `Access-Token` request headers.
+5. Persist only browser-safe token values; keep `clientId` in SDK config rather than treating browser storage as the backend check source.
+6. Add or verify `Access-Token` request headers.
 7. Implement 401 single-flight re-login and retry-once behavior.
 8. Keep 403 as no-permission handling.
 9. Verify refresh, deep link, route transition, invalid token, and logout.
@@ -100,7 +102,7 @@ Use this when the app is embedded or split across a shell and sub-apps.
 2. Load the SDK once in the owner runtime when possible. If each sub-app owns auth, ensure each uses the same environment config and header contract.
 3. Handle delayed SDK availability and storage isolation with explicit timeout and error states.
 4. For iframes, avoid leaking tokens through query strings. Prefer same-origin storage or a narrowly scoped, documented bridge that passes only the required safe values.
-5. Ensure each protected request client attaches `Application-Key` and `Access-Token`.
+5. Ensure each protected request client attaches `Access-Token`.
 6. Coordinate route refresh and deep links so sub-app data loading waits for auth bootstrap.
 7. On logout, clear shell and sub-app auth state consistently.
 
@@ -109,8 +111,8 @@ Use this when the app is embedded or split across a shell and sub-apps.
 Use this when login already works but business APIs still show SSO breakpoints.
 
 1. Keep the existing SDK/bootstrap unless it is clearly wrong.
-2. Add missing stable storage for `clientId` and token.
-3. Add missing request headers in the shared request client.
+2. Add missing stable storage for the access token.
+3. Add missing `Access-Token` request header in the shared request client.
 4. Fix 401 recovery with clear state, `login({ invalidateToken: true })`, single-flight refresh, and retry once.
 5. Separate 403 permission behavior from 401 auth behavior.
 6. Confirm logout clears all local state.

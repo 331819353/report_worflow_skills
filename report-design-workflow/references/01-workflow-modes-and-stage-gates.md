@@ -327,6 +327,7 @@ Output must include:
 - Advanced filters.
 - Defaults.
 - Option schema.
+- Filter/value semantics table.
 - Cascades.
 - Query parameters.
 - Permission rules.
@@ -335,6 +336,28 @@ Output must include:
 Almost all operational reports need this stage.
 
 Template note: Stage 6 designs filter contracts and placement decisions. It must not force a new filter toolbar into a bundled template that already owns filter invocation.
+
+### Filter/Value Semantics Table
+
+Every prototype that uses filter defaults, aggregate rows, "all" labels, total rows, subtotal rows, or synthetic options must declare these semantics before mock data, API binding, or template config is accepted:
+
+| Field | Meaning |
+| --- | --- |
+| `controlId` | Filter/control id or local-control id. |
+| `displayLabel` | Reader-facing label such as 全部, Total, Overall, or a domain label. Labels do not define data semantics. |
+| `emptyFilterValue` | Value that means "do not constrain rows/query by this control"; default should be a dedicated sentinel such as `''` or `__all`, not a business row key. |
+| `detailValue` | Real detail-row dimension value when the selection represents a concrete row/entity/member. |
+| `aggregateValue` | Synthetic aggregate-row value when the row is already aggregated across members. Use a dedicated value such as `__aggregate__`, `__total__`, or a typed `rowRole`, not `all` as a business primary key. |
+| `rowRole` | `detail`, `aggregate`, `subtotal`, `placeholder`, or another declared neutral role. |
+| `queryBehavior` | `omit`, `pass-as-param`, `server-aggregate`, `client-filter`, or `local-only`. |
+| `primaryKeyEligible` | Whether the value may be used as a stable business row key. `emptyFilterValue` and generic aggregate sentinels are normally `false`. |
+
+Rules:
+
+- "All rows shown after no filter" is a query/control state, not a detail row.
+- "Aggregate across rows" is an aggregate data row or server response role, not the same thing as an empty filter value.
+- A visible label like 全部 or Total may map to any of these roles, so the contract must name the role explicitly.
+- If a legacy API requires `all`, declare whether it is `emptyFilterValue` or `aggregateValue`; do not let the same endpoint/config use it for both.
 
 ### Stage 7: Data Interaction Design
 
@@ -363,6 +386,7 @@ Before visual polish or final delivery, require an explicit linkage contract:
 - Every selected pattern card maps to at least one component, filter/control, interaction, dataset/API requirement, or validation case; unmapped patterns are backlog/gaps, not completed scope.
 - Every component declares its data source, row grain, required fields, formulas, filter dependencies, refresh trigger, and empty state.
 - Every filter maps to a real data field, resolver parameter, or permission scope. If names differ, define an explicit filter-to-field mapping.
+- Every filter/control with a "show all", total, subtotal, aggregate, or synthetic option is present in the filter/value semantics table and separates `emptyFilterValue` from `aggregateValue`.
 - Every primary/global filter expected to affect a component must prove a visible data change for at least one non-default state. Selected-state-only behavior fails the linkage gate.
 - Filter changes update KPI cards, charts, tables, drawers, exports, downloads, fullscreen views, and jump parameters consistently.
 - Summary counts, table row counts, chart totals, and drawer records reconcile under the same active filters.
@@ -398,6 +422,7 @@ Template and custom implementations must both pass the same audit:
 
 - Mock data audit: default state, filtered state, empty state, and permission-limited state all have matching component outputs. Affecting primary filters require matching rows or resolver logic for non-default options.
 - Filter audit: every primary filter has at least one visible affected component and at least one validation case.
+- Filter semantic audit: no row primary key, option id, API parameter, resolver branch, or export key reuses the same raw value for both `emptyFilterValue` and `aggregateValue`.
 - Interaction audit: every drawer, modal, drilldown, jump, export, and fullscreen view inherits or explicitly overrides filter context.
 - Component audit: every component declares affected filters, ignored filters, required fields, formulas, and stale-state behavior.
 - Layout-body audit: every visual block separates title/header from component body; charts, tables, icons, empty states, and custom canvases render only inside the body viewport.

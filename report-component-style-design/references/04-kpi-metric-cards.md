@@ -4,19 +4,24 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 
 ## Structure
 
-- Required zones: label, value, unit, status/trend, and optional baseline/target.
+- Required zones: value, unit, status/trend, and optional baseline/target. A visible metric label/title is required only when the KPI card is standalone or when no surrounding block/container title already identifies the metric.
 - The value is the visual anchor. Status and trend support the value without competing with it.
+- Title ownership has priority over KPI internal structure. When the card runs inside a titled report block/container and `normalized(blockTitle)` equals or is highly similar to `normalized(metric.label)`, hide the body metric label by default. Keep the metric name available through tooltip, definition/help, export metadata, or口径说明 instead of rendering the same text twice.
 - The core value zone must be visually centered in the card body and occupy at least 40% of the card's main visual height. Do not stack title, subtitle, notes, or helper copy at the top in a way that leaves a large empty middle/lower area.
 - Implementation-ready metric cards must also follow `12-internal-placement-algorithms.md`: declare `W`, `H`, `P`, `CW`, `CH`, the card content origin, the main visual center, and every slot's x/y, width, height, alignment, and responsive fallback.
 - Cards in the same group share height, padding, value baseline, unit placement, and status position.
 - Fixed-height KPI cards must declare a height budget before style acceptance: padding + label line-height + value line-height + comparison/status/footer line-heights + gaps must be `<=` card body height. The value, label, unit, trend, and footer rows all need explicit `line-height`.
+- Centering must be proven with the actual rendered value group, not only with the allocated grid row. For default centered KPI cards, `abs(valueGroupRect.centerY - valueAnchorViewport.centerY) <= 8px`; otherwise record `VIS-KPI-VALUE-OFFCENTER`. `valueAnchorViewport` is the card body after removing the reserved title/filter/footer bands, or the declared primary value zone for wide/split cards.
+- Distinguish the value slot from the value glyph. The value slot still owns at least 40% of the main visual height, and the rendered primary numeral glyph should normally occupy `22-28%` of the same body height for standard/enhanced primary KPIs. If the glyph is smaller while empty space remains, increase the value font before adding or enlarging auxiliary copy.
+- Do not use `align-items: baseline` as the vertical positioning strategy for the whole KPI value row or value slot. Use `display: grid; place-items: center`, flex with `align-items: center`, or an equivalent centered slot. Baseline alignment is allowed only inside the already-centered `value + unit` group to fine-tune the unit relative to the numeral.
 - Clickable KPI cards need hover, active, selected, loading, and disabled states when applicable.
 
 ## Standard Metric Card Placement
 
 Default metric cards use a centered-value layout:
 
-- Metric title sits top-left; definition/help entry sits top-right and does not affect the main content center.
+- Standalone metric title sits top-left; definition/help entry sits top-right and does not affect the main content center.
+- Embedded metric cards with a block-owned title do not repeat the same metric label in the card body. If the body label is needed to disambiguate multiple metrics in one block, it must be shorter or more specific than the block title and pass duplicate-title QA.
 - The primary value plus unit is centered as one group, not as a number with a detached unit.
 - YoY/MoM, target text, progress, and sparkline align around the content center unless the card is explicitly split into a wide two-zone layout.
 - Summary and description are weaker than the value. Summary may center in standard cards; explanation and freshness metadata default to bottom-left or bottom-right based on content.
@@ -62,6 +67,27 @@ Size tiers:
 | Enhanced | `W >= 360px` and `H >= 180px` | title, value group, YoY/MoM, target, optional sparkline, short summary |
 | Wide | `W >= 480px` | split primary value zone and auxiliary zone only when meaningful |
 
+Title ownership rules:
+
+```text
+blockTitle = surrounding block/container/widget header title
+bodyMetricLabel = visible body metric label/title
+metricName = stable semantic metric name for tooltip/export/definition
+displayTitle = reader-facing block/card title
+showBodyMetricLabel = false by default when blockTitle exists
+
+normalized(text) =
+  trim text
+  remove whitespace and common separators such as space, colon, dash, slash, brackets
+  normalize full-width/half-width punctuation where feasible
+```
+
+- `displayTitle` is the visible card/block title. `metricName` is the semantic metric identity used by tooltip, export,口径, drilldown, and data lineage. Do not render both as visible title text when they are the same concept.
+- If `normalized(blockTitle) === normalized(bodyMetricLabel)`, the body metric label is a duplicate and must be hidden or moved to tooltip/definition metadata. Record `VIS-DUPLICATE-TITLE` if both remain visible.
+- If the texts are highly similar, such as one contains the other and the shorter text covers most of the longer one, treat it as duplicate unless the body label adds a necessary qualifier like period, denominator, object scope, or口径 variant.
+- `showBodyMetricLabel?: boolean` is an explicit override for standalone cards, multi-metric cards, or ambiguous blocks. It defaults to `false` whenever a block-owned title exists and the metric label/title is the same or near-same text.
+- Hidden metric labels must remain accessible where needed: tooltip, definition icon, export column metadata, detail drawer, or metric口径 note.
+
 Vertical fit must be proven before adding optional content:
 
 ```text
@@ -79,6 +105,23 @@ requiredContentHeight <= H
 ```
 
 When the fit fails, remove or move optional content in this order: description, summary, sparkline, second comparison, target progress bar. Do not shrink the primary value below readable size or detach the unit from the centered value group.
+
+Value anchor DOM contract:
+
+```text
+bodyRect = measured card body viewport
+valueSlotRect = declared value slot
+valueGroupRect = union(.metric-value, .metric-unit) or equivalent value+unit group
+valueGlyphRect = measured .metric-value text box
+centerDeltaY = abs(valueGroupRect.centerY - valueAnchorViewport.centerY)
+
+valueSlotRect.height >= bodyRect.height * 0.40
+centerDeltaY <= 8px
+valueGlyphRect.height >= bodyRect.height * 0.22 for primary standard/enhanced cards
+valueGlyphRect.height <= valueSlotRect.height * 0.72
+```
+
+If `centerDeltaY > 8px`, fix the value slot alignment before tuning colors, shadows, icons, or auxiliary text. If the value group is centered but the number looks weak, scale the primary value font within the fit limits before adding secondary explanation.
 
 ## Component-Internal Local Filter
 
@@ -208,12 +251,14 @@ Suggested CSS tokens:
 
 ## Typography And Fit
 
-- Main KPI value: 24-36px by default. Up to 40px is allowed only for wide or top-priority primary metric cards after fit proof. Do not shrink below 22px for primary KPIs.
+- Main KPI value: 24-36px by default. For primary KPI cards with `W >= 360px` and `H >= 180px`, use `40-44px` when the value group fits width/height and remains centered; larger hero metrics need an explicit large-card rationale. Do not shrink below 22px for primary KPIs.
 - Unit: 12-14px and placed close to the value baseline.
 - Label: 12-14px. Long labels wrap to two lines or move full name to tooltip.
 - Trend and status: 12px minimum with icon or sign.
 - The value, unit, and status must remain visible together.
 - Main values, percentages, and large numerals use explicit line-height sized to the intended visual box; do not rely on browser default line-height or `normal`.
+- Fit proof for `40-44px` values: `valueGroupRect.width <= CW`, `valueGlyphRect.height <= valueSlotRect.height * 0.72`, `centerDeltaY <= 8px`, and no overlap with comparison, target, source, or footer rows.
+- Top auxiliary information cannot compress or displace the value anchor. Title, status badge, source/freshness, target text, and helper copy are secondary; when the value center or glyph scale fails, first collapse/move auxiliary content to tooltip/footer/drawer before reducing the primary value or allowing it to sit high in the slot.
 
 ## Overflow Rules
 

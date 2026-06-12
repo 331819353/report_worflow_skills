@@ -73,6 +73,9 @@ requiredContentHeight <= componentHeight
 
 ## Density And Collision Rules
 
+- Every component declares a display budget before styling acceptance. The budget must name the bounded count it controls, such as visible summary items, KPI tiles, journey cards, list rows, table columns, table body rows, chart categories, chart series, labels, annotations, nodes, links, hierarchy depth, or local-filter options.
+- The display budget must also declare the overflow strategy: Top N + other, aggregation, label sampling, internal scroll, pagination, collapse, drilldown/drawer, fullscreen, zoom/pan, split component, or table/detail fallback. "Auto", "fit content", or hidden overflow alone is not a strategy.
+- Default family budgets unless a narrower component reference overrides them: `text-summary` visible decision items `<=3`; repeated peer cards or journey cards `<=6` in one fixed block; KPI peer tiles `<=6` before grouping/splitting; local-filter visible options `<=4`; permanent chart annotations `<=3`; chart visible series normally `<=4`; table first-view columns `5-8` and large-table columns `8-12`; table body rows `4-6` before pagination/scroll.
 - Calculate a visible label budget from the real viewport before rendering labels.
 - Reserve separate collision boxes for section titles, layer/stage/lane titles, card titles, badges, values, legends, and diagram nodes before drawing or positioning content.
 - Parent/group titles must not overlap, touch, or visually attach to child cards or chart nodes. Keep at least 16px vertical and horizontal safe spacing between a group/layer title and the nearest card border, node border, connector line, or label.

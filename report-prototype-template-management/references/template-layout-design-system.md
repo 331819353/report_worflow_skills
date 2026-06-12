@@ -81,6 +81,7 @@ Rules:
 
 - Page layout and template shell do not render block-internal titles, local filters, local action links, or component-specific control strips.
 - Visible block titles and local controls are owned by the business component or composite parent widget. The component may use `widget.title` as metadata, but it decides whether and how to render it.
+- Component ownership does not permit duplicate visible titles. For KPI/metric widgets, if the component renders a block/card header title from `widget.title` or `displayTitle`, the body metric label is hidden by default when it repeats the same metric; keep `metricName` in tooltip/export/口径 metadata instead. Use `showBodyMetricLabel: true` only for standalone or multi-metric disambiguation cases.
 - `localFilters[]` are passed through the component context (`localFilterConfigs`, `localFilters`, `getLocalFilterOptions`, `setLocalFilter`, `clearLocalFilters`) so the component can render its own control area.
 - Local filter control selection inside the component:
   - One local filter with `2-4` short values and fit proof: sliding capsule / segmented pill.

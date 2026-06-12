@@ -7,7 +7,7 @@ Use this reference when SSO testing needs an executable process and clear accept
 SSO testing covers these layers:
 
 - Frontend login bootstrap, redirect/callback, storage, route guard, request interceptor, 401 recovery, 403 permission state, and logout cleanup.
-- Backend `tokenUrl` code exchange, protected API middleware, `Application-Key` and `Access-Token` validation, IAMA token check, local user mapping, permission checks, and logout/session policy.
+- Backend `tokenUrl` code exchange, canonical login response shape, protected API middleware, `Access-Token` validation, server-resolved `Application-Key` for IAMA token check, local user mapping, permission checks, and logout/session policy.
 - Cross-end contract consistency: environment, `clientId`, token source, header names, status codes, retry rules, and evidence.
 
 ## Entry Criteria
@@ -18,9 +18,9 @@ Start SSO testing only when these are known or explicitly marked as blockers:
 - Running backend base URL or at least one protected API endpoint.
 - SSO environment: test or production-like.
 - Test account, login method, and expected role/permission.
-- Expected `clientId` or `Application-Key`.
+- Expected backend-side `clientId` source, such as environment config, app registry, tenant mapping, or documented local session policy.
 - Expected token storage location: localStorage, sessionStorage, cookie, SDK-managed memory, or project auth store.
-- Expected request headers, normally `Application-Key` and `Access-Token`.
+- Expected frontend request token header, normally `Access-Token`.
 - Expected unauthenticated response, token-invalid response, and no-permission response.
 - Logout entrypoint if logout is in scope.
 
@@ -38,13 +38,13 @@ If any required item is missing, record it as `blocked` or `missing information`
    Open a protected page or entry route with no local token. Verify the app starts SSO, completes login, returns to the intended page, and does not call protected business APIs before valid auth is ready.
 
 4. Test token exchange and storage.
-   Verify the configured backend `tokenUrl` succeeds when the SDK/frontend exchanges the authorization code. Confirm browser storage contains only safe auth values needed by the frontend, such as `clientId` and access token. Do not require the browser to expose secrets or raw authorization codes.
+   Verify the configured backend `tokenUrl` succeeds when the SDK/frontend exchanges the authorization code. Confirm its frontend-facing response preserves `resultCode`, `resultMsg`, `access_token`, `expires_in`, `token_type`, `refresh_token`, and `account`. Confirm browser storage contains only safe auth values needed by the frontend, normally the access token. Do not require the browser to expose secrets, raw authorization codes, or authoritative client IDs for token check.
 
 5. Test protected request headers.
-   Trigger page data loading and user interactions that call protected APIs. Confirm every protected API request carries the documented client ID and token headers, normally `Application-Key` and `Access-Token`. Confirm tokens are not sent in query strings unless the project has an explicit documented exception.
+   Trigger page data loading and user interactions that call protected APIs. Confirm every protected API request carries the documented token header, normally `Access-Token`. Confirm tokens are not sent in query strings unless the project has an explicit documented exception. For Haier IAMA check, the frontend should not be required to send `Application-Key` or `clientId`.
 
 6. Test backend token validation.
-   Confirm the backend rejects missing headers, rejects unknown `Application-Key`, calls or enforces token validation for protected routes, and allows requests only after token validity is confirmed.
+   Confirm the backend rejects missing token, resolves `clientId` from server-side configuration or trusted tenant/app context, calls or enforces token validation for protected routes, and allows requests only after token validity is confirmed.
 
 7. Test valid-session continuity.
    Refresh the page, open a deep link, change routes, switch tabs if relevant, and trigger API requests. Confirm auth state is restored, headers remain present, protected APIs succeed, and no duplicate login loop occurs.
@@ -53,7 +53,7 @@ If any required item is missing, record it as `blocked` or `missing information`
    Remove the token while keeping the app open, then refresh or call a protected API. The backend should reject the request, and the frontend should clear stale auth state and re-trigger SSO or show the configured auth state.
 
 9. Test invalid or expired token.
-   Tamper with the token, use an expired token, or use the project's token invalidation method. The backend should return 401 or token-invalid, and the frontend should call `login({ invalidateToken: true })`, update token/clientId, retry the failed request once, and stop retrying if recovery fails.
+   Tamper with the token, use an expired token, or use the project's token invalidation method. The backend should return 401 or token-invalid, and the frontend should call `login({ invalidateToken: true })`, update the token, retry the failed request once, and stop retrying if recovery fails.
 
 10. Test concurrent 401 recovery.
    Trigger multiple protected API requests with an invalid token. Confirm the frontend uses one shared refresh/re-login operation, avoids multiple login windows or redirect storms, retries failed requests at most once, and ends in a stable state.
@@ -75,10 +75,10 @@ If any required item is missing, record it as `blocked` or `missing information`
 | Case | Steps | Pass Standard | Failure Examples |
 | --- | --- | --- | --- |
 | Clean first access | Clear browser state, open protected page, complete login | User returns to intended page; protected APIs wait until auth is ready | Blank page, wrong redirect, protected API fires before login, endless login loop |
-| Token exchange | Login through SDK and observe backend `tokenUrl` | Code exchange succeeds; frontend receives usable token/user info; no secret in browser | `tokenUrl` 404/CORS error, missing token, `clientSecret` in browser |
-| Storage | Inspect agreed storage after login | Only safe `clientId` and token-related values are stored | Raw code, `clientSecret`, excessive account payload, missing token |
-| Request headers | Trigger protected API calls | All protected APIs carry `Application-Key` and `Access-Token` or documented aliases | Missing client ID, missing token, token in query string without contract |
-| Backend validation | Call protected API with valid auth | Backend validates token and returns business response | Backend trusts local storage/client ID only; route bypasses middleware |
+| Token exchange | Login through SDK and observe backend `tokenUrl` | Code exchange succeeds; frontend-facing response preserves canonical login fields and no secret is exposed in browser | `tokenUrl` 404/CORS error, missing token, renamed-only `token`/`userInfo`, `clientSecret` in browser |
+| Storage | Inspect agreed storage after login | Only safe token-related values are stored; `clientId` is not required as browser token-check input | Raw code, `clientSecret`, excessive account payload, missing token |
+| Request headers | Trigger protected API calls | All protected APIs carry `Access-Token` or documented token alias | Missing token, frontend-required `Application-Key` without exception, token in query string without contract |
+| Backend validation | Call protected API with valid auth | Backend resolves client ID server-side, validates token, and returns business response | Backend trusts local storage/client ID only; route bypasses middleware; browser `Application-Key` selects credentials |
 | Refresh/deep link | Refresh and open a deep route | Auth restored, headers attached, no duplicate login loop | Route loses token, stale data, multiple redirects |
 | Missing token | Remove token and call protected API | Backend returns 401/token-invalid; frontend starts auth recovery | Protected data still returned, silent failure, stale data shown |
 | Invalid/expired token | Tamper token or force expiry | Backend rejects; frontend refreshes login once and recovers or stops cleanly | Infinite retry loop, repeated redirects, stale token reused |
@@ -94,7 +94,8 @@ An SSO test pass requires all applicable standards below:
 - First access starts SSO and returns to the intended page.
 - Frontend does not call protected business APIs before auth bootstrap succeeds.
 - Browser storage and frontend store match the documented auth contract.
-- Protected backend requests include required auth headers.
+- Protected backend requests include the required token header.
+- Backend token-check evidence shows `Application-Key`/`clientId` is derived from backend config or trusted tenant/app registry, not from the frontend request.
 - Tokens, authorization codes, and secrets are not leaked through URLs, logs, screenshots, or final reports.
 - Backend rejects missing, unknown, invalid, expired, or unverifiable auth.
 - Backend validates token before attaching local user context or running business permission logic.
@@ -110,8 +111,8 @@ Mark the test as `fail` when any of these occur in a testable environment:
 
 - Protected business data loads without required auth.
 - `clientSecret`, raw authorization code, or full sensitive account payload appears in browser storage, request query, logs, or report evidence.
-- Required auth headers are missing from protected requests.
-- Backend accepts unknown `Application-Key` values.
+- Required token header is missing from protected requests.
+- Backend accepts browser-provided `Application-Key`/`clientId` as the credential source for IAMA token check.
 - Backend returns 200 for invalid, expired, or missing token on protected APIs.
 - Frontend enters infinite redirect/retry loops.
 - Frontend treats 403 as a login-expired state.

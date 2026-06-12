@@ -31,10 +31,23 @@ const toComparableText = (value: unknown) => {
   return String(value);
 };
 
-const isEmptyFilterValue = (value: unknown) => {
+const defaultEmptyFilterValues = ['', '__all'];
+
+const normalizeEmptyFilterValues = (
+  values?: DashboardDataSourceRef['emptyFilterValues'] | DashboardApiSourceConfig['emptyFilterValues'],
+) => new Set([...defaultEmptyFilterValues, ...(values ?? [])].map((value) => toComparableText(value).trim()));
+
+const isEmptyFilterValue = (
+  value: unknown,
+  emptyFilterValues?: DashboardDataSourceRef['emptyFilterValues'] | DashboardApiSourceConfig['emptyFilterValues'],
+) => {
+  if (value === undefined || value === null) {
+    return true;
+  }
+
   const text = toComparableText(value).trim();
 
-  return text === '' || text === 'all' || text === '__all';
+  return normalizeEmptyFilterValues(emptyFilterValues).has(text);
 };
 
 const toComparableValues = (value: unknown) => {
@@ -55,7 +68,7 @@ const filterRowsByParams = (
 ) =>
   rows.filter((row) =>
     Object.entries(params).every(([key, value]) => {
-      if (key === 'key' || isEmptyFilterValue(value)) {
+      if (key === 'key' || isEmptyFilterValue(value, source.emptyFilterValues)) {
         return true;
       }
 
@@ -84,7 +97,7 @@ const filterRowsByFilters = (
 ) =>
   rows.filter((row) =>
     Object.entries(filters).every(([filterId, value]) => {
-      if (isEmptyFilterValue(value)) {
+      if (isEmptyFilterValue(value, source.emptyFilterValues)) {
         return true;
       }
 
@@ -172,7 +185,9 @@ const appendQueryValue = (
   }
 
   if (Array.isArray(value)) {
-    const values = value.map(toComparableText).filter((item) => !omitEmpty || !isEmptyFilterValue(item));
+    const values = value
+      .map(toComparableText)
+      .filter((item) => !omitEmpty || !isEmptyFilterValue(item, api.emptyFilterValues));
 
     if (values.length === 0) {
       return;
@@ -189,7 +204,7 @@ const appendQueryValue = (
 
   const text = typeof value === 'object' ? JSON.stringify(value) : toComparableText(value);
 
-  if (omitEmpty && isEmptyFilterValue(text)) {
+  if (omitEmpty && isEmptyFilterValue(text, api.emptyFilterValues)) {
     return;
   }
 
@@ -306,7 +321,7 @@ const resolveApiData: DashboardDataSourceResolver = async (request) => {
 // - params.key 指定 filterData 或 businessData 里的数据集名称。
 // - 其他 params 会按同名字段过滤数据行，例如 cycle/scope/org。
 // - 当前组件可见的 filters 会自动按同名字段过滤；字段名不一致时配置 source.filterFields。
-// - 筛选值为空、all 或 __all 时表示不过滤。
+// - 筛选值为空或命中 source.emptyFilterValues 时表示不过滤；默认 ['', '__all']。
 // - 组件确实不受某个全局筛选影响时，写 source.ignoredFilters 显式声明。
 // - 组件必须受某个筛选影响时，写 source.requiredFilters 防止字段漏配后静默失效。
 // - 固定 params 也必须参与过滤时，写 source.requiredParams 防止字段漏配后静默失效。

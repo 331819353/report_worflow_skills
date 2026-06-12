@@ -3,6 +3,7 @@ import type { DashboardExpressionValue, DashboardParams } from './actions';
 export type DashboardFilterScope = string | string[];
 export type DashboardApiMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export type DashboardApiArrayFormat = 'comma' | 'repeat';
+export type DashboardEmptyFilterValue = string | number | boolean | null;
 
 export interface DashboardApiSourceConfig {
   // 支持相对路径、绝对路径或完整 URL。常规项目建议通过 Vite proxy 使用 /api/...。
@@ -22,8 +23,10 @@ export interface DashboardApiSourceConfig {
   adapter?: string;
   // 数组查询参数格式。默认 comma：a=1,2；repeat：a=1&a=2。
   arrayFormat?: DashboardApiArrayFormat;
-  // 默认 true，自动忽略空字符串、all、__all、undefined、null。
+  // 默认 true，自动忽略 undefined、null 以及 emptyFilterValues。
   omitEmptyQuery?: boolean;
+  // 查询参数中代表“不约束/不过滤”的值。默认 ['', '__all']；兼容旧接口时可显式加入 'all'。
+  emptyFilterValues?: DashboardEmptyFilterValue[];
   // 兼容原配置名；axios 请求中 include/omit 会映射为 withCredentials true/false。
   credentials?: RequestCredentials;
 }
@@ -46,6 +49,8 @@ export interface DashboardDataSourceRef {
   requiredFilters?: string[];
   // 明确声明必须命中的固定参数。用于防止 params 字段拼错后 staticData 静默不过滤。
   requiredParams?: string[];
+  // 数据源过滤时代表“不约束/不过滤”的值。默认 ['', '__all']；聚合/总计行不要复用这些值作为业务主键。
+  emptyFilterValues?: DashboardEmptyFilterValue[];
   // 当数据源返回对象数组时，用哪个字段作为显示文本。
   labelField?: string;
   // 当数据源返回对象数组时，用哪个字段作为真实值。

@@ -34,10 +34,10 @@ Optional inputs: SSO documentation, role/permission expectations, token invalida
    Clear browser storage/cookies. Open the frontend URL and verify it triggers SSO or the expected login flow. After login, verify the user reaches the target page.
 
 3. Test browser storage.
-   Confirm the frontend stores the agreed `clientId` and `token` values or project-specific equivalents. Record whether storage is localStorage, sessionStorage, cookie, or SDK-managed memory.
+   Confirm the frontend stores the agreed token value or project-specific equivalent. `clientId` may exist in SDK config, but it must not be required as the authoritative token-check input from the browser. Record whether storage is localStorage, sessionStorage, cookie, or SDK-managed memory.
 
 4. Test authenticated headers.
-   Inspect protected backend requests and verify auth values are passed in documented headers such as `clientId`/`token`, `Application-Key`/`Access-Token`, or the project-specific names. Auth values should not appear in query strings unless explicitly required.
+   Inspect protected backend requests and verify the frontend sends `Access-Token` or the documented token alias. For Haier IAMA check flows, `Application-Key`/`clientId` must be resolved by backend code, not supplied by the frontend request. Auth values should not appear in query strings unless explicitly required.
 
 5. Test valid-session continuity.
    Refresh the page, open a deep route, switch tabs/pages, and trigger API requests. Confirm auth state and headers remain valid without duplicate login loops.
@@ -73,7 +73,8 @@ Optional inputs: SSO documentation, role/permission expectations, token invalida
 
 - Login starts correctly from unauthenticated access and returns to the intended page.
 - Stored auth values match the frontend/backend contract.
-- Protected API requests carry the required auth headers.
+- Protected API requests carry the required token header, normally `Access-Token`.
+- Backend token-check evidence shows `clientId`/`Application-Key` comes from server-side configuration or a trusted tenant/app registry, not from a frontend header.
 - Invalid auth is rejected by backend and recovered by frontend without request loops.
 - No-permission scenarios are distinguishable from unauthenticated scenarios.
 - The run satisfies the pass standards in `references/03-sso-test-process-and-standards.md`, or any unmet standard is explicitly reported as fail or blocked with evidence.

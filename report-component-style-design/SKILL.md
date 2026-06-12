@@ -50,7 +50,7 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 1. Classify the component family, business purpose, data grain, viewport/container size, interaction state, and priority.
 2. Load `00-component-reference-index.md`, shared foundation, the matching component reference, and the matching placement reference only. When the task is purely chart, table, filter, or coordinate placement, prefer the specific front-door skill above.
 3. Confirm the data and decision contract before styling: metric/formula, field grain, source/freshness, numeric display contract, filter scope, exact-value path, state set, and next action.
-4. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
+4. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, display budget, overflow strategy, size tiers, fallback order, and state geometry.
 5. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.
 6. Run the component acceptance gates when the output is implementation-ready or when a visual defect may hide decision evidence.
 7. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates.
@@ -59,18 +59,22 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 
 - Component family and loaded reference files.
 - Business/data contract: purpose, grain, key fields, formulas/units, numeric display contract, source/freshness, filters, exact-value path, and owner/action path.
-- Placement rules: container variables, slots, alignment, size tiers, responsive degradation, and state geometry.
-- Visual and interaction rules: tokens, labels, legends, tooltips, hover/focus, overflow, disclosure, and accessibility.
+- Placement rules: container variables, slots, alignment, size tiers, display budget, responsive degradation, and state geometry.
+- Visual and interaction rules: tokens, labels, legends, tooltips, hover/focus, overflow strategy, disclosure, and accessibility.
 - Acceptance result: `ready`, `partial`, or `blocked`, with `DESIGN-*`, `RPT-*`, `VIS-*`, or implementation gaps when relevant.
 
 ## Quality Gate
 
 - Do not style a component before the business purpose, data grain, key fields, filter scope, and interaction state are known.
 - Implementation-ready specs must include measurable placement rules, not only CSS layout or visual adjectives.
+- Every component family must declare a display budget before acceptance: maximum visible items/cards/rows/columns/categories/series/annotations/steps as applicable, the budget basis, and overflow strategy such as Top N + other, pagination, internal scroll, sampling, collapse, drawer/fullscreen, or table fallback.
 - Component-internal filters must be current-component or declared local-group scoped; they cannot silently change page/global scope, backend aggregation, pagination, export scope, permission scope, or other components.
 - Report components must preserve decision evidence: metric口径, source/freshness, numeric display contract, baseline, exact values, drilldown/detail/export/action path, and realistic data states.
 - Metric-bearing components must declare value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter ownership; arbitrary decimals or component-local `toFixed` assumptions are not accepted.
+- KPI/metric cards must pass actual rendered value-anchor checks, not only slot allocation: the measured value+unit group is centered in the value anchor viewport, the numeral has sufficient visual scale for the card size, and auxiliary title/status/source/target content does not push the primary value off center.
+- KPI/metric card title ownership must be explicit. Do not visibly render both a block/card title and a body metric label when they normalize to the same or highly similar text; use `displayTitle` for the visible title and keep `metricName` for tooltip/export/口径 metadata unless `showBodyMetricLabel` is explicitly justified.
 - Standard ECharts charts must be implemented with ECharts-owned options/series/runtime behavior; do not hand-draw standard charts while importing ECharts.
+- ECharts Cartesian charts with legends, y-axis names, axis units, target labels, or local filters sharing an edge band must declare explicit slot budgets and collision checks. `grid.containLabel` alone is not sufficient evidence for legend/axis-name safety.
 - SVG/canvas/ECharts/custom geometry must preserve aspect ratio and must not stretch, squeeze, or distort business shapes.
 - Do not use generic AI/SaaS polish, decorative gradients/glass/glow, oversized radius, vague copy, or ornamental motion when it competes with data reading.
 - Load `12-component-acceptance-gates.md` before accepting dense charts, tables, Composite Panels, Analysis & Insight, KPI cards, local filters, or shape-sensitive graphics for implementation.

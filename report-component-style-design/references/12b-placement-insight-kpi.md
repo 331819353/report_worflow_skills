@@ -197,7 +197,7 @@ Use this for KPI cards, metric cards, target cards, comparison tiles, and mini-t
 
 | Slot | Required | Default behavior |
 | --- | ---: | --- |
-| Metric title | Yes | Top-left, identifies the metric |
+| Metric title | Conditional | Top-left only for standalone KPI cards or when the surrounding block title does not already identify the metric |
 | Definition/help entry | Optional | Top-right icon, opens tooltip/drawer |
 | Component-local filter | Optional | Header-right capsule/dropdown, affects only this card |
 | Value group | Yes | Metric value plus unit, centered as one group |
@@ -225,6 +225,24 @@ Recommended card ranges:
 | Enhanced card | `320-480px` | `160-220px` | value, comparison, target, sparkline or summary |
 | Wide card | `480px+` | `160-240px` | split primary and auxiliary information |
 
+### Title Ownership
+
+Metric title is a visible layout slot only when the KPI card is standalone, when the block/container has no visible title, or when multiple body metrics need distinct sub-labels.
+
+```text
+displayTitle = visible block/card title
+metricName = semantic metric name for tooltip/export/definition
+bodyMetricLabel = visible KPI body label/title
+showBodyMetricLabel = explicit boolean override
+```
+
+Rules:
+
+- If a surrounding block/container already renders `displayTitle`, and `normalized(displayTitle)` equals or is highly similar to `normalized(bodyMetricLabel)` or `normalized(metricName)`, set `showBodyMetricLabel = false` by default.
+- `metricName` remains available in tooltip, export, drilldown payload, definition/help, or口径说明 even when the body label is hidden.
+- Body labels in embedded KPI blocks are allowed only when they disambiguate multiple metrics in the same block, for example `满意度得分` vs `有效样本`, or when an explicit standalone-card mode is declared.
+- A visible duplicate block title + KPI body label is `VIS-DUPLICATE-TITLE`, not a harmless style choice.
+
 ### Padding And Slot Heights
 
 ```text
@@ -235,6 +253,8 @@ compareHeight = clamp(20px, H * 0.18, 32px)
 targetHeight = clamp(22px, H * 0.18, 36px)
 sparkHeight = clamp(28px, H * 0.22, 56px)
 descriptionHeight = clamp(18px, H * 0.18, 40px)
+valueAnchorViewportY = P + titleHeight
+valueAnchorViewportH = H - P * 2 - titleHeight - visibleFooterOrMetadataH
 ```
 
 Padding tiers:
@@ -294,6 +314,8 @@ requiredContentHeight <= H
 
 If the budget fails, remove or move optional content in this order: description, summary, sparkline, second comparison, target progress bar. Do not shrink primary value text below readable size.
 
+The fit proof must measure the actual rendered value group, not only the row allocation. A grid row such as `minmax(42px, 1fr)` is not sufficient if the numeral sits at the row's top edge.
+
 ### Slot Position Rules
 
 Title:
@@ -338,11 +360,23 @@ Value group:
 ```text
 valueGroupWidth = valueTextWidth + unitGap + unitTextWidth
 valueGroupX = centerX - valueGroupWidth / 2
-valueGroupY = valueY
+valueSlotY = valueY
+valueSlotH = valueHeight
+valueGroupY = valueSlotY + (valueSlotH - valueGroupHeight) / 2
+valueAnchorViewportCenterY = valueAnchorViewportY + valueAnchorViewportH / 2
+centerDeltaY = abs(valueGroupCenterY - valueAnchorViewportCenterY)
 unitGap = 4-6px
 ```
 
 The value and unit are centered as one group. Do not center the number and then attach the unit far away.
+
+Hard value-anchor rules:
+
+- Default metric cards center the actual `value + unit` group in the declared value anchor viewport. `centerDeltaY <= 8px`; otherwise record `VIS-KPI-VALUE-OFFCENTER`.
+- `valueSlotH >= valueAnchorViewportH * 0.40` for standard centered cards. Wide/split or pyramid cards may use a declared primary value zone, but the same center and glyph checks apply inside that zone.
+- The primary numeral glyph height should normally be `22-28%` of the value anchor viewport for primary standard/enhanced cards. If `W >= 360px` and `H >= 180px`, allow `40-44px` main value text after width and height fit proof.
+- Do not use value-row `align-items: baseline` as the vertical placement strategy. The value slot should use `place-items: center`, flex `align-items: center`, or equivalent. Apply baseline alignment only to the unit inside the centered value group.
+- Title, help, status, target, source/freshness, and summary are auxiliary. If they push the value group off center or force a weak numeral, collapse/move those auxiliary items before shrinking or offsetting the primary value.
 
 Unit:
 

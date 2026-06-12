@@ -55,7 +55,7 @@ Copy templates with their full project structure, including package/config files
 4. For templates with `nav[]`, define substantial nav-page content before copying or editing.
 5. Copy or merge the full template into the target.
 6. Keep shell-owned behavior in template config/data/action registries and widget registries.
-7. Preserve native template filter surfaces; configure `filters[]`, data sources, resolvers, and widget bindings instead of adding a duplicate filter bar.
+7. Preserve native template filter surfaces; configure `filters[]`, data sources, empty-filter values, resolvers, and widget bindings instead of adding a duplicate filter bar.
 8. Before editing copied template source, read/create the sidecar code ledger; append version entries after edits.
 9. Validate chart/table/component fidelity through owning component references when widgets are added or changed.
 10. Run template validation, build, and dev/preview startup when a local URL is required.
@@ -67,6 +67,7 @@ Copy templates with their full project structure, including package/config files
 - Shell decisions: title, logo, navigation, native filters, toolbar, controls.
 - Asset copy/merge path and files/extension points changed.
 - Data binding mode and filter-to-widget binding proof.
+- Empty-filter configuration and aggregate-row key policy when filters or data contain all/total/synthetic options.
 - Code-ledger proof for changed template source files.
 - Validation/startup commands, URL, blockers, and template limitations.
 
@@ -76,6 +77,7 @@ Copy templates with their full project structure, including package/config files
 - Do not choose a nav template unless multiple substantial nav pages are implemented.
 - Do not add duplicate shell, filter bar, toolbar, or navigation layers over existing template slots without an explicit redesign decision.
 - Template `filters[]` is for horizontal constraints; schema-changing perspectives belong in nav/page/route/tab/segment/perspective state.
+- Template data sources must declare or inherit configurable `emptyFilterValues`; aggregate/subtotal rows must use a distinct `aggregateValue`, `rowRole`, or typed key and should not use `all` as a business primary key.
 - Standard chart/table widgets must use their declared renderer and data contract.
 - Changed copied-template source files require code-ledger read/create evidence and post-change version entries.
 - Load `template-routing-and-implementation-gates.md` before selecting, copying, editing, or accepting bundled report templates.

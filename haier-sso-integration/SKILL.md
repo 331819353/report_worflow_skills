@@ -33,6 +33,8 @@ It does not replace generic runtime SSO testing; use `$sso-auth-flow-test` when 
 - Config and environment variables needed.
 - Files or modules to update.
 - Auth header/token/session behavior.
+- Frontend-facing login/tokenUrl response contract using `resultCode`, `resultMsg`, `access_token`, `expires_in`, `token_type`, `refresh_token`, and `account`.
+- Token check ownership: frontend passes only `Access-Token` to the business backend; backend obtains configured `clientId` server-side and sends upstream `Application-Key`.
 - 401, 403, logout, refresh, and deep-link behavior.
 - Verification or breakpoint handoff.
 
@@ -41,4 +43,6 @@ It does not replace generic runtime SSO testing; use `$sso-auth-flow-test` when 
 - Do not mix script SDK and package SDK unless the project explicitly requires both.
 - Do not hard-code secrets or tokens.
 - Protected APIs must have backend validation, not only frontend hiding.
+- Do not design login/tokenUrl responses with local aliases such as top-level `token`/`userInfo` as the primary contract; preserve the canonical IAMA fields shown above.
+- Do not require the frontend to provide `Application-Key` or `clientId` for token check. Backend code must resolve the client ID from server-side config or a trusted tenant/app registry, then call IAMA check with that value and the frontend-provided `Access-Token`.
 - 401 token invalid and 403 no-permission behavior must be distinct.

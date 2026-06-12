@@ -117,6 +117,12 @@ export interface BaseWidgetConfig<TType extends string, TProps extends Record<st
   type: TType;
   // Optional component metadata. Visible titles are rendered by the business component itself.
   title?: string;
+  // Reader-facing title for a business block/card. Metric widgets may mirror this from title.
+  displayTitle?: string;
+  // Semantic metric identity for tooltip, export, drilldown, and口径 disclosure; not always rendered visibly.
+  metricName?: string;
+  // Metric widgets default this to false when displayTitle/title already identifies the metric.
+  showBodyMetricLabel?: boolean;
   // Optional copy for the block-level no-data mask when widget.data resolves to no rows.
   emptyState?: {
     title?: string;

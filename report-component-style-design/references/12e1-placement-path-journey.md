@@ -60,8 +60,8 @@ Padding tiers:
 | Tier | Condition | Keep | Drop first |
 | --- | --- | --- | --- |
 | Tiny | `W < 360` or `H < 260` | Title, single dropdown filter, main path, key nodes, tooltip | Subtitle, metric strip, legend, path labels, footer, ordinary branches |
-| Standard | `360 <= W < 720` and `H >= 320` | Title, filter, metric strip, main path, Top branches, key labels, tooltip | Secondary labels, low-weight branches |
-| Large | `W >= 720` and `H >= 420` | Full standard structure, Top `5-10` paths, drop-off branches, expand/collapse, optional search | Full all-path rendering still forbidden when dense |
+| Standard | `360 <= W < 720` and `H >= 320` | Title, filter, metric strip, main path, up to `6` visible journey cards/nodes, Top branches, key labels, tooltip | Secondary labels, low-weight branches |
+| Large | `W >= 720` and `H >= 420` | Full standard structure, up to `6` visible journey cards/nodes plus Top `5-10` paths, drop-off branches, expand/collapse, optional search | Full all-path rendering still forbidden when dense |
 
 ### Slot Height Budget
 
@@ -86,6 +86,16 @@ Main path budget:
 pathAreaH >= CH * 0.52
 ```
 
+Display budget:
+
+```text
+visibleJourneyCards <= 6
+visibleBranchGroups <= 3 by default
+ordinaryPermanentLabels = key-only
+```
+
+When a journey has more than `6` visible steps/cards, keep start, end, selected/anomaly/drop-off, and the most important middle steps visible; aggregate the rest into `+N`, pagination, horizontal scroll, fullscreen, Sankey/relation fallback, or a detail table.
+
 If the budget fails, collapse in this order:
 
 1. Hide footer/update note.
@@ -100,7 +110,7 @@ If the budget fails, collapse in this order:
 
 Suitable local filters:
 
-- Scope: all, main path, abnormal path.
+- Scope: all paths, main path, abnormal path. If "all paths" means no constraint, use the declared `emptyFilterValue` sentinel rather than a business row key.
 - Period: 7 days, 30 days, 90 days.
 - Metric basis: users, count, amount.
 - Path type: visit path, conversion path, drop-off path.

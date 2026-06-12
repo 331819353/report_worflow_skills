@@ -21,6 +21,7 @@ Required data and option contract:
 - `xAxis`, one or two `yAxis` definitions, `legend`, `tooltip`, `axisPointer`, and data-driven `series`.
 - ECharts owns bars, lines, target/reference lines, axes, grid, tooltip, legend, hover emphasis, and label layout. Do not hand-draw bars, lines, axes, targets, or legends with DOM/SVG/CSS/canvas while claiming ECharts Combo.
 - Use `dataset` or a shared ordered row array so `xAxis.data`, bar data, line data, target values, tooltip payloads, and click payloads all come from the same sorted rows.
+- Do not treat `grid.containLabel` as collision avoidance for `legend`, y-axis `name`, title, or DOM header content. Combo charts must explicitly budget and validate these slots.
 
 Series and axis limits:
 
@@ -37,19 +38,30 @@ Plot budget:
 titleAreaH = 36-56px
 metricH = 0-48px
 legendH = 20-28px
+axisNameH = 0 or measured yAxis name text height
+topAxisNameReserve = max axisNameH + max yAxis.nameGap when any yAxis.name uses nameLocation: 'end'
 xAxisH = 32-56px
 footerH = 0-24px
-plotH = CH - titleAreaH - metricH - legendH - xAxisH - footerH - gaps
+plotH = CH - titleAreaH - metricH - legendH - topAxisNameReserve - xAxisH - footerH - gaps
 require plotH >= CH * 0.48
 
 leftAxisW = clamp(40px, maxLeftAxisLabelWidth + 8px, 80px)
 rightAxisW = hasRightAxis ? clamp(36px, maxRightAxisLabelWidth + 8px, 72px) : 0
 grid.left = leftAxisW
 grid.right = rightAxisW + 8-16px
+grid.top >= titleAreaH + metricH + legendH + legendAxisNameGap + topAxisNameReserve
 grid.containLabel = true
 ```
 
 If title, metric strip, local filter, or legend are DOM outside ECharts, subtract those bands before mounting ECharts. Collapse footer, secondary metric strip, legend detail, local filters, and ordinary labels before shrinking the plot below the floor.
+
+Dual-axis name and legend collision contract:
+
+- Left and right axis units such as `件`, `元`, `%`, `人`, or `次` are real text elements. They must be represented in one declared place: y-axis `name`, axis-label formatter, subtitle/unit metadata, or tooltip/legend metadata. Do not duplicate the same unit in multiple visible places without a reason.
+- When a top legend is rendered inside the same ECharts instance and a y-axis `name` uses the default/top `nameLocation: 'end'`, the option must declare `legend.top`, `legend.left/right`, `grid.top`, `yAxis.nameGap`, `yAxis.nameLocation`, `yAxis.nameTextStyle`, and the expected safe gap between legend and axis names.
+- The top-band layout must either reserve separate vertical lanes or pass measured rectangle checks. Minimum safe gap between legend item text/marker boxes and any left/right y-axis name box is `8px`; overlap area greater than `4px²` is a visual defect.
+- Unit-only y-axis names should usually move to `axisLabel.formatter` such as `{value}%` / `{value}件`, to a subtitle/unit line, or to `nameLocation: 'middle'` with explicit `nameRotate` when the top legend is crowded. Keeping `nameLocation: 'end'` is allowed only with a passing budget and screenshot/DOM proof.
+- Fixed magic numbers such as `legend: { top: 0, right: 8 }` plus `grid: { top: 38 }` are not accepted for dual-axis combo charts unless the measured legend, both axis names, and the required safe gaps are shown to fit at every target viewport.
 
 Category density and geometry:
 

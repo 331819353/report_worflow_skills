@@ -154,13 +154,14 @@ Call `login()` when the page loads. Do not pre-check local token existence as th
 ```js
 const res = await iamSdk.login();
 if (res.success) {
-  const { token, userInfo } = res;
-  localStorage.setItem("haier_iam_client_id", IAM_CLIENT_ID);
+  const { token } = res;
   localStorage.setItem("haier_iam_access_token", token || "");
 } else {
   const { errorMessage, errorCode, result } = res;
 }
 ```
+
+The backend `tokenUrl` used by login should return these canonical fields to the frontend-facing auth contract: `resultCode`, `resultMsg`, `access_token`, `expires_in`, `token_type`, `refresh_token`, and `account`. SDK adapters may expose `token`/`userInfo` internally, but API design should not replace the canonical field names with only local aliases.
 
 When token expiry or API 401 happens:
 
@@ -182,30 +183,21 @@ if (ok) {
 Adapt this pattern to the target project's request client instead of forcing a new HTTP layer.
 
 ```js
-const CLIENT_ID_STORAGE_KEY = "haier_iam_client_id";
 const TOKEN_STORAGE_KEY = "haier_iam_access_token";
-const CLIENT_ID_REQUEST_HEADER_KEY = "Application-Key";
 const TOKEN_REQUEST_HEADER_KEY = "Access-Token";
-const IAM_CLIENT_ID = "your client id";
 
 function persistIamAuth(token) {
-  localStorage.setItem(CLIENT_ID_STORAGE_KEY, IAM_CLIENT_ID);
   localStorage.setItem(TOKEN_STORAGE_KEY, token || "");
 }
 
 function clearIamAuth() {
-  localStorage.removeItem(CLIENT_ID_STORAGE_KEY);
   localStorage.removeItem(TOKEN_STORAGE_KEY);
 }
 
 async function requestWithIam(input, init = {}) {
   const headers = new Headers(init.headers || {});
-  const clientId = localStorage.getItem(CLIENT_ID_STORAGE_KEY) || IAM_CLIENT_ID;
   const token = localStorage.getItem(TOKEN_STORAGE_KEY) || window.__USERCENTER__?.getToken?.();
 
-  if (clientId) {
-    headers.set(CLIENT_ID_REQUEST_HEADER_KEY, clientId);
-  }
   if (token) {
     headers.set(TOKEN_REQUEST_HEADER_KEY, token);
   }
@@ -218,7 +210,6 @@ async function requestWithIam(input, init = {}) {
 
     if (loginResult.success && loginResult.token) {
       persistIamAuth(loginResult.token);
-      headers.set(CLIENT_ID_REQUEST_HEADER_KEY, IAM_CLIENT_ID);
       headers.set(TOKEN_REQUEST_HEADER_KEY, loginResult.token);
       response = await fetch(input, { ...init, headers });
     }
@@ -238,16 +229,26 @@ Guard concurrent 401 responses so multiple failed requests do not trigger severa
 
 Backend-facing header contract:
 
-- Send `Application-Key: {clientId}` with every authenticated backend request.
 - Send `Access-Token: {token}` with every authenticated backend request.
+- Do not send `Application-Key` or `clientId` from the frontend for token check. Backend code resolves `clientId` from server-side config or a trusted tenant/app registry and uses it as upstream `Application-Key`.
 - If the backend returns 401 or a normalized token-invalid response, clear stale browser auth state and trigger `login({ invalidateToken: true })`.
-- Clear the stored `clientId` and token on logout.
+- Clear the stored token on logout.
 
 ## TypeScript Global Declaration
 
 Use a local declaration file such as `src/types/haier-iam.d.ts` when the project is TypeScript.
 
 ```ts
+export interface HaierIamBackendLoginResponse {
+  resultCode: string;
+  resultMsg: string;
+  access_token: string;
+  expires_in: string;
+  token_type: string;
+  refresh_token: string;
+  account: unknown;
+}
+
 export interface HaierIamLoginSuccess {
   success: true;
   userInfo?: HaierIamUserInfo;
@@ -338,7 +339,7 @@ Supported debug switches, in priority order:
 ## API Quick Reference
 
 - `configUserCenter(options)`: Initialize or merge SDK configuration.
-- `login(params?)`: Login and return `{ success: true, token, userInfo }` or `{ success: false, errorMessage, result }`.
+- `login(params?)`: SDK helper that may return `{ success: true, token, userInfo }` or `{ success: false, errorMessage, result }`. The backend `tokenUrl` response contract still uses `resultCode`, `resultMsg`, `access_token`, `expires_in`, `token_type`, `refresh_token`, and `account`.
 - `reLogin(params?)`: Re-login helper, commonly used for expired auth.
 - `logout(params?)`: Logout.
 - `getConfig()`: Read initialized config.

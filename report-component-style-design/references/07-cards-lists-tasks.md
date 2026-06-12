@@ -9,12 +9,14 @@ Use for repeated object cards, ranking lists, anomaly cards, task cards, status 
 - Use table layout when the content becomes record-like or comparison-heavy.
 - Do not turn every field into a badge. Reserve badges for status, priority, severity, or lifecycle.
 - Fixed-height cards must declare an internal height budget: padding + explicit line-height rows + vertical gaps + status/action/footer heights must be `<=` card height. Object name, main value/status, metadata, focus labels, and action text need explicit `line-height`.
+- Card/list groups must declare a visible-count budget. Repeated peer cards default to `<=6` visible cards in one fixed block; more records use pagination, internal scroll with visible affordance, Top N + other, grouping, drawer/detail, or a table fallback.
 
 ## Fit And Overflow
 
 - Object names can wrap to two lines; full name appears in tooltip or detail drawer.
 - Task titles, anomaly reasons, warning names, owners, deadlines, and next actions must not be clipped without disclosure.
 - Repeated cards in a fixed-height block use internal scroll or pagination. They must not overflow the report page.
+- Overflow strategy must be explicit: which records stay visible, how `+N` or pagination is labeled, whether sorting/ranking is stable, and how the full record can be inspected.
 - Keep action area stable so buttons do not move when status text changes.
 - `scrollHeight > clientHeight` or `scrollWidth > clientWidth` on a fixed-height card body is a clipping failure unless the overflow behavior is an intentional visible scroll region.
 

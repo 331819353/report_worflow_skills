@@ -62,9 +62,11 @@ Recommended size:
 titleAreaH = 36-56px
 metricH = 0-48px
 legendH = 20-28px
+axisNameH = 0 or measured yAxis name text height
+topAxisNameReserve = max axisNameH + max yAxis.nameGap when yAxis.nameLocation is 'end'
 xAxisH = 32-56px
 footerH = 0-24px
-plotH = CH - titleAreaH - metricH - legendH - xAxisH - footerH - gaps
+plotH = CH - titleAreaH - metricH - legendH - topAxisNameReserve - xAxisH - footerH - gaps
 require plotH >= CH * 0.48
 ```
 
@@ -121,6 +123,7 @@ legendW = measuredLegendWidth
 legendH = 20-28px
 legendX = P + CW - legendW
 legendY = P + titleAreaH + metricH + 4px
+legendRect = [legendX, legendY, legendW, legendH]
 ```
 
 Rules:
@@ -129,6 +132,34 @@ Rules:
 - Recommended legend items `<=4`, hard max `5`.
 - Legend click may toggle series, but it must retain at least one primary bar/scale series and one valid comparison/target story, or the component must switch to an explicit split/empty state instead of showing a misleading orphan line.
 - If legend and filter compete, collapse the legend to key series or a dropdown; do not merge legend and filter into one control.
+- A legend in the top band must be separated from y-axis names, axis units, title/subtitle, and local filters. Do not place `legend.top/right` with fixed numbers until `legendRect` has been checked against the axis-name rectangles below.
+
+### Top-Band Axis Name Budget
+
+ECharts y-axis `name` is drawn as part of the chart, not inside `grid.containLabel`. For dual-axis Combo charts, `件`, `%`, `元`, `人`, `次`, and similar unit names can collide with a top legend unless the option budgets them.
+
+Required variables when any y-axis has `name`:
+
+```text
+leftAxisNameText = yAxis[0].name
+rightAxisNameText = yAxis[1].name when hasRightAxis
+axisNameFontH = measured or declared yAxis.nameTextStyle.fontSize * lineHeight
+axisNameGap = declared yAxis.nameGap, default is not a proof
+legendAxisNameGap = 8px minimum
+
+topAxisNameReserve =
+  max(axisNameFontH + axisNameGap for axes where nameLocation = 'end')
+
+grid.top =
+  P + titleAreaH + metricH + legendH + legendAxisNameGap + topAxisNameReserve
+```
+
+Placement rules:
+
+- Prefer one unit strategy per axis: visible y-axis `name`, unit in `axisLabel.formatter`, subtitle/unit metadata, or tooltip-only metadata. Avoid showing the same unit in multiple places.
+- If the top legend is inside ECharts and either y-axis keeps `nameLocation: 'end'`, calculate the left and right `axisNameRect` from the final `grid.top`, `nameGap`, `nameTextStyle`, `nameRotate`, and axis side. `legendRect` must not overlap either axis-name rectangle and must keep at least `8px` visual gap.
+- If the measured rectangles fail, repair in this order: move unit into `axisLabel.formatter` or subtitle, move `yAxis.nameLocation` to `middle` with explicit `nameRotate` and side budget, move/collapse legend, increase `grid.top`, then split the chart. Do not shrink plot height below `CH * 0.48` to hide the collision.
+- Hard-coded top values such as `legend.top = 0`, `legend.right = 8`, and `grid.top = 38` fail implementation readiness for dual-axis Combo charts unless they are accompanied by measured text widths/heights and overlap evidence for every target viewport.
 
 ### Plot And Axes
 
@@ -137,7 +168,7 @@ leftAxisW = clamp(40px, maxLeftAxisLabelWidth + 8px, 80px)
 rightAxisW = hasRightAxis ? clamp(36px, maxRightAxisLabelWidth + 8px, 72px) : 0
 rightGap = hasTargetRightLabel ? 40-64px : 8-16px
 plotX = P + leftAxisW
-plotY = P + titleAreaH + metricH + legendH + topGaps
+plotY = P + titleAreaH + metricH + legendH + legendAxisNameGap + topAxisNameReserve + topGaps
 plotW = W - P - rightGap - rightAxisW - plotX
 plotH = H - P - xAxisH - footerH - plotY
 ```

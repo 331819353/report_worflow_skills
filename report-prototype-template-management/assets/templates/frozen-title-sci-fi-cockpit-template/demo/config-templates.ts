@@ -10,7 +10,7 @@ import type { RegisteredWidgetConfig } from '../src/widgets/types';
 export const datasetTemplate = {
   filterData: {
     regions: [
-      { id: 'all', label: '全部' },
+      { id: '__all', label: '全部' },
       { id: 'china', label: '中国区' },
       { id: 'overseas', label: '海外区' },
     ],

@@ -24,7 +24,7 @@ Default subtype groups:
 | Explanation | 数据口径说明卡/指标定义卡, 数据质量说明卡, 预测说明卡, 图表注释/标注组件 |
 | State | 解释型空状态卡, 权限/无结果/数据延迟说明卡 |
 
-One component should carry one subtype and one main point. If a card needs multiple conclusions, split it into a multi-insight list with `2-4` items or move the detail to a drawer.
+One component should carry one subtype and one main point. If a card needs multiple conclusions, split it into a multi-insight list with `2-3` visible items or move the detail to a drawer.
 
 ## Required Contract
 
@@ -70,12 +70,12 @@ Do not pass a text summary as implementation-ready when it only contains generic
 | Title | `2-8` Chinese characters |
 | Main conclusion | `12-32` Chinese characters |
 | Explanation | `1-2` visible lines |
-| Multi-insight list | `2-4` items by default, max `5` |
+| Multi-insight list | `2-3` visible items by default |
 | One insight item | `<=24` Chinese characters when in a compact list |
 | Action suggestions | `1-3` items |
 | Tooltip/detail popover | `3-6` short lines |
 
-Avoid more than `5` body rows, too many icons, full-card red backgrounds, independent filters on every explanation, and long essay blocks inside report cards.
+Avoid more than `3` visible decision items, too many icons, full-card red backgrounds, independent filters on every explanation, and long essay blocks inside report cards. Overflow insight items move to tooltip, drawer, detail route, or an expanded state with a stable height.
 
 ## Anatomy And Placement
 
@@ -193,7 +193,7 @@ Numbers inside summaries should use the same precision and semantic colors as re
 ## Subtype Rules
 
 - Conclusion card: width `320-560px`, height `96-144px`, one sentence conclusion plus one evidence line, max `3` visible lines.
-- Insight card: `2-4` insights by default, max `5`; each item is `22-28px` high; emphasize numbers only.
+- Insight card: `2-3` visible insights by default; each item is `22-28px` high; emphasize numbers only. Additional insights use `+N`, tooltip, drawer, or detail route rather than expanding the card.
 - Anomaly alert card: object, metric, and magnitude are required; use weak warning tint or a `3-4px` left bar, not full-card red.
 - Attribution card: name the cause and preferred contribution value; default max `3` causes.
 - Impact factor card: Top `3` default, Top `5` max; positive/negative contribution is clear and values right-align.
