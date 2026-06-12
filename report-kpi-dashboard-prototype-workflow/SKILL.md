@@ -25,26 +25,33 @@ Core intent:
 | Page layout | `$report-visual-layout-design` |
 | Runnable template assets | `$report-prototype-template-management` |
 | Component visual details | `$report-component-style-design` |
+| Chart standards | `$report-chart-design-spec` |
+| Table standards | `$report-table-design-spec` |
+| Filter standards | `$report-filter-control-design-spec` |
+| Component placement | `$report-component-placement-spec` |
 | Design system | `$report-design-system-governance` |
 | Quality gates | `$quality-gate-validation` |
 | Runtime QA | `$frontend-runtime-qa-validation` |
 
 ## Workflow
 
-1. Confirm mode: design proposal, implementation spec, runnable prototype, repair, or URL handoff.
-2. Define the dashboard decision: business health, target progress, abnormality, risk object, and next drilldown.
-3. Lock the KPI set: core KPI, process KPI, risk KPI, formula, unit, period, target, threshold, baseline, owner/source, freshness.
-4. Design the first viewport: title, time range, update time, global filters, core KPI cards, target completion, YoY/MoM, abnormal reminder.
-5. Design the second layer: trends, target/average lines, regional/channel/product comparisons, key rankings.
-6. Design the third layer: anomaly detail, attention list, drilldown destination, and action entry.
-7. Use `$report-type-design`: default primary type is `status-overview`; use `anomaly-monitoring` only when alert handling is the central task.
-8. Use `$report-info-component-mapping` to bind KPIs, thresholds, trend datasets, anomaly rules, drilldowns, filters, and states.
-9. Use layout/template/component skills to keep the dashboard sparse, layered, and actionable.
-10. Verify first-viewport answer, filter linkage, drilldown, abnormal states, refresh/freshness, and runnable URL when requested.
+1. Run `$quality-gate-validation` `references/preflight-understanding-gate.md` before design, repair, template edits, or code. Name affected surfaces, owning skills, hard constraints, missing evidence, and start decision.
+2. Confirm mode: design proposal, implementation spec, runnable prototype, repair, or URL handoff.
+3. Define the dashboard decision: business health, target progress, abnormality, risk object, and next drilldown.
+4. Lock the KPI set: core KPI, process KPI, risk KPI, formula, unit, period, target, threshold, baseline, owner/source, freshness.
+5. Design the first viewport: title, time range, update time, global filters, core KPI cards, target completion, YoY/MoM, abnormal reminder.
+6. Design the second layer: trends, target/average lines, regional/channel/product comparisons, key rankings.
+7. Design the third layer: anomaly detail, attention list, drilldown destination, and action entry.
+8. Use `$report-type-design`: default primary type is `status-overview`; use `anomaly-monitoring` only when alert handling is the central task.
+9. Use `$report-info-component-mapping` to bind KPIs, thresholds, trend datasets, anomaly rules, drilldowns, filters, and states.
+10. Route chart, table, filter, and component-internal placement surfaces to `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec`, and `$report-component-placement-spec` before implementation-ready decisions.
+11. Use layout/template/component skills to keep the dashboard sparse, layered, and actionable.
+12. Verify first-viewport answer, filter linkage, drilldown, abnormal states, refresh/freshness, and runnable URL when requested.
 
 ## Required Output
 
-- Workflow mode, dashboard user role, business state question, decision/action, time scope, and managed objects.
+- Workflow mode, Preflight understanding matrix, dashboard user role, business state question, decision/action, time scope, and managed objects.
+- Affected-surface to owning-skill routing, especially layout, chart, table, filter, component placement, design-system, template, and runtime QA.
 - KPI dictionary: formula, unit, period, target, threshold, baseline, owner/source, freshness, display status.
 - First-viewport plan, trend/comparison/ranking plan, anomaly/detail/action plan.
 - Drilldown chain: state -> split -> object -> detail/action.
@@ -55,6 +62,8 @@ Core intent:
 ## Quality Gate
 
 - Do not turn a dashboard into a dense detail report.
+- Do not start implementation or repair from this workflow alone when affected chart/table/filter/placement surfaces require their specific front-door skills.
+- Do not mark ready without a Preflight understanding start decision and evidence that required specialty skills were loaded or explicitly not needed.
 - Do not use unbounded gauges or decorative charts for variety.
 - Do not show only result metrics when process or risk metrics are needed to explain status.
 - Do not mark every fluctuation as an anomaly; thresholds and severity must be explicit.

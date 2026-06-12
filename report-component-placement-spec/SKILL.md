@@ -15,6 +15,7 @@ Use `$report-layout-size-constraint-spec` for parent block size; use this skill 
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Placement source map | `references/01-placement-reference-map.md` |
 | Placement routing index | `$report-component-style-design` `references/12-internal-placement-algorithms.md` |
 | Coordinate variables and local-filter geometry | `$report-component-style-design` `references/12a-placement-foundation-controls.md` |
@@ -22,15 +23,16 @@ Use `$report-layout-size-constraint-spec` for parent block size; use this skill 
 
 ## Workflow
 
-1. Confirm parent container width/height, padding, component family, data density, local controls, and state set.
-2. Load `references/01-placement-reference-map.md`, then load only the exact placement file for that component family.
-3. Define container variables, slot rectangles, title/filter/legend/metric/plot/table/body/footer coordinates, alignment, responsive degradation, and state geometry.
-4. Pair placement with the visual/content skill for the component family, such as `$report-chart-design-spec`, `$report-table-design-spec`, or `$report-filter-control-design-spec`.
-5. Run acceptance gates before marking implementation-ready placement as ready.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name parent container, component family, local controls, density, state set, hard constraints, missing evidence, and start decision.
+2. Confirm parent container width/height, padding, component family, data density, local controls, and state set.
+3. Load `references/01-placement-reference-map.md`, then load only the exact placement file for that component family.
+4. Define container variables, slot rectangles, title/filter/legend/metric/plot/table/body/footer coordinates, alignment, responsive degradation, and state geometry.
+5. Pair placement with the visual/content skill for the component family, such as `$report-chart-design-spec`, `$report-table-design-spec`, or `$report-filter-control-design-spec`.
+6. Run acceptance gates before marking implementation-ready placement as ready.
 
 ## Required Output
 
-- Component family, parent container, and selected placement reference.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus component family, parent container, and selected placement reference.
 - Slot and coordinate rules with size tiers and fallback order.
 - Local-filter/control placement when present.
 - State geometry for loading, empty, error, no-permission, stale, and dense data.
@@ -39,5 +41,6 @@ Use `$report-layout-size-constraint-spec` for parent block size; use this skill 
 ## Quality Gate
 
 - Do not output implementation-ready component specs without measurable slot geometry.
+- Do not define slot coordinates before parent container dimensions, component family, density, local controls, and state set are known.
 - Do not place local controls where they collide with title, legend, unit, metric strip, or action areas.
 - Do not accept geometry that only fits the happy path and fails state masks, long labels, or dense data.

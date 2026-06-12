@@ -4,6 +4,9 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 
 ## Reinforced Constraints
 
+- Before implementation, repair, template copy, or readiness acceptance, run `$quality-gate-validation` `references/preflight-understanding-gate.md`. Record user goal, workflow mode, evidence inventory, authority order, affected surfaces, owning skills, hard constraints, missing evidence, and start decision.
+- Do not proceed from the top-level prototype workflow alone when a specific surface is affected. Chart defects require `$report-chart-design-spec`; table defects require `$report-table-design-spec`; filter defects require `$report-filter-control-design-spec`; parent block sizing requires `$report-layout-size-constraint-spec`; component-internal slot/collision defects require `$report-component-placement-spec`.
+- A `ready` prototype must show the preflight surface-to-skill routing or state why each specialty skill was not needed.
 - When multiple artifacts influence the prototype, run `$quality-gate-validation` before locking scope, visual source, API/mock contract, or implementation target. Unresolved high-impact conflicts keep the affected scope `partial` or `blocked`.
 - Before locking report type, display theme, page layout, or template, run `$report-prototype-design-thinking` unless the input already contains a structured prototype design brief with user, scenario, decision/action, metric layers, analysis path, and block intent.
 - Before implementation, lock one workflow mode, one `displayTheme`, one primary report type, one selected reusable pattern set, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
@@ -21,7 +24,7 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 - Prototype Composite Panels must preserve one-container analysis evidence: `compositePanelContract`, shared business topic, analysis sequence, one primary child, child roles/priorities/min sizes, default `2-3` children and normal max `4`, primary visual weight `50-70%`, `contentH >= CH * 0.60`, panel-level local filter, child-only filter exceptions, shared legend/unit behavior, linked hover/click state, short detail preview, responsive fallback, and parent/child states. Do not prototype a Composite Panel as a collage of unrelated widgets, equal-weight mini charts, or nested cards.
 - Gauge prototype widgets require ECharts `series.type: 'gauge'`, one bounded progress/status metric, min/max range, current value, unit, target/threshold/status semantics, business color direction, center value, clamp/overflow behavior, and exact tooltip/detail evidence. Do not use Gauge for multi-category comparison, trends, composition, unbounded scores, exact audit, or decorative dashboard variety.
 - For every report, dashboard, cockpit, BI, data-screen, or analysis prototype workflow, load `$report-design-system-governance` report guideline references as the report-specific baseline before page layout, component styling, frontend implementation, QA, or acceptance planning. This applies even when the user did not say "规范".
-- When the report prototype also contains common enterprise app shell, navigation, forms, dialogs, or cross-platform application surfaces, load `$haier-enterprise-app-ui-design-spec` as the company-level token/component/layout baseline. Do not duplicate those tokens inside report-specific skills.
+- For Haier/enterprise report prototypes, load `$haier-enterprise-app-ui-design-spec` as the company-level application UI baseline even when the page is primarily report/dashboard/BI. It owns color, typography, spacing, radius, shadows, base controls, brand/logo, states, and cross-platform behavior; report-specific skills extend it for analytical hierarchy, charts, tables, filters, metrics, and acceptance. Skip only for explicit non-Haier/native sample/neutral brand decisions.
 - Data completeness is checked before filter binding after implementation or repair. Required rows/options/fields/default and non-default states/resolver branches must exist before `filterFields`, `requiredFilters`, API params, or resolver params can be accepted as working.
 - A primary/global filter is not accepted until affected components have filter-field/query/resolver binding and non-default filter values prove visible data changes. Selected-state-only behavior is a failed prototype.
 - Filter/value semantics are locked before implementation when controls or datasets contain "all", total, subtotal, aggregate, or synthetic options. `emptyFilterValue` controls no-filter/query omission, while `aggregateValue` marks aggregate rows or server aggregate requests; they must not share the same raw value unless a legacy upstream contract is documented and isolated by an adapter.
@@ -48,7 +51,7 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 12. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
 13. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
 14. Apply `$report-design-system-governance` report guideline references as the default report baseline for metrics, charts, tables, filters, states, engineering handoff, and acceptance.
-15. Apply `$haier-enterprise-app-ui-design-spec` when the prototype also includes common enterprise app UI tokens, component rules, scene templates, or cross-platform adaptation.
+15. Apply `$haier-enterprise-app-ui-design-spec` for Haier/enterprise application-level UI baseline on report pages, then apply report-specific design-system, layout, chart, table, filter, and component-placement rules.
 16. Before implementation or repair touches prototype source code, trigger the code-file ledger before-read step for every target file.
 17. Implement or repair the prototype in the selected target path when requested.
 18. Append code-file ledger version entries for every changed prototype source file before declaring implementation complete.
@@ -74,6 +77,7 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 ## Quality Gate
 
 - Do not use this workflow without prototype/demo/page-output intent.
+- Do not treat report prototypes as exempt from Haier enterprise UI baseline when the page is Haier-branded or an enterprise Web application.
 - Do not skip prototype design thinking for new prototype work unless an equivalent structured design brief is already present.
 - Do not start implementation before display theme, selected pattern set, report type, binding matrix, layout, and template/custom shell decision exist.
 - Do not choose or retain pattern cards that have no mapped component, control, dataset/API, interaction, or acceptance case.

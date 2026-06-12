@@ -15,6 +15,7 @@ Use `$report-component-style-design` when the task covers mixed component famili
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Chart source map and exact placement files | `references/01-chart-reference-map.md` |
 | Shared chart visual rules | `$report-component-style-design` `references/05-echarts-charts.md` |
 | Report chart/table format baseline | `$report-design-system-governance` `references/05-report-charts-tables-format-guidelines.md` |
@@ -22,16 +23,17 @@ Use `$report-component-style-design` when the task covers mixed component famili
 
 ## Workflow
 
-1. Identify chart family, business question, grain, series count, category/time density, exact-value need, interaction, and container size.
-2. Load `references/01-chart-reference-map.md`, then load only the chart-family visual and placement files it names.
-3. Confirm chart type is fit for the task before styling labels or colors.
-4. Define chart anatomy: title, subtitle/definition, unit, metric strip, legend, axes, plot area, labels, tooltip, local filters, footer/source, and states.
-5. Verify ECharts ownership: standard ECharts charts should use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
-6. Run acceptance gates before marking dense or implementation-ready charts as ready.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name chart family candidates, data/metric contracts, parent container, affected labels/legend/axis/tooltip surfaces, hard constraints, missing evidence, and start decision.
+2. Identify chart family, business question, grain, series count, category/time density, exact-value need, interaction, and container size.
+3. Load `references/01-chart-reference-map.md`, then load only the chart-family visual and placement files it names.
+4. Confirm chart type is fit for the task before styling labels or colors.
+5. Define chart anatomy: title, subtitle/definition, unit, metric strip, legend, axes, plot area, labels, tooltip, local filters, footer/source, and states.
+6. Verify ECharts ownership: standard ECharts charts should use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
+7. Run acceptance gates before marking dense or implementation-ready charts as ready.
 
 ## Required Output
 
-- Chart family and selected references.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus chart family and selected references.
 - Chart choice rationale and rejected alternatives when relevant.
 - Anatomy, placement, label/legend/tooltip, density, state, and responsive rules.
 - Data contract: fields, units, precision, grain, filters, and exact-value path.
@@ -40,6 +42,7 @@ Use `$report-component-style-design` when the task covers mixed component famili
 ## Quality Gate
 
 - Do not choose a decorative chart when a simpler chart answers the business question better.
+- Do not repair or accept chart visuals before the chart family, parent container, data grain, units, renderer ownership, and affected chart anatomy are known.
 - Do not accept labels, legends, axis names, or tooltips that overlap, truncate critical evidence, or hide units/precision.
 - Do not distort geographic, radial, proportional, network, or flow geometry.
 - Do not mark chart work ready without state handling for loading, empty, error, no-permission, stale, and dense data.

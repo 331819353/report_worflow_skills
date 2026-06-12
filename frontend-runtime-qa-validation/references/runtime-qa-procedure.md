@@ -8,7 +8,7 @@ Detailed runtime QA procedure moved out of `SKILL.md`. Load this before executin
    Run available typecheck, lint, tests, build, and dev/preview startup commands. Record skipped commands only when they are not defined or blocked by an external dependency.
 
 2. Classify the runtime UI baseline.
-   Determine whether the page is common enterprise app, report/dashboard, or mixed. Load and apply the matching common app and/or report baseline before judging visual/runtime defects, even when the user only asked for QA or URL验收.
+   Determine whether the page is Haier/enterprise Web app, report/dashboard, or mixed. For Haier/enterprise report pages, load and apply both `$haier-enterprise-app-ui-design-spec` as the inherited company application baseline and report-specific baselines before judging visual/runtime defects, even when the user only asked for QA or URL验收.
 
 3. Open the target page.
    Use a local verified URL. Check that the page loads without blocking runtime errors and that core layout appears.

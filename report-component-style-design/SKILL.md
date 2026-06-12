@@ -11,7 +11,7 @@ Use this skill for one component or one component family: design, critique, repa
 
 Keep this `SKILL.md` as the router. Load only the references for the component family that actually appears in the task. For reusable component-system standards, use `$report-component-design-spec`; for chart-only standards use `$report-chart-design-spec`; for table-only standards use `$report-table-design-spec`; for filter-control standards use `$report-filter-control-design-spec`; for implementation-ready component coordinates use `$report-component-placement-spec`; for page shell/layout use `$report-visual-layout-design`; for whole-system governance use `$report-design-system-governance`.
 
-When common enterprise Web components are involved, load `$haier-enterprise-app-ui-design-spec` for company-level tokens and base controls. For report, dashboard, cockpit, data-screen, BI, or business-analysis components, load `$report-design-system-governance` as the report baseline before applying component-specific fit rules.
+For Haier/enterprise report, dashboard, cockpit, data-screen, BI, or business-analysis components, load `$haier-enterprise-app-ui-design-spec` for company-level tokens, typography, spacing, base controls, states, and brand rules, then load `$report-design-system-governance` as the report-specific baseline before applying component-specific fit rules.
 
 ## Reference Library
 
@@ -44,20 +44,22 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 | Direct component-placement front door | `$report-component-placement-spec` |
 | Report chart/table/filter/status baseline | `$report-design-system-governance` relevant guideline references |
 | Cross-stage design reasonableness or readiness | `$quality-gate-validation` |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 
 ## Workflow
 
-1. Classify the component family, business purpose, data grain, viewport/container size, interaction state, and priority.
-2. Load `00-component-reference-index.md`, shared foundation, the matching component reference, and the matching placement reference only. When the task is purely chart, table, filter, or coordinate placement, prefer the specific front-door skill above.
-3. Confirm the data and decision contract before styling: metric/formula, field grain, source/freshness, numeric display contract, filter scope, exact-value path, state set, and next action.
-4. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, display budget, overflow strategy, size tiers, fallback order, and state geometry.
-5. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.
-6. Run the component acceptance gates when the output is implementation-ready or when a visual defect may hide decision evidence.
-7. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name component family, parent container, data/decision contract, affected specialty skills, hard constraints, missing evidence, and start decision.
+2. Classify the component family, business purpose, data grain, viewport/container size, interaction state, and priority.
+3. Load `00-component-reference-index.md`, shared foundation, the matching component reference, and the matching placement reference only. When the task is purely chart, table, filter, or coordinate placement, prefer the specific front-door skill above.
+4. Confirm the data and decision contract before styling: metric/formula, field grain, source/freshness, numeric display contract, filter scope, exact-value path, state set, and next action.
+5. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, display budget, overflow strategy, size tiers, fallback order, and state geometry.
+6. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.
+7. Run the component acceptance gates when the output is implementation-ready or when a visual defect may hide decision evidence.
+8. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates.
 
 ## Required Output
 
-- Component family and loaded reference files.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus component family and loaded reference files.
 - Business/data contract: purpose, grain, key fields, formulas/units, numeric display contract, source/freshness, filters, exact-value path, and owner/action path.
 - Placement rules: container variables, slots, alignment, size tiers, display budget, responsive degradation, and state geometry.
 - Visual and interaction rules: tokens, labels, legends, tooltips, hover/focus, overflow strategy, disclosure, and accessibility.
@@ -66,6 +68,8 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 ## Quality Gate
 
 - Do not style a component before the business purpose, data grain, key fields, filter scope, and interaction state are known.
+- Do not continue through this broad component skill alone when the affected surface is specifically chart, table, filter, or implementation-ready placement; route to the specific front-door skill first.
+- Do not invent component colors, font sizes, spacing, shadows, or base control styles for Haier/enterprise report components before inheriting Haier application UI tokens.
 - Implementation-ready specs must include measurable placement rules, not only CSS layout or visual adjectives.
 - Every component family must declare a display budget before acceptance: maximum visible items/cards/rows/columns/categories/series/annotations/steps as applicable, the budget basis, and overflow strategy such as Top N + other, pagination, internal scroll, sampling, collapse, drawer/fullscreen, or table fallback.
 - Component-internal filters must be current-component or declared local-group scoped; they cannot silently change page/global scope, backend aggregation, pagination, export scope, permission scope, or other components.

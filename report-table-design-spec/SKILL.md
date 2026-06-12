@@ -15,6 +15,7 @@ Use `$report-component-style-design` for mixed components; use this skill when t
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Table source map and exact placement files | `references/01-table-reference-map.md` |
 | Analytical table visual/content rules | `$report-component-style-design` `references/06-analytical-tables.md` |
 | Report chart/table format baseline | `$report-design-system-governance` `references/05-report-charts-tables-format-guidelines.md` |
@@ -23,15 +24,16 @@ Use `$report-component-style-design` for mixed components; use this skill when t
 
 ## Workflow
 
-1. Identify table type: detail table, grouped header, pivot/S2, metric matrix, composite panel child, or export-oriented list.
-2. Load `references/01-table-reference-map.md`, then load only the matching visual and placement references.
-3. Define row grain, columns, header hierarchy, metrics, units, precision, sorting, filtering, pagination, fixed header/columns, and export behavior.
-4. Reserve visible space for header depth, body rows, scrollbars, pagination, summary, selection, empty/error/no-permission states, and tooltips.
-5. Verify table readability at the target viewport and density before marking ready.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name table type candidates, row grain, primary key/object identity, column contracts, parent container, hard constraints, missing evidence, and start decision.
+2. Identify table type: detail table, grouped header, pivot/S2, metric matrix, composite panel child, or export-oriented list.
+3. Load `references/01-table-reference-map.md`, then load only the matching visual and placement references.
+4. Define row grain, columns, header hierarchy, metrics, units, precision, sorting, filtering, pagination, fixed header/columns, and export behavior.
+5. Reserve visible space for header depth, body rows, scrollbars, pagination, summary, selection, empty/error/no-permission states, and tooltips.
+6. Verify table readability at the target viewport and density before marking ready.
 
 ## Required Output
 
-- Table type and selected references.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus table type and selected references.
 - Row grain, columns, header hierarchy, units/precision, and interaction contract.
 - Layout rules for width, height, rows, fixed areas, scroll, pagination, and states.
 - Readiness: `ready`, `partial`, or `blocked`.
@@ -39,5 +41,6 @@ Use `$report-component-style-design` for mixed components; use this skill when t
 ## Quality Gate
 
 - Do not hide critical columns through nowrap truncation, unplanned horizontal scroll, or decorative density.
+- Do not repair or accept table visuals before row grain, primary key/object identity, column type/width/alignment metadata, and density limits are known.
 - Do not use pivot/S2 patterns when a detail table answers the task more directly.
 - Do not mark a table ready without pagination/large-result behavior and empty/error/no-permission states when data can vary.

@@ -15,6 +15,7 @@ It is a gate, not a dumping ground for domain implementation. Load the owning sk
 
 Primary shared gates:
 
+- `references/preflight-understanding-gate.md`
 - `references/entry-input-consistency-gate.md`
 - `references/design-reasonableness-gate.md`
 - `references/production-closed-loop-readiness.md`
@@ -24,7 +25,7 @@ Primary shared gates:
 - `$environment-profile-contract` for test/production profile separation and runtime config handoff.
 - `references/shared-quality-gate-blockers.md`
 - `$code-change-ledger-management` when frontend/backend/prototype code changed.
-- `$haier-enterprise-app-ui-design-spec` when judging common enterprise app UI readiness.
+- `$haier-enterprise-app-ui-design-spec` when judging Haier/enterprise Web UI readiness, including report/dashboard pages that inherit company-level application UI rules.
 - `$metric-number-display-contract` when judging numeric unit, precision, rounding, percent, tooltip/export, or formatter ownership.
 - `$report-design-system-governance` relevant references when judging report/dashboard/BI/data-screen readiness.
 
@@ -32,6 +33,7 @@ Primary shared gates:
 
 | Gate | Use when |
 | --- | --- |
+| Preflight understanding | Before implementation, repair, QA, acceptance, or any workflow with multiple possible owning skills or artifact authorities. |
 | Entry consistency | Inputs disagree on requirement, metric, source, API, field, permission, UI, env, runtime, or test evidence. |
 | Design reasonableness | A design is internally consistent but may not serve the business question, data shape, workflow, permission model, or testability. |
 | Production readiness | A handoff claims real delivery or release readiness. |
@@ -42,19 +44,20 @@ Primary shared gates:
 | Code change ledger | Changed code needs file-level traceability, pre-change read evidence, code ranges, verification, and rollback/blocker notes. |
 | Backend logging | Backend/data-service readiness depends on diagnosable structured logs. |
 | Numeric precision/display | Metric-bearing artifacts need consistent value type, units, scale, precision, rounding, null/zero behavior, and formatter ownership. |
-| Common app UI baseline | Common enterprise app pages need company UI baseline checks. |
+| Haier/app UI baseline | Haier/enterprise Web pages, including report/dashboard pages, need company UI baseline checks for tokens, base controls, states, brand/logo, and responsive behavior. |
 | Report UI baseline | Report/dashboard/analysis pages need report guideline checks. |
 
 ## Workflow
 
-1. Select the smallest gate set needed for the current risk.
-2. Classify affected artifacts and owning skills.
-3. Load the relevant shared gate references and domain baseline references.
-4. Inventory evidence and conflicts.
-5. Produce findings with stable IDs such as `ENTRY-*`, `DESIGN-*`, `READY-*`, `VIS-*`, `VDIFF-*`, or domain-specific IDs.
-6. Assign severity, owner, affected artifact, required evidence/action, and readiness impact.
-7. Mark each affected artifact `ready`, `partial`, or `blocked`.
-8. Route unresolved findings to the owning skill/workflow.
+1. Run the Preflight understanding gate when the next step could edit, repair, test, accept, or route non-trivial work.
+2. Select the smallest additional gate set needed for the current risk.
+3. Classify affected artifacts and owning skills.
+4. Load the relevant shared gate references and domain baseline references.
+5. Inventory evidence and conflicts.
+6. Produce findings with stable IDs such as `PREFLIGHT-*`, `ENTRY-*`, `DESIGN-*`, `READY-*`, `VIS-*`, `VDIFF-*`, or domain-specific IDs.
+7. Assign severity, owner, affected artifact, required evidence/action, and readiness impact.
+8. Mark each affected artifact `ready`, `partial`, or `blocked`.
+9. Route unresolved findings to the owning skill/workflow.
 
 ## Required Output
 
@@ -66,6 +69,8 @@ Primary shared gates:
 ## Quality Gate
 
 - Do not mark `ready` when high-impact conflicts, missing production controls, missing runtime evidence, or untested required behavior remain.
+- Do not mark non-trivial implementation, repair, QA, or acceptance work `ready` when the affected surfaces, owning skills, hard constraints, and start decision from `preflight-understanding-gate.md` are missing.
+- Do not mark Haier/enterprise report or dashboard UI `ready` when report-specific checks pass but inherited Haier application UI baseline checks are missing or treated as optional.
 - Do not mark `ready` when governed report metrics lack numeric display contracts or show inconsistent units, decimals, percent scale, rounding, tooltip/export precision, null/zero/denominator-zero behavior, or formatter ownership across design/API/frontend/backend/export.
 - Do not use this skill to restate full domain rules; cite the loaded references and summarize the blocking evidence.
 - Load `shared-quality-gate-blockers.md` before final readiness decisions or when a finding can block delivery.

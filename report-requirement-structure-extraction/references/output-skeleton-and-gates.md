@@ -16,7 +16,7 @@ When transforming a requirement, use this structure. Keep small inputs concise, 
 10. 交互/流程/状态需求: filters, jumps, approval/task flow, lifecycle state, error/empty/loading/no-permission/stale states.
 11. 非功能需求: performance, freshness, reliability, observability, compatibility, deployment, rollback.
 12. 测试与验收标准: acceptance criteria, test cases, evidence, data consistency checks, integration smoke tests.
-13. UI/设计基线: common enterprise app baseline, report development baseline, or mixed, with downstream skills that must apply it.
+13. UI/设计基线: Haier/company application baseline, report development baseline, inherited dual baseline, or explicit non-Haier/native/neutral exception, with downstream skills that must apply it.
 14. 后续调用建议: exact downstream skills/workflows and why.
 15. 风险与待确认问题: unresolved risks, questions, decisions needed before implementation.
 
@@ -48,7 +48,7 @@ Before finalizing, verify:
 - Objects include grain, owner/source, status, relationships, and permission when relevant.
 - Scenario-specific requirements are detailed enough for the selected downstream skill.
 - Data, API, UI, permission, process, nonfunctional, and test needs are separated.
-- Page requirements identify whether the common enterprise app baseline, report development baseline, or both must be applied downstream.
+- Page requirements identify whether the Haier/company application baseline, report development baseline, or inherited dual baseline must be applied downstream; Haier/enterprise report pages require both unless an explicit exception is recorded.
 - Acceptance criteria are measurable and tied to tests or evidence.
 - Recommended downstream skills are specific and minimal.
 - Remaining risks and questions are not hidden.

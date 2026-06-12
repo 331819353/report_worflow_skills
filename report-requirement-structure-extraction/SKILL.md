@@ -38,7 +38,7 @@ Load references only when their scenario is relevant. Do not bulk-load every ref
 - Use `$metric-number-display-contract` when requirements include units, percentages, rates, precision, rounding, tooltip/export values, or numeric consistency expectations.
 - Route to `$change-impact-analysis` immediately when the input is a change to an existing metric,口径, filter, permission, API, page, field, model, test case, or delivery document.
 - Route to `$metric-governance-lineage`, `$permission-matrix-validation`, `$data-quality-validation`, `$delivery-version-management`, or `$production-observability-feedback` when those concerns are the primary deliverable rather than just supporting context.
-- Use `$haier-enterprise-app-ui-design-spec` as the common enterprise application UI baseline when the requirement includes forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, workbench pages, or cross-platform app adaptation.
+- Use `$haier-enterprise-app-ui-design-spec` as the Haier/enterprise application UI baseline when the requirement includes forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, workbench pages, cross-platform app adaptation, or Haier/enterprise report applications.
 - Use `$report-design-system-governance` as the report development/design baseline when the requirement includes reports, dashboards, cockpits, BI, data screens, business analysis, detail queries, topic analysis, KPI, charts, tables, filters, metric口径, export, performance, or acceptance.
 
 ## Input Adaptation
@@ -67,7 +67,7 @@ Use this sequence for every requirement transformation:
    Pick one primary scenario and optional secondary scenarios. If scenario choice is not obvious, read `references/scenario-routing.md`.
 
 3. Classify UI/design baseline when the deliverable contains pages.
-   Mark the requirement as common enterprise app, report/dashboard, or mixed, then route the matching baseline into downstream prototype, technical solution, frontend, testing, and acceptance work even when the user did not say "规范".
+   Mark the requirement as Haier/enterprise app, report/dashboard, or mixed. For Haier/enterprise report pages, route both the inherited Haier application baseline and report-specific baseline into downstream prototype, technical solution, frontend, testing, and acceptance work even when the user did not say "规范".
 
 4. Extract facts, assumptions, and missing inputs.
    Facts come from the user or provided files. Assumptions are safe inferences. Missing inputs are items that may affect scope, data, permission, acceptance, or delivery.

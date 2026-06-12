@@ -15,32 +15,35 @@ It is not a test-case design skill. For test matrices use `$integration-test-cas
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before QA/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Browser, console, route, asset, layout checks | `references/browser-qa-matrix.md` |
 | Provider, filter, interaction, edge-state checks | `references/data-interaction-state-checks.md` |
 | QA report structure | `references/qa-note-template.md` |
 | Full runtime QA procedure and component-crop checklist | `references/runtime-qa-procedure.md` |
 | Focused visual regression, screenshot diff, component crops, and `VIS-*` findings | `$visual-browser-regression-check` |
 | Readiness and cross-stage gate | `$quality-gate-validation` |
-| Common enterprise app baseline | `$haier-enterprise-app-ui-design-spec` |
+| Haier/company application UI baseline | `$haier-enterprise-app-ui-design-spec` for Haier/enterprise Web surfaces, including report/dashboard pages |
 | Report/dashboard baseline and anti-AI/report-decision gates | `$report-design-system-governance` relevant references |
 
 ## Workflow
 
-1. Run available build/typecheck/lint/test/start commands and record blockers.
-2. Classify the UI baseline: common enterprise app, report/dashboard, mixed, or unknown.
-3. Open the target URL and confirm the page loads without blocking runtime errors.
-4. Capture screenshots before visual judgment: full page, responsive states, interactions, and component crops when report/chart/table components exist.
-5. Run DOM structural checks: expected card/component counts, fixed-height overflow, bounding-box overlap, and chart/table category uniqueness where inspectable.
-6. Inspect console, network, assets, routes, auth, and provider calls.
-7. Exercise filters, tabs, drawers, modals, chart clicks, table actions, pagination, sorting, export, refresh, fullscreen, hover, and focus states in scope.
-8. Apply anti-AI, report-decision, and multimodal/visual checks when relevant. Use `$visual-browser-regression-check` when the scope requires deterministic baseline diff, screenshot coverage, component crops, or structured `VIS-*` findings.
-9. Produce a compact QA note with findings, evidence paths, owner, retest criteria, URL, and readiness.
+1. Run the Preflight understanding gate before QA execution or acceptance; name QA goal, target URL/app, basis artifacts, affected surfaces, required viewports/interactions, missing runtime inputs, and start decision.
+2. Run available build/typecheck/lint/test/start commands and record blockers.
+3. Classify the UI baseline: Haier/enterprise app, report/dashboard, mixed, or unknown. For Haier/enterprise report pages, apply both Haier application baseline and report-specific baseline during visual judgment.
+4. Open the target URL and confirm the page loads without blocking runtime errors.
+5. Capture screenshots before visual judgment: full page, responsive states, interactions, and component crops when report/chart/table components exist.
+6. Run DOM structural checks: expected card/component counts, fixed-height overflow, bounding-box overlap, and chart/table category uniqueness where inspectable.
+7. Inspect console, network, assets, routes, auth, and provider calls.
+8. Exercise filters, tabs, drawers, modals, chart clicks, table actions, pagination, sorting, export, refresh, fullscreen, hover, and focus states in scope.
+9. Apply anti-AI, report-decision, and multimodal/visual checks when relevant. Use `$visual-browser-regression-check` when the scope requires deterministic baseline diff, screenshot coverage, component crops, or structured `VIS-*` findings.
+10. Produce a compact QA note with findings, evidence paths, owner, retest criteria, URL, and readiness.
 
 ## Required Output
 
 Use `references/qa-note-template.md` and include:
 
 - Commands run and blockers.
+- Preflight understanding result and scoped QA target.
 - URL and viewport/screenshot evidence.
 - Console/network result.
 - Interaction/state checks.
@@ -51,6 +54,8 @@ Use `references/qa-note-template.md` and include:
 ## Quality Gate
 
 - Do not mark visual/runtime readiness without screenshots or a precise blocker.
+- Do not execute or conclude visual/runtime QA before the target URL/app, affected surfaces, viewports, interactions, and required evidence are scoped.
+- Do not pass Haier/enterprise report visual QA when report-specific checks pass but Haier application baseline checks for typography, color, spacing, base controls, states, or brand/logo are missing.
 - Report/dashboard QA cannot rely only on full-page screenshots when component crops are needed.
 - Fixed-height content with `scrollHeight > clientHeight` or `scrollWidth > clientWidth` fails unless it is an intentional visible scroll region.
 - DOM QA must include count assertions for repeated cards/components, visible duplicate title/label checks inside the same block/card, bounding-box overlap checks for visible peer elements, KPI value-anchor bounding-box checks when metric cards exist, SVG/ECharts text-node overlap checks for legends, axis names, axis labels, and chart annotations when inspectable, and chart category uniqueness checks for rendered/configured category axes or equivalent categorical datasets when those elements exist.

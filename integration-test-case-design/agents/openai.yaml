@@ -1,4 +1,4 @@
 interface:
   display_name: "联调测试用例设计"
   short_description: "依据 API 文档和前端功能说明生成包含控制语义、筛选联动和非默认视角的测试样例矩阵"
-  default_prompt: "Use $integration-test-case-design to design integration test cases from API documentation and frontend feature descriptions, including control semantics, filter linkage, and non-default perspective cases."
+  default_prompt: "Use $integration-test-case-design to design integration test cases from API documentation and frontend feature descriptions, including control semantics, filter linkage, non-default perspective cases, and UI baseline coverage. For Haier/enterprise report pages, cases must cover inherited Haier application baseline plus report-specific checks."

@@ -4,6 +4,7 @@
 - Changed source-code features cite sidecar code ledgers, functional code ranges or stable anchors, version entries, affected contracts, verification, and rollback notes.
 - Every data-backed feature names its provider or source, not just "接口" generically.
 - Every provider-backed feature includes version/evidence or an explicit accepted assumption.
+- Every page/module records whether Haier/company application baseline, report-specific baseline, or inherited dual baseline is the acceptance basis; Haier/enterprise report pages cannot omit the inherited application baseline without an explicit exception.
 - Filters include defaults, option source, reset behavior, cascade behavior, and affected modules.
 - Interactions include trigger, payload/params, target view, and stale-selection behavior when relevant.
 - State behavior covers loading, empty, error, auth/permission, and retry where applicable.

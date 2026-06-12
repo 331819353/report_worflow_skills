@@ -18,6 +18,7 @@ It owns data-service runtime boundaries, route/service/query layering, contracts
 - `references/report-data-service-backend-implementation.md` for implementation details.
 - `references/missing-info-template.md` for blocked or partial backend handoff.
 - `references/backend-development-gates.md` for detailed constraints, required outputs, and readiness blockers.
+- `$quality-gate-validation` `references/preflight-understanding-gate.md` before backend design, API docs, implementation, repair, or readiness.
 
 ## Child Skills
 
@@ -45,20 +46,21 @@ Decide endpoint families, request context, response envelope, service/query/sour
 
 ## Workflow
 
-1. Inventory technical solution, API inventory, model/source mapping, metric口径, numeric display/precision contracts, permissions, SSO/token header contract, database role map, env/auth, and existing code. Use `$metric-number-display-contract` for numeric semantics and `$environment-profile-contract` for test/production runtime profiles when in scope.
-2. Run quality gates when source/API/model/frontend expectations conflict.
-3. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope; load `$java-springboot-backend-development` when Java/Spring Boot structure, Spring Security/JWT/SSO, Maven/Docker, or Profile conventions are in scope.
-4. Produce or update API documentation through `$api-documentation-design`.
-5. Validate contracts against frontend expectations, source samples, OpenAPI, mocks, routes, and runtime responses.
-6. Design transformation adapters for source-to-response and response-to-view-model compatibility.
-7. If implementation is requested, edit backend code with `$code-change-ledger-management` discipline and preserve existing project patterns.
-8. Configure pools, Redis/cache, timeouts, errors, logging, health checks, and env profiles. Use `$redis-cache-design-patterns` when Redis is named and `$environment-profile-contract` when handoff profiles matter.
-9. Run available tests/build/startup and `$runtime-url-smoke-test` when a URL is produced.
-10. Produce backend handoff notes, gaps, readiness, and version links.
+1. Run the Preflight understanding gate before backend design, API docs, implementation, or repair. Name the requested stage, evidence inventory, source/API/model/frontend authority order, affected contracts, owning skills, missing evidence, and start decision.
+2. Inventory technical solution, API inventory, model/source mapping, metric口径, numeric display/precision contracts, permissions, SSO/token header contract, database role map, env/auth, and existing code. Use `$metric-number-display-contract` for numeric semantics and `$environment-profile-contract` for test/production runtime profiles when in scope.
+3. Run quality gates when source/API/model/frontend expectations conflict.
+4. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope; load `$java-springboot-backend-development` when Java/Spring Boot structure, Spring Security/JWT/SSO, Maven/Docker, or Profile conventions are in scope.
+5. Produce or update API documentation through `$api-documentation-design`.
+6. Validate contracts against frontend expectations, source samples, OpenAPI, mocks, routes, and runtime responses.
+7. Design transformation adapters for source-to-response and response-to-view-model compatibility.
+8. If implementation is requested, edit backend code with `$code-change-ledger-management` discipline and preserve existing project patterns.
+9. Configure pools, Redis/cache, timeouts, errors, logging, health checks, and env profiles. Use `$redis-cache-design-patterns` when Redis is named and `$environment-profile-contract` when handoff profiles matter.
+10. Run available tests/build/startup and `$runtime-url-smoke-test` when a URL is produced.
+11. Produce backend handoff notes, gaps, readiness, and version links.
 
 ## Required Output
 
-- Backend/data-service design or implemented service summary.
+- Preflight understanding matrix and backend/data-service design or implemented service summary.
 - API documentation/contract status.
 - Python/Flask SSO and multi-database architecture when applicable: app factory, route/service/repository/db layers, token validation, 401/403, database role map, env vars, and pool ownership.
 - Java/Spring Boot architecture when applicable: controller/service/mapper-or-repository layering, `ApiResponse<T>`, global exception handling, Spring Security/JWT/SSO, IAM/IAMA or local JWT bridge, Profile YAML, Maven/Gradle, Docker, and startup commands.
@@ -71,6 +73,7 @@ Decide endpoint families, request context, response envelope, service/query/sour
 ## Quality Gate
 
 - Do not implement routes from UI fields alone; trace endpoints to source/model/metric/permission contracts.
+- Do not implement or document backend behavior before a Preflight understanding decision identifies source authority, API/model/frontend contracts, runtime target, and blockers.
 - Existing API response fields are stable across source/table/upstream replacement unless a versioned breaking change is documented.
 - Existing numeric response semantics are stable across source/table/upstream replacement: type, raw unit, display unit, scale, precision, formula, nullability, denominator-zero behavior, and export precision cannot drift without a versioned change.
 - Python/Flask SSO + multi-database backends must separate API, service, repository, db engine/session, middleware, schema, and SQL-file responsibilities; do not place complex SQL, token validation, permission checks, and response formatting all inside route handlers.

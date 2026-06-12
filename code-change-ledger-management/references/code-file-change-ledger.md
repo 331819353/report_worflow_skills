@@ -8,6 +8,8 @@ The goal is to make every code change traceable at file level, so later agents a
 Which feature does this file own?
 Which code ranges changed in this iteration?
 Why was the change made?
+What exact lines changed?
+Can the previous file state be reconstructed?
 Which version introduced it?
 How was it verified?
 What should be checked before changing it again?
@@ -56,9 +58,10 @@ Before changing a scoped code file:
 After changing the code file:
 
 1. Append a new version entry to the same ledger.
-2. Record the functional change, changed code range, version, verification, and rollback notes.
+2. Record the functional change, changed code range, version, verification, rollback notes, and reversible change evidence.
 3. Do not overwrite previous entries.
 4. If line numbers moved, record both old range when known and new range after the edit.
+5. Treat a sha256 as an integrity checksum only. It cannot identify changed lines or reconstruct prior content.
 
 This is required even for small fixes when they touch frontend, backend, or prototype source code.
 
@@ -95,6 +98,9 @@ Each ledger should contain:
 - Verification:
 - Rollback note:
 - Related files:
+- Before snapshot:
+- After snapshot:
+- Change evidence:
 - Follow-up:
 ```
 
@@ -111,6 +117,9 @@ Each ledger should contain:
 | `affected contracts` | API fields, props, emitted events, env vars, filters, permission scope, logging fields, data model fields, or `none`. |
 | `verification` | Commands, browser checks, API smoke checks, unit tests, lint/build, or `not run` with a precise blocker. |
 | `rollback note` | How to undo safely or what dependency must be reverted together. |
+| `before snapshot` | Previous state evidence: line count plus sha256 from the pre-edit snapshot, or external VCS/release reference. |
+| `after snapshot` | New state evidence: line count plus sha256 after the edit. |
+| `change evidence` | Inline unified diff, sidecar patch path plus sha256, or exact external VCS commit/diff reference. Hash-only evidence is insufficient. |
 
 ## Code Range Rules
 
@@ -119,6 +128,25 @@ Each ledger should contain:
 - For backend route/service files, record route path, service function, repository function, and middleware hook when relevant.
 - For SQL or query-builder code, record the query name, metric/source mapping, parameter predicate, and guardrail range.
 - When a formatter moves line numbers, update the new range after formatting.
+- Do not use `full file` by itself for ordinary source changes. If the entire file was replaced, still record the top-level sections that changed and attach a unified diff or sidecar patch.
+- For structured files such as `package.json`, `tsconfig.json`, route registries, env schemas, and dashboard configs, add section anchors such as `scripts`, `dependencies`, `compilerOptions`, `routes[]`, or `screen.layout`, plus changed line ranges when available.
+
+## Reversible Evidence Rules
+
+Use the lowest-friction evidence that lets a later agent or engineer understand and undo the change:
+
+1. Prefer an inline unified diff for normal text code files.
+2. Use a sidecar patch file under the same `__change_logs__` directory only when the diff is too large for readable inline ledger content. Record its relative path and sha256.
+3. Use an external VCS commit, tag, or release bundle only when it is available and named precisely enough to recover both before and after content.
+4. For binary, generated, large fixture, or vendored files that are intentionally excluded from ledger scope, record the exclusion reason instead of pretending sha256 is a complete change record.
+
+Hash-only entries are never enough for readiness:
+
+```text
+File snapshot: 37 lines, sha256 `...`
+```
+
+This proves only that the current file matches a recorded state. It does not show what changed and cannot reconstruct the previous state.
 
 ## Creation And Update Script
 
@@ -146,6 +174,8 @@ npm run ledger:code -- --file src/widgets/components/SalesTrend.vue --stage befo
 npm run ledger:code -- --file src/widgets/components/SalesTrend.vue --stage after --summary "..." --ranges "L10-L42"
 ```
 
+The helper should be run in both stages. `before` captures a pre-edit snapshot; `after` compares the snapshot with the edited file and appends a unified diff or sidecar patch. If the helper reports that no pre-edit snapshot exists, the ledger entry is not ready unless an exact external VCS/release reference is supplied.
+
 Manual updates are acceptable when the project does not run Python/Node, but the same fields and before/after behavior still apply.
 
 ## Quality Gate
@@ -156,7 +186,15 @@ Do not mark code implementation, repair, or prototype delivery `ready` when any 
 - evidence that the ledger was read before editing;
 - a post-change version entry;
 - changed code ranges or stable anchors;
+- unified diff, sidecar patch, or exact external VCS/release reference;
 - functional summary and affected contracts;
 - verification or a precise blocker.
+
+The following patterns fail readiness:
+
+- `Code ranges: full file` with no section anchors or diff.
+- `Verification: sha256 ...` or `File snapshot: ... sha256 ...` as the only change evidence.
+- `Rollback note: use VCS history` when the target directory is not a VCS checkout or the exact commit/tag is not named.
+- `Modified content: standard refactor` without listing changed sections, dependencies, routes, props, fields, or behavior.
 
 Do not bury this information only in a final chat message, commit message, PR description, or broad delivery index. Those are useful summaries, but they do not replace file-level ledgers.

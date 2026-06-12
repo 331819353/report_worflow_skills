@@ -42,40 +42,46 @@ If the request is vague design improvement rather than implementation, route fir
 - Provider gaps: `references/provider-gap-ledger.md`
 - Report frontend implementation: `references/report-data-visualization-frontend-implementation.md`
 - Detailed implementation/readiness gates: `references/frontend-implementation-gates.md`
+- Preflight understanding gate: `$quality-gate-validation` `references/preflight-understanding-gate.md`
 - Cross-cutting contracts: load `$vue3-visualization-project-architecture`, `$code-change-ledger-management`, `$metric-number-display-contract`, or `$environment-profile-contract` only when the target architecture, code-change ledger, numeric display, or env profile is in scope.
-- Common app baseline: `$haier-enterprise-app-ui-design-spec`
+- Company application UI baseline: `$haier-enterprise-app-ui-design-spec` for Haier/enterprise Web surfaces, including report/dashboard pages.
 - Report baseline, numeric precision rules, and anti-AI/report-decision gates: `$report-design-system-governance`
 
 ## Workflow
 
-1. Resolve `prototypeSourcePath` and `frontendTargetPath`. Treat upstream prototypes as read-only unless explicitly targeted.
-2. Inspect stack, package manager, env, router, request utilities, stores/composables, mock/static data, component consumers, and runnable scripts.
-3. If the target is a Vue3 data-visualization project or should follow the uploaded sample, load `$vue3-visualization-project-architecture` before file placement and request/env decisions.
-4. Classify UI baseline: common enterprise app, report/dashboard, or mixed. Load the matching baseline before implementation decisions.
-5. Run install/typecheck/lint/test/build when feasible and record pre-existing failures.
-6. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
-7. Verify env/proxy/base path/auth/SSO behavior before wiring requests; use `$environment-profile-contract` when test/production profile separation or production readiness is in scope.
-8. Before each source edit, read or create the sidecar code ledger for the scoped file through `$code-change-ledger-management`.
-9. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
-10. Use component/layout/design-system skills when visual, metric, chart/table, state, or design baseline behavior is touched.
-11. Append code-ledger version entries after edits.
-12. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
+1. Run the Preflight understanding gate before source edits. Name the user goal, writable target, evidence inventory, authority order, affected surfaces, owning skills, hard constraints, missing evidence, and start decision.
+2. Resolve `prototypeSourcePath` and `frontendTargetPath`. Treat upstream prototypes as read-only unless explicitly targeted.
+3. Inspect stack, package manager, env, router, request utilities, stores/composables, mock/static data, component consumers, and runnable scripts.
+4. If the target is a Vue3 data-visualization project or should follow the uploaded sample, load `$vue3-visualization-project-architecture` before file placement and request/env decisions.
+5. Classify UI baseline: Haier/enterprise app, report/dashboard, or mixed. For Haier/enterprise Web surfaces, load `$haier-enterprise-app-ui-design-spec` for application tokens/base controls and load `$report-design-system-governance` for report-specific rules when the page is report/dashboard/BI/data-screen.
+6. Run install/typecheck/lint/test/build when feasible and record pre-existing failures.
+7. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
+8. Verify env/proxy/base path/auth/SSO behavior before wiring requests; use `$environment-profile-contract` when test/production profile separation or production readiness is in scope.
+9. Before each source edit, read or create the sidecar code ledger for the scoped file through `$code-change-ledger-management`.
+10. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
+11. Use component/layout/design-system skills when visual, metric, chart/table, filter, component placement, state, or design baseline behavior is touched; use the specific chart/table/filter/placement front-door skill when those surfaces are affected.
+12. Append code-ledger version entries after edits.
+13. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
 
 ## Required Output
 
-- Source/target decision and stack decision.
+- Preflight understanding matrix, source/target decision, and stack decision.
+- Affected-surface to owning-skill routing when UI/design behavior is touched.
 - Provider mapping, adapter notes, env/auth/deployment notes.
 - Numeric display/precision proof: formatter ownership, value type, raw/display unit, scale, screen/tooltip/export precision, rounding, null/zero/denominator-zero, and `%` wording when relevant.
 - Vue3 sample-architecture alignment when applicable: directory placement, Axios/request pattern, env mode, route/store/component ownership, and build commands.
 - Changed files, code-ledger proof, and verification commands.
 - Data completeness and control semantics proof for filters/perspectives.
-- UI baseline applied and component/layout/design exceptions.
+- UI baseline inheritance applied: Haier company UI baseline and report-specific baseline when the target is a Haier/enterprise report surface, plus component/layout/design exceptions.
 - Runtime QA result, URL or exact blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
 
 - Do not edit upstream prototype source unless it is the explicit frontend target.
+- Do not edit frontend source before a `ready-to-start` or bounded `partial-start` Preflight understanding decision identifies the writable target and affected contracts.
+- Do not implement or repair a Haier/enterprise report page while applying only report-specific design rules; Haier application tokens, typography, spacing, base controls, state, and brand rules must also be inherited or an explicit exception recorded.
+- Do not repair chart/table/filter/component-placement issues through generic component edits alone; load the specific front-door skill before implementation and QA.
 - Do not mark changed frontend code ready without sidecar code-ledger read/create evidence and a post-change version entry.
 - Do not leave production paths on unapproved mocks, fake timers, generated rows, or demo-only SDKs.
 - Do not claim filter integration until option data, business rows, required fields, default/non-default states, and resolver/API branches are proven or recorded as gaps.

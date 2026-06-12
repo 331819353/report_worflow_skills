@@ -15,28 +15,30 @@ It sits between `$report-design-system-governance` and `$report-component-style-
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Component-family source map | `references/01-component-spec-source-map.md` |
 | Reusable component spec template | `references/02-component-spec-template.md` |
 | Report design-system baseline | `$report-design-system-governance` relevant references |
 | Detailed component family rules | `$report-component-style-design` matching references |
 | Chart/table/filter standards | `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec` |
 | Placement and acceptance gates | `$report-component-placement-spec` and `$report-component-style-design` `references/12-component-acceptance-gates.md` |
-| Common enterprise tokens/components | `$haier-enterprise-app-ui-design-spec` when inherited company UI is in scope |
+| Haier/company tokens and base components | `$haier-enterprise-app-ui-design-spec` for Haier/enterprise report and common-app surfaces |
 | Readiness/conflict gate | `$quality-gate-validation` |
 
 ## Workflow
 
-1. Define component-standard scope: component families, target report types, surfaces, libraries, devices, and source-of-truth hierarchy.
-2. Load the report/common-app baseline and the smallest matching component-family references.
-3. For each component family, define anatomy, required/optional slots, data contract, metric/formula/unit/source needs, interaction contract, states, accessibility, responsive behavior, and exact-value disclosure.
-4. Define placement rules through `$report-component-placement-spec`: coordinate variables, slot ownership, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
-5. Define visual tokens and variants as semantic rules, not one-off colors or decorative effects.
-6. Add implementation handoff: ECharts/S2/Element Plus usage, config fields, API/view-model expectations, QA crops, DOM overflow checks, and version/adoption notes.
-7. Run component acceptance gates and list any gaps, deprecated patterns, or project exceptions.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name component-family scope, source-of-truth hierarchy, inherited baselines, affected surfaces, hard constraints, missing evidence, and start decision.
+2. Define component-standard scope: component families, target report types, surfaces, libraries, devices, and source-of-truth hierarchy.
+3. Load the report/common-app baseline and the smallest matching component-family references.
+4. For each component family, define anatomy, required/optional slots, data contract, metric/formula/unit/source needs, interaction contract, states, accessibility, responsive behavior, and exact-value disclosure.
+5. Define placement rules through `$report-component-placement-spec`: coordinate variables, slot ownership, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
+6. Define visual tokens and variants as semantic rules, not one-off colors or decorative effects.
+7. Add implementation handoff: ECharts/S2/Element Plus usage, config fields, API/view-model expectations, QA crops, DOM overflow checks, and version/adoption notes.
+8. Run component acceptance gates and list any gaps, deprecated patterns, or project exceptions.
 
 ## Required Output
 
-- Scope, source-of-truth hierarchy, and inherited baseline.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus scope, source-of-truth hierarchy, and inherited Haier/report baselines.
 - Component-family standard matrix.
 - Per-family spec: purpose, anatomy, data contract, placement, visual tokens, states, interactions, responsive behavior, accessibility, and implementation notes.
 - Acceptance gates and QA evidence requirements.
@@ -45,7 +47,9 @@ It sits between `$report-design-system-governance` and `$report-component-style-
 ## Quality Gate
 
 - Do not write a component spec that only lists colors, font sizes, radius, and shadows.
+- Do not create or accept a reusable component standard before component-family scope, source-of-truth hierarchy, inherited baseline, and implementation surface are clear.
 - Do not accept a component family without business purpose, data grain, exact-value path, states, and placement rules.
+- Do not accept Haier/enterprise report component standards that define report-specific rules but omit inherited Haier typography, color, spacing, radius, shadow, state, and base-control tokens.
 - Do not duplicate Haier or report design-system tokens; inherit them and state only component-specific extensions.
 - Do not merge page layout rules into component specs except for the component's own parent/container assumptions.
 - Load `references/02-component-spec-template.md` before delivering a reusable component design spec.

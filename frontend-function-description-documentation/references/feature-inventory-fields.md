@@ -6,6 +6,7 @@
 - User purpose and primary business or operational question.
 - Visible controls and default state.
 - Permission, role, or data-scope behavior if visible in the frontend.
+- UI/design baseline: Haier/company application baseline, report-specific baseline, inherited dual baseline, or explicit non-Haier/native/neutral exception.
 
 ## Provider Binding Fields
 

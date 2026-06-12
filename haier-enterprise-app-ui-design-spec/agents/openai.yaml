@@ -1,4 +1,4 @@
 interface:
   display_name: "海尔通用应用UI规范"
-  short_description: "通用企业应用全流程UI基线，覆盖页面、组件、状态和适配"
-  default_prompt: "当用户处理通用企业应用、PC Web应用、管理后台、前台页面、页面原型、前端实现、运行QA、验收或交付说明，并涉及表单/列表/详情/表格/导航/弹窗/空态/工作台/跨平台适配时，使用 $haier-enterprise-app-ui-design-spec 作为公司级UI基线；报表/仪表盘/大屏优先使用 report-design-*，本技能只提供通用应用基线。"
+  short_description: "海尔企业应用全流程UI基线，覆盖页面、报表应用、组件、状态和适配"
+  default_prompt: "当用户处理海尔/企业PC Web应用、管理后台、前台页面、页面原型、前端实现、运行QA、验收或交付说明，并涉及表单/列表/详情/表格/导航/弹窗/空态/工作台/跨平台适配时，使用 $haier-enterprise-app-ui-design-spec 作为公司级UI基线；报表/仪表盘/大屏/BI页面也必须继承本技能的色彩、字体、间距、圆角、阴影、基础控件、状态、品牌和适配规则，同时叠加 report-design-* 报表专项规范。"

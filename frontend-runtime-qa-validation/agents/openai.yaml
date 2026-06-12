@@ -1,4 +1,4 @@
 interface:
   display_name: "前端运行时 QA"
   short_description: "用浏览器、截图、DOM overflow、控制台、网络、交互和多模态检查验证前端运行质量。"
-  default_prompt: "Use $frontend-runtime-qa-validation to run browser-based QA for runnable frontend pages, including build/start, screenshots, component crops, DOM overflow, console/network, interactions, states, visual defects, and readiness notes."
+  default_prompt: "Use $frontend-runtime-qa-validation to run browser-based QA for runnable frontend pages, including build/start, screenshots, component crops, DOM overflow, console/network, interactions, states, visual defects, and readiness notes. For Haier/enterprise report pages, QA must check both inherited Haier application UI baseline and report-specific visual/readability gates."

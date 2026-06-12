@@ -11,7 +11,7 @@ Use this skill to create, audit, merge, apply, or validate reusable report desig
 
 It governs the shared baseline. Use `$report-visual-layout-design` for a page layout fix, `$report-layout-size-constraint-spec` for block/viewport fit, `$report-component-style-design` for mixed component repair, `$report-component-design-spec` for reusable component-family standards, `$report-chart-design-spec` for charts, `$report-table-design-spec` for tables, `$report-filter-control-design-spec` for filters, `$report-component-placement-spec` for implementation-ready component coordinates, and `$report-prototype-template-management` for bundled template assets.
 
-When Haier enterprise UI is the required source of truth, load `$haier-enterprise-app-ui-design-spec` and keep inherited company rules separate from report-specific extensions and project exceptions.
+For Haier-branded or enterprise report/dashboard/BI/data-screen work, load `$haier-enterprise-app-ui-design-spec` as the company-level application UI baseline and keep inherited company rules separate from report-specific extensions and project exceptions. Do not treat Haier UI and report design rules as alternatives: Haier owns tokens and base application components; report governance owns analytical hierarchy, visualization, metric, chart/table/filter, and acceptance rules.
 
 ## Use Modes
 
@@ -20,7 +20,7 @@ When Haier enterprise UI is the required source of truth, load `$haier-enterpris
 | `create-standard` | A team needs a reusable report design system | Tokens, layout, component, visualization, state, engineering, and governance standards |
 | `audit-standard` | Existing reports or standards are inconsistent | Findings, missing rules, conflict matrix, repair priorities |
 | `merge-standards` | Multiple docs/templates/skills overlap | Source-of-truth decision, merged rules, deprecated rules |
-| `extend-haier-standard` | Haier UI is the company baseline | Inherited Haier rules plus report extensions |
+| `extend-haier-standard` | Haier UI is the company baseline, including report applications | Inherited Haier tokens/base components plus report extensions |
 | `migration-plan` | Existing reports need adoption | Versioned rollout, affected components, regression baselines, exception process |
 
 ## Reference Loading
@@ -29,6 +29,7 @@ Always choose the mode and then load only the matching references.
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before standard creation/audit/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Reusable spec or audit skeleton | `references/01-design-system-spec-template.md` |
 | Concrete rule catalog and completeness checks | `references/02-report-design-system-rule-catalog.md` |
 | Report guideline index | `references/03-report-development-guidelines-index.md` |
@@ -43,21 +44,24 @@ Always choose the mode and then load only the matching references.
 | Bundled template layout tokens | `$report-prototype-template-management` `references/template-layout-design-system.md` |
 | Chart/table/filter-specific standards | `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec` |
 | Component-family placement and fit | `$report-component-placement-spec` |
+| Haier/company application UI baseline | `$haier-enterprise-app-ui-design-spec` for Haier/enterprise report pages, dashboards, and data screens |
 
 ## Workflow
 
-1. Select mode and source-of-truth hierarchy: company standard, report extension, template standard, project exception, or legacy override.
-2. Inventory design surfaces: shell, navigation, filters, KPI cards, charts, tables, drawers, modals, buttons, tags, empty/loading/error/no-permission states, export, responsive layouts, and custom graphics.
-3. Classify whether the work is report/dashboard/BI/data-screen, common enterprise app, or mixed. Load the matching baseline before judging or defining rules.
-4. Run the generic anti-AI gate and report decision gate before stabilizing tokens or accepting a visual standard.
-5. Define semantic tokens and reusable rules: color roles, typography, spacing/grid, radius, border, shadow, density, icon size, z-index, responsive breakpoints, states, accessibility, and motion limits.
-6. Define page, component, visualization, numeric precision/display, filter, state, performance, and handoff standards. Delegate numeric display details to `$metric-number-display-contract`; delegate implementation-ready component families to `$report-component-design-spec` and `$report-component-style-design`.
-7. Define governance: stable vs experimental rules, allowed variants, deprecated patterns, exception process, versioning, migration status, owners, and review checklist.
-8. Route implementation or remediation to layout, component, frontend, runtime QA, testing, or template skills.
+1. Run the Preflight understanding gate before creating, auditing, merging, applying, or accepting standards. Name mode, source-of-truth hierarchy, affected surfaces, owning specialty skills, hard constraints, missing evidence, and start decision.
+2. Select mode and source-of-truth hierarchy: company standard, report extension, template standard, project exception, or legacy override. For Haier/enterprise report pages, default hierarchy is `Haier company UI baseline -> report design-system extension -> template/project exception`.
+3. Inventory design surfaces: shell, navigation, filters, KPI cards, charts, tables, drawers, modals, buttons, tags, empty/loading/error/no-permission states, export, responsive layouts, and custom graphics.
+4. Classify whether the work is report/dashboard/BI/data-screen, common enterprise app, or mixed. Load Haier company UI baseline for Haier/enterprise app surfaces and report design-system references for report surfaces before judging or defining rules.
+5. Run the generic anti-AI gate and report decision gate before stabilizing tokens or accepting a visual standard.
+6. Define semantic tokens and reusable rules: color roles, typography, spacing/grid, radius, border, shadow, density, icon size, z-index, responsive breakpoints, states, accessibility, and motion limits.
+7. Define page, component, visualization, numeric precision/display, filter, state, performance, and handoff standards. Delegate numeric display details to `$metric-number-display-contract`; delegate implementation-ready component families to `$report-component-design-spec` and `$report-component-style-design`.
+8. Define governance: stable vs experimental rules, allowed variants, deprecated patterns, exception process, versioning, migration status, owners, and review checklist.
+9. Route implementation or remediation to layout, component, frontend, runtime QA, testing, or template skills.
 
 ## Required Output
 
-- Mode, source-of-truth hierarchy, input inventory, and scope.
+- Preflight understanding result, mode, source-of-truth hierarchy, input inventory, and scope.
+- Inherited Haier baseline decisions for color, typography, spacing, radius, shadow, icon/base component, brand/logo, state, and cross-platform behavior.
 - Token, page-layout, component, visualization, numeric precision/display, filter, state, accessibility, interaction, and performance standards.
 - Report guideline mapping: requirements, metric dictionary, calculation口径, page hierarchy, chart/table/filter/state rules, engineering handoff, and acceptance checklist.
 - Anti-AI and report-decision gate result with `AI-*` and `RPT-*` findings or explicit pass status.
@@ -67,6 +71,8 @@ Always choose the mode and then load only the matching references.
 ## Quality Gate
 
 - Do not output an empty table-only template; each required rule needs values, inherited source references, or explicit `gap` status.
+- Do not create, audit, merge, or accept a report design-system standard before source-of-truth hierarchy, affected surfaces, and specialty skill ownership are clear.
+- Do not accept a Haier/enterprise report standard that omits inherited Haier color, typography, spacing, radius, shadow, base control, brand/logo, state, and responsive rules.
 - Do not create one-off colors, spacings, hover effects, chart semantics, or component variants without semantic tokens or approved exceptions.
 - Do not accept generic "modern SaaS", "高级科技感", purple-blue gradients, glass cards, glow buttons, floating decoration, oversized radius, or abstract AI imagery as default report style.
 - Reusable standards must cover responsive behavior, edge states, accessibility, data density, numeric display contracts, exact-value access, engineering tokens, and migration impact.

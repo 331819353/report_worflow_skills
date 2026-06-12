@@ -37,6 +37,7 @@ Default policy: load `$report-prototype-design-thinking` for the generic design-
 ## Reference Loading
 
 - Stage gates and modes: `references/01-workflow-modes-and-stage-gates.md`
+- Preflight understanding gate: `$quality-gate-validation` `references/preflight-understanding-gate.md`
 - Default prototype design thinking: `$report-prototype-design-thinking` before display theme, report type, layout, or template decisions.
 - Startup/deployment self-check: `references/02-self-check-startup-deployment.md`
 - Output quality and avoid list: `references/03-output-quality-and-avoid.md`
@@ -49,28 +50,31 @@ Default policy: load `$report-prototype-design-thinking` for the generic design-
 
 ## Workflow
 
-1. Confirm prototype intent and mode: design spec, runnable implementation, screenshot/HTML restoration, repair, or URL handoff.
-2. Load `$report-prototype-design-thinking` as the default generic thinking layer. Do not branch into 自助分析、指标看板、分析报告、or 明细报表 inside this workflow; those are separate workflow skills.
-3. Normalize rough requirements when needed.
-4. Choose one `displayTheme`, one primary report type, and a small reusable pattern-card set. Record rejected competing themes.
-5. Run anti-AI and report-decision gates before layout, styling, or code.
-6. Use `$report-info-component-mapping` to produce answer atoms, component bundles, datasets, filters, interactions, binding matrix, and a filter/value semantics table.
-7. Decide `pageShellPath`: default `template`; use `custom` only for explicit custom/free design, exact restoration, existing shell preservation, or documented template limitation.
-8. Use `$report-visual-layout-design` for shell, navigation, filter surface, grid, block sizing, responsive plan, and page规范.
-9. Use `$report-prototype-template-management` for template selection/copy/validation and bundled assets.
-10. Use `$report-component-style-design` and `$report-component-design-spec` for component fit, chart/table/KPI readability, and reusable component rules.
-11. Apply report design-system and Haier UI baselines when in scope.
-12. Before implementation or repair touches source, read/create code ledgers for every changed file through `$code-change-ledger-management`; append version entries after edits.
-13. Start/verify the prototype when a runnable URL is requested and route runtime findings through `$frontend-runtime-qa-validation`.
-14. For handoff artifacts, apply `$artifact-readability-standard` and `$report-delivery-pipeline-governance` so downstream technical solution, backend, frontend, and testing workflows know the entry conditions.
+1. Run the Preflight understanding gate before layout, template, styling, or code. Name the workflow mode, evidence inventory, authority order, affected surfaces, owning skills, hard constraints, missing evidence, and start decision.
+2. Confirm prototype intent and mode: design spec, runnable implementation, screenshot/HTML restoration, repair, or URL handoff.
+3. Load `$report-prototype-design-thinking` as the default generic thinking layer. Do not branch into 自助分析、指标看板、分析报告、or 明细报表 inside this workflow; those are separate workflow skills.
+4. Normalize rough requirements when needed.
+5. Choose one `displayTheme`, one primary report type, and a small reusable pattern-card set. Record rejected competing themes.
+6. Run anti-AI and report-decision gates before layout, styling, or code.
+7. Use `$report-info-component-mapping` to produce answer atoms, component bundles, datasets, filters, interactions, binding matrix, and a filter/value semantics table.
+8. Decide `pageShellPath`: default `template`; use `custom` only for explicit custom/free design, exact restoration, existing shell preservation, or documented template limitation.
+9. Use `$report-visual-layout-design` for shell, navigation, filter surface, grid, block sizing, responsive plan, and page规范.
+10. Use `$report-prototype-template-management` for template selection/copy/validation and bundled assets.
+11. Route chart, table, filter, component-placement, and reusable component work to `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec`, `$report-component-placement-spec`, or `$report-component-design-spec` whenever those surfaces are affected.
+12. Use `$report-component-style-design` and `$report-component-design-spec` for component fit, chart/table/KPI readability, and reusable component rules.
+13. Apply Haier UI as the company-level application baseline for Haier/enterprise report pages, then apply report design-system rules as report-specific extensions. Skip Haier baseline only for explicit non-Haier/native sample/neutral brand decisions.
+14. Before implementation or repair touches source, read/create code ledgers for every changed file through `$code-change-ledger-management`; append version entries after edits.
+15. Start/verify the prototype when a runnable URL is requested and route runtime findings through `$frontend-runtime-qa-validation`.
+16. For handoff artifacts, apply `$artifact-readability-standard` and `$report-delivery-pipeline-governance` so downstream technical solution, backend, frontend, and testing workflows know the entry conditions.
 
 ## Required Output
 
-- Workflow mode, input inventory, prototype design-thinking output, target user/scenario/decision/action, `displayTheme`, pattern cards, report type, and core question.
+- Workflow mode, Preflight understanding matrix, input inventory, prototype design-thinking output, target user/scenario/decision/action, `displayTheme`, pattern cards, report type, and core question.
+- Affected-surface to owning-skill routing, including chart/table/filter/component-placement/design-system skills when applicable.
 - Anti-AI and report-decision gate result.
 - Component/data/filter/control/interaction binding matrix.
 - Filter/value semantics table with `detailValue`, `aggregateValue`, `emptyFilterValue`, display label, data-row role, query behavior, and primary-key eligibility.
-- Layout plan, selected template/custom reason, filter surface mapping, perspective-layer mapping, and implementation target path.
+- Layout plan, selected template/custom reason, filter surface mapping, perspective-layer mapping, baseline inheritance decision, and implementation target path.
 - Files changed, code-ledger proof, verification commands, URL or blocker.
 - Quality-gate findings and readiness: `ready`, `partial`, or `blocked`.
 
@@ -78,6 +82,9 @@ Default policy: load `$report-prototype-design-thinking` for the generic design-
 
 - Do not use this workflow without prototype/demo/page-output intent.
 - Do not skip `$report-prototype-design-thinking` for new prototype work unless the user provides an already structured prototype design brief.
+- Do not start implementation, repair, layout, or template copying before the Preflight understanding gate has a `ready-to-start` or bounded `partial-start` decision.
+- Do not treat Haier UI and report design-system baselines as alternatives for Haier/enterprise report pages; inherit Haier application tokens/base controls and then apply report-specific rules.
+- Do not rely only on this top-level workflow when a chart, table, filter, component-placement, or reusable component standard is affected; route to the specific front-door skill before implementation or acceptance.
 - Do not implement before display theme, report type, binding matrix, layout, and template/custom shell decision exist.
 - Do not reuse one sentinel value such as `all` for detail rows, aggregate rows, and empty/no-filter state. "All detail rows", "aggregate row", and "empty filter value" must be declared as separate semantics before implementation.
 - Do not choose custom development when a bundled template can satisfy the request.

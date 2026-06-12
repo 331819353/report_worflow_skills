@@ -15,6 +15,7 @@ Use `$filter-linkage-completeness-test` when the task is runtime testing; use th
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Filter source map | `references/01-filter-reference-map.md` |
 | Page/global filter visuals | `$report-component-style-design` `references/02-filter-controls.md` |
 | Component-local controls | `$report-component-style-design` `references/10-in-component-controls.md` |
@@ -23,15 +24,16 @@ Use `$filter-linkage-completeness-test` when the task is runtime testing; use th
 
 ## Workflow
 
-1. Classify each control as page/global, module/tab scoped, component-local, or table-column scoped.
-2. Define option source, default value, reset behavior, cascade rule, permission-limited options, empty/no-permission state, and backend/query ownership.
-3. Place page/global filters in the page shell or template-native filter surface; place component-local filters in the component header/title-right area.
-4. Check whether filter changes affect metrics, chart series, table rows, export scope, pagination, drilldown, and cache/query context.
-5. Hand off testing cases to `$filter-linkage-completeness-test` when runtime verification is needed.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name filter scope candidates, option/data authority, affected components, query/export/pagination impact, hard constraints, missing evidence, and start decision.
+2. Classify each control as page/global, module/tab scoped, component-local, or table-column scoped.
+3. Define option source, default value, reset behavior, cascade rule, permission-limited options, empty/no-permission state, and backend/query ownership.
+4. Place page/global filters in the page shell or template-native filter surface; place component-local filters in the component header/title-right area.
+5. Check whether filter changes affect metrics, chart series, table rows, export scope, pagination, drilldown, and cache/query context.
+6. Hand off testing cases to `$filter-linkage-completeness-test` when runtime verification is needed.
 
 ## Required Output
 
-- Filter scope and ownership matrix.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus filter scope and ownership matrix.
 - Control type, default/reset/cascade behavior, option source, and query/API impact.
 - Placement rules for page/global and component-local controls.
 - Runtime test handoff items when behavior must be verified.
@@ -39,5 +41,6 @@ Use `$filter-linkage-completeness-test` when the task is runtime testing; use th
 ## Quality Gate
 
 - Do not hide a perspective switch or schema-changing view switch as an ordinary filter.
+- Do not design, repair, or accept filters before filter scope, option source, default/reset behavior, and affected component/query contracts are known.
 - Component-local filters cannot silently change page/global scope, export scope, backend aggregation, or other components.
 - Filter controls are not ready until default, non-default, empty, no-permission, reset, and cascade states are defined or explicitly blocked.

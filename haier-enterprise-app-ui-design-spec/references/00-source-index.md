@@ -10,13 +10,13 @@ Document metadata:
 | Latest local source modification | 2025-06-24 |
 | Scope | PC Web, PC desktop, Mobile App adaptation reference |
 | Base unit | `Hd = 2px` |
-| Goal | Unify visual language, interaction, components, layout, and cross-platform adaptation for common enterprise applications |
+| Goal | Unify visual language, interaction, components, layout, and cross-platform adaptation for Haier enterprise application surfaces, including report applications as inherited baseline |
 
 ## Skill Boundary
 
-This skill is for common enterprise application development: forms, lists, detail pages, tables, navigation, workbench, dialogs, empty/exception/feedback states, and cross-platform adaptation.
+This skill is for Haier enterprise application development: forms, lists, detail pages, tables, navigation, workbench, dialogs, empty/exception/feedback states, report application shells, and cross-platform adaptation.
 
-It is not the primary workflow for report/dashboard/data-screen development. For report, dashboard, cockpit, KPI, chart/table-heavy analytics, or runnable report prototype work, use the `report-design-*` skills first. This skill may still be loaded by report skills as the Haier company-level UI baseline.
+It is not the primary analytical workflow for report/dashboard/data-screen development. For report, dashboard, cockpit, KPI, chart/table-heavy analytics, or runnable report prototype work, use the `report-design-*` skills for report-specific decisions, and also load this skill as the required Haier company-level UI baseline unless an explicit non-Haier/native/neutral exception exists.
 
 ## Reference Map
 

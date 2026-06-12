@@ -18,6 +18,7 @@ It does not implement backend APIs, frontend pages, SQL jobs, or tests unless th
 - `references/03-generation-stability.md` for stable IDs, section order, controlled statuses, and deterministic output.
 - `references/04-professional-solution-template.md` for a full 技术方案/技术架构/技术选型/实现路径 output.
 - `references/05-technical-solution-gates.md` for detailed constraints, required outputs, and readiness blockers.
+- `$quality-gate-validation` `references/preflight-understanding-gate.md` before solution routing, architecture decisions, or implementation handoff.
 
 ## Child Skills
 
@@ -47,24 +48,25 @@ Production-bound solutions should decide business capability, system context, lo
 
 ## Workflow
 
-1. Inventory inputs: requirements, source metadata, metric lists, numeric display expectations, prototype/mock contracts, API candidates, permissions, environments, constraints, and prior versions.
-2. Normalize rough inputs and classify delivery type: demo/prototype, internal tool, production report, platform service, migration/replacement, or mixed.
-3. Classify UI/design baseline for page-bearing work: report/dashboard, common enterprise app, or mixed.
-4. Run `$quality-gate-validation` when inputs conflict on source authority, metric口径, grain, field meaning, permission, UI baseline, architecture boundary, runtime assumption, or response shape.
-5. Build architecture views: business, system context, logical modules, data flow, integration/API, runtime/deployment, security, operations, and roadmap.
-6. Make technology-selection/ADR decisions with default stack and override reasons.
-7. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy or Java/Spring Boot baseline when applicable, SSO/auth flow, database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
-8. Define data architecture and source authority with `$data-model-source-mapping`.
-9. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract through `$metric-number-display-contract`, data-version/snapshot contract, and data-vs-presentation boundary.
-10. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, environment profile contracts, and gap ledger when in scope.
-11. Build API inventory and implementation roadmap.
-12. Align versioned handoffs through `$report-delivery-pipeline-governance` and `$delivery-version-management`; use `$artifact-readability-standard` when the solution becomes a handoff artifact; run readiness gates before marking consumable.
+1. Run the Preflight understanding gate before architecture decisions or downstream handoff. Name input inventory, authority order, delivery type, affected domains, owning skills, missing evidence, confirmation needs, and start decision.
+2. Inventory inputs: requirements, source metadata, metric lists, numeric display expectations, prototype/mock contracts, API candidates, permissions, environments, constraints, and prior versions.
+3. Normalize rough inputs and classify delivery type: demo/prototype, internal tool, production report, platform service, migration/replacement, or mixed.
+4. Classify UI/design baseline for page-bearing work: Haier/enterprise app, report/dashboard, or mixed. For Haier/enterprise report pages, attach both inherited Haier application baseline and report-specific baseline to downstream constraints.
+5. Run `$quality-gate-validation` when inputs conflict on source authority, metric口径, grain, field meaning, permission, UI baseline, architecture boundary, runtime assumption, or response shape.
+6. Build architecture views: business, system context, logical modules, data flow, integration/API, runtime/deployment, security, operations, and roadmap.
+7. Make technology-selection/ADR decisions with default stack and override reasons.
+8. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy or Java/Spring Boot baseline when applicable, SSO/auth flow, database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
+9. Define data architecture and source authority with `$data-model-source-mapping`.
+10. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract through `$metric-number-display-contract`, data-version/snapshot contract, and data-vs-presentation boundary.
+11. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, environment profile contracts, and gap ledger when in scope.
+12. Build API inventory and implementation roadmap.
+13. Align versioned handoffs through `$report-delivery-pipeline-governance` and `$delivery-version-management`; use `$artifact-readability-standard` when the solution becomes a handoff artifact; run readiness gates before marking consumable.
 
 ## Required Output
 
-- Executive summary, scope, architecture approach, key decisions, readiness, and blockers.
+- Preflight understanding matrix, executive summary, scope, architecture approach, key decisions, readiness, and blockers.
 - Architecture blueprint and ADR/technology-selection table.
-- UI/design baseline decision for page-bearing work.
+- UI/design baseline decision for page-bearing work, including inherited dual baseline when the target is a Haier/enterprise report page.
 - Data-service runtime model and backend structured logging plan when backend/data-service is in scope.
 - Python/Flask SSO and multi-database backend baseline when applicable: app factory, Blueprints, middleware, service/repository/db layers, `Access-Token`/optional `Application-Key`, 401/403 split, SQLite/MySQL/Oracle/StarRocks roles, SQLAlchemy engine/session ownership, dependencies, tests, and deployment entrypoints.
 - Java/Spring Boot backend baseline when applicable: controller/service/mapper-or-repository layering, `ApiResponse<T>`, `BizException`/global exception handling, Spring Security/JWT/SSO, IAM/IAMA or local JWT bridge, DTO/Entity/VO boundaries, Profile YAML, Maven/Gradle, Docker, tests, and startup commands.
@@ -76,8 +78,9 @@ Production-bound solutions should decide business capability, system context, lo
 ## Quality Gate
 
 - Do not hand off API清单 plus 数据模型 alone as a production-ready technical solution.
+- Do not make architecture, stack, API, data, UI baseline, or implementation-roadmap decisions before the Preflight understanding gate identifies source authority and affected owning skills.
 - Do not hide unresolved source, metric, permission, runtime, deployment, ownership, or response-shape gaps as assumptions.
-- Do not mark page-bearing work ready without a UI/design baseline decision.
+- Do not mark page-bearing work ready without a UI/design baseline decision; Haier/enterprise report pages must not be handed off with only report-specific design rules unless an explicit exception is recorded.
 - Do not mark metric-bearing work ready without a numeric precision/display contract that can be consumed by API, frontend, export, and QA.
 - Do not mark backend/data-service work ready without runtime, stack, SSO/auth, database ownership, performance, observability, error, and logging decisions.
 - Load `05-technical-solution-gates.md` before finalizing a production-bound technical solution.

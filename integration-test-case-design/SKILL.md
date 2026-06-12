@@ -19,7 +19,7 @@ Optional inputs: test account, data seed, environment URL, source commit, risk l
 ## References
 
 - Use `$delivery-artifact-template-management` when the output should be a reusable execution matrix or when blocked cases must be tracked explicitly.
-- Use `$haier-enterprise-app-ui-design-spec` as the acceptance basis for common enterprise application UI cases: page shell, forms, lists, detail pages, tables, navigation, dialogs, feedback, empty/error states, and cross-platform adaptation.
+- Use `$haier-enterprise-app-ui-design-spec` as the acceptance basis for Haier/enterprise application UI cases, including report applications: page shell, forms, lists, detail pages, tables, navigation, dialogs, feedback, empty/error states, tokens, typography, color, spacing, base controls, states, brand/logo, and cross-platform adaptation.
 - Use `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) as the acceptance basis for report/dashboard/BI/data-screen/analysis cases: metric口径, layout hierarchy, chart/table formatting, filters, states, permissions, export, performance, and handoff.
 - Read `references/01-minimum-case-set-and-gates.md` before finalizing coverage, blocked cases, and quality gates.
 
@@ -29,7 +29,7 @@ Optional inputs: test account, data seed, environment URL, source commit, risk l
    Map each page/module/control to APIs, request params, response fields, control semantics, filters, interactions, permissions, and expected states.
 
 2. Classify the UI baseline for each page/module.
-   Mark common enterprise app, report/dashboard, or mixed, and include the matching baseline expectations in the test basis even when the source request did not use "规范".
+   Mark Haier/enterprise app, report/dashboard, or mixed. For Haier/enterprise report pages, include both the inherited Haier application baseline and report-specific baseline in the test basis even when the source request did not use "规范".
 
 3. Define test categories.
    Include runtime smoke, SSO/auth, API contract, data consistency, filters, interactions, edge states, permission, export/download, layout/data visibility, metric display semantics, and regression cases.
@@ -71,7 +71,7 @@ When using this skill, produce:
 1. Test scope and assumptions: tested pages/modules, APIs, permissions, environment readiness, and missing inputs.
 2. Feature/API coverage matrix: page/module/control mapped to API, params, fields, control semantics, filters, interactions, and states.
 3. Test case table using the required format.
-4. UI baseline coverage summary: common app baseline, report baseline, or mixed, with cases that verify the relevant rules.
+4. UI baseline coverage summary: Haier/company application baseline, report baseline, or inherited dual baseline, with cases that verify the relevant rules.
 5. Minimum case set coverage summary, including any intentionally omitted category and reason.
 6. Blocked or pending case list with missing URL, account, data seed, permission, API document, or acceptance rule.
 7. Handoff notes for runtime execution, evidence capture, and defect reporting.

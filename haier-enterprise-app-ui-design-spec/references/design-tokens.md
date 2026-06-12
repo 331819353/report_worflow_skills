@@ -4,7 +4,7 @@ Source: "海尔集团企业应用 UI 设计规范（Web端）", offline capture.
 
 Purpose: this file preserves the concrete color, typography, spacing, size, shadow, grid, and layer values that must not be summarized away. Use it as the first reference when producing implementable design specs.
 
-Scope: common Haier enterprise application UI. For report/dashboard-specific layout and chart/table decisions, use report-design skills and inherit these tokens only as the Haier UI baseline.
+Scope: Haier enterprise application UI, including report/dashboard applications as an inherited baseline. For report/dashboard-specific layout and chart/table decisions, use report-design skills after these tokens are accounted for.
 
 ## Color Tokens
 

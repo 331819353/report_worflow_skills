@@ -15,20 +15,22 @@ Use `$report-visual-layout-design` for full page layout decisions; use this skil
 
 | Need | Read |
 | --- | --- |
+| Preflight understanding before implementation/repair/acceptance | `$quality-gate-validation` `references/preflight-understanding-gate.md` |
 | Size source map | `references/01-size-reference-map.md` |
 | Parent layout references | `$report-visual-layout-design` references: `block-size-constraints.md`, `grid-containers.md`, `block-composition.md`, `layout-acceptance-gates.md` |
 
 ## Workflow
 
-1. Identify viewport targets, grid system, parent blocks, child components, fixed-height surfaces, and density.
-2. Calculate usable width/height for the block before deciding chart/table/KPI composition.
-3. Check row count, header/filter/toolbar/legend/footer/state masks, gaps, padding, line-height, and scroll areas.
-4. Decide whether to enlarge, split, move to drawer/fullscreen, paginate, scroll, or reduce component density.
-5. Require DOM overflow checks when code or URL exists.
+1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name affected blocks, child component families, viewport targets, hard constraints, missing evidence, and start decision.
+2. Identify viewport targets, grid system, parent blocks, child components, fixed-height surfaces, and density.
+3. Calculate usable width/height for the block before deciding chart/table/KPI composition.
+4. Check row count, header/filter/toolbar/legend/footer/state masks, gaps, padding, line-height, and scroll areas.
+5. Decide whether to enlarge, split, move to drawer/fullscreen, paginate, scroll, or reduce component density.
+6. Require DOM overflow checks when code or URL exists.
 
 ## Required Output
 
-- Target viewport and block/container size budget.
+- Preflight understanding result when the work is implementation/repair/acceptance, plus target viewport and block/container size budget.
 - Fit decision for each dense block: fit, enlarge, split, scroll, drawer/fullscreen, or blocked.
 - Overflow/cropping risks and required DOM/runtime checks.
 - Handoff to component/table/chart skills when internal fit rules are needed.
@@ -36,5 +38,6 @@ Use `$report-visual-layout-design` for full page layout decisions; use this skil
 ## Quality Gate
 
 - Do not approve a block only because it looks acceptable at one viewport.
+- Do not approve or edit a layout before identifying affected child component families and their owning chart/table/filter/placement skills.
 - Fixed-height KPI/card/navigation/table areas need explicit padding, line-height, gap, and overflow checks.
 - Dense charts and tables need enough reserved area for labels, axes, legends, pagination, and states.

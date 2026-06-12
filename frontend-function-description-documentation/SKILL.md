@@ -19,7 +19,7 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 - Read `references/handoff-quality-checklist.md` before finalizing the document.
 - Read `$code-change-ledger-management` and changed-file sidecar ledgers when the function description must include feature inventory, code ranges, modified content, or version traceability.
 - Read `$metric-number-display-contract` when documenting metric units, percentage/rate scaling, rounding, tooltip/export precision, or formatter ownership.
-- Read `$haier-enterprise-app-ui-design-spec` when documenting common enterprise application pages so testers can verify page shell, standard components, states, feedback, and cross-platform behavior against the company UI baseline.
+- Read `$haier-enterprise-app-ui-design-spec` when documenting Haier/enterprise application pages, including report applications, so testers can verify page shell, standard components, tokens, typography, color, spacing, states, feedback, brand/logo, and cross-platform behavior against the company UI baseline.
 - Read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and relevant report guideline reference(s) when documenting report/dashboard/BI/data-screen/analysis pages so testers can verify metric口径, layout hierarchy, chart/table formatting, filters, states, performance, export, and acceptance.
 
 ## Inputs
@@ -36,7 +36,7 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
    List pages, routes, menus, tabs, drawers, modals, exports, and major components included in the current frontend delivery.
 
 2. Classify the UI/design baseline.
-   Mark each page/module as common enterprise app, report/dashboard, or mixed, and record the matching baseline as part of the test and acceptance basis.
+   Mark each page/module as Haier/enterprise app, report/dashboard, or mixed. For Haier/enterprise report pages, record both inherited Haier application baseline and report-specific baseline as part of the test and acceptance basis.
 
 3. Extract functional behavior.
    For each page/module, describe user purpose, visible controls, control semantics, filters, data display, interactions, drilldowns, refresh, export/download, empty/error/loading states, and permission behavior.
@@ -66,7 +66,7 @@ Produce the function description using the standard frontend function document s
 - Testers can derive test cases from the function description without rereading source code.
 - Feature inventory and code ranges are sourced from sidecar code ledgers when code changed; missing ledgers are listed as gaps.
 - Each data-backed feature names its provider, source file, SDK call, endpoint, or document section.
-- Each page/module states whether the common enterprise app baseline, report development baseline, or both are the acceptance basis.
+- Each page/module states whether the Haier/company application baseline, report development baseline, or inherited dual baseline is the acceptance basis.
 - Filters, interactions, permissions, edge states, and exports are not omitted.
 - Control semantics are documented: perspective switches, global filters, local filters, drilldown params, and schema impact.
 - Navigation metric lineage is documented for perspective percentages, rankings, and status lights, and dynamic KPI values are not described as filter option metadata.
