@@ -60,15 +60,17 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 5. Copy or merge the full template into the target.
 6. Keep shell-owned behavior in template config/data/action registries and widget registries.
 7. Preserve native template filter surfaces; configure `filters[]`, data sources, empty-filter values, resolvers, and widget bindings instead of adding a duplicate filter bar.
-8. Before editing copied template source, read/create the sidecar code ledger through `$code-change-ledger-management`; append version entries after edits.
-9. Validate chart/table/component fidelity through owning component references when widgets are added or changed.
-10. Run template validation, build, and dev/preview startup when a local URL is required.
+8. Declare control ownership before adding UI controls. Default: template owns page/global filters, refresh, download/export, topbar actions, logo/title/navigation, and route-level toolbar; widgets own only current-component local filters, drill/detail links, and component-scoped micro actions. If a business component must own a normally shell-owned control, set `controlOwnership: "component"` or an equivalent explicit decision and disable/hide the matching template control.
+9. Before editing copied template source, read/create the sidecar code ledger through `$code-change-ledger-management`; append version entries after edits.
+10. Validate chart/table/component fidelity through owning component references when widgets are added or changed.
+11. Run template validation, build, and dev/preview startup when a local URL is required.
 
 ## Required Output
 
 - Selected template ID and reason.
 - Compatibility notes for display theme, pattern cards, report decision path, and navigation depth.
 - Shell decisions: title, logo, navigation, native filters, toolbar, controls.
+- Control ownership matrix: refresh, download/export, copy/share, global filters, local filters, period/date controls, toolbar actions, and any disabled template controls.
 - Asset copy/merge path and files/extension points changed.
 - Data binding mode and filter-to-widget binding proof.
 - Empty-filter configuration and aggregate-row key policy when filters or data contain all/total/synthetic options.
@@ -80,8 +82,10 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not choose custom development when a bundled template can satisfy the requirement.
 - Do not choose a nav template unless multiple substantial nav pages are implemented.
 - Do not add duplicate shell, filter bar, toolbar, or navigation layers over existing template slots without an explicit redesign decision.
+- Do not render duplicate refresh, download/export, copy/share, period/date, global-filter, or toolbar controls in business widgets when the selected template already owns those controls. Duplicate visible controls are `VIS-DUPLICATE-CONTROL` or `RPT-SHELL-DUPLICATE` unless component ownership is explicitly declared and the corresponding template control is disabled/hidden.
 - Template `filters[]` is for horizontal constraints; schema-changing perspectives belong in nav/page/route/tab/segment/perspective state.
-- Template data sources must declare or inherit configurable `emptyFilterValues`; aggregate/subtotal rows must use a distinct `aggregateValue`, `rowRole`, or typed key and should not use `all` as a business primary key.
+- Template data sources must declare or inherit configurable `emptyFilterValues`; aggregate/subtotal rows must use a distinct `aggregateValue`, `rowRole`, or typed key and must not use `all` as a business primary key unless an upstream legacy contract is isolated, adapted, and downgraded from ready.
 - Standard chart/table widgets must use their declared renderer and data contract.
+- Template validation scripts or config contracts do not replace runtime proof. Widget contracts such as `compositePanelContract`, `analysisInsightContract`, chart/table option contracts, and control ownership must map to DOM/CSS/renderer/browser evidence before readiness.
 - Changed copied-template source files require code-ledger read/create evidence and post-change version entries.
 - Load `template-routing-and-implementation-gates.md` before selecting, copying, editing, or accepting bundled report templates.

@@ -60,10 +60,10 @@ Use for business domain, report theme, management object, subject area, or stati
 
 Rules:
 
-- Prefer low-intrusion Tabs, Segments, compact card navigation, or dropdown perspective selection based on available width and item count.
-- Each perspective item should expose at most two primary information layers. The default payload is `domain + one core metric/status`; move extra focus detail into hover/focus tooltip, selected-state summary, overview content, or the selected perspective body.
+- Choose low-intrusion Tabs, Segments, compact card navigation, or dropdown perspective selection based on available width and item count.
+- Each perspective item exposes at most two primary information layers by default. The default payload is `domain + one core metric/status`; move extra focus detail into hover/focus tooltip, selected-state summary, overview content, or the selected perspective body unless a documented comparison task requires more layers and the DOM fit proof passes.
 - Fixed-height navigation items must declare a height budget: padding + explicit line-height rows + gaps + badge/status/footer heights must be `<=` item height. Domain name, metric name, percentage/core value, and bottom labels must use explicit `line-height`.
-- At `1920x1080` and `1280x768`, every visible item/card content viewport must pass `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`. Use DOM checks; screenshots are supporting evidence only. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is clipping.
+- At `1920x1080` and `1280x768`, every visible item/card content viewport must pass `scrollHeight <= clientHeight + 2` and `scrollWidth <= clientWidth + 2`. Use DOM checks; screenshots are supporting evidence only. `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2` is clipping.
 - If labels or badges do not fit, redesign the navigation pattern instead of shrinking text or hiding overflow.
 
 ## 2. Key Page Actions

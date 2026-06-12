@@ -62,8 +62,9 @@ If the request is vague design improvement rather than implementation, route fir
 11. Before every non-trivial source edit, renderer choice, HTML/sample conversion, data-binding, or readiness decision, run the action reflection loop from `$quality-gate-validation` `references/preflight-understanding-gate.md`; revise or route when the action conflicts with constraints or design reasonableness.
 12. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
 13. Use component/layout/design-system skills when visual, metric, chart/table, filter, component placement, state, or design baseline behavior is touched; use the specific chart/table/filter/placement front-door skill when those surfaces are affected.
-14. Append code-ledger version entries after edits.
-15. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
+14. For UI/layout/chart/component edits, convert the owning-skill rules into implementation proof obligations before coding and keep source hooks available for QA: semantic DOM roles/selectors, CSS/computed-style anchors, ECharts/S2 option fields, control ownership config, overflow selectors, screenshot/crop targets, and non-default states.
+15. Append code-ledger version entries after edits.
+16. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
 
 ## Required Output
 
@@ -76,6 +77,7 @@ If the request is vague design improvement rather than implementation, route fir
 - Vue3 sample-architecture alignment when applicable: directory placement, Axios/request pattern, env mode, route/store/component ownership, and build commands.
 - Changed files, code-ledger proof, and verification commands.
 - Data completeness and control semantics proof for filters/perspectives.
+- UI proof obligations for changed surfaces: KPI alignment/CSS cascade, template/component control ownership, fixed-height overflow, chart/table option evidence, contract-to-DOM/CSS/renderer mapping, screenshot/crop targets, and non-default state coverage.
 - UI baseline inheritance applied: Haier company UI baseline and report-specific baseline when the target is a Haier/enterprise report surface, plus component/layout/design exceptions.
 - Runtime QA result, URL or exact blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
@@ -91,6 +93,8 @@ If the request is vague design improvement rather than implementation, route fir
 - Do not leave production paths on unapproved mocks, fake timers, generated rows, or demo-only SDKs.
 - Do not claim filter integration until option data, business rows, required fields, default/non-default states, and resolver/API branches are proven or recorded as gaps.
 - Standard ECharts requirements need ECharts-owned options/series/runtime behavior, not hand-authored chart marks plus an import.
+- Do not implement component contracts as config-only fields. Contracts such as `compositePanelContract`, `analysisInsightContract`, KPI placement metadata, and chart/table contracts must have matching DOM/CSS/renderer behavior and runtime proof hooks; otherwise readiness is `partial` with `LAZY-CONTRACT-THEATER`.
+- Do not duplicate template-owned refresh, export/download, copy/share, global filters, period/date, or toolbar controls inside business components unless control ownership is explicitly moved and the template counterpart is disabled/hidden.
 - When an upstream HTML prototype contains SVG/canvas/DOM charts, treat them as source evidence only; do not port those hand-authored marks into frontend standard chart components. Rebuild them as ECharts data-driven charts or record an approved custom-diagram exception before editing.
 - Report interfaces must preserve metric口径, numeric display contracts, data story, filter/drilldown/export context, trust details, realistic data states, and `%` wording for Chinese rate/change labels unless explicitly overridden.
 - Do not mark frontend work ready when governed report metrics are formatted through scattered `toFixed`, `Math.round`, `parseInt`, string slicing, ad hoc `%` concatenation, or component-local decimal assumptions instead of `$metric-number-display-contract`.

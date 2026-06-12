@@ -9,6 +9,7 @@ Detailed governance gates moved out of `SKILL.md`. Load this before accepting a 
 - Do not allow generic "modern SaaS", "高级科技感", purple-blue gradients, glass cards, glow buttons, floating decorative assets, oversized radius, or abstract AI imagery as default report styles unless an approved source explicitly requires them.
 - Do not accept empty marketing/product copy such as "赋能", "一站式", "重新定义", "智能化", "无缝", or "提升效率" without concrete user action, data object, system behavior, condition, or evidence.
 - Do not accept a reusable standard that optimizes only first-screen beauty while omitting responsive behavior, edge states, accessibility, data density, and engineering token/reuse rules.
+- Do not accept a reusable standard that leaves high-risk rules in advisory wording without strength classification. Rules affecting data correctness, metric trust, renderer ownership, filter/query/export/permission scope, runtime layout fit, overflow/clipping, accessibility, state coverage, or readiness evidence must be `MUST/fail` with proof obligations. Advisory `SHOULD` rules must name the allowed exception and evidence required to take it.
 - Do not accept implementation-ready component standards that define only colors, font sizes, radii, and shadows while omitting internal placement algorithms for element position, alignment, coordinates, size tiers, and state geometry.
 - Do not accept a reusable report standard that merges page/global filters and component-internal local filters into one vague filter rule. Component-internal local filters must be current-component scoped, use `2-4` short-option capsules by default, collapse to dropdown when options/space exceed budget, and never overlay or compress the primary value/plot/table.
 - Do not accept reusable Analysis & Insight component standards that treat report conclusions,洞察,异常说明,归因,建议,风险提示,口径说明,数据质量说明,预测说明,图表标注,解释型空态,权限/无结果/延迟说明 as generic text. They must define subtype taxonomy, `analysisInsightContract`, conclusion-before-evidence structure, evidence/action/trust/source/freshness fields, local-filter scope, copy length budgets, placement algorithms, visual restraint, responsive fallback, and state geometry.
@@ -45,6 +46,7 @@ Detailed governance gates moved out of `SKILL.md`. Load this before accepting a 
 ## Quality Checklist
 
 - The output is reusable across reports, not a single-page style note.
+- Rule strength is explicit: `MUST/fail` rules have proof methods and failure IDs; `SHOULD/exception-required` rules name exception conditions; `MAY/optional` rules do not block readiness.
 - Tokens distinguish semantic roles rather than one-off colors.
 - The spec separates inherited company/template rules, report extensions, and project exceptions.
 - The anti-AI design gate passes or remaining `AI-*` findings are recorded with owner, severity, and remediation.

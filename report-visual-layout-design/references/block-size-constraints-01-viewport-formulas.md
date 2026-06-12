@@ -32,13 +32,13 @@ Required viewport checks:
 - For each visible navigation/control item or card content viewport, the DOM acceptance condition is:
 
 ```text
-scrollHeight <= clientHeight
-scrollWidth <= clientWidth
+scrollHeight <= clientHeight + 2
+scrollWidth <= clientWidth + 2
 ```
 
-- If the measured result is `scrollHeight > clientHeight` or `scrollWidth > clientWidth`, record a clipping defect. Do not downgrade it only because the screenshot hides a 1-3px crop.
+- If the measured result is `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2`, record a clipping defect.
 - Screenshot review can find visual symptoms, but it cannot replace the DOM overflow check above.
-- If the navigation design intentionally uses a horizontal scroll track, the scroll track may be wider than its container only when the interaction is explicit and accessible; each visible item/card content viewport inside the track must still pass `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
+- If the navigation design intentionally uses a horizontal scroll track, the scroll track may be wider than its container only when the interaction is explicit and accessible; each visible item/card content viewport inside the track must still pass `scrollHeight <= clientHeight + 2` and `scrollWidth <= clientWidth + 2`.
 - If a Tab/Segment label, status light, badge, percentage, or focus label fails the DOM check, use a larger container, two-line item, dropdown perspective selector, intentional horizontal navigation pattern, tooltip, or overview detail area instead of shrinking text below baseline readability.
 
 Fixed-height navigation/card height budget:

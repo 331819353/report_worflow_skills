@@ -55,6 +55,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Header/navigation/filter/toolbar/brand structure.
 - `8 * N` parent-block grid and internal sub-block plan.
 - Block sizing rationale, state plan, responsive plan, and downstream component/template handoffs.
+- Proof obligations for implementation-ready layout: legal grid spans, filter/control ownership, fixed-height overflow checks, first-viewport answer, component handoff, screenshot/DOM evidence, and exception conditions for advisory layout defaults.
 - Layout risks, `DESIGN-*`/`RPT-*`/`VIS-*` findings, and readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
@@ -65,6 +66,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Layout must be driven by task, data density, business priority, state coverage, and next action, not decorative polish.
 - Report pages must expose metric tree, diagnostic path, detail/action route, and trust/source/version placement or explicit scoped gaps.
 - Template-native filter surfaces must be reused unless a template-level redesign is explicitly requested.
-- Fixed-height navigation/cards/KPI strips need padding, explicit line-height, gap, and DOM overflow checks at `1920x1080` and `1280x768`.
+- Fixed-height navigation/cards/KPI strips need padding, explicit line-height, gap, and DOM overflow checks at `1920x1080` and `1280x768` using `scrollHeight <= clientHeight + 2` and `scrollWidth <= clientWidth + 2`, or a declared visible scroll/disclosure strategy.
+- Layout defaults such as block composition, first-level navigation density, and template filter reuse are not optional polish when they affect readability, clipping, or shell consistency. Treat them as `MUST/fail` unless an explicit business/template exception and proof are recorded.
 - Dense tables/charts/diagrams need enough block area or a scroll/fullscreen/drawer/fallback strategy.
 - Load `layout-acceptance-gates.md` before marking a layout ready for implementation or acceptance.

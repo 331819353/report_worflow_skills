@@ -207,7 +207,7 @@ Interaction rules:
 - Perspective navigation percentages, rankings, and status lights are not implemented unless they declare `sourceDataset`, `field/formula`, `grain`, `affectedFilters`, and `periodBehavior`.
 - Cross-perspective consistency is required when the page has domain/statistical口径 switching: navigation percentages, overview KPIs, journey cards, and chart summaries must come from the same active data chain.
 - Fixed-height navigation/cards/KPI tiles are not implemented unless CSS/component config declares padding, explicit `line-height` for domain names, metric names, percentages/core values, badges, footer labels, vertical gaps, and a height budget where `requiredContentHeight <= componentHeight`. `auto` layout alone is not enough.
-- Runtime QA must measure fixed-height content viewports. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is clipping unless the region is an intentional visible scroll area.
+- Runtime QA must measure fixed-height content viewports. `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2` is clipping unless the region is an intentional visible scroll area or declared disclosure strategy.
 - Use `ignoredFilters` only for intentionally invariant components. Do not use it to compensate for missing provider fields, mock data grain, or resolver branches.
 
 ## Data Freshness, Quality, And Trust

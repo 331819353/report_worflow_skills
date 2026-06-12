@@ -11,7 +11,9 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 - Implementation-ready metric cards must also follow `12-internal-placement-algorithms.md`: declare `W`, `H`, `P`, `CW`, `CH`, the card content origin, the main visual center, and every slot's x/y, width, height, alignment, and responsive fallback.
 - Cards in the same group share height, padding, value baseline, unit placement, and status position.
 - Fixed-height KPI cards must declare a height budget before style acceptance: padding + label line-height + value line-height + comparison/status/footer line-heights + gaps must be `<=` card body height. The value, label, unit, trend, and footer rows all need explicit `line-height`.
-- Centering must be proven with the actual rendered value group, not only with the allocated grid row. For default centered KPI cards, `abs(valueGroupRect.centerY - valueAnchorViewport.centerY) <= 8px`; otherwise record `VIS-KPI-VALUE-OFFCENTER`. `valueAnchorViewport` is the card body after removing the reserved title/filter/footer bands, or the declared primary value zone for wide/split cards.
+- Centering must be proven with the actual rendered value group, not only with the allocated grid row. For default centered KPI cards, `abs(valueGroupRect.centerX - valueAnchorViewport.centerX) <= 8px` and `abs(valueGroupRect.centerY - valueAnchorViewport.centerY) <= 8px`; otherwise record `VIS-KPI-VALUE-OFFCENTER`. `valueAnchorViewport` is the card body after removing the reserved title/filter/footer bands, or the declared primary value zone for wide/split cards.
+- Implementation-ready KPI cards should expose stable semantic selectors such as `data-ui-role="kpi-card"`, `data-ui-role="kpi-value-anchor"`, `data-ui-role="kpi-value"`, and `data-ui-role="kpi-unit"`, or documented project equivalents. If only generic classes such as `.metric-number` exist, QA must inspect computed styles and cascade sources before passing alignment.
+- Template/global CSS cannot silently override the KPI value anchor. Rules such as `.metric-number { text-align: right; }`, `justify-content: flex-end`, `align-items: flex-end`, `margin-left: auto`, or absolute right anchoring fail centered KPI QA unless a component-local value-anchor rule overrides them and the measured X/Y center checks pass.
 - Distinguish the value slot from the value glyph. The value slot still owns at least 40% of the main visual height, and the rendered primary numeral glyph should normally occupy `22-28%` of the same body height for standard/enhanced primary KPIs. If the glyph is smaller while empty space remains, increase the value font before adding or enlarging auxiliary copy.
 - Do not use `align-items: baseline` as the vertical positioning strategy for the whole KPI value row or value slot. Use `display: grid; place-items: center`, flex with `align-items: center`, or an equivalent centered slot. Baseline alignment is allowed only inside the already-centered `value + unit` group to fine-tune the unit relative to the numeral.
 - Clickable KPI cards need hover, active, selected, loading, and disabled states when applicable.
@@ -111,17 +113,20 @@ Value anchor DOM contract:
 ```text
 bodyRect = measured card body viewport
 valueSlotRect = declared value slot
-valueGroupRect = union(.metric-value, .metric-unit) or equivalent value+unit group
-valueGlyphRect = measured .metric-value text box
+valueGroupRect = union([data-ui-role="kpi-value"], [data-ui-role="kpi-unit"]) or project-equivalent value+unit group
+valueGlyphRect = measured [data-ui-role="kpi-value"] text box or project-equivalent primary numeral box
+computedStyleProof = value row/value glyph text-align, display, justify-content, align-items, margin-left/right, position, and matched CSS rule/source when inspectable
+centerDeltaX = abs(valueGroupRect.centerX - valueAnchorViewport.centerX)
 centerDeltaY = abs(valueGroupRect.centerY - valueAnchorViewport.centerY)
 
 valueSlotRect.height >= bodyRect.height * 0.40
+centerDeltaX <= 8px
 centerDeltaY <= 8px
 valueGlyphRect.height >= bodyRect.height * 0.22 for primary standard/enhanced cards
 valueGlyphRect.height <= valueSlotRect.height * 0.72
 ```
 
-If `centerDeltaY > 8px`, fix the value slot alignment before tuning colors, shadows, icons, or auxiliary text. If the value group is centered but the number looks weak, scale the primary value font within the fit limits before adding secondary explanation.
+If `centerDeltaX > 8px` or `centerDeltaY > 8px`, fix the value slot alignment and any inherited template/global CSS before tuning colors, shadows, icons, or auxiliary text. If the value group is centered but the number looks weak, scale the primary value font within the fit limits before adding secondary explanation.
 
 ## Component-Internal Local Filter
 

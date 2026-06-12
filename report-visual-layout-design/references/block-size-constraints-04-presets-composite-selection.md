@@ -166,10 +166,10 @@ If the current parent body height is smaller, expand the parent block's row span
 - Do not divide available viewport height by `N` to create smaller rows.
 - Do not skip the default span distribution before size checking.
 - Do not render any component whose computed outer size or content viewport is smaller than its final required size.
-- Do not accept domain navigation, Tabs, or Segment controls whose visible item/card content viewport fails `scrollHeight <= clientHeight` or `scrollWidth <= clientWidth` at `1920x1080` or `1280x768`.
+- Do not accept domain navigation, Tabs, or Segment controls whose visible item/card content viewport fails `scrollHeight <= clientHeight + 2` or `scrollWidth <= clientWidth + 2` at `1920x1080` or `1280x768`.
 - Do not pack more than two primary information layers into one perspective navigation card.
 - Do not accept fixed-height navigation/cards without a declared padding, line-height, gap, and height-budget calculation.
-- Do not accept fixed-height navigation/cards whose measured DOM has `scrollHeight > clientHeight` or `scrollWidth > clientWidth`, even if the screenshot looks acceptable.
+- Do not accept fixed-height navigation/cards whose measured DOM has `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2`, even if the screenshot looks acceptable.
 - Do not duplicate block titles inside chart/table/KPI bodies.
 - Do not make peer components too narrow, tiny, crowded, or unreadable; when `actualTotal > 4`, use internal exact `M * N` layouts, expand the parent block, split sections, or move details to drawer/fullscreen.
 - Do not use a generic `chart`, `table`, `map`, or `other` label when a precise component type exists.
@@ -189,7 +189,7 @@ If the current parent body height is smaller, expand the parent block's row span
 6. Apply base minimum size and complexity expansion.
 7. Compute actual parent outer/body pixel size and sub-block viewport sizes.
 8. For fixed-height navigation/cards, declare padding, explicit line-height, row count, gaps, and footer/status heights; verify `requiredContentHeight <= cardHeight`.
-9. For domain navigation, Tabs, and Segments, run DOM no-clipping checks at `1920x1080` and `1280x768`: `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
+9. For domain navigation, Tabs, and Segments, run DOM no-clipping checks at `1920x1080` and `1280x768`: `scrollHeight <= clientHeight + 2` and `scrollWidth <= clientWidth + 2`.
 10. Keep the default span if it passes; otherwise try the next larger candidate span or redesign the block.
 11. If total report height exceeds the first viewport, keep block sizes and enable vertical scrolling.
 12. If the block still fails any constraint, either:

@@ -68,6 +68,8 @@ Primary shared gates:
 - Gate(s) executed and evidence checked.
 - Action reflection decisions when the gate covers implementation, repair, renderer choice, HTML/sample conversion, or readiness judgment.
 - Anti-laziness findings or explicit no-finding result when the work is implementation, repair, QA, acceptance, or handoff.
+- Proof obligations and pass/fail evidence when visual/layout/component contracts are part of the readiness claim.
+- Rule strength audit when a standard/spec contains advisory wording that may affect correctness, runtime fit, renderer ownership, data trust, filters, permissions, accessibility, or readiness.
 - Findings table with ID, severity, expected, actual, impact, owner, required action, and readiness impact.
 - Readiness result: `ready`, `partial`, or `blocked`.
 - Confirmation questions only for decisions that block affected work.
@@ -78,6 +80,8 @@ Primary shared gates:
 - Do not mark non-trivial implementation, repair, QA, or acceptance work `ready` when the affected surfaces, owning skills, hard constraints, and start decision from `preflight-understanding-gate.md` are missing.
 - Do not mark non-trivial implementation, repair, QA, or acceptance work `ready` when the work passed initial preflight but skipped action reflection before later design/code/QA decisions that changed constraints, renderer, source authority, or visual source.
 - Do not mark non-trivial work `ready` while blocking `LAZY-*` findings remain, or when the only evidence is a generic statement such as "checked", "optimized", "looks good", or "implemented".
+- Do not mark visual/layout/component contract work `ready` when contracts exist only in prose/config and lack matching DOM/CSS/renderer/browser evidence. Use `LAZY-CONTRACT-THEATER` or a domain `VIS-*`/`RPT-*` finding.
+- Do not let advisory wording hide a required constraint. If a `should`/`recommended`/`prefer`/`default` rule affects correctness, runtime fit, renderer ownership, data trust, filter/query/export/permission behavior, accessibility, or readiness evidence, it must be treated as `MUST/fail` or documented as `SHOULD/exception-required` with evidence.
 - Do not mark Haier/enterprise report or dashboard UI `ready` when report-specific checks pass but inherited Haier application UI baseline checks are missing or treated as optional.
 - Do not mark `ready` when governed report metrics lack numeric display contracts or show inconsistent units, decimals, percent scale, rounding, tooltip/export precision, null/zero/denominator-zero behavior, or formatter ownership across design/API/frontend/backend/export.
 - Do not use this skill to restate full domain rules; cite the loaded references and summarize the blocking evidence.

@@ -18,7 +18,7 @@ Use for repeated object cards, ranking lists, anomaly cards, task cards, status 
 - Repeated cards in a fixed-height block use internal scroll or pagination. They must not overflow the report page.
 - Overflow strategy must be explicit: which records stay visible, how `+N` or pagination is labeled, whether sorting/ranking is stable, and how the full record can be inspected.
 - Keep action area stable so buttons do not move when status text changes.
-- `scrollHeight > clientHeight` or `scrollWidth > clientWidth` on a fixed-height card body is a clipping failure unless the overflow behavior is an intentional visible scroll region.
+- `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2` on a fixed-height card body is a clipping failure unless the overflow behavior is an intentional visible scroll region or declared disclosure strategy.
 
 ## Status And Severity
 

@@ -59,8 +59,9 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 5. Run the generic anti-AI gate and report decision gate before stabilizing tokens or accepting a visual standard.
 6. Define semantic tokens and reusable rules: color roles, typography, spacing/grid, radius, border, shadow, density, icon size, z-index, responsive breakpoints, states, accessibility, and motion limits.
 7. Define page, component, visualization, numeric precision/display, filter, state, performance, and handoff standards. Delegate numeric display details to `$metric-number-display-contract`; delegate implementation-ready component families to `$report-component-design-spec` and `$report-component-style-design`.
-8. Define governance: stable vs experimental rules, allowed variants, deprecated patterns, exception process, versioning, migration status, owners, and review checklist.
-9. Route implementation or remediation to layout, component, frontend, runtime QA, testing, or template skills.
+8. Classify rule strength before acceptance: `MUST/fail` for correctness/trust/runtime/renderer/filter/permission/export/accessibility/readiness constraints, `SHOULD/exception-required` for strong defaults that may vary by business scenario, and `MAY/optional` for enhancements. Every `MUST` gets a proof method and failure ID; every `SHOULD` gets an exception condition.
+9. Define governance: stable vs experimental rules, allowed variants, deprecated patterns, exception process, versioning, migration status, owners, and review checklist.
+10. Route implementation or remediation to layout, component, frontend, runtime QA, testing, or template skills.
 
 ## Required Output
 
@@ -69,6 +70,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Token, page-layout, component, visualization, numeric precision/display, filter, state, accessibility, interaction, and performance standards.
 - Report guideline mapping: requirements, metric dictionary, calculation口径, page hierarchy, chart/table/filter/state rules, engineering handoff, and acceptance checklist.
 - Anti-AI and report-decision gate result with `AI-*` and `RPT-*` findings or explicit pass status.
+- Rule strength matrix: `MUST/fail`, `SHOULD/exception-required`, and `MAY/optional` rules, with proof method, failure ID, and allowed exception condition for any advisory wording.
 - Governance matrix: version, owner/source, status, allowed variants, deprecated patterns, exception approval, migration impact, and review checklist.
 - Adoption or remediation plan with affected projects/components and regression evidence requirements.
 
@@ -80,5 +82,6 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not create one-off colors, spacings, hover effects, chart semantics, or component variants without semantic tokens or approved exceptions.
 - Do not accept generic "modern SaaS", "高级科技感", purple-blue gradients, glass cards, glow buttons, floating decoration, oversized radius, or abstract AI imagery as default report style.
 - Reusable standards must cover responsive behavior, edge states, accessibility, data density, numeric display contracts, exact-value access, engineering tokens, and migration impact.
+- Reusable standards must not leave high-risk rules as vague advice. Renderer ownership, filter scope, query/export/permission impact, data contracts, runtime fit, overflow, accessibility, and readiness evidence must be written as `MUST/fail` with proof obligations.
 - Report standards must preserve metric口径, metric tree/driver path, realistic data states, drilldown/detail/action, trust metadata, and industry vocabulary.
 - Load `10-design-system-acceptance-gates.md` before accepting a reusable standard, audit result, merge, or migration plan.

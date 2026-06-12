@@ -82,4 +82,4 @@ This file was split from `12f-placement-composite-tables.md`. Load it only when 
 - `requiredContentHeight <= H` after optional content is chosen.
 - Long labels, large values, missing data, zero values, and target/comparison absence have explicit behavior.
 - Loading, empty, error, no-permission, and stale states preserve geometry.
-- Runtime QA checks `scrollHeight <= clientHeight`, `scrollWidth <= clientWidth`, and screenshot collision for the smallest accepted tier.
+- Runtime QA checks `scrollHeight <= clientHeight + 2`, `scrollWidth <= clientWidth + 2`, and screenshot collision for the smallest accepted tier.

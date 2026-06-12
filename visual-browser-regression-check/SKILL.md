@@ -33,6 +33,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - URL, viewport, screenshot paths, and crop coverage.
 - Baseline diff status and thresholds when available.
 - Multimodal review status or precise blocker.
+- Proof obligation coverage when owning skills require it: component crops, DOM geometry, CSS/computed-style notes, ECharts/S2 option evidence, control ownership evidence, and non-default visual states.
 - Structured `VIS-*` findings.
 - Readiness: `ready`, `partial`, or `blocked`.
 
@@ -40,4 +41,5 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 
 - Do not mark deterministic visual regression passed without screenshot evidence and a passing baseline diff when a baseline exists.
 - Do not replace required component crops with only a full-page screenshot for dense report components.
+- Do not mark visual readiness `ready` when required owning-skill proof obligations are missing. Screenshots can support KPI alignment, overflow, chart legend position, and contract implementation, but they do not replace DOM geometry, CSS cascade, ECharts/S2 option, or control ownership checks when those are required.
 - If multimodal review is unavailable, record the blocker and keep explanatory visual review `partial` unless the task only requires deterministic regression.

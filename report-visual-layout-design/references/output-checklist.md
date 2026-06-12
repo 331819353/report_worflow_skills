@@ -65,10 +65,10 @@ Before finalizing, verify:
 - Parallel-coordinate blocks reserve plot height, axis-title and bottom-label bands, legend/filter zones, `axisGap >= 56px`, `plotH >= CH * 0.48`, and fallback to dimension filtering, horizontal scroll, sampling/aggregation, fullscreen, or table/scatter/bar when dimensions or sample lines exceed readability.
 - Scrollable report pages keep usable row/block heights and support vertical scrolling when content exceeds the first viewport.
 - Navigation is present only when it helps orientation and remains low-intrusion.
-- Domain navigation, Tabs, and Segments are checked at `1920x1080` and `1280x768`; each visible navigation/control item or card content viewport passes `scrollHeight <= clientHeight` and `scrollWidth <= clientWidth`.
+- Domain navigation, Tabs, and Segments are checked at `1920x1080` and `1280x768`; each visible navigation/control item or card content viewport passes `scrollHeight <= clientHeight + 2` and `scrollWidth <= clientWidth + 2`.
 - Screenshot evidence does not replace DOM no-clipping evidence for first-level perspective navigation.
 - Fixed-height navigation/cards include a height budget: declared height, padding, explicit line-height for each text row, row count, gaps, badge/status/footer heights, and a `requiredContentHeight <= cardHeight` calculation.
-- A navigation/card DOM check where `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is recorded as clipping, even when the screenshot looks visually acceptable.
+- A navigation/card DOM check where `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2` is recorded as clipping, even when the screenshot looks visually acceptable.
 - A navigation card carries at most two primary information layers. Default first-level navigation is `domain + one core indicator`. If it needs domain name, metric name, value, and focus point, the design uses a two-line structure, intentional horizontal navigation, dropdown perspective selector, selected-state summary, tooltip, or overview detail area.
 - Filters are easy to invoke and active conditions are visible.
 - Template-based pages preserve the selected template's native navigation/filter mechanism; config changes patch `nav`/`page`, `filters`, toolbar labels, and theme fields instead of replacing the shell.

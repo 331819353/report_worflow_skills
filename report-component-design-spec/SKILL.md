@@ -37,14 +37,16 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 4. For each component family, define anatomy, required/optional slots, data contract, metric/formula/unit/source needs, interaction contract, states, accessibility, responsive behavior, and exact-value disclosure.
 5. Define placement rules through `$report-component-placement-spec`: coordinate variables, slot ownership, main visual center, local-filter geometry, size tiers, fallback order, and state geometry.
 6. Define visual tokens and variants as semantic rules, not one-off colors or decorative effects.
-7. Add implementation handoff: ECharts/S2/Element Plus usage, config fields, API/view-model expectations, QA crops, DOM overflow checks, and version/adoption notes.
-8. Run component acceptance gates and list any gaps, deprecated patterns, or project exceptions.
+7. Classify normative rules: `MUST/fail` for data contract, renderer ownership, metric display, filter scope, layout fit, accessibility, state coverage, and readiness evidence; `SHOULD/exception-required` for recommended visual defaults or density choices; `MAY/optional` for enhancements.
+8. Add implementation handoff: ECharts/S2/Element Plus usage, config fields, API/view-model expectations, DOM/CSS/option proof hooks, QA crops, DOM overflow checks, and version/adoption notes.
+9. Run component acceptance gates and list any gaps, deprecated patterns, or project exceptions.
 
 ## Required Output
 
 - Preflight understanding result when the work is implementation/repair/acceptance, plus scope, source-of-truth hierarchy, and inherited Haier/report baselines.
 - Component-family standard matrix.
 - Per-family spec: purpose, anatomy, data contract, placement, visual tokens, states, interactions, responsive behavior, accessibility, and implementation notes.
+- Rule strength and proof matrix: `MUST/fail`, `SHOULD/exception-required`, and `MAY/optional` rules with proof method, failure ID, and exception condition.
 - Acceptance gates and QA evidence requirements.
 - Governance fields: owner, version, status, allowed variants, deprecated patterns, exceptions, and migration notes.
 
@@ -53,6 +55,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not write a component spec that only lists colors, font sizes, radius, and shadows.
 - Do not create or accept a reusable component standard before component-family scope, source-of-truth hierarchy, inherited baseline, and implementation surface are clear.
 - Do not accept a component family without business purpose, data grain, exact-value path, states, and placement rules.
+- Do not leave implementation-critical component rules as advice. Renderer ownership, data contracts, metric display, filter scope, overflow/layout fit, accessibility, and state coverage must be written as `MUST/fail` with evidence requirements.
 - Do not accept Haier/enterprise report component standards that define report-specific rules but omit inherited Haier typography, color, spacing, radius, shadow, state, and base-control tokens.
 - Do not duplicate Haier or report design-system tokens; inherit them and state only component-specific extensions.
 - Do not merge page layout rules into component specs except for the component's own parent/container assumptions.

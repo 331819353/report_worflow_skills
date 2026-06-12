@@ -59,7 +59,8 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 5. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, display budget, overflow strategy, size tiers, fallback order, and state geometry.
 6. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.
 7. Run the component acceptance gates when the output is implementation-ready or when a visual defect may hide decision evidence.
-8. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates.
+8. Convert component rules into proof obligations before acceptance: DOM semantic roles/selectors, CSS/computed-style checks, ECharts/S2 option fields, browser geometry assertions, screenshot/crop evidence, and source/config anchors for every claimed alignment, overflow, control, legend, renderer, or contract rule.
+9. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates.
 
 ## Required Output
 
@@ -67,6 +68,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Business/data contract: purpose, grain, key fields, formulas/units, numeric display contract, source/freshness, filters, exact-value path, and owner/action path.
 - Placement rules: container variables, slots, alignment, size tiers, display budget, responsive degradation, and state geometry.
 - Visual and interaction rules: tokens, labels, legends, tooltips, hover/focus, overflow strategy, disclosure, and accessibility.
+- Proof obligations: KPI alignment, duplicate controls/title ownership, overflow/clipping, chart/table option evidence, contract-to-DOM/CSS/renderer mapping, non-default states, and screenshot/crop or DOM assertion result when code/URL exists.
 - Acceptance result: `ready`, `partial`, or `blocked`, with `DESIGN-*`, `RPT-*`, `VIS-*`, or implementation gaps when relevant.
 
 ## Quality Gate
@@ -81,6 +83,8 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Metric-bearing components must declare value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter ownership; arbitrary decimals or component-local `toFixed` assumptions are not accepted.
 - KPI/metric cards must pass actual rendered value-anchor checks, not only slot allocation: the measured value+unit group is centered in the value anchor viewport, the numeral has sufficient visual scale for the card size, and auxiliary title/status/source/target content does not push the primary value off center.
 - KPI/metric card title ownership must be explicit. Do not visibly render both a block/card title and a body metric label when they normalize to the same or highly similar text; use `displayTitle` for the visible title and keep `metricName` for tooltip/export/口径 metadata unless `showBodyMetricLabel` is explicitly justified.
+- Declared component contracts are not acceptance proof by themselves. `compositePanelContract`, `analysisInsightContract`, KPI placement metadata, local-filter metadata, or chart/table contracts must map to inspectable DOM attributes/classes, CSS/computed styles, ECharts/S2 options, browser assertions, and screenshot/crop evidence when implementation or runtime is available. Otherwise record `LAZY-CONTRACT-THEATER` and keep readiness `partial`.
+- Component-local controls cannot duplicate template-owned refresh, download/export, copy/share, global filters, or topbar controls. If the template owns the shell controls, component specs must either remove the duplicate controls or cite an explicit `controlOwnership: "component"` decision with the template control disabled/hidden.
 - Standard ECharts charts must be implemented with ECharts-owned options/series/runtime behavior; do not hand-draw standard charts while importing ECharts.
 - ECharts Cartesian charts with legends, y-axis names, axis units, target labels, or local filters sharing an edge band must declare explicit slot budgets and collision checks. `grid.containLabel` alone is not sufficient evidence for legend/axis-name safety.
 - SVG/canvas/ECharts/custom geometry must preserve aspect ratio and must not stretch, squeeze, or distort business shapes.

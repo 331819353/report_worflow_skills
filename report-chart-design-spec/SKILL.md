@@ -34,7 +34,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 5. Load `references/01-chart-reference-map.md`, then load only the chart-family visual and placement files it names.
 6. Confirm chart type is fit for the task before styling labels or colors.
 7. Define chart anatomy: title, subtitle/definition, unit, metric strip, legend, axes, plot area, labels, tooltip, local filters, footer/source, and states.
-8. Verify ECharts ownership: standard ECharts charts should use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
+8. Verify ECharts ownership: standard ECharts charts must use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
 9. Run acceptance gates before marking dense or implementation-ready charts as ready.
 
 ## Required Output
@@ -44,6 +44,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Chart choice rationale and rejected alternatives when relevant.
 - Anatomy, placement, label/legend/tooltip, density, state, and responsive rules.
 - Data contract: fields, units, precision, grain, filters, and exact-value path.
+- Option/runtime proof obligations when implementation or URL exists: renderer owner, `option`/series fields, legend/axis/grid/tooltip settings, DOM/SVG collision checks, screenshot/crop evidence, and non-default state coverage.
 - Readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
@@ -52,5 +53,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not repair or accept chart visuals before the chart family, parent container, data grain, units, renderer ownership, and affected chart anatomy are known.
 - Do not copy hand-authored chart SVG/canvas/DOM from an HTML prototype into a standard report chart implementation. Use ECharts options/series/runtime behavior, or document an explicit data-driven custom-diagram exception before implementation.
 - Do not accept labels, legends, axis names, or tooltips that overlap, truncate critical evidence, or hide units/precision.
+- Do not accept chart readiness by checking only that `legend`, `tooltip`, or `series` exists. Dense or implementation-ready ECharts charts must prove the relevant option details and rendered geometry. For a top-centered Combo legend, verify `legend.left: 'center'` or equivalent centering plus `grid.top` reserved space and measured/cropped legend position; a right-anchored legend fails unless the spec explicitly asks for it.
+- Do not leave chart-engine, data contract, axis/legend/grid/tooltip, exact-value access, state coverage, or renderer ownership as advisory language. These are `MUST/fail` constraints when the chart is implementation-ready or runtime-verifiable.
 - Do not distort geographic, radial, proportional, network, or flow geometry.
 - Do not mark chart work ready without state handling for loading, empty, error, no-permission, stale, and dense data.

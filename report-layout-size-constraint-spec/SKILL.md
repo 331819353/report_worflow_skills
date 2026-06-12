@@ -30,13 +30,14 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 3. Calculate usable width/height for the block before deciding chart/table/KPI composition.
 4. Check row count, header/filter/toolbar/legend/footer/state masks, gaps, padding, line-height, and scroll areas.
 5. Decide whether to enlarge, split, move to drawer/fullscreen, paginate, scroll, or reduce component density.
-6. Require DOM overflow checks when code or URL exists.
+6. Require DOM overflow checks when code or URL exists: fixed-height cards, summary/ranking blocks, KPI tiles, nav items, Composite Panels, table bodies, and compact controls must pass `scrollHeight <= clientHeight + 2` and `scrollWidth <= clientWidth + 2`, or declare an intentional visible scroll, expand/collapse, drawer/fullscreen, pagination, or split strategy.
+7. Inspect `overflow: hidden` on parent/root containers. It is allowed for decorative masks or known non-content regions, but fails acceptance when it hides decision-critical text, ranking rows, controls, legends, values, or table content without a declared disclosure path.
 
 ## Required Output
 
 - Preflight understanding result when the work is implementation/repair/acceptance, plus target viewport and block/container size budget.
 - Fit decision for each dense block: fit, enlarge, split, scroll, drawer/fullscreen, or blocked.
-- Overflow/cropping risks and required DOM/runtime checks.
+- Overflow/cropping risks and required DOM/runtime checks, including selectors, target viewports, `scrollHeight/clientHeight`, `scrollWidth/clientWidth`, overflow CSS, and pass/fail result when code or URL exists.
 - Handoff to component/table/chart skills when internal fit rules are needed.
 
 ## Quality Gate
@@ -44,4 +45,5 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not approve a block only because it looks acceptable at one viewport.
 - Do not approve or edit a layout before identifying affected child component families and their owning chart/table/filter/placement skills.
 - Fixed-height KPI/card/navigation/table areas need explicit padding, line-height, gap, and overflow checks.
+- Fixed-height summary/ranking/composite cards cannot pass with hidden overflow. They must prove content budget, pass DOM overflow checks within the `+2px` tolerance, or expose usable visible scroll, expand/collapse, pagination, drawer/fullscreen, or split behavior.
 - Dense charts and tables need enough reserved area for labels, axes, legends, pagination, and states.

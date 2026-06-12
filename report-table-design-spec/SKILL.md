@@ -33,13 +33,15 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 3. Load `references/01-table-reference-map.md`, then load only the matching visual and placement references.
 4. Define row grain, columns, header hierarchy, metrics, units, precision, sorting, filtering, pagination, fixed header/columns, and export behavior.
 5. Reserve visible space for header depth, body rows, scrollbars, pagination, summary, selection, empty/error/no-permission states, and tooltips.
-6. Verify table readability at the target viewport and density before marking ready.
+6. Convert table rules into proof obligations when implementation or URL exists: row grain, primary key/object identity, column metadata, grouped-header tree/span proof, S2/project renderer evidence, pagination/search/sort/export scope, body height/row count, overflow behavior, and state coverage.
+7. Verify table readability at the target viewport and density before marking ready.
 
 ## Required Output
 
 - Preflight understanding result when the work is implementation/repair/acceptance, plus table type and selected references.
 - Row grain, columns, header hierarchy, units/precision, and interaction contract.
 - Layout rules for width, height, rows, fixed areas, scroll, pagination, and states.
+- Proof obligations: row grain/primary key, column metadata, renderer ownership, grouped-header or pivot contract, pagination/search/sort/export scope, DOM overflow/visible-row checks, and screenshot/crop evidence when code or URL exists.
 - Readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
@@ -48,3 +50,4 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not repair or accept table visuals before row grain, primary key/object identity, column type/width/alignment metadata, and density limits are known.
 - Do not use pivot/S2 patterns when a detail table answers the task more directly.
 - Do not mark a table ready without pagination/large-result behavior and empty/error/no-permission states when data can vary.
+- Row grain, primary key/object identity, column metadata, renderer ownership, grouped-header/pivot contracts, pagination/search/sort/export scope, overflow, and state coverage are `MUST/fail` constraints for implementation-ready tables; recommended density values may vary only with a documented fit proof and fallback.

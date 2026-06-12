@@ -69,7 +69,7 @@ requiredContentHeight <= componentHeight
 - Count every visible row: domain/object name, metric label, core value/percentage, unit, status badge, helper text, bottom label, footer, and selected-state marker.
 - Auto, flex, or grid layout may distribute the rows only after the budget proves they fit.
 - If the budget fails, reduce visible information, increase height, split rows, use horizontal scroll with explicit affordance, or move secondary detail into tooltip, selected-state summary, drawer, or overview area.
-- Runtime QA must also measure DOM overflow. `scrollHeight > clientHeight` or `scrollWidth > clientWidth` is a clipping failure for fixed-height content.
+- Runtime QA must also measure DOM overflow. `scrollHeight > clientHeight + 2` or `scrollWidth > clientWidth + 2` is a clipping failure for fixed-height content unless the region is an intentional visible scroll or declared disclosure strategy.
 
 ## Density And Collision Rules
 

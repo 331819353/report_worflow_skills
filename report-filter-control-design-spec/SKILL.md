@@ -33,13 +33,15 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 3. Define option source, default value, reset behavior, cascade rule, permission-limited options, empty/no-permission state, and backend/query ownership.
 4. Place page/global filters in the page shell or template-native filter surface; place component-local filters in the component header/title-right area.
 5. Check whether filter changes affect metrics, chart series, table rows, export scope, pagination, drilldown, and cache/query context.
-6. Hand off testing cases to `$filter-linkage-completeness-test` when runtime verification is needed.
+6. Convert filter rules into proof obligations when implementation or URL exists: option-source evidence, default/non-default/reset/cascade state, query/API/provider params, export/pagination/drilldown context, template/component control ownership, and screenshot/DOM evidence for placement.
+7. Hand off testing cases to `$filter-linkage-completeness-test` when runtime verification is needed.
 
 ## Required Output
 
 - Preflight understanding result when the work is implementation/repair/acceptance, plus filter scope and ownership matrix.
 - Control type, default/reset/cascade behavior, option source, and query/API impact.
 - Placement rules for page/global and component-local controls.
+- Proof obligations: scope classification, option-source evidence, default/non-default/reset/cascade states, query/export/pagination/drilldown impact, template-native surface or component-local ownership, and runtime handoff checks.
 - Runtime test handoff items when behavior must be verified.
 
 ## Quality Gate
@@ -48,3 +50,5 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not design, repair, or accept filters before filter scope, option source, default/reset behavior, and affected component/query contracts are known.
 - Component-local filters cannot silently change page/global scope, export scope, backend aggregation, or other components.
 - Filter controls are not ready until default, non-default, empty, no-permission, reset, and cascade states are defined or explicitly blocked.
+- Template-based pages must not duplicate page/global filter surfaces. Page/global filters belong in the template-native filter trigger/panel/popover/drawer or a named redesign exception; component-local filters must prove current-component scope.
+- Advisory filter wording is not enough for readiness. Scope, source, default/reset/cascade, query/API impact, export/pagination/drilldown context, and permission behavior are `MUST/fail` constraints with proof obligations.

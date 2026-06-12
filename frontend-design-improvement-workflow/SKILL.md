@@ -38,9 +38,10 @@ This skill does not replace implementation skills. It creates the improvement ro
 5. Route page shell, navigation, grid, header/filter area, responsive, and overlap work to `$report-visual-layout-design`; route block size, height budget, fixed-card clipping, and viewport fit to `$report-layout-size-constraint-spec`.
 6. Route reusable component standards to `$report-component-design-spec`; route chart, table, and filter-specific standards to `$report-chart-design-spec`, `$report-table-design-spec`, and `$report-filter-control-design-spec`.
 7. Route implementation-ready x/y/slot/alignment work to `$report-component-placement-spec`; route mixed single-component review/repair to `$report-component-style-design`.
-8. When code or a live URL exists, require runtime screenshot/DOM/interaction evidence through `$frontend-runtime-qa-validation` before marking visual work ready.
-9. Run the anti-laziness execution gate from `$quality-gate-validation` before declaring an improvement plan, repair, QA, or readiness. Keep `LAZY-*` findings visible until source evidence, owner routing, and proof obligations are closed.
-10. Return a short action plan or execute the implementation workflow when the user asked for changes, not only advice.
+8. For runnable/report UI work, build a shared proof-obligation list before implementation or acceptance: KPI X/Y alignment and CSS cascade, template/component control ownership, fixed-height overflow/clipping, chart/table option evidence, contract-to-DOM/CSS/renderer mapping, screenshot/crop coverage, and non-default state checks.
+9. When code or a live URL exists, require runtime screenshot/DOM/interaction evidence through `$frontend-runtime-qa-validation` before marking visual work ready.
+10. Run the anti-laziness execution gate from `$quality-gate-validation` before declaring an improvement plan, repair, QA, or readiness. Keep `LAZY-*` findings visible until source evidence, owner routing, and proof obligations are closed.
+11. Return a short action plan or execute the implementation workflow when the user asked for changes, not only advice.
 
 ## Required Output
 
@@ -48,7 +49,7 @@ This skill does not replace implementation skills. It creates the improvement ro
 - Baseline inheritance: Haier company UI baseline plus report-specific baseline when the surface is a Haier/enterprise report/dashboard.
 - Page-level and component-level scope.
 - Skills/references to load next, with why each is needed.
-- Acceptance checklist: layout, component fit, data readability, states, responsive behavior, runtime evidence, and remaining gaps.
+- Acceptance checklist: layout, component fit, data readability, states, responsive behavior, runtime evidence, proof obligations, and remaining gaps.
 - Anti-laziness execution result: evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for repairs, and readiness impact.
 
 ## Quality Gate
@@ -60,4 +61,5 @@ This skill does not replace implementation skills. It creates the improvement ro
 - Do not skip组件规范 when the issue includes KPI cards, charts, tables, filters, summaries, dialogs, drawers, labels, tooltips, states, or local controls.
 - Do not leave chart/table/filter/placement requests routed only to the broad component skill when a specific front-door skill exists.
 - Do not mark a runnable UI ready without runtime evidence when code or URL is available.
+- Do not mark design improvement ready when contracts or style rules are only described in prose/config and lack matching DOM/CSS/ECharts/S2/browser evidence. Missing KPI alignment, duplicate-control ownership, fixed-height overflow, chart option, or contract-to-implementation proof keeps readiness `partial`.
 - Do not mark design improvement ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, available screenshots/source/DOM evidence was not inspected, or the output is only generic polish language.

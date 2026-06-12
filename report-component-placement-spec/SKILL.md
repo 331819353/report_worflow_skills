@@ -32,7 +32,8 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 3. Load `references/01-placement-reference-map.md`, then load only the exact placement file for that component family.
 4. Define container variables, slot rectangles, title/filter/legend/metric/plot/table/body/footer coordinates, alignment, responsive degradation, and state geometry.
 5. Pair placement with the visual/content skill for the component family, such as `$report-chart-design-spec`, `$report-table-design-spec`, or `$report-filter-control-design-spec`.
-6. Run acceptance gates before marking implementation-ready placement as ready.
+6. Convert coordinates into proof obligations when implementation or URL exists: selectors/semantic roles, slot rectangles, measured bounding boxes, overlap/overflow assertions, responsive tier evidence, and state-mask geometry.
+7. Run acceptance gates before marking implementation-ready placement as ready.
 
 ## Required Output
 
@@ -40,6 +41,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Slot and coordinate rules with size tiers and fallback order.
 - Local-filter/control placement when present.
 - State geometry for loading, empty, error, no-permission, stale, and dense data.
+- Proof obligations: selectors or semantic roles, slot rectangles, bounding-box assertions, overflow/overlap checks, responsive tier checks, and exception conditions for advisory placement defaults.
 - Readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
@@ -48,3 +50,4 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not define slot coordinates before parent container dimensions, component family, density, local controls, and state set are known.
 - Do not place local controls where they collide with title, legend, unit, metric strip, or action areas.
 - Do not accept geometry that only fits the happy path and fails state masks, long labels, or dense data.
+- Implementation-ready placement rules are `MUST/fail` when they affect alignment, overlap, overflow, state masks, local controls, chart/table/KPI evidence, or responsive fallback. Advisory defaults need explicit exception criteria and measured proof.
