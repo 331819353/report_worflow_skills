@@ -1,0 +1,4 @@
+interface:
+  display_name: "分析报告原型 Workflow"
+  short_description: "独立编排分析报告类原型，从结论先行、证据链、原因归因、影响评估、行动建议到运行QA。"
+  default_prompt: "Use $report-analysis-report-prototype-workflow to design or build an analysis report prototype with conclusion-first narrative, evidence chain, attribution, impact assessment, action recommendations, export/share/comment, and runtime QA."

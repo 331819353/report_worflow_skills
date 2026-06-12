@@ -1,0 +1,4 @@
+interface:
+  display_name: "报表原型设计思路"
+  short_description: "在画图表或写代码前梳理报表原型的用户、场景、决策动作、指标层级和分析路径，作为原报表原型 workflow 的默认思考层。"
+  default_prompt: "Use $report-prototype-design-thinking to start generic report prototype work from user, scenario, decision/action, metric layers, analysis path, component rationale, and downstream handoff notes."

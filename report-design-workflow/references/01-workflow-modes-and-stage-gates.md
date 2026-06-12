@@ -95,6 +95,22 @@ Before moving to design or implementation, write two explicit statements: `User 
 
 Do not block if missing details can be safely assumed.
 
+### Stage 0.5: Default General Prototype Design Thinking
+
+Use `$report-prototype-design-thinking` before display theme, report type, component mapping, layout, template selection, or implementation.
+
+This stage is only the generic/default thinking layer for the original workflow. Do not branch into 自助分析、指标看板、分析报告、or 明细报表 here; those are separate prototype workflow skills.
+
+Output must include:
+
+- Target user, usage scenario, business question, managed object, time scope, decision/action, and output mode.
+- Core metrics, analysis metrics, detail fields, dimensions, baselines, thresholds, and口径 gaps.
+- Analysis path and first-viewport answer.
+- Page block proposal and component/chart rationale by question.
+- Filter, drilldown, export, save/share, permission, refresh, and state requirements.
+
+Skip this stage only when the user already provides a structured prototype design brief that covers user, scenario, decision/action, metric layers, analysis path, and block-level intent.
+
 ### Hard Gate: Shell Path, Style Source, Brand Mode, Visual Mode, Brand Assets, And Sample Fidelity
 
 Run this gate before Stage 8 visual layout and before Stage 10 implementation.
@@ -214,6 +230,7 @@ Output must include:
 - Content blocks.
 - Data, filter, interaction, visual, and component needs.
 - Assumptions and missing information.
+- Prototype design thinking output from Stage 0.5, or the explicit reason it was skipped.
 
 Skip only when the user already provides a clean structured brief.
 

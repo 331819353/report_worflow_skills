@@ -25,7 +25,7 @@ This report guideline is for PC Web reports, business analysis dashboards, detai
 
 Use with:
 
-- `$report-design-workflow` for report prototype/design orchestration.
+- `$report-design-workflow` for generic report prototype/design orchestration, or the specialized prototype workflow when the user explicitly asks for 自助分析、指标看板、分析报告、or 明细报表.
 - `$report-design-system-governance` for reusable report UI standards and governance.
 - `$report-info-component-mapping` for business question to component/data/filter/interaction contracts.
 - `$report-visual-layout-design` for page structure, first viewport, card grid, filter region, and layout fit.

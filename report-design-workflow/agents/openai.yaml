@@ -1,4 +1,4 @@
 interface:
   display_name: "报表原型 Workflow"
-  short_description: "编排报表/仪表盘/大屏原型，从需求、类型、组件映射、模板、实现到运行QA和URL交付。"
-  default_prompt: "Use $report-design-workflow to orchestrate report prototype work from requirements, report type, component mapping, layout, bundled template selection, implementation, runtime QA, and URL handoff."
+  short_description: "编排报表/仪表盘/大屏原型，默认先走原型通用设计思路，再进入类型、组件映射、模板、实现、运行QA和URL交付。"
+  default_prompt: "Use $report-design-workflow to orchestrate generic report prototype work, starting with $report-prototype-design-thinking for user/scenario/decision/action, then requirements, report type, component mapping, layout, bundled template selection, implementation, runtime QA, and URL handoff."

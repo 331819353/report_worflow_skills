@@ -33,7 +33,11 @@ These are routing labels for requirement transformation, not skill names. Use th
 
 Recommend the smallest complete path.
 
-- Use `report-design-workflow` when the user explicitly wants a report/page/dashboard prototype, runnable page, screenshot-to-prototype repair, mock-data-backed demo, deployment, or preview URL.
+- Use `report-self-service-analysis-prototype-workflow` when the user explicitly wants a self-service analysis prototype: dataset selection, field panel, drag/drop dimensions and metrics, flexible filters, chart switching, saved analysis, sharing, or export.
+- Use `report-kpi-dashboard-prototype-workflow` when the user explicitly wants a KPI dashboard prototype: current-state monitoring, core KPI, target completion, YoY/MoM, trend, ranking, anomaly reminder, warning, or drilldown.
+- Use `report-analysis-report-prototype-workflow` when the user explicitly wants an analysis report prototype: conclusion-first report, topic analysis, variance/cause diagnosis, attribution, evidence chain, impact, action recommendations, comments, PDF/PPT export, or historical reports.
+- Use `report-detail-report-prototype-workflow` when the user explicitly wants a detail report prototype: row-level records, ledger/list, filters, sorting, pagination, export, reconciliation, verification, traceability, or source-document jump.
+- Use `report-design-workflow` when the user explicitly wants a generic report/page/dashboard prototype, runnable page, screenshot-to-prototype repair, mock-data-backed demo, deployment, or preview URL, and the request is not clearly one of the four specialized prototype workflows above.
 - Use `report-type-design` when the requirement is a business report and needs business type selection: status overview, analysis diagnosis, detail query, performance evaluation, review recap, anomaly monitoring, operational execution, or reconciliation traceability.
 - Use `report-info-component-mapping`, `report-visual-layout-design`, `report-prototype-template-management`, and `report-component-style-design` for prototype/detail design after the requirement is structured.
 - Use `technical-solution-workflow` when the deliverable is technical architecture, technology selection, implementation roadmap, production readiness, API inventory, data model files, data source mapping, or pending model gaps.

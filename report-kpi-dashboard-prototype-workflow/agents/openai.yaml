@@ -1,0 +1,4 @@
+interface:
+  display_name: "指标看板原型 Workflow"
+  short_description: "独立编排指标看板类原型，从核心KPI、目标达成、趋势排名、异常预警、下钻路径到运行QA。"
+  default_prompt: "Use $report-kpi-dashboard-prototype-workflow to design or build a KPI dashboard prototype with current-state decisions, KPI dictionary, targets, trends, rankings, anomaly rules, drilldowns, filters, permissions, and runtime QA."

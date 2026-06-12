@@ -35,7 +35,7 @@ Only `frozen-title-sci-fi-cockpit-template` is fixed to a full 1920*1080 screen.
 
 ## Display Theme Hints
 
-When `$report-design-workflow` supplies `displayTheme` and selected pattern cards, use them as routing evidence. Do not choose a template from display theme alone.
+When a report prototype workflow supplies `displayTheme` and selected pattern cards, use them as routing evidence. Do not choose a template from display theme alone.
 
 | Display theme | Useful template tendency | Check before choosing |
 | --- | --- | --- |

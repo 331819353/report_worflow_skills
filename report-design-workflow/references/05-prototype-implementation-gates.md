@@ -5,6 +5,7 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 ## Reinforced Constraints
 
 - When multiple artifacts influence the prototype, run `$quality-gate-validation` before locking scope, visual source, API/mock contract, or implementation target. Unresolved high-impact conflicts keep the affected scope `partial` or `blocked`.
+- Before locking report type, display theme, page layout, or template, run `$report-prototype-design-thinking` unless the input already contains a structured prototype design brief with user, scenario, decision/action, metric layers, analysis path, and block intent.
 - Before implementation, lock one workflow mode, one `displayTheme`, one primary report type, one selected reusable pattern set, one `pageShellPath`, one template/custom reason, and one writable target path. Add brand/visual mode decisions when branding, restoration, or cockpit style is in scope.
 - Do not confuse display theme with report business type. For example, a monitoring-alert display theme may still have `primaryReportType: anomaly-monitoring`, while a management-report display theme may still carry review-recap or reconciliation-traceability evidence blocks.
 - Selected pattern cards must trace into the component/data/filter/control/interaction binding matrix, API/mock handoff, or acceptance cases. Do not list pattern names as inspiration only.
@@ -34,27 +35,29 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 ## Workflow
 
 1. Confirm prototype intent and choose mode: design spec, runnable implementation, screenshot/HTML restoration, repair, or URL handoff.
-2. Normalize rough requirements with `$report-requirement-structure-extraction` when scope, users, metrics, screenshots, HTML, or acceptance rules are unclear.
-3. Classify the six-way `displayTheme` and select a small reusable pattern set from `references/04-common-display-theme-pattern-chain.md`; record rejected competing themes.
-4. Run the anti-AI design gate from `$report-design-system-governance` before layout/styling: record product context, real content, forbidden visual defaults, copy specificity, states, accessibility, and engineering readiness.
-5. Run the report decision anti-AI gate from `$report-design-system-governance`: record five decision-question answers, metric tree, metric dictionary completeness, data story, realistic data, linkage, trust/action details, and industry/report-designer checks.
-6. Run `$quality-gate-validation` when inputs conflict on scope, display theme, metric口径, visual source, API/mock contract, or implementation target.
-7. Use `$report-type-design` to choose one primary report type and any secondary local blocks.
-8. Use `$report-info-component-mapping` to produce answer atoms, selected pattern-to-component mapping, component bundles, datasets, filters, interactions, and binding matrix.
-9. Declare `pageShellPath` as `template` or `custom`; default to `template` when no hard custom/restoration/existing-shell reason exists.
-10. Use `$report-visual-layout-design` for page shell, header/navigation/native filter surface, `8 * N` grid, block sizing, and responsive layout.
-11. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
-12. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
-13. Apply `$report-design-system-governance` report guideline references as the default report baseline for metrics, charts, tables, filters, states, engineering handoff, and acceptance.
-14. Apply `$haier-enterprise-app-ui-design-spec` when the prototype also includes common enterprise app UI tokens, component rules, scene templates, or cross-platform adaptation.
-15. Before implementation or repair touches prototype source code, trigger the code-file ledger before-read step for every target file.
-16. Implement or repair the prototype in the selected target path when requested.
-17. Append code-file ledger version entries for every changed prototype source file before declaring implementation complete.
-18. Run build/start/visual QA when a runnable URL is requested and route findings through `$frontend-runtime-qa-validation`.
+2. Run `$report-prototype-design-thinking` as the default generic thinking layer. Do not branch into the four specialized prototype workflow types here.
+3. Normalize rough requirements with `$report-requirement-structure-extraction` when scope, users, metrics, screenshots, HTML, or acceptance rules are unclear.
+4. Classify the six-way `displayTheme` and select a small reusable pattern set from `references/04-common-display-theme-pattern-chain.md`; record rejected competing themes.
+5. Run the anti-AI design gate from `$report-design-system-governance` before layout/styling: record product context, real content, forbidden visual defaults, copy specificity, states, accessibility, and engineering readiness.
+6. Run the report decision anti-AI gate from `$report-design-system-governance`: record five decision-question answers, metric tree, metric dictionary completeness, data story, realistic data, linkage, trust/action details, and industry/report-designer checks.
+7. Run `$quality-gate-validation` when inputs conflict on scope, display theme, metric口径, visual source, API/mock contract, or implementation target.
+8. Use `$report-type-design` to choose one primary report type and any secondary local blocks.
+9. Use `$report-info-component-mapping` to produce answer atoms, selected pattern-to-component mapping, component bundles, datasets, filters, interactions, and binding matrix.
+10. Declare `pageShellPath` as `template` or `custom`; default to `template` when no hard custom/restoration/existing-shell reason exists.
+11. Use `$report-visual-layout-design` for page shell, header/navigation/native filter surface, `8 * N` grid, block sizing, and responsive layout.
+12. Use `$report-prototype-template-management` for default bundled-template selection, copy/merge, Vue/Vite scaffold handling, and template validation.
+13. Use `$report-component-style-design` for KPI/cards/charts/tables/drawers/complex-diagram style and readability.
+14. Apply `$report-design-system-governance` report guideline references as the default report baseline for metrics, charts, tables, filters, states, engineering handoff, and acceptance.
+15. Apply `$haier-enterprise-app-ui-design-spec` when the prototype also includes common enterprise app UI tokens, component rules, scene templates, or cross-platform adaptation.
+16. Before implementation or repair touches prototype source code, trigger the code-file ledger before-read step for every target file.
+17. Implement or repair the prototype in the selected target path when requested.
+18. Append code-file ledger version entries for every changed prototype source file before declaring implementation complete.
+19. Run build/start/visual QA when a runnable URL is requested and route findings through `$frontend-runtime-qa-validation`.
 
 ## Required Output
 
 - Workflow mode and input inventory.
+- Prototype design-thinking output, target user/scenario/decision/action, metric layers, and analysis path.
 - `displayTheme`, selected reusable pattern cards, rejected competing themes, primary report type, and core question.
 - Anti-AI design gate result: `antiAiRisk`, cause IDs, visual cliché scan, copy specificity, state/accessibility coverage, and approved exceptions.
 - Report decision anti-AI gate result: `reportDecisionRisk`, `RPT-*` causes, five decision-question answers, metric tree, data story path, realistic data proof, linkage proof, trust/action details, and industry/report-designer checks.
@@ -71,6 +74,7 @@ Detailed prototype implementation and readiness rules moved out of `SKILL.md`. L
 ## Quality Gate
 
 - Do not use this workflow without prototype/demo/page-output intent.
+- Do not skip prototype design thinking for new prototype work unless an equivalent structured design brief is already present.
 - Do not start implementation before display theme, selected pattern set, report type, binding matrix, layout, and template/custom shell decision exist.
 - Do not choose or retain pattern cards that have no mapped component, control, dataset/API, interaction, or acceptance case.
 - Do not claim readiness when unresolved AI-looking causes remain on primary surfaces: thin context, generic copy, generic SaaS/AI visuals, first-screen-only completion, missing states, missing accessibility, or sample-like engineering.

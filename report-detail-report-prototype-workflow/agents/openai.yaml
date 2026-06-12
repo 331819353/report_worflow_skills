@@ -1,0 +1,4 @@
+interface:
+  display_name: "明细报表原型 Workflow"
+  short_description: "独立编排明细报表类原型，从行粒度、筛选、表格字段、排序分页、导出、追溯到运行QA。"
+  default_prompt: "Use $report-detail-report-prototype-workflow to design or build a detail report prototype with row grain, filters, table fields, sorting, pagination, export scope, permissions, traceability, states, and runtime QA."
