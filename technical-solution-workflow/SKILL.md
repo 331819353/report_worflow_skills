@@ -1,6 +1,6 @@
 ---
 name: technical-solution-workflow
-description: "运行技术方案阶段，把需求、业务目标、指标、数据源、原型数据契约或mock转成专业可评审的技术方案。覆盖系统边界、技术架构设计、技术选型/ADR、数据架构、API与集成架构、运行时模型、性能/安全/可观测/部署回滚、实施路线、API清单、数据模型、指标治理、权限矩阵、数据质量规则、缺口台账、版本链路和后续交付门禁。用户提到技术方案、技术架构、架构设计、技术选型、实现路径、实施方案、默认技术栈、Vue3/TypeScript/ECharts/Element Plus/Axios/AntV S2、Python/Flask/连接池/Redis、接口规划、API清单、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、数据建模、字段映射、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、筛选前数据完整性、指标口径、权限矩阵、质量规则、开发前梳理、mock转接口时触发。"
+description: "运行技术方案阶段，把需求、业务目标、指标、数据源、原型数据契约或mock转成可评审技术方案。用户提到技术方案、技术架构、架构设计、技术选型/ADR、实现路径、实施方案、默认技术栈、Vue3/TypeScript/ECharts、Python/Flask、Java/Spring Boot、连接池/Redis、接口规划/API清单、数据建模/字段映射、快照接口、响应字段兼容、新增字段命名、筛选前数据完整性、指标口径、权限矩阵、质量规则、开发前梳理、mock转接口时触发。"
 ---
 
 # Technical Solution Workflow
@@ -25,14 +25,19 @@ It does not implement backend APIs, frontend pages, SQL jobs, or tests unless th
 | --- | --- |
 | Requirement normalization | `$report-requirement-structure-extraction` |
 | Python Flask SSO multi-database backend baseline | `$python-flask-sso-multidatabase-backend` |
+| Java Spring Boot backend baseline | `$java-springboot-backend-development` |
 | UI/design baseline | `$frontend-design-improvement-workflow`, `$report-design-system-governance`, `$haier-enterprise-app-ui-design-spec` |
 | Data/source/model mapping | `$data-model-source-mapping` |
 | API inventory | `$api-inventory-design` |
 | Metric governance | `$metric-governance-lineage` |
+| Metric number display | `$metric-number-display-contract` |
 | Permission matrix | `$permission-matrix-validation` |
 | Data quality rules | `$data-quality-validation` |
 | Gaps and assumptions | `$gap-ledger-management` |
-| Performance/runtime constraints | `$performance-optimization` |
+| Performance/runtime constraints | `$performance-optimization`, `$sql-query-optimization`, `$redis-cache-design-patterns`, `$olap-data-modeling-optimization` |
+| Environment profile contract | `$environment-profile-contract` |
+| Delivery pipeline governance | `$report-delivery-pipeline-governance` |
+| Artifact readability | `$artifact-readability-standard` |
 | Version alignment | `$delivery-version-management` |
 | Quality gates | `$quality-gate-validation` |
 
@@ -48,12 +53,12 @@ Production-bound solutions should decide business capability, system context, lo
 4. Run `$quality-gate-validation` when inputs conflict on source authority, metric口径, grain, field meaning, permission, UI baseline, architecture boundary, runtime assumption, or response shape.
 5. Build architecture views: business, system context, logical modules, data flow, integration/API, runtime/deployment, security, operations, and roadmap.
 6. Make technology-selection/ADR decisions with default stack and override reasons.
-7. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy baseline when applicable, SSO/auth flow, multi-database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
+7. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy or Java/Spring Boot baseline when applicable, SSO/auth flow, database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
 8. Define data architecture and source authority with `$data-model-source-mapping`.
-9. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract, data-version/snapshot contract, and data-vs-presentation boundary.
-10. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, and gap ledger when in scope.
+9. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract through `$metric-number-display-contract`, data-version/snapshot contract, and data-vs-presentation boundary.
+10. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, environment profile contracts, and gap ledger when in scope.
 11. Build API inventory and implementation roadmap.
-12. Align versioned handoffs and run readiness gates before marking consumable.
+12. Align versioned handoffs through `$report-delivery-pipeline-governance` and `$delivery-version-management`; use `$artifact-readability-standard` when the solution becomes a handoff artifact; run readiness gates before marking consumable.
 
 ## Required Output
 
@@ -62,6 +67,7 @@ Production-bound solutions should decide business capability, system context, lo
 - UI/design baseline decision for page-bearing work.
 - Data-service runtime model and backend structured logging plan when backend/data-service is in scope.
 - Python/Flask SSO and multi-database backend baseline when applicable: app factory, Blueprints, middleware, service/repository/db layers, `Access-Token`/optional `Application-Key`, 401/403 split, SQLite/MySQL/Oracle/StarRocks roles, SQLAlchemy engine/session ownership, dependencies, tests, and deployment entrypoints.
+- Java/Spring Boot backend baseline when applicable: controller/service/mapper-or-repository layering, `ApiResponse<T>`, `BizException`/global exception handling, Spring Security/JWT/SSO, IAM/IAMA or local JWT bridge, DTO/Entity/VO boundaries, Profile YAML, Maven/Gradle, Docker, tests, and startup commands.
 - Data architecture/source mapping and API/response compatibility plan.
 - Numeric precision/display plan for metric-bearing fields: value type, raw/display unit, scale, precision, tooltip/export precision, rounding, null/zero/denominator-zero, and formatter ownership.
 - Security/permission, data quality, performance, observability, test, release, rollback, and owner-action plan.

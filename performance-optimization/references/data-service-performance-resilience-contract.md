@@ -6,7 +6,7 @@ Performance and stability are design concerns, not late implementation details. 
 
 For report/BI/dashboard backends, apply `$backend-development-workflow` alongside this contract so metadata, permissions, parameter guardrails, query planning, component-ready responses, async export, audit, freshness, and slow-report governance are covered in addition to generic performance controls.
 
-When Redis is named, also apply `redis-cache-usage-patterns.md`. Redis decisions must include role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability.
+When Redis is named, also apply `$redis-cache-design-patterns`. Redis decisions must include role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability.
 
 ## Required Design Dimensions
 
@@ -72,7 +72,7 @@ For every production-bound data service, record the applicable decisions below o
 
 ## Query Execution Rules
 
-- For database-backed APIs, apply `sql-query-writing-optimization.md` alongside this contract.
+- For database-backed APIs, apply `$sql-query-optimization` alongside this contract.
 - Global/page-level filters, permission scope, sorting, pagination, grouping, aggregation, Top/Bottom, and counts should execute at the source/provider/repository/precompute/cache stage rather than after full materialization in application memory.
 - Endpoint batching, dashboard snapshots, and request-count reductions must preserve explicit dependency contracts. Shared data-version context, shared precompute tables, and declared canonical snapshots are acceptable; hidden endpoint-to-endpoint payload dependency is not.
 - Data-version, business filters, and permission/data scope must remain explicit query inputs. Optimizing by using a default snapshot, broad cache entry, or response metadata echo without parameterized filtering is a correctness regression.

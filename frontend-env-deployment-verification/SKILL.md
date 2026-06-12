@@ -16,7 +16,8 @@ This skill is not bound to 数据服务. It verifies the runtime configuration f
 - Read `references/runtime-environment-checks.md` to identify project/runtime commands and env conventions.
 - Read `references/proxy-routing-assets.md` for data-source URL, proxy, router, and asset path checks.
 - Read `references/verification-note-template.md` when producing the environment/deployment note.
-- Read `$quality-gate-validation` when test/production runtime profile separation, release readiness, or environment acceptance is in scope.
+- Read `$environment-profile-contract` when test/production runtime profile separation, release readiness, or environment acceptance is in scope.
+- Read `$quality-gate-validation` when environment findings affect cross-stage readiness.
 
 ## Workflow
 

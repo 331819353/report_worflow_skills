@@ -14,9 +14,9 @@ It owns performance strategy and verification. It does not replace API design, d
 ## Reference Loading
 
 - Data service resilience, cache, pagination, pooling, and capacity: `references/data-service-performance-resilience-contract.md`
-- Redis cache, lock, rate-limit, job-state, and hot-query usage patterns: `references/redis-cache-usage-patterns.md`
-- SQL query writing and index-friendly filters: `references/sql-query-writing-optimization.md`
-- OLAP modeling and analytical aggregation: `references/olap-data-modeling-optimization.md`
+- Redis cache, lock, rate-limit, job-state, and hot-query usage patterns: `$redis-cache-design-patterns`
+- SQL query writing, execution shape, and index-friendly filters: `$sql-query-optimization`
+- OLAP modeling and analytical aggregation: `$olap-data-modeling-optimization`
 
 ## Workflow
 

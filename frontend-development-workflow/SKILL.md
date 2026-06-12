@@ -1,6 +1,6 @@
 ---
 name: frontend-development-workflow
-description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、Vue3、TypeScript、ECharts、Element Plus、Axios、AntV S2、替换mock、去掉mock、接真实接口、API接入、snapshotDate/dataVersion/loadBatch、响应适配、筛选参数联动、模板筛选复用、指标单位/百分比显示、pt改%、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
+description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、Vue3/TypeScript/ECharts/Element Plus/Axios/AntV S2、替换mock、接真实接口、API接入、响应适配、snapshotDate/dataVersion/loadBatch、筛选联动、指标单位/百分比显示、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
 ---
 
 # Frontend Development Workflow
@@ -20,14 +20,18 @@ If the request is vague design improvement rather than implementation, route fir
 | API/provider contract validation | `$api-contract-validation` |
 | Response adapter / data shaping | `$data-transformation-adapter-design` |
 | Env/proxy/build/deploy verification | `$frontend-env-deployment-verification` |
+| Environment profile contract | `$environment-profile-contract` |
 | Haier SSO | `$haier-sso-integration` |
 | Common enterprise app UI baseline | `$haier-enterprise-app-ui-design-spec` |
 | Report design-system baseline | `$report-design-system-governance` |
 | Page layout | `$report-visual-layout-design` |
 | Component style | `$report-component-style-design` |
 | Runtime/browser QA | `$frontend-runtime-qa-validation` |
+| Visual regression evidence | `$visual-browser-regression-check` |
 | Function handoff docs | `$frontend-function-description-documentation` |
-| Delivery/code versioning | `$delivery-version-management` |
+| Code file ledgers | `$code-change-ledger-management` |
+| Delivery/version index | `$delivery-version-management` |
+| Metric number display | `$metric-number-display-contract` |
 | Performance and observability | `$performance-optimization`, `$production-observability-feedback` |
 | Quality gates | `$quality-gate-validation` |
 
@@ -38,8 +42,7 @@ If the request is vague design improvement rather than implementation, route fir
 - Provider gaps: `references/provider-gap-ledger.md`
 - Report frontend implementation: `references/report-data-visualization-frontend-implementation.md`
 - Detailed implementation/readiness gates: `references/frontend-implementation-gates.md`
-- Vue3 visualization sample architecture: `$vue3-visualization-project-architecture` when the target should follow the uploaded Vue3 + TypeScript + Vite + Pinia + Vue Router + Element Plus + ECharts + Axios project structure.
-- Code-file ledger: `$delivery-version-management` `references/code-file-change-ledger.md`
+- Cross-cutting contracts: load `$vue3-visualization-project-architecture`, `$code-change-ledger-management`, `$metric-number-display-contract`, or `$environment-profile-contract` only when the target architecture, code-change ledger, numeric display, or env profile is in scope.
 - Common app baseline: `$haier-enterprise-app-ui-design-spec`
 - Report baseline, numeric precision rules, and anti-AI/report-decision gates: `$report-design-system-governance`
 
@@ -51,12 +54,12 @@ If the request is vague design improvement rather than implementation, route fir
 4. Classify UI baseline: common enterprise app, report/dashboard, or mixed. Load the matching baseline before implementation decisions.
 5. Run install/typecheck/lint/test/build when feasible and record pre-existing failures.
 6. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
-7. Verify env/proxy/base path/auth/SSO behavior before wiring requests.
-8. Before each source edit, read or create the sidecar code ledger for the scoped file.
+7. Verify env/proxy/base path/auth/SSO behavior before wiring requests; use `$environment-profile-contract` when test/production profile separation or production readiness is in scope.
+8. Before each source edit, read or create the sidecar code ledger for the scoped file through `$code-change-ledger-management`.
 9. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
 10. Use component/layout/design-system skills when visual, metric, chart/table, state, or design baseline behavior is touched.
 11. Append code-ledger version entries after edits.
-12. Run build/start and `$frontend-runtime-qa-validation`; then produce frontend function docs when handoff is needed.
+12. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
 
 ## Required Output
 
@@ -78,5 +81,5 @@ If the request is vague design improvement rather than implementation, route fir
 - Do not claim filter integration until option data, business rows, required fields, default/non-default states, and resolver/API branches are proven or recorded as gaps.
 - Standard ECharts requirements need ECharts-owned options/series/runtime behavior, not hand-authored chart marks plus an import.
 - Report interfaces must preserve metric口径, numeric display contracts, data story, filter/drilldown/export context, trust details, realistic data states, and `%` wording for Chinese rate/change labels unless explicitly overridden.
-- Do not mark frontend work ready when governed report metrics are formatted through scattered `toFixed`, `Math.round`, `parseInt`, string slicing, ad hoc `%` concatenation, or component-local decimal assumptions instead of a central formatter/metadata contract.
+- Do not mark frontend work ready when governed report metrics are formatted through scattered `toFixed`, `Math.round`, `parseInt`, string slicing, ad hoc `%` concatenation, or component-local decimal assumptions instead of `$metric-number-display-contract`.
 - Load `frontend-implementation-gates.md` before changing frontend code or judging production/readiness.

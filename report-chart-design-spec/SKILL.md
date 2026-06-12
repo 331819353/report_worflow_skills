@@ -18,8 +18,7 @@ Use `$report-component-style-design` when the task covers mixed component famili
 | Chart source map and exact placement files | `references/01-chart-reference-map.md` |
 | Shared chart visual rules | `$report-component-style-design` `references/05-echarts-charts.md` |
 | Report chart/table format baseline | `$report-design-system-governance` `references/05-report-charts-tables-format-guidelines.md` |
-| Placement routing | `$report-component-style-design` `references/12-internal-placement-algorithms.md` |
-| Dense component acceptance | `$report-component-style-design` `references/12-component-acceptance-gates.md` |
+| Placement and dense acceptance | `$report-component-style-design` references: `12-internal-placement-algorithms.md`, `12-component-acceptance-gates.md` |
 
 ## Workflow
 

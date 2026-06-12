@@ -18,14 +18,15 @@ Primary shared gates:
 - `references/entry-input-consistency-gate.md`
 - `references/design-reasonableness-gate.md`
 - `references/production-closed-loop-readiness.md`
-- `references/visual-multimodal-browser-check.md`
-- `references/human-ai-readable-artifact-standard.md`
-- `references/report-delivery-pipeline-contract.md`
-- `references/environment-profile-contract.md`
+- `$visual-browser-regression-check` for screenshot, baseline diff, multimodal visual review, and `VIS-*` findings.
+- `$artifact-readability-standard` for human-readable and AI-extractable artifact structure.
+- `$report-delivery-pipeline-governance` for cross-stage handoff and delivery-chain contracts.
+- `$environment-profile-contract` for test/production profile separation and runtime config handoff.
 - `references/shared-quality-gate-blockers.md`
-- `$delivery-version-management` `references/code-file-change-ledger.md` when frontend/backend/prototype code changed.
+- `$code-change-ledger-management` when frontend/backend/prototype code changed.
 - `$haier-enterprise-app-ui-design-spec` when judging common enterprise app UI readiness.
-- `$report-design-system-governance` relevant references, especially `references/11-number-precision-display-rules.md`, when judging report/dashboard/BI/data-screen readiness.
+- `$metric-number-display-contract` when judging numeric unit, precision, rounding, percent, tooltip/export, or formatter ownership.
+- `$report-design-system-governance` relevant references when judging report/dashboard/BI/data-screen readiness.
 
 ## Gate Types
 

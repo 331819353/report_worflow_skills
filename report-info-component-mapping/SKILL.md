@@ -28,7 +28,7 @@ Read only the files needed for the current task. Files are ordered by workflow s
 | Report-type routing, layout/style constraints, output checklist | `references/07-routing-layout-quality.md` |
 | Controlled vocabularies, stable IDs, deterministic generation | `references/08-generation-stability.md` |
 | Detailed implementation gates for mapping decisions | `references/09-component-mapping-gates.md` |
-| Number precision/display baseline | `$report-design-system-governance` `references/11-number-precision-display-rules.md` |
+| Number precision/display baseline | `$metric-number-display-contract` |
 | Report requirement/metric/layout baseline | `$report-design-system-governance` relevant guideline references |
 
 Loading guidance:

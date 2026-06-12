@@ -39,7 +39,7 @@ Always choose the mode and then load only the matching references.
 | Generic anti-AI design gate | `references/08-anti-ai-design-gate.md` |
 | Report decision anti-AI gate | `references/09-report-decision-anti-ai-gate.md` |
 | Detailed reusable-standard acceptance gates | `references/10-design-system-acceptance-gates.md` |
-| Number precision, rounding, unit scaling, and exact-value display | `references/11-number-precision-display-rules.md` |
+| Number precision, rounding, unit scaling, and exact-value display | `$metric-number-display-contract` |
 | Bundled template layout tokens | `$report-prototype-template-management` `references/template-layout-design-system.md` |
 | Chart/table/filter-specific standards | `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec` |
 | Component-family placement and fit | `$report-component-placement-spec` |
@@ -51,7 +51,7 @@ Always choose the mode and then load only the matching references.
 3. Classify whether the work is report/dashboard/BI/data-screen, common enterprise app, or mixed. Load the matching baseline before judging or defining rules.
 4. Run the generic anti-AI gate and report decision gate before stabilizing tokens or accepting a visual standard.
 5. Define semantic tokens and reusable rules: color roles, typography, spacing/grid, radius, border, shadow, density, icon size, z-index, responsive breakpoints, states, accessibility, and motion limits.
-6. Define page, component, visualization, numeric precision/display, filter, state, performance, and handoff standards. For implementation-ready component families, delegate details to `$report-component-design-spec` and `$report-component-style-design`.
+6. Define page, component, visualization, numeric precision/display, filter, state, performance, and handoff standards. Delegate numeric display details to `$metric-number-display-contract`; delegate implementation-ready component families to `$report-component-design-spec` and `$report-component-style-design`.
 7. Define governance: stable vs experimental rules, allowed variants, deprecated patterns, exception process, versioning, migration status, owners, and review checklist.
 8. Route implementation or remediation to layout, component, frontend, runtime QA, testing, or template skills.
 

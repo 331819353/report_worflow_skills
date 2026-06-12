@@ -12,6 +12,7 @@ Use this skill to verify that each API-backed report component displays the same
 ## References
 
 - Use `$delivery-artifact-template-management` when the task needs a reusable data-consistency matrix/template or standardized evidence structure.
+- Use `$metric-number-display-contract` when checking units, percent/rate scale, precision, rounding, tooltip/export precision, null/zero behavior, or formatter ownership.
 
 ## Required Inputs
 
@@ -31,6 +32,7 @@ Optional inputs: source/Git diagnostics links, mock data files, metric definitio
 
 3. Map fields to display.
    For every displayed value, identify backend field, adapter rule, value type, raw unit, display unit, raw scale, display scale, unit conversion, date/period conversion, screen precision, tooltip/export precision, rounding rule, null/zero/denominator-zero rule, negative-zero behavior, small-nonzero behavior when relevant, formatter owner, and label/legend meaning. Rate/change/completion fields in Chinese report UI should visibly use `%` unless the accepted contract says otherwise.
+   Use `$metric-number-display-contract` as the baseline when expected numeric semantics are not already documented.
 
 4. Recalculate expected values.
    Independently derive displayed KPIs, ratios, totals, subtotals, chart series, table cells, ranking, top N, and trend values from backend responses.

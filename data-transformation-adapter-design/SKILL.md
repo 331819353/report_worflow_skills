@@ -1,6 +1,6 @@
 ---
 name: data-transformation-adapter-design
-description: "用于设计和校验数据从源头到消费端的转换与适配逻辑。用户提到字段映射、源表到响应、上游到API、mock到数据库、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、response adapter、响应适配、snapshotDate/dataVersion/loadBatch、快照响应适配、筛选前数据完整性、筛选数据粒度、嵌套拉平、枚举翻译、单位/精度/日期转换、百分比/比例显示、汇总聚合、粒度转换、公式派生、null默认值、组件view model、前后端结构不一致时触发。"
+description: "用于设计和校验数据从源头到消费端的转换与适配逻辑。用户提到字段映射、源表到响应、上游到API、mock到数据库、响应字段兼容、新增字段命名、response adapter、响应适配、snapshotDate/dataVersion/loadBatch、筛选前数据完整性、筛选数据粒度、嵌套拉平、枚举翻译、单位/精度/日期转换、百分比/比例显示、汇总聚合、公式派生、null默认值、组件view model、前后端结构不一致时触发。"
 ---
 
 # Data Transformation Adapter Design
@@ -19,12 +19,13 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 - Frontend adapter placement: `references/frontend-adapter-placement-patterns.md`
 - Frontend mapping resilience: `references/frontend-mapping-resilience-rules.md`
 - Adapter output template: `references/frontend-adapter-output-template.md`
+- Numeric unit/precision/percentage/display contract: `$metric-number-display-contract`
 
 ## Workflow
 
 1. Identify source payload, target API contract, and UI/view model contract.
 2. Define grain, required fields, optional fields, defaults, null behavior, precision, units, numeric display contract, enum dictionaries, date/time formats, and locale labels.
-3. For metric-bearing fields, keep raw numeric value, calculation value, display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter owner explicit. For rate/percentage/change fields, keep calculation value, display value, display unit, rounding, and label wording explicit. Chinese report UI display values should render `%` for rates unless the user or contract intentionally requires another term.
+3. For metric-bearing fields, apply `$metric-number-display-contract`: keep raw numeric value, calculation value, display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter owner explicit. For rate/percentage/change fields, keep calculation value, display value, display unit, rounding, and label wording explicit. Chinese report UI display values should render `%` for rates unless the user or contract intentionally requires another term.
 4. Decide execution boundary: SQL/source query, backend service/DTO, API gateway/BFF, frontend adapter, or component-local display formatting.
 4a. When the backend source table/upstream/fixture changes, freeze the target API contract first. Map every existing response field from old source to new source and keep field name, nesting, type, unit, precision, enum meaning, nullability, formula, grain, and empty/no-permission behavior stable. Put new source names behind adapter rules; expose new fields only as additive fields named by convention and documented with compatibility status.
 5. Verify filter data support before adapter binding.

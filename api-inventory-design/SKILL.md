@@ -1,6 +1,6 @@
 ---
 name: api-inventory-design
-description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、后端好开发、后端复用、接口复用、快照接口、snapshotDate/dataVersion/loadBatch、接口依赖、页面需要哪些接口、mock转接口、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、需求转API、方法路径、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
+description: "用于在开发前把需求、指标、原型、mock数据、数据源或前端页面梳理成API清单/接口规划。用户提到接口清单、API清单、接口规划、接口拆分、接口复用、快照接口、snapshotDate/dataVersion/loadBatch、页面需要哪些接口、mock转接口、响应字段兼容、新增字段命名、请求参数、响应模型、筛选分页排序、筛选前数据完整性、默认后端技术栈、Python/Flask/连接池/Redis、鉴权、接口优先级时触发；只做清单规划，不写完整API文档或后端代码。"
 ---
 
 # API Inventory Design
@@ -31,8 +31,11 @@ Read only the reference files needed for the current task:
 | Design APIs that make backend implementation simple, efficient, and reusable | `references/05-backend-friendly-api-design.md` |
 | Run API traceability, status, no-invention, and gap-linking checks | `references/04-api-stability-gate.md` |
 | Required output columns, hard constraints, and final quality gate | `references/06-inventory-output-and-gates.md` |
-| Resolve authority conflicts when requirements, prototype data code, existing APIs, source metadata, or testing evidence disagree | `$quality-gate-validation` |
-| Audit whether endpoint boundaries and API inventory design reasonably support the business question, UI contract, data model, permissions, and tests | `$quality-gate-validation` |
+| Metric number display contract for response fields | `$metric-number-display-contract` |
+| SQL/query feasibility for database-backed APIs | `$sql-query-optimization` |
+| Redis/cache/precompute API behavior | `$redis-cache-design-patterns` |
+| Environment profile handoff for runtime-bound APIs | `$environment-profile-contract` |
+| Resolve authority conflicts and audit whether endpoint boundaries support business question, UI contract, data model, permissions, and tests | `$quality-gate-validation` |
 
 Loading guidance:
 
@@ -69,6 +72,7 @@ Loading guidance:
 
 7. Define response contracts at inventory level.
    Reference a response model name and summarize required field groups, grain, list/envelope shape, empty state, and error behavior. Do not duplicate the full API document here.
+   For metric-bearing fields, use `$metric-number-display-contract` to record value type, unit, scale, precision, percent/rate behavior, rounding, and formatter owner at inventory level.
 
 7a. Define response compatibility for source replacement.
    If an API may move from mock/SQLite to real source, or from one table/upstream to another, record that existing response field codes and behavior remain stable and that source-field changes are handled by the model/adapter layer. Additive fields must be named by convention and linked to source/model. Required renames, removals, type/unit/precision/enum/nullability/formula/grain changes, or empty/no-permission behavior changes are breaking and need versioning plus impact analysis.
@@ -78,3 +82,4 @@ Loading guidance:
 
 9. Run the design reasonableness gate.
    Check whether endpoint boundaries, split/merge choices, response model references, request params, dynamic options, exports, actions, auth, and performance notes reasonably support the consuming page and tests. Record unreasonable API inventory choices as `DESIGN-*` findings.
+   For database-backed APIs, call `$sql-query-optimization` when query shape, sort/page/count, or index feasibility is risky. For Redis/cache APIs, call `$redis-cache-design-patterns`.

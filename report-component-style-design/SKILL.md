@@ -1,6 +1,6 @@
 ---
 name: report-component-style-design
-description: "用于报表组件级设计规范、组件规范、视觉样式、响应式和可读性设计/评审/修复。用户提到提高前端设计、前端设计提升、组件设计规范、组件优化、KPI卡、指标卡、文本总结、分析洞察、Composite Panel、多组件组合、筛选控件、按钮/标签/弹窗/抽屉、ECharts、图表设计规范、AntV S2、表格规范、透视表、复杂表头、图例、标签过密、tooltip、hover/focus动效、SVG/canvas/ECharts图形变形、比例失真、组件溢出、裁切、对齐、缩放、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
+description: "用于报表组件级设计规范、组件规范、视觉样式、响应式和可读性设计/评审/修复。用户提到提高前端设计、前端设计提升、组件设计规范、组件优化、KPI卡/指标卡、文本总结、分析洞察、Composite Panel、多组件组合、筛选控件、按钮/标签/弹窗/抽屉、ECharts图表、AntV S2表格、透视表、复杂表头、图例/标签/tooltip、hover/focus动效、图形变形、组件溢出/裁切/对齐、移动端适配、视觉优化时触发；不负责整页布局或模板工程。"
 ---
 
 # Report Component Style Design

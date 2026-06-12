@@ -16,10 +16,7 @@ Use `$report-visual-layout-design` for full page layout decisions; use this skil
 | Need | Read |
 | --- | --- |
 | Size source map | `references/01-size-reference-map.md` |
-| Block size constraints | `$report-visual-layout-design` `references/block-size-constraints.md` |
-| Grid and parent container rules | `$report-visual-layout-design` `references/grid-containers.md` |
-| Parent block and sub-block composition | `$report-visual-layout-design` `references/block-composition.md` |
-| Layout acceptance gates | `$report-visual-layout-design` `references/layout-acceptance-gates.md` |
+| Parent layout references | `$report-visual-layout-design` references: `block-size-constraints.md`, `grid-containers.md`, `block-composition.md`, `layout-acceptance-gates.md` |
 
 ## Workflow
 

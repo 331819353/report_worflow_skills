@@ -15,6 +15,8 @@ Use this skill to design post-release monitoring and feedback loops for report s
 - Optional: existing monitoring config, SLO targets, user roles, feedback channels, and support process.
 
 Read `references/01-observability-feedback-template.md` when producing a reusable monitoring plan.
+Use `$environment-profile-contract` when monitoring depends on test/production runtime profile separation, endpoint ownership, or release acceptance configuration.
+Use `$report-delivery-pipeline-governance` when production feedback must route back into defect retest, release readiness, or next delivery iteration.
 
 ## Workflow
 
@@ -35,8 +37,9 @@ Read `references/01-observability-feedback-template.md` when producing a reusabl
 5. Define feedback loop.
    Capture user behavior, low-usage pages, failed searches/filters, export frequency, feedback tickets, and requested improvements. Route product changes to `$change-impact-analysis`.
 
-6. Link to delivery versions.
+6. Link to delivery versions and delivery pipeline.
    Every production result must state release version, frontend/backend/API/data versions, and whether the issue belongs to current or older release.
+   Route production issues to `$report-delivery-pipeline-governance` for retest/release-chain closure and to `$change-impact-analysis` before implementation changes.
 
 ## Required Output
 

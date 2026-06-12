@@ -5,7 +5,7 @@ Use this shared reference whenever a report, BI, dashboard, or data-visualizatio
 This reference is about the report backend as a controlled query service. It complements:
 
 - `$performance-optimization` for OLAP business process, grain, fact/dimension, metric, serving-model design, SQL query shape, execution-plan risk, concurrency, Redis/cache/precompute, pools, async work, timeout, limits, and observability.
-- `../../performance-optimization/references/redis-cache-usage-patterns.md` conceptually for Redis key design, TTL, invalidation, stampede protection, permission safety, fallback, and observability when Redis is named.
+- `$redis-cache-design-patterns` for Redis key design, TTL, invalidation, stampede protection, permission safety, fallback, and observability when Redis is named.
 
 ## Core Principle
 

@@ -23,11 +23,19 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 | Automation generation | `$automated-test-generation` |
 | Evidence and defects | `$test-evidence-defect-reporting` |
 | Runtime visual QA | `$frontend-runtime-qa-validation` |
+| Visual regression evidence | `$visual-browser-regression-check` |
+| Environment profile contract | `$environment-profile-contract` |
+| Metric number display | `$metric-number-display-contract` |
+| Delivery pipeline readiness | `$report-delivery-pipeline-governance` |
 | Quality gates | `$quality-gate-validation` |
 
 ## Reference Loading
 
 - Read `references/report-integration-testing-implementation.md` when validating a report/BI/dashboard data chain, frontend/backend pair, export, permission path, cache path, UAT, release smoke, or defect retest closure.
+- Read `$environment-profile-contract` when test/production profile, runtime URL, API base URL, proxy/CORS, source mode, or mock isolation affects execution.
+- Read `$metric-number-display-contract` when cases cover units, rates, percentages, rounding, tooltip/export precision, or frontend/backend numeric consistency.
+- Read `$visual-browser-regression-check` when the task specifically requires screenshot regression, baseline diff, component crops, or `VIS-*` findings.
+- Read `$report-delivery-pipeline-governance` for release acceptance, retest closure, or cross-stage readiness.
 - Read `$haier-enterprise-app-ui-design-spec` when the test target includes common enterprise application UI surfaces such as forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, or cross-platform adaptation.
 - Read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) when the test target includes report/dashboard/BI/data-screen/analysis pages.
 
@@ -54,9 +62,9 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 5. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
 6. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
 7. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$data-quality-validation`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, and `$permission-matrix-validation` as applicable. For filter defects, execute or cite data completeness checks before filter-linkage conclusions.
-8. Use `$frontend-runtime-qa-validation` for visual/layout/browser checks on runnable frontend URLs.
+8. Use `$frontend-runtime-qa-validation` for complete visual/layout/browser checks on runnable frontend URLs; use `$visual-browser-regression-check` for focused screenshot diff or visual regression evidence.
 9. Consolidate results with `$test-evidence-defect-reporting`.
-10. Route defects to owner workflow and define retest criteria.
+10. Route defects to owner workflow, define retest criteria, and use `$report-delivery-pipeline-governance` when results affect release or next-stage readiness.
 
 ## Required Output
 

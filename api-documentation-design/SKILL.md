@@ -1,6 +1,6 @@
 ---
 name: api-documentation-design
-description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI、Swagger、前后端接口约定、后端好开发、接口复用、通用请求响应模型、请求响应示例、鉴权、错误码、分页、筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、更换数据源/数据表后响应字段保持不变、新增字段规范命名、默认后端技术栈、Python/Flask/连接池/Redis、字段口径、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
+description: "用于生成或重构可交付的API/接口文档。用户提到接口文档、API文档、接口说明、OpenAPI/Swagger、前后端接口约定、请求响应示例、鉴权/错误码/分页/筛选、快照接口、snapshotDate/dataVersion/loadBatch、字段口径、响应字段兼容、新增字段命名、默认后端技术栈、Python/Flask/连接池/Redis、已有路由补文档、接口交付验收时触发；只写文档契约，不实现后端代码或前端接入。"
 ---
 
 # API Documentation Design
@@ -16,9 +16,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 1. Collect inputs and select the documentation mode.
    Use inventory-to-document, route-to-document, requirement-to-contract, contract-refresh, async-job, webhook/callback, streaming, or file-transfer mode based on the available artifacts.
 
-   When multiple input authorities exist, run `$quality-gate-validation` before documenting endpoint behavior. API inventories, requirements, frontend contracts, source/data models, OpenAPI snippets, implemented routes, and runtime samples must not be merged silently when they conflict; unresolved `P0`/`P1` `ENTRY-*` findings keep the affected endpoint `partial` or `blocked` and require user confirmation only before the affected API document is repaired.
-
-   When the API document will drive frontend, backend, or tests, run `$quality-gate-validation`. Check that endpoint boundaries, backend reuse pattern, common request/response model family, pagination/sorting/filter rules, auth, errors, examples, global SQL/source filtering, component-internal local filtering, SQL/index feasibility, Redis/cache decisions, connection-pool behavior, and performance limits reasonably support the consuming business flow. If Redis is named, document role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability.
+   Use `$quality-gate-validation` when input authorities conflict or the document will drive frontend, backend, tests, or release acceptance. Check endpoint boundaries, backend reuse pattern, request/response models, auth, pagination/sorting/filter rules, SQL/index feasibility, Redis/cache decisions, pools, performance limits, and unresolved `ENTRY-*` findings before marking an endpoint ready. If Redis is named, use `$redis-cache-design-patterns` to document role, key template, TTL/invalidation, permission-safety dimensions, miss/stampede behavior, fallback, pool/timeouts, and observability.
 
 2. Establish shared conventions.
    Define base URL, version, auth, headers, common request model groups, response envelope, errors, pagination, sorting, filters, date/time format, enum format, numeric display/precision contract, file behavior, default/max page size, global filter execution, component-internal local filter scope, Redis/cache expectations, connection-pool expectations, large-result handling, and export limits before documenting endpoint details. Redis/cache expectations must be specific enough for implementation, not a placeholder.
@@ -31,7 +29,7 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
    Define response-field compatibility conventions before endpoint details. Existing response field names, nesting, types, units, precision, enum meanings, nullability, formulas, grain, numeric display semantics, and empty/no-permission behavior are stable across source/table/upstream replacement. New fields are additive by default and must follow the project naming convention; if no convention exists, use stable English lowerCamel field codes. Breaking changes require versioning, deprecation/migration notes, and downstream impact.
 
-   For metric-bearing response fields, document the numeric display contract before examples: value type, raw unit, display unit, display scale, screen precision, tooltip precision, export precision, rounding mode, null display, true-zero display, denominator-zero behavior, negative-zero handling, small-nonzero behavior when relevant, formula precision policy, and formatter owner. Percent/rate fields must state whether the payload is raw `0-1`, numeric percent `0-100`, or display string; formatted-only values are not sufficient when consumers need sorting, filtering, thresholds, exports, or localization.
+   For metric-bearing response fields, apply `$metric-number-display-contract` before examples: value type, raw unit, display unit, display scale, screen precision, tooltip precision, export precision, rounding mode, null display, true-zero display, denominator-zero behavior, negative-zero handling, small-nonzero behavior when relevant, formula precision policy, and formatter owner. Percent/rate fields must state whether the payload is raw `0-1`, numeric percent `0-100`, or display string; formatted-only values are not sufficient when consumers need sorting, filtering, thresholds, exports, or localization.
 
    For snapshot/latest-period reports, document the snapshot role and shared data-version context before endpoint details: `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version. Related data-bearing endpoints must consume that context through request params, backend-defaulted params, backend-injected scope, or an explicitly declared canonical/shared snapshot dataset before querying or deriving results, and include it in source/provider predicates, precompute lookups, and cache keys. A snapshot/dashboard aggregate endpoint may be reused by metrics, trends, rankings, tables, drilldowns, or exports only when the document states the matching grain, filters, permission scope, fields, cache key, and invalidation behavior.
 
@@ -52,11 +50,13 @@ Do not implement backend code merely because this skill is triggered. Produce do
 
 ## References
 
-- Read `$quality-gate-validation` for artifact readability and extractable endpoint-contract checks.
+- Read `$artifact-readability-standard` for human-readable and AI-extractable API document structure.
+- Read `$quality-gate-validation` for authority conflicts, endpoint-contract readiness, design reasonableness, production readiness, and release acceptance.
 - Read [references/01-inputs-and-traceability.md](references/01-inputs-and-traceability.md) when identifying source artifacts, authority, dependency trace, or unresolved model/API items.
-- Read `$quality-gate-validation` when API docs are built from conflicting requirements, API inventories, model docs, frontend contracts, route code, OpenAPI snippets, or runtime samples.
-- Read `$quality-gate-validation` when API design choices affect business fit, data/API feasibility, frontend usability, or testability.
-- Read `$quality-gate-validation` when API docs feed production delivery or release acceptance.
+- Read `$metric-number-display-contract` for metric unit, scale, precision, percent/rate, rounding, tooltip/export precision, and formatter ownership.
+- Read `$environment-profile-contract` when base URLs, test/production profiles, auth endpoints, source mode, proxy/CORS, or release handoff matter.
+- Read `$sql-query-optimization` for database-backed endpoint SQL feasibility and query-shape risks.
+- Read `$redis-cache-design-patterns` when Redis/cache behavior is part of the API contract.
 - Read `$delivery-artifact-template-management` when creating the API document skeleton, common conventions, overview tables, and appendix.
 - Read [references/03-endpoint-detail-rules.md](references/03-endpoint-detail-rules.md) when writing endpoint-level request, response, example, auth, error, performance, and compatibility sections.
 - Read [references/04-handoff-quality-gate.md](references/04-handoff-quality-gate.md) before final delivery or when preparing frontend/backend/testing handoff.

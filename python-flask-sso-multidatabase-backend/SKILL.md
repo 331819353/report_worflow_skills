@@ -1,6 +1,6 @@
 ---
 name: python-flask-sso-multidatabase-backend
-description: "用于按 Python + Flask + SQLAlchemy + SSO 单点登录 + 多数据库适配沉淀后端项目架构、目录结构、认证鉴权、数据库连接和工程约定。用户提到 Python后端、Flask后端、Python项目目录结构、后端项目架构、SQLAlchemy、单点登录SSO、Access-Token、Application-Key、401重登、403无权限、SQLite、MySQL、Oracle、StarRocks、多数据库适配、Repository、Service、Gunicorn、Nginx、Docker、pytest、按样例开发后端接口或数据服务时触发；不替代API文档设计、报表查询服务治理、性能优化或运行URL验证。"
+description: "用于按 Python + Flask + SQLAlchemy + SSO 单点登录 + 多数据库适配沉淀后端项目架构、目录结构、认证鉴权、数据库连接和工程约定。用户提到 Python后端、Flask后端、项目目录结构、SQLAlchemy、Access-Token、Application-Key、401/403、SQLite/MySQL/Oracle/StarRocks、多数据库适配、Repository/Service、Gunicorn/Nginx/Docker、pytest、按样例开发后端接口或数据服务时触发。"
 ---
 
 # Python Flask SSO Multi-Database Backend

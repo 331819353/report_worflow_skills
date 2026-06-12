@@ -1,0 +1,4 @@
+interface:
+  display_name: "视觉回归检查"
+  short_description: "用浏览器截图、baseline diff、组件裁切和多模态检查识别VIS-*视觉缺陷。"
+  default_prompt: "Use $visual-browser-regression-check for runnable UI visual regression: browser screenshots, baseline diff, component crops, multimodal visual review, VIS-* findings, severity, evidence paths, and retest criteria."

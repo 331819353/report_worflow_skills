@@ -31,6 +31,7 @@ Read only the reference files needed for the current task:
 | Define metric formulas, transformations, permissions, and data-quality rules | `references/03-metrics-transformations-quality.md` |
 | Run model traceability, no-invention, and pending-item routing checks | `references/04-model-stability-gate.md` |
 | Required model output, hard constraints, and final quality gate | `references/05-model-output-and-gates.md` |
+| Metric number display contract for logical/response fields | `$metric-number-display-contract` |
 | Resolve authority conflicts when requirements, metric lists, prototype code, API contracts, source documents, or tests disagree | `$quality-gate-validation` |
 | Audit whether source/logical/response model design reasonably supports the business question, API inventory, frontend contract, permissions, and tests | `$quality-gate-validation` |
 
@@ -57,6 +58,7 @@ Loading guidance:
 
 4. Define response/view models.
    Map prototype/API-facing fields to logical/source fields. Include display labels, field types, units, precision, numeric display contracts, enum labels, sorting, empty-state behavior, and whether the field is calculated.
+   Use `$metric-number-display-contract` for value type, raw/display unit, display scale, precision, percent/rate behavior, tooltip/export precision, rounding, null/zero/denominator-zero behavior, and formatter owner.
 
 4a. Preserve response contract compatibility during source replacement.
    When the source table, upstream API, fixture schema, or serving model changes, keep existing response/view field codes and behavior stable. Produce a before/after mapping: response field -> old source field/formula -> new source field/formula -> transformation/default/null rule -> verification evidence. New response fields must be additive and named by the project convention; if absent, use stable English lowerCamel field codes. Any required rename, type/unit/precision/enum/nullability/formula/grain change is a breaking `DESIGN-*` or `GAP-*` item until versioning and downstream impact are explicit.

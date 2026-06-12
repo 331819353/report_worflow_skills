@@ -1,0 +1,40 @@
+---
+name: report-delivery-pipeline-governance
+description: "用于治理报表项目从需求、原型、数据模型、API、后端、前端、测试到发布/复测的交付链路、阶段交接和ready/partial/blocked判定。用户提到交付链路、阶段门禁、上下游交接、需求到原型/API/前后端/测试是否闭合、artifact contract、handoff、哪个阶段该走哪个skill、跨阶段缺口时触发；不替代单个阶段的具体实现。"
+---
+
+# Report Delivery Pipeline Governance
+
+## Positioning
+
+Use this skill to keep report delivery stages aligned and to decide whether a handoff can proceed across requirement, prototype, data model, API, backend, frontend, testing, release, defect repair, and production feedback.
+
+Use `$delivery-version-management` for version indexes and release bundles. Use `$quality-gate-validation` for concrete gate findings when checking a specific artifact or implementation.
+
+## Reference Loading
+
+- Read `references/report-delivery-pipeline-contract.md` before judging cross-stage handoff completeness, stage routing, or delivery-chain readiness.
+- Use `$artifact-readability-standard` when the handoff artifact needs dual-readable structure.
+- Use `$environment-profile-contract` for runtime profile readiness.
+- Use `$code-change-ledger-management` when source code changed.
+
+## Workflow
+
+1. Identify current stage, upstream artifacts, downstream consumers, and claimed readiness.
+2. Map the stage to required handoff artifacts and owning skills.
+3. Check that stable IDs, versions, sources, gaps, evidence, and readiness values link across stages.
+4. Route missing or conflicting work to the owning skill instead of absorbing implementation details.
+5. Return a stage verdict and next-stage entry criteria.
+
+## Required Output
+
+- Current stage and target next stage.
+- Required upstream/downstream artifacts and missing pieces.
+- Owning skill routing for each gap or blocker.
+- Readiness: `ready`, `partial`, or `blocked`.
+- Next-stage handoff requirements.
+
+## Quality Gate
+
+- Do not mark a stage ready when required upstream contracts, evidence, versions, profile decisions, code ledgers, or test results are missing.
+- Do not let a later-stage implementation silently redefine requirement, metric, API, source, permission, or test contracts.

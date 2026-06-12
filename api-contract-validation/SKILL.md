@@ -1,6 +1,6 @@
 ---
 name: api-contract-validation
-description: "用于校验 API 契约是否与文档、前端期望、后端路由、mock、OpenAPI、数据库/上游样例、运行响应一致。用户提到接口契约校验、前后端字段不一致、响应字段缺失、类型/单位/枚举/精度错误、百分比/比例值口径、更换数据源/数据表后返回字段变化、新增字段命名、请求参数、分页排序筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口依赖、空态错误态、鉴权头、mock替换前验证、联调问题定位时触发；不生成完整 API 文档或实现代码。"
+description: "用于校验 API 契约是否与文档、前端期望、后端路由、mock、OpenAPI、数据库/上游样例、运行响应一致。用户提到接口契约校验、前后端字段不一致、响应字段缺失、类型/单位/枚举/精度错误、百分比/比例值口径、响应字段变化、新增字段命名、请求参数、分页排序筛选、筛选前数据完整性、snapshotDate/dataVersion/loadBatch、快照接口依赖、空态错误态、鉴权头、mock替换前验证、联调问题定位时触发。"
 ---
 
 # API Contract Validation
@@ -17,6 +17,7 @@ It validates behavior and records differences. It does not design a new API inve
 - Backend validation note: `references/backend-validation-note-template.md`
 - Frontend provider evidence and comparison checklist: `references/frontend-source-contract-types.md`, `references/frontend-comparison-checklist.md`
 - Frontend contract note: `references/frontend-contract-note-template.md`
+- Numeric unit/precision/percentage/display consistency: `$metric-number-display-contract`
 - Cross-artifact conflicts or readiness gates: use `$quality-gate-validation`.
 
 ## Workflow
@@ -28,7 +29,7 @@ It validates behavior and records differences. It does not design a new API inve
    For every filter/search/sort/page param that should change business data, verify option data, matching source/provider rows, required response fields, default sample, at least one non-default sample, empty/no-permission sample when relevant, and resolver/API branch coverage. If this evidence is missing, classify the contract as data-completeness or data-grain `missing/blocked` before judging frontend binding.
 5. Compare data-version, snapshot role, and endpoint dependency contract.
    For snapshot/latest-period API groups, verify `snapshotDate`, `latestPeriod`, `loadBatch`, `dataVersion`, report version, or source version is exposed/defaulted consistently and included in request/query/cache context where needed. Verify business filters and permission/data scope are applied as backend params, source/provider predicates, precompute lookup keys, declared snapshot reuse rules, or Redis/cache key segments before response construction. Confirm metrics, trends, rankings, tables, drilldowns, and exports either validly reuse a declared canonical/shared snapshot or avoid dependency on undocumented snapshot responses, frontend call order, or controller-memory snapshots.
-6. Compare response contract: envelope, fields, nesting, types, units, precision, numeric display contract, enum values, dates, totals, empty states, errors, and no-permission states. For rate/percentage fields, identify whether the API returns a raw ratio (`0.744`), percent number (`74.4`), or display-ready string (`74.4%`), and record display owner and rounding rules.
+6. Compare response contract: envelope, fields, nesting, types, units, precision, numeric display contract, enum values, dates, totals, empty states, errors, and no-permission states. For metric-bearing fields, use `$metric-number-display-contract`. For rate/percentage fields, identify whether the API returns a raw ratio (`0.744`), percent number (`74.4`), or display-ready string (`74.4%`), and record display owner and rounding rules.
    For every metric-bearing field, validate value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, small-nonzero behavior when relevant, formula precision policy, and formatter ownership across docs, mocks, route/runtime samples, source samples, frontend adapters, and exports.
 6a. When a backend source table/upstream/fixture has changed, compare old and new runtime or fixture responses against the same API contract. Existing fields must remain present and behavior-compatible; newly added fields must be additive, conventionally named, documented, and safe for consumers to ignore.
 7. Compare runtime/source behavior when available: mock vs fixture vs DB/upstream vs live API.

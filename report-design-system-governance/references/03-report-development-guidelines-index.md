@@ -45,7 +45,7 @@ Do not use `$haier-enterprise-app-ui-design-spec` as the primary report guidelin
 | Design highlights from proven leadership/operating report samples, reusable page patterns, reading paths, density, and visual acceptance | `07-exemplary-report-design-patterns.md` |
 | Anti-AI design gate for generic aesthetics, empty copy, first-screen-only completion, missing states/accessibility, and sample-like engineering | `08-anti-ai-design-gate.md` |
 | Report decision anti-AI gate for avoiding empty dashboard shells and enforcing metric systems, data stories, realistic data, linkage, action, and industry sense | `09-report-decision-anti-ai-gate.md` |
-| Numeric precision, rounding, unit scaling, tooltip/export precision, and formatter ownership | `11-number-precision-display-rules.md` |
+| Numeric precision, rounding, unit scaling, tooltip/export precision, and formatter ownership | `$metric-number-display-contract` |
 
 Load only the smallest reference needed. Do not load all report guideline references by default.
 

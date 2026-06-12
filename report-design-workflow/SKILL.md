@@ -26,7 +26,11 @@ Default policy: load `$report-prototype-design-thinking` for the generic design-
 | Reusable component standards | `$report-component-design-spec` |
 | Reusable design standards | `$report-design-system-governance` |
 | Haier enterprise app UI standard | `$haier-enterprise-app-ui-design-spec` |
-| Delivery/code versioning | `$delivery-version-management` |
+| Code file ledgers | `$code-change-ledger-management` |
+| Delivery/version index | `$delivery-version-management` |
+| Delivery pipeline governance | `$report-delivery-pipeline-governance` |
+| Artifact readability | `$artifact-readability-standard` |
+| Environment profile contract | `$environment-profile-contract` |
 | Quality gates | `$quality-gate-validation` |
 | Runtime visual QA | `$frontend-runtime-qa-validation` |
 
@@ -38,7 +42,9 @@ Default policy: load `$report-prototype-design-thinking` for the generic design-
 - Output quality and avoid list: `references/03-output-quality-and-avoid.md`
 - Display themes and pattern chain: `references/04-common-display-theme-pattern-chain.md`
 - Detailed prototype implementation gates: `references/05-prototype-implementation-gates.md`
-- Code-file ledger: `$delivery-version-management` `references/code-file-change-ledger.md` before code edits.
+- Code-file ledger: `$code-change-ledger-management` before code edits.
+- Delivery pipeline handoff: `$report-delivery-pipeline-governance` when a prototype feeds technical solution, backend, frontend, testing, release, or retest work.
+- Environment profile contract: `$environment-profile-contract` when a runnable URL or deployable profile is part of the handoff.
 - Report anti-AI and report-decision gates: `$report-design-system-governance` relevant references for any report/dashboard/BI/detail-query/cockpit/topic-analysis/report-designer prototype.
 
 ## Workflow
@@ -54,8 +60,9 @@ Default policy: load `$report-prototype-design-thinking` for the generic design-
 9. Use `$report-prototype-template-management` for template selection/copy/validation and bundled assets.
 10. Use `$report-component-style-design` and `$report-component-design-spec` for component fit, chart/table/KPI readability, and reusable component rules.
 11. Apply report design-system and Haier UI baselines when in scope.
-12. Before implementation or repair touches source, read/create code ledgers for every changed file; append version entries after edits.
+12. Before implementation or repair touches source, read/create code ledgers for every changed file through `$code-change-ledger-management`; append version entries after edits.
 13. Start/verify the prototype when a runnable URL is requested and route runtime findings through `$frontend-runtime-qa-validation`.
+14. For handoff artifacts, apply `$artifact-readability-standard` and `$report-delivery-pipeline-governance` so downstream technical solution, backend, frontend, and testing workflows know the entry conditions.
 
 ## Required Output
 

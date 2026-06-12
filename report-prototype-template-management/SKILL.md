@@ -1,6 +1,6 @@
 ---
 name: report-prototype-template-management
-description: "用于管理可运行报表原型模板资产，选择、复制、二开和校验 Vue/Vite 报表模板。报表原型默认走内置模板，只有用户明确自定义/精确复刻/保留现有壳或模板无法满足时才走 custom。用户提到报表模板、页面模板、模板布局token、分块内外间距、圆角、标题带/标题位置、模板筛选、筛选工具栏、独立筛选栏、选择模板、复制模板、模板二开、topbar、left nav、暗色/亮色模板、固定1920大屏、Haier logo、hover/focus模板动效、dashboard.config.ts、dashboard.dataset.json、validate-dashboard-contract、启动预览URL时触发；不负责业务报表类型判断或组件视觉细节。"
+description: "用于管理可运行报表原型模板资产，选择、复制、二开和校验 Vue/Vite 报表模板。报表原型默认走内置模板，只有用户明确自定义/精确复刻/保留现有壳或模板无法满足时才走 custom。用户提到报表模板、页面模板、模板布局token、模板筛选、选择模板、复制模板、模板二开、topbar、left nav、暗色/亮色模板、固定1920大屏、Haier logo、dashboard.config.ts、dashboard.dataset.json、validate-dashboard-contract、启动预览URL时触发。"
 ---
 
 # Report Prototype Template Management
@@ -45,7 +45,7 @@ Copy templates with their full project structure, including package/config files
 | Template redevelopment | `references/template-redevelopment-playbook.md` |
 | Recipe and verification checklist | `references/template-recipes-checklist.md` |
 | Report decision compatibility | `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` |
-| Code-file ledger | `$delivery-version-management` `references/code-file-change-ledger.md` |
+| Code-file ledger | `$code-change-ledger-management` |
 
 ## Workflow
 
@@ -56,7 +56,7 @@ Copy templates with their full project structure, including package/config files
 5. Copy or merge the full template into the target.
 6. Keep shell-owned behavior in template config/data/action registries and widget registries.
 7. Preserve native template filter surfaces; configure `filters[]`, data sources, empty-filter values, resolvers, and widget bindings instead of adding a duplicate filter bar.
-8. Before editing copied template source, read/create the sidecar code ledger; append version entries after edits.
+8. Before editing copied template source, read/create the sidecar code ledger through `$code-change-ledger-management`; append version entries after edits.
 9. Validate chart/table/component fidelity through owning component references when widgets are added or changed.
 10. Run template validation, build, and dev/preview startup when a local URL is required.
 

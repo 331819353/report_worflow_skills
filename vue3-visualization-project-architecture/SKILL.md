@@ -1,6 +1,6 @@
 ---
 name: vue3-visualization-project-architecture
-description: "用于按上传的 Vue3 数据可视化样例沉淀项目架构、目录结构、组件开发约定和工程使用技巧。用户提到 Vue3数据可视化项目、Vue3项目目录结构、项目架构、前端脚手架、Vite、TypeScript、Pinia、Vue Router、Element Plus、ECharts、ChartRenderer、Axios封装、Access-Token、Haier token、VITE_API_BASE_URL、多环境配置、pnpm build:test/build:prod、nginx/Docker 部署、按样例开发前端页面或接入接口时触发；不替代报表业务设计、组件视觉规范或运行QA。"
+description: "用于按上传的 Vue3 数据可视化样例沉淀项目架构、目录结构、组件开发约定和工程使用技巧。用户提到 Vue3数据可视化项目、Vue3项目目录结构、前端脚手架、Vite/TypeScript/Pinia/Vue Router、Element Plus、ECharts、ChartRenderer、Axios封装、Access-Token、Haier token、VITE_API_BASE_URL、多环境配置、pnpm build:test/build:prod、nginx/Docker部署、按样例开发前端页面或接入接口时触发。"
 ---
 
 # Vue3 Visualization Project Architecture

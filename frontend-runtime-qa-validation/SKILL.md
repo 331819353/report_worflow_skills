@@ -19,7 +19,8 @@ It is not a test-case design skill. For test matrices use `$integration-test-cas
 | Provider, filter, interaction, edge-state checks | `references/data-interaction-state-checks.md` |
 | QA report structure | `references/qa-note-template.md` |
 | Full runtime QA procedure and component-crop checklist | `references/runtime-qa-procedure.md` |
-| Readiness and visual/multimodal gate | `$quality-gate-validation` |
+| Focused visual regression, screenshot diff, component crops, and `VIS-*` findings | `$visual-browser-regression-check` |
+| Readiness and cross-stage gate | `$quality-gate-validation` |
 | Common enterprise app baseline | `$haier-enterprise-app-ui-design-spec` |
 | Report/dashboard baseline and anti-AI/report-decision gates | `$report-design-system-governance` relevant references |
 
@@ -32,7 +33,7 @@ It is not a test-case design skill. For test matrices use `$integration-test-cas
 5. Run DOM structural checks: expected card/component counts, fixed-height overflow, bounding-box overlap, and chart/table category uniqueness where inspectable.
 6. Inspect console, network, assets, routes, auth, and provider calls.
 7. Exercise filters, tabs, drawers, modals, chart clicks, table actions, pagination, sorting, export, refresh, fullscreen, hover, and focus states in scope.
-8. Apply anti-AI, report-decision, and multimodal/visual checks when relevant.
+8. Apply anti-AI, report-decision, and multimodal/visual checks when relevant. Use `$visual-browser-regression-check` when the scope requires deterministic baseline diff, screenshot coverage, component crops, or structured `VIS-*` findings.
 9. Produce a compact QA note with findings, evidence paths, owner, retest criteria, URL, and readiness.
 
 ## Required Output

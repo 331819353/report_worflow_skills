@@ -33,6 +33,9 @@ Load references only when their scenario is relevant. Do not bulk-load every ref
 - Read `references/data-governance-permission-playbook.md` whenever data source credibility,口径, lineage, reconciliation, masking, audit, or permission design matters.
 - Read `references/object-model-and-acceptance.md` when object fields, acceptance criteria, or implementation task lists need more detail than the core output skeleton.
 - Read `references/output-skeleton-and-gates.md` before finalizing the requirement package, output structure, quality checklist, or avoid-list.
+- Use `$artifact-readability-standard` when the requirement package must be reviewed by humans and consumed by downstream AI/workflows.
+- Use `$report-delivery-pipeline-governance` when routing the requirement package into prototype, technical solution, backend, frontend, testing, release, or retest stages.
+- Use `$metric-number-display-contract` when requirements include units, percentages, rates, precision, rounding, tooltip/export values, or numeric consistency expectations.
 - Route to `$change-impact-analysis` immediately when the input is a change to an existing metric,口径, filter, permission, API, page, field, model, test case, or delivery document.
 - Route to `$metric-governance-lineage`, `$permission-matrix-validation`, `$data-quality-validation`, `$delivery-version-management`, or `$production-observability-feedback` when those concerns are the primary deliverable rather than just supporting context.
 - Use `$haier-enterprise-app-ui-design-spec` as the common enterprise application UI baseline when the requirement includes forms, lists, detail pages, tables, navigation, dialogs, empty/error/feedback states, workbench pages, or cross-platform app adaptation.
@@ -91,3 +94,4 @@ Use this sequence for every requirement transformation:
     Recommend the next skill/workflow only after the requirement package is clear enough for that skill to act.
 
     Include governance routes when relevant: `$metric-governance-lineage` for指标口径, `$permission-matrix-validation` for multi-role/data-scope rules, `$data-quality-validation` for real data trust, `$delivery-version-management` for artifact versions, and `$production-observability-feedback` for上线后闭环.
+    Use `$report-delivery-pipeline-governance` to state next-stage entry conditions and handoff blockers.

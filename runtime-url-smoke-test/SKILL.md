@@ -12,6 +12,7 @@ Use this skill at the start of the testing phase. It answers whether the provide
 ## References
 
 - Use `$delivery-artifact-template-management` when the task needs a reusable URL smoke matrix/template or standardized evidence structure.
+- Use `$environment-profile-contract` when the smoke result must prove test/production profile, API base URL, source mode, proxy/CORS, or mock isolation consistency.
 
 ## Required Inputs
 
@@ -40,7 +41,10 @@ Optional inputs: environment name, expected version/build, API documentation, te
 6. Check version alignment.
    If version metadata is available, verify frontend build, backend build, API document, and optional source/Git commit refer to the same delivery under test.
 
-7. Decide test readiness.
+7. Check environment profile consistency when in scope.
+   Verify that the frontend URL, backend/API base URL, auth endpoint, source mode, and proxy/CORS behavior match the declared profile. If only one shared `.env` or production-to-test/mock wiring exists, route to `$environment-profile-contract`.
+
+8. Decide test readiness.
    Continue only when the runtime pair is reachable and stable. If not, stop deeper testing and report the environment blocker with evidence.
 
 ## Required Output

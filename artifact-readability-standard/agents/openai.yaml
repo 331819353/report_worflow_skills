@@ -1,0 +1,4 @@
+interface:
+  display_name: "交付物可读性标准"
+  short_description: "设计或审计人类可评审、AI可抽取的交付物结构，保留稳定ID、状态、映射、证据和缺口。"
+  default_prompt: "Use $artifact-readability-standard to make delivery artifacts both human-readable and AI-extractable, with stable IDs, statuses, mappings, fields, evidence, gaps, source context, verification, and one canonical source of truth."

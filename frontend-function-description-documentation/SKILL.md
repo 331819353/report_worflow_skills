@@ -17,7 +17,8 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 - Use `$delivery-artifact-template-management` to choose the frontend function description output structure.
 - Read `references/feature-inventory-fields.md` for page/module and provider-binding fields.
 - Read `references/handoff-quality-checklist.md` before finalizing the document.
-- Read `$delivery-version-management` `references/code-file-change-ledger.md` and changed-file sidecar ledgers when the function description must include feature inventory, code ranges, modified content, or version traceability.
+- Read `$code-change-ledger-management` and changed-file sidecar ledgers when the function description must include feature inventory, code ranges, modified content, or version traceability.
+- Read `$metric-number-display-contract` when documenting metric units, percentage/rate scaling, rounding, tooltip/export precision, or formatter ownership.
 - Read `$haier-enterprise-app-ui-design-spec` when documenting common enterprise application pages so testers can verify page shell, standard components, states, feedback, and cross-platform behavior against the company UI baseline.
 - Read `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and relevant report guideline reference(s) when documenting report/dashboard/BI/data-screen/analysis pages so testers can verify metric口径, layout hierarchy, chart/table formatting, filters, states, performance, export, and acceptance.
 

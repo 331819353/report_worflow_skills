@@ -1,6 +1,6 @@
 ---
 name: backend-development-workflow
-description: "运行数据服务/后端阶段，把技术方案、API清单和数据模型转成专业数据服务设计、API文档，或在用户明确要求时实现后端接口和本地服务。覆盖数据服务架构、查询服务链路、元数据驱动、API契约、数据转换适配、连接池、Redis/cache/precompute、权限注入、参数护栏、异步导出、观测审计、环境部署、生产准备、契约校验和运行URL。用户提到后端、服务端、数据服务、数据服务设计、接口实现、接口开发、API文档、默认后端技术栈、Python、Flask、连接池、Redis、snapshotDate/dataVersion/loadBatch、快照接口、接口依赖、筛选前数据完整性、数据库/上游API接入、更换数据源/数据表、API返回字段保持不变、新增字段规范命名、鉴权中间件、Haier IAMA、启动后端、本地后端URL时触发。"
+description: "运行数据服务/后端阶段，把技术方案、API清单和数据模型转成数据服务设计、API文档，或在用户明确要求时实现后端接口和本地服务。用户提到后端、服务端、数据服务、接口实现/接口开发、API文档、默认后端技术栈、Python/Flask、Java/Spring Boot、连接池/Redis、快照接口、snapshotDate/dataVersion/loadBatch、筛选前数据完整性、数据库/上游API接入、响应字段兼容、新增字段命名、鉴权中间件、Haier IAMA、启动后端、本地后端URL时触发。"
 ---
 
 # Backend Development Workflow
@@ -24,6 +24,7 @@ It owns data-service runtime boundaries, route/service/query layering, contracts
 | Stage | Skill |
 | --- | --- |
 | Python Flask SSO multi-database architecture | `$python-flask-sso-multidatabase-backend` |
+| Java Spring Boot backend architecture | `$java-springboot-backend-development` |
 | API documentation | `$api-documentation-design` |
 | API contract validation | `$api-contract-validation` |
 | Data model/source mapping | `$data-model-source-mapping` |
@@ -32,7 +33,10 @@ It owns data-service runtime boundaries, route/service/query layering, contracts
 | SSO/auth integration | `$haier-sso-integration` |
 | Runtime URL smoke test | `$runtime-url-smoke-test` |
 | Production observability | `$production-observability-feedback` |
-| Delivery/code versioning | `$delivery-version-management` |
+| Code file ledgers | `$code-change-ledger-management` |
+| Delivery/version index | `$delivery-version-management` |
+| Metric number display | `$metric-number-display-contract` |
+| Environment profile contract | `$environment-profile-contract` |
 | Quality gates | `$quality-gate-validation` |
 
 ## Data-Service Architecture Scope
@@ -41,14 +45,14 @@ Decide endpoint families, request context, response envelope, service/query/sour
 
 ## Workflow
 
-1. Inventory technical solution, API inventory, model/source mapping, metric口径, numeric display/precision contracts, permissions, SSO/token header contract, database role map, env/auth, and existing code.
+1. Inventory technical solution, API inventory, model/source mapping, metric口径, numeric display/precision contracts, permissions, SSO/token header contract, database role map, env/auth, and existing code. Use `$metric-number-display-contract` for numeric semantics and `$environment-profile-contract` for test/production runtime profiles when in scope.
 2. Run quality gates when source/API/model/frontend expectations conflict.
-3. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, multi-database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope.
+3. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope; load `$java-springboot-backend-development` when Java/Spring Boot structure, Spring Security/JWT/SSO, Maven/Docker, or Profile conventions are in scope.
 4. Produce or update API documentation through `$api-documentation-design`.
 5. Validate contracts against frontend expectations, source samples, OpenAPI, mocks, routes, and runtime responses.
 6. Design transformation adapters for source-to-response and response-to-view-model compatibility.
-7. If implementation is requested, edit backend code with code-file ledger discipline and preserve existing project patterns.
-8. Configure pools, Redis/cache, timeouts, errors, logging, health checks, and env profiles.
+7. If implementation is requested, edit backend code with `$code-change-ledger-management` discipline and preserve existing project patterns.
+8. Configure pools, Redis/cache, timeouts, errors, logging, health checks, and env profiles. Use `$redis-cache-design-patterns` when Redis is named and `$environment-profile-contract` when handoff profiles matter.
 9. Run available tests/build/startup and `$runtime-url-smoke-test` when a URL is produced.
 10. Produce backend handoff notes, gaps, readiness, and version links.
 
@@ -57,6 +61,7 @@ Decide endpoint families, request context, response envelope, service/query/sour
 - Backend/data-service design or implemented service summary.
 - API documentation/contract status.
 - Python/Flask SSO and multi-database architecture when applicable: app factory, route/service/repository/db layers, token validation, 401/403, database role map, env vars, and pool ownership.
+- Java/Spring Boot architecture when applicable: controller/service/mapper-or-repository layering, `ApiResponse<T>`, global exception handling, Spring Security/JWT/SSO, IAM/IAMA or local JWT bridge, Profile YAML, Maven/Gradle, Docker, and startup commands.
 - Source/model/adapter mapping and response compatibility notes.
 - Numeric precision/display contract: value type, raw/display unit, scale, precision, tooltip/export precision, rounding, null/zero/denominator-zero, and data-vs-presentation ownership.
 - Runtime model: pools, Redis/cache/precompute, timeout/fallback, export/async behavior, env/auth, health, logging, observability.
@@ -69,6 +74,7 @@ Decide endpoint families, request context, response envelope, service/query/sour
 - Existing API response fields are stable across source/table/upstream replacement unless a versioned breaking change is documented.
 - Existing numeric response semantics are stable across source/table/upstream replacement: type, raw unit, display unit, scale, precision, formula, nullability, denominator-zero behavior, and export precision cannot drift without a versioned change.
 - Python/Flask SSO + multi-database backends must separate API, service, repository, db engine/session, middleware, schema, and SQL-file responsibilities; do not place complex SQL, token validation, permission checks, and response formatting all inside route handlers.
+- Java/Spring Boot backends must keep controllers thin, place transactions in service implementations, separate DTO/Entity/VO, define global exception handling, and keep JWT/SSO/Security behavior out of business controllers.
 - SSO readiness requires backend token validation, clear `Access-Token`/optional `Application-Key` header contract, distinct 401 and 403 behavior, local user/role/permission mapping, and token/log redaction.
 - Data-bearing endpoints must use request/defaulted version params, backend-injected permission/data scope, source predicates or cache/precompute keys; echoing metadata is not enough.
 - Backend/data-service readiness needs diagnosable structured logs, connection release on errors/timeouts, env separation, and runtime verification.

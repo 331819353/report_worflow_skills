@@ -23,7 +23,7 @@ Text:
 | Body | `14px` | `22px` | `text.secondary` / Haier fallback `#595959` |
 | Note | `12px` | `18px` | `text.tertiary` / Haier fallback `#8C8C8C` |
 
-Number format follows `11-number-precision-display-rules.md`. The table below is only the compact default for common report UI; metric dictionaries or project contracts can override it with explicit `NumericFormatContract` evidence.
+Number format follows `$metric-number-display-contract`. The table below is only the compact default for common report UI; metric dictionaries or project contracts can override it with explicit `NumericFormatContract` evidence.
 
 | Type | Rule | Example |
 | --- | --- | --- |
