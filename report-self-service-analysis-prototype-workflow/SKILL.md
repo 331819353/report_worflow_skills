@@ -45,8 +45,9 @@ Core intent:
 8. Use `$report-type-design` with exploratory-analysis intent; keep detail-query only as a drilldown or output block.
 9. Use `$report-info-component-mapping` for field panel, config zones, result widgets, dataset contracts, invalid-combination states, and binding matrix.
 10. Route chart, table/pivot, filter, and component-internal placement surfaces to `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec`, and `$report-component-placement-spec` before implementation-ready decisions.
-11. Use layout/template/component skills to implement the workbench without hiding the analysis model behind decorative charts.
-12. Verify data completeness, permission states, empty/error/timeout/invalid-combination states, and runnable URL when requested.
+11. Run the anti-laziness execution gate from `$quality-gate-validation` before implementation-ready, repair, QA, or handoff conclusions. Keep `LAZY-*` findings visible until evidence closes them.
+12. Use layout/template/component skills to implement the workbench without hiding the analysis model behind decorative charts.
+13. Verify data completeness, permission states, empty/error/timeout/invalid-combination states, and runnable URL when requested.
 
 ## Required Output
 
@@ -57,6 +58,7 @@ Core intent:
 - Workbench layout: field panel, configuration area, chart/table/pivot result area, detail drawer, save/share/export controls.
 - Filter, grouping, sorting, chart switching, drilldown, save/share/export, permission, masking, and performance rules.
 - Component/data/filter/control/interaction binding matrix.
+- Anti-laziness execution result: evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for repairs, regression probe, and readiness impact.
 - Template/custom shell decision, changed files if implemented, verification, URL or blocker, and readiness.
 
 ## Quality Gate
@@ -68,3 +70,4 @@ Core intent:
 - Do not treat save/share/export as optional polish; they decide whether self-service analysis can be reused.
 - Do not overload ordinary users with expert controls without templates, presets, or guided defaults.
 - Do not claim runnable readiness until non-default field/filter/chart changes visibly alter the result.
+- Do not mark ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, or only default field/filter/chart states were checked.

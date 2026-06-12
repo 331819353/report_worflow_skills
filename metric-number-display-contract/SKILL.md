@@ -15,6 +15,10 @@ Use `$report-design-system-governance` for full report design-system standards, 
 
 - Read `references/number-precision-display-rules.md` before accepting metric display, formatter, export precision, or percent/rate behavior.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify each metric field and its value type: count, money, rate, ratio, percentage point, duration, score, rank, or derived formula.

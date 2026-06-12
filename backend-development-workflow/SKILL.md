@@ -49,14 +49,15 @@ Decide endpoint families, request context, response envelope, service/query/sour
 1. Run the Preflight understanding gate before backend design, API docs, implementation, or repair. Name the requested stage, evidence inventory, source/API/model/frontend authority order, affected contracts, owning skills, missing evidence, and start decision.
 2. Inventory technical solution, API inventory, model/source mapping, metric口径, numeric display/precision contracts, permissions, SSO/token header contract, database role map, env/auth, and existing code. Use `$metric-number-display-contract` for numeric semantics and `$environment-profile-contract` for test/production runtime profiles when in scope.
 3. Run quality gates when source/API/model/frontend expectations conflict.
-4. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope; load `$java-springboot-backend-development` when Java/Spring Boot structure, Spring Security/JWT/SSO, Maven/Docker, or Profile conventions are in scope.
-5. Produce or update API documentation through `$api-documentation-design`.
-6. Validate contracts against frontend expectations, source samples, OpenAPI, mocks, routes, and runtime responses.
-7. Design transformation adapters for source-to-response and response-to-view-model compatibility.
-8. If implementation is requested, edit backend code with `$code-change-ledger-management` discipline and preserve existing project patterns.
-9. Configure pools, Redis/cache, timeouts, errors, logging, health checks, and env profiles. Use `$redis-cache-design-patterns` when Redis is named and `$environment-profile-contract` when handoff profiles matter.
-10. Run available tests/build/startup and `$runtime-url-smoke-test` when a URL is produced.
-11. Produce backend handoff notes, gaps, readiness, and version links.
+4. Run the anti-laziness execution gate from `$quality-gate-validation` for implementation, repair, documentation, or acceptance steps. Keep `LAZY-*` findings visible until evidence closes them.
+5. Define data-service design: boundaries, layers, request context, response model, numeric metadata contract, data-version contract, permission scope, SSO/auth flow, database ownership, cache/precompute, and observability. Load `$python-flask-sso-multidatabase-backend` when Python/Flask SSO or multi-database structure is in scope; load `$java-springboot-backend-development` when Java/Spring Boot structure, Spring Security/JWT/SSO, Maven/Docker, or Profile conventions are in scope.
+6. Produce or update API documentation through `$api-documentation-design`.
+7. Validate contracts against frontend expectations, source samples, OpenAPI, mocks, routes, and runtime responses.
+8. Design transformation adapters for source-to-response and response-to-view-model compatibility.
+9. If implementation is requested, edit backend code with `$code-change-ledger-management` discipline and preserve existing project patterns.
+10. Configure pools, Redis/cache, timeouts, errors, logging, health checks, and env profiles. Use `$redis-cache-design-patterns` when Redis is named and `$environment-profile-contract` when handoff profiles matter.
+11. Run available tests/build/startup and `$runtime-url-smoke-test` when a URL is produced.
+12. Produce backend handoff notes, gaps, readiness, and version links.
 
 ## Required Output
 
@@ -68,6 +69,7 @@ Decide endpoint families, request context, response envelope, service/query/sour
 - Numeric precision/display contract: value type, raw/display unit, scale, precision, tooltip/export precision, rounding, null/zero/denominator-zero, and data-vs-presentation ownership.
 - Runtime model: pools, Redis/cache/precompute, timeout/fallback, export/async behavior, env/auth, health, logging, observability.
 - Code-ledger proof when backend source changed.
+- Anti-laziness execution result: local evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for repairs, regression probe, and readiness impact.
 - Verification commands, URL/smoke result, blockers, and readiness.
 
 ## Quality Gate
@@ -81,4 +83,5 @@ Decide endpoint families, request context, response envelope, service/query/sour
 - SSO readiness requires backend token validation, clear `Access-Token`/optional `Application-Key` header contract, distinct 401 and 403 behavior, local user/role/permission mapping, and token/log redaction.
 - Data-bearing endpoints must use request/defaulted version params, backend-injected permission/data scope, source predicates or cache/precompute keys; echoing metadata is not enough.
 - Backend/data-service readiness needs diagnosable structured logs, connection release on errors/timeouts, env separation, and runtime verification.
+- Do not mark backend work ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, or the conclusion uses generic "checked/done/optimized" wording without concrete evidence.
 - Load `backend-development-gates.md` before implementing, documenting, or accepting backend/data-service work.

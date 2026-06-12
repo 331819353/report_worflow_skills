@@ -20,6 +20,10 @@ The goal is to answer: "Which version of each artifact belongs together, and wha
 Use `$delivery-artifact-template-management` when producing the delivery index table. Use `scripts/build_delivery_index.py` to create a first-pass index from files.
 Use `$code-change-ledger-management` when source code is created, edited, repaired, or refactored.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Define version chain.

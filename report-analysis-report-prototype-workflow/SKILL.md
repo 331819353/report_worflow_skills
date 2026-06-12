@@ -45,8 +45,9 @@ Core intent:
 8. Use `$report-type-design`: default primary type is `analysis-diagnostic`; use `review-recap` when meeting/report circulation is the main scenario.
 9. Use `$report-info-component-mapping` to bind conclusions, evidence components, attribution blocks, action items, appendix details, and states.
 10. Route chart, table, filter, and component-internal placement surfaces to `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec`, and `$report-component-placement-spec` before implementation-ready decisions.
-11. Use layout/template/component skills to make the report read as a coherent story, not a chart gallery.
-12. Verify conclusion-evidence links, action follow-up, export/share/comment needs, and runnable URL when requested.
+11. Run the anti-laziness execution gate from `$quality-gate-validation` before implementation-ready, repair, QA, or handoff conclusions. Keep `LAZY-*` findings visible until evidence closes them.
+12. Use layout/template/component skills to make the report read as a coherent story, not a chart gallery.
+13. Verify conclusion-evidence links, action follow-up, export/share/comment needs, and runnable URL when requested.
 
 ## Required Output
 
@@ -58,6 +59,7 @@ Core intent:
 - Action model: owner, deadline, follow-up metric, status, and tracking notes.
 - Filter, interaction, export/share/comment/history, permission, freshness, and state requirements.
 - Component/data/filter/control/interaction binding matrix.
+- Anti-laziness execution result: evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for repairs, regression probe, and readiness impact.
 - Template/custom shell decision, changed files if implemented, verification, URL or blocker, and readiness.
 
 ## Quality Gate
@@ -69,3 +71,4 @@ Core intent:
 - Do not let recommendations appear without owner, follow-up metric, or tracking intent when the report drives action.
 - Do not repeat the same metric across multiple charts unless each chart answers a different narrative step.
 - Do not claim readiness unless each conclusion is tied to evidence or marked as insufficient-data.
+- Do not mark ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, or conclusion/story claims rely on generic design assertions without evidence links.

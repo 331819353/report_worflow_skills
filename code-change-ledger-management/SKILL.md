@@ -18,6 +18,10 @@ Use `$delivery-version-management` for full delivery artifact version chains and
   - `delivery-version-management/scripts/update_code_change_ledger.py --stage before`
   - `delivery-version-management/scripts/update_code_change_ledger.py --stage after`
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify scoped source files: frontend, backend, prototype, config, SQL, or tests that own behavior.

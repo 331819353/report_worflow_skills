@@ -22,6 +22,10 @@ Use `$report-component-style-design` for mixed components; use this skill when t
 | Table/composite placement routing | `$report-component-style-design` `references/12f-placement-composite-tables.md` |
 | Dense table acceptance | `$report-component-style-design` `references/12-component-acceptance-gates.md` |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name table type candidates, row grain, primary key/object identity, column contracts, parent container, hard constraints, missing evidence, and start decision.

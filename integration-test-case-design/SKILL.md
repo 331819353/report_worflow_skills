@@ -23,6 +23,10 @@ Optional inputs: test account, data seed, environment URL, source commit, risk l
 - Use `$report-design-system-governance` `references/03-report-development-guidelines-index.md` and the relevant report guideline reference(s) as the acceptance basis for report/dashboard/BI/data-screen/analysis cases: metric口径, layout hierarchy, chart/table formatting, filters, states, permissions, export, performance, and handoff.
 - Read `references/01-minimum-case-set-and-gates.md` before finalizing coverage, blocked cases, and quality gates.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Build the feature/API matrix.

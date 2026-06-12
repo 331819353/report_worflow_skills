@@ -46,6 +46,10 @@ Always choose the mode and then load only the matching references.
 | Component-family placement and fit | `$report-component-placement-spec` |
 | Haier/company application UI baseline | `$haier-enterprise-app-ui-design-spec` for Haier/enterprise report pages, dashboards, and data screens |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Run the Preflight understanding gate before creating, auditing, merging, applying, or accepting standards. Name mode, source-of-truth hierarchy, affected surfaces, owning specialty skills, hard constraints, missing evidence, and start decision.

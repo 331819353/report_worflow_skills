@@ -45,8 +45,9 @@ Core intent:
 8. Use `$report-type-design`: default primary type is `status-overview`; use `anomaly-monitoring` only when alert handling is the central task.
 9. Use `$report-info-component-mapping` to bind KPIs, thresholds, trend datasets, anomaly rules, drilldowns, filters, and states.
 10. Route chart, table, filter, and component-internal placement surfaces to `$report-chart-design-spec`, `$report-table-design-spec`, `$report-filter-control-design-spec`, and `$report-component-placement-spec` before implementation-ready decisions.
-11. Use layout/template/component skills to keep the dashboard sparse, layered, and actionable.
-12. Verify first-viewport answer, filter linkage, drilldown, abnormal states, refresh/freshness, and runnable URL when requested.
+11. Run the anti-laziness execution gate from `$quality-gate-validation` before implementation-ready, repair, QA, or handoff conclusions. Keep `LAZY-*` findings visible until evidence closes them.
+12. Use layout/template/component skills to keep the dashboard sparse, layered, and actionable.
+13. Verify first-viewport answer, filter linkage, drilldown, abnormal states, refresh/freshness, and runnable URL when requested.
 
 ## Required Output
 
@@ -57,6 +58,7 @@ Core intent:
 - Drilldown chain: state -> split -> object -> detail/action.
 - Filter, refresh, permission, export/share, abnormal, empty/error/no-permission state requirements.
 - Component/data/filter/control/interaction binding matrix.
+- Anti-laziness execution result: evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for repairs, regression probe, and readiness impact.
 - Template/custom shell decision, changed files if implemented, verification, URL or blocker, and readiness.
 
 ## Quality Gate
@@ -68,3 +70,4 @@ Core intent:
 - Do not show only result metrics when process or risk metrics are needed to explain status.
 - Do not mark every fluctuation as an anomaly; thresholds and severity must be explicit.
 - Do not claim readiness unless the first viewport answers the current-state question and drilldown destinations are defined.
+- Do not mark ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, or implementation/QA evidence is only generic screenshots, default states, or unchecked assumptions.

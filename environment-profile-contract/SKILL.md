@@ -15,6 +15,10 @@ Use `$frontend-env-deployment-verification` for concrete frontend env/proxy/buil
 
 - Read `references/environment-profile-contract.md` before accepting environment-sensitive handoffs, production readiness, or profile separation.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify deliverable runtime: frontend, backend/data service, integrated app, prototype, or release bundle.

@@ -1,6 +1,6 @@
 ---
 name: quality-gate-validation
-description: "用于执行跨阶段质量门禁和一致性检查。用户提到质量检查、输入材料冲突、入口一致性、设计合理性、筛选绑定断裂、快照接口依赖、snapshotDate/dataVersion/loadBatch、指标单位/百分比显示冲突、更换数据源/数据表后API字段漂移、新增字段命名不规范、生产就绪、验收门禁、可交付性、不要凭空假设、需求/API/模型/前端/后端/测试不一致、ready/partial/blocked 判定时触发；不替代具体实现 skill。"
+description: "用于执行跨阶段质量门禁和一致性检查。用户提到质量检查、开工前理解门禁、行动前自省、反懒性执行门禁、证据不足不能ready、过程中反思做得对不对、输入材料冲突、入口一致性、设计合理性、筛选绑定断裂、快照接口依赖、snapshotDate/dataVersion/loadBatch、指标单位/百分比显示冲突、更换数据源/数据表后API字段漂移、新增字段命名不规范、生产就绪、验收门禁、可交付性、不要凭空假设、需求/API/模型/前端/后端/测试不一致、ready/partial/blocked 判定时触发；不替代具体实现 skill。"
 ---
 
 # Quality Gate Validation
@@ -16,6 +16,7 @@ It is a gate, not a dumping ground for domain implementation. Load the owning sk
 Primary shared gates:
 
 - `references/preflight-understanding-gate.md`
+- `references/anti-laziness-execution-gate.md`
 - `references/entry-input-consistency-gate.md`
 - `references/design-reasonableness-gate.md`
 - `references/production-closed-loop-readiness.md`
@@ -33,7 +34,8 @@ Primary shared gates:
 
 | Gate | Use when |
 | --- | --- |
-| Preflight understanding | Before implementation, repair, QA, acceptance, or any workflow with multiple possible owning skills or artifact authorities. |
+| Preflight understanding and action reflection | Before implementation, repair, QA, acceptance, or any workflow with multiple possible owning skills or artifact authorities; repeat before non-trivial actions while work is underway. |
+| Anti-laziness execution | Non-trivial work needs evidence-first execution, owning-skill proof, before/after proof, regression probe, and `No proof, no ready` enforcement. |
 | Entry consistency | Inputs disagree on requirement, metric, source, API, field, permission, UI, env, runtime, or test evidence. |
 | Design reasonableness | A design is internally consistent but may not serve the business question, data shape, workflow, permission model, or testability. |
 | Production readiness | A handoff claims real delivery or release readiness. |
@@ -50,18 +52,22 @@ Primary shared gates:
 ## Workflow
 
 1. Run the Preflight understanding gate when the next step could edit, repair, test, accept, or route non-trivial work.
-2. Select the smallest additional gate set needed for the current risk.
-3. Classify affected artifacts and owning skills.
-4. Load the relevant shared gate references and domain baseline references.
-5. Inventory evidence and conflicts.
-6. Produce findings with stable IDs such as `PREFLIGHT-*`, `ENTRY-*`, `DESIGN-*`, `READY-*`, `VIS-*`, `VDIFF-*`, or domain-specific IDs.
-7. Assign severity, owner, affected artifact, required evidence/action, and readiness impact.
-8. Mark each affected artifact `ready`, `partial`, or `blocked`.
-9. Route unresolved findings to the owning skill/workflow.
+2. During execution, repeat the action reflection loop from `preflight-understanding-gate.md` before non-trivial design/code/QA actions, especially when new evidence changes the source authority, renderer, data contract, or visual source.
+3. Run the Anti-laziness execution gate for implementation, repair, QA, acceptance, or handoff work that could otherwise pass with thin evidence.
+4. Select the smallest additional gate set needed for the current risk.
+5. Classify affected artifacts and owning skills.
+6. Load the relevant shared gate references and domain baseline references.
+7. Inventory evidence and conflicts.
+8. Produce findings with stable IDs such as `PREFLIGHT-*`, `LAZY-*`, `ENTRY-*`, `DESIGN-*`, `READY-*`, `VIS-*`, `VDIFF-*`, or domain-specific IDs.
+9. Assign severity, owner, affected artifact, required evidence/action, and readiness impact.
+10. Mark each affected artifact `ready`, `partial`, or `blocked`.
+11. Route unresolved findings to the owning skill/workflow.
 
 ## Required Output
 
 - Gate(s) executed and evidence checked.
+- Action reflection decisions when the gate covers implementation, repair, renderer choice, HTML/sample conversion, or readiness judgment.
+- Anti-laziness findings or explicit no-finding result when the work is implementation, repair, QA, acceptance, or handoff.
 - Findings table with ID, severity, expected, actual, impact, owner, required action, and readiness impact.
 - Readiness result: `ready`, `partial`, or `blocked`.
 - Confirmation questions only for decisions that block affected work.
@@ -70,6 +76,8 @@ Primary shared gates:
 
 - Do not mark `ready` when high-impact conflicts, missing production controls, missing runtime evidence, or untested required behavior remain.
 - Do not mark non-trivial implementation, repair, QA, or acceptance work `ready` when the affected surfaces, owning skills, hard constraints, and start decision from `preflight-understanding-gate.md` are missing.
+- Do not mark non-trivial implementation, repair, QA, or acceptance work `ready` when the work passed initial preflight but skipped action reflection before later design/code/QA decisions that changed constraints, renderer, source authority, or visual source.
+- Do not mark non-trivial work `ready` while blocking `LAZY-*` findings remain, or when the only evidence is a generic statement such as "checked", "optimized", "looks good", or "implemented".
 - Do not mark Haier/enterprise report or dashboard UI `ready` when report-specific checks pass but inherited Haier application UI baseline checks are missing or treated as optional.
 - Do not mark `ready` when governed report metrics lack numeric display contracts or show inconsistent units, decimals, percent scale, rounding, tooltip/export precision, null/zero/denominator-zero behavior, or formatter ownership across design/API/frontend/backend/export.
 - Do not use this skill to restate full domain rules; cite the loaded references and summarize the blocking evidence.

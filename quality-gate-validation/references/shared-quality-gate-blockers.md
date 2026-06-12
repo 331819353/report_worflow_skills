@@ -6,6 +6,10 @@ Detailed blocker rules moved out of `SKILL.md`. Load this before final readiness
 
 - Do not use this skill as a dumping ground for domain logic.
 - Do not mark `ready` when high-impact conflicts, missing production controls, or untested required runtime behavior remain.
+- Do not mark non-trivial implementation, repair, QA, acceptance, or handoff `ready` when `anti-laziness-execution-gate.md` has not been considered or when blocking `LAZY-*` findings remain.
+- Do not mark `ready` when the answer only says "checked", "done", "optimized", "looks good", or "implemented" without concrete evidence such as file anchors, command output, screenshots/crops, DOM checks, API responses, diffs, code-ledger entries, or test results.
+- Do not mark `ready` when local evidence was available but not inspected before asking broad questions, guessing source authority, or choosing a convenient template/renderer/data path.
+- Do not mark `ready` when a repair lacks before/after proof and a regression probe for what the change could break.
 - Do not mark frontend, backend, or runnable prototype code implementation/repair `ready` when any changed scoped code file lacks a sidecar code ledger, evidence it was read before editing, or a post-change version entry with functional summary, changed code ranges/stable anchors, modified content, affected contracts, verification, and rollback/blocker notes.
 - Do not mark report artifacts, API handoffs, frontend implementations, backend implementations, exports, or test handoffs `ready` when metric-bearing fields lack a numeric display contract. Required evidence includes value type, raw/display unit, display scale, screen precision, tooltip precision, export precision, rounding mode, null display, true-zero display, denominator-zero behavior, negative-zero handling, small-nonzero behavior when relevant, formula precision policy, and formatter ownership.
 - Do not mark `ready` when percent/rate scale is ambiguous between `0-1`, `0-100`, and already formatted `%`, or when KPI/chart/table/tooltip/drawer/export show inconsistent decimals, units, scale, or rounded values for the same metric.

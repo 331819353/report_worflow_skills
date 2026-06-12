@@ -16,6 +16,10 @@ The bundled generator is intentionally generic. It produces a standalone Playwri
 - Read `references/01-matrix-inputs-execution-and-gates.md` for accepted matrix fields, executable assertion semantics, optional run commands, and final quality gates.
 - Use `$delivery-artifact-template-management` when the user needs the automation test matrix schema, supported field aliases, step DSL, or input examples.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Normalize the matrix.

@@ -21,6 +21,10 @@ Use this skill to verify that report filters are complete, valid, and correctly 
 
 Optional inputs: filter design documentation, API documentation, permission rules, source/Git diagnostics links, mock option data, mock/business data files, resolver code, provider samples, or database/API evidence.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Inventory filters and control semantics.

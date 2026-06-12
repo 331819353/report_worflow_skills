@@ -21,6 +21,10 @@ Backend transformation owns source-to-API correctness. Frontend adapter owns pro
 - Adapter output template: `references/frontend-adapter-output-template.md`
 - Numeric unit/precision/percentage/display contract: `$metric-number-display-contract`
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify source payload, target API contract, and UI/view model contract.

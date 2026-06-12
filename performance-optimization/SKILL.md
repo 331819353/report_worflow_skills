@@ -18,6 +18,10 @@ It owns performance strategy and verification. It does not replace API design, d
 - SQL query writing, execution shape, and index-friendly filters: `$sql-query-optimization`
 - OLAP modeling and analytical aggregation: `$olap-data-modeling-optimization`
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify the performance surface: SQL/source, API, backend service, cache, export, frontend fetch/adaptation, chart/table rendering, or deployment runtime.

@@ -1,6 +1,6 @@
 ---
 name: frontend-runtime-qa-validation
-description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、hover/focus动效裁切、SVG/canvas/ECharts图形变形、比例失真、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
+description: "用于前端实现、视觉修改、数据接入或环境调整后的浏览器运行QA。用户提到运行检查、页面QA、浏览器测试、截图证据、控制台报错、网络请求、路由跳转、筛选、标签页、抽屉、弹窗、图表点击、表格操作、导出下载、刷新、hover/focus动效裁切、SVG/canvas/ECharts图形变形、比例失真、HTML来源图表是否照搬SVG/canvas、loading/empty/error/auth状态、布局遮挡/溢出、视觉异常、多模态检查、可运行URL验收时触发；不设计测试矩阵。"
 ---
 
 # Frontend Runtime QA Validation
@@ -36,7 +36,9 @@ It is not a test-case design skill. For test matrices use `$integration-test-cas
 7. Inspect console, network, assets, routes, auth, and provider calls.
 8. Exercise filters, tabs, drawers, modals, chart clicks, table actions, pagination, sorting, export, refresh, fullscreen, hover, and focus states in scope.
 9. Apply anti-AI, report-decision, and multimodal/visual checks when relevant. Use `$visual-browser-regression-check` when the scope requires deterministic baseline diff, screenshot coverage, component crops, or structured `VIS-*` findings.
-10. Produce a compact QA note with findings, evidence paths, owner, retest criteria, URL, and readiness.
+10. Run action reflection before the QA conclusion: check whether the collected evidence really supports `ready`, whether any design/renderer/source authority issue should reroute to an owning skill, and whether HTML-derived charts need source inspection beyond screenshots.
+11. Run the anti-laziness execution gate from `$quality-gate-validation` before the final QA conclusion. Keep `LAZY-*` findings visible when evidence is screenshot-only, default-state-only, source-light, or missing retest proof.
+12. Produce a compact QA note with findings, evidence paths, owner, retest criteria, URL, and readiness.
 
 ## Required Output
 
@@ -48,6 +50,8 @@ Use `references/qa-note-template.md` and include:
 - Console/network result.
 - Interaction/state checks.
 - Visual/DOM structural findings: overflow, card/component counts, bounding-box overlap, and category uniqueness.
+- Action reflection result before readiness, including renderer/source authority concerns.
+- Anti-laziness execution result: coverage actually executed, `LAZY-*` findings or explicit no-finding result, source/DOM evidence inspected, retest proof, and readiness impact.
 - Baseline references applied.
 - Readiness: `ready`, `partial`, or `blocked`.
 
@@ -61,4 +65,6 @@ Use `references/qa-note-template.md` and include:
 - DOM QA must include count assertions for repeated cards/components, visible duplicate title/label checks inside the same block/card, bounding-box overlap checks for visible peer elements, KPI value-anchor bounding-box checks when metric cards exist, SVG/ECharts text-node overlap checks for legends, axis names, axis labels, and chart annotations when inspectable, and chart category uniqueness checks for rendered/configured category axes or equivalent categorical datasets when those elements exist.
 - Data completeness must be checked before filter-linkage pass/fail.
 - Standard ECharts charts must show ECharts-owned rendering and interaction when that renderer is claimed.
+- When the implementation was derived from HTML/source, inspect chart components for copied hand-authored SVG/canvas/DOM chart marks. Standard chart readiness fails if source marks were ported instead of rebuilt through ECharts/data-driven options.
+- Do not mark runtime QA ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, only full-page screenshots/default states were checked, or source/DOM proof is absent for renderer and layout claims.
 - Load `runtime-qa-procedure.md` before full QA execution or final readiness judgment.

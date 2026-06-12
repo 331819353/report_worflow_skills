@@ -1,6 +1,6 @@
 ---
 name: report-chart-design-spec
-description: "用于报表/仪表盘/BI/数据大屏中的图表设计规范、ECharts图表规范和图表可读性评审。用户提到图表规范、图表设计、ECharts、柱状图、折线图、组合图、饼图、雷达图、仪表盘、散点图、地图、K线、箱线图、热力图、桑基图、漏斗图、树图、关系图、旭日图、矩形树图、图例、坐标轴、标签过密、tooltip、图形变形、canvas/SVG/ECharts比例失真时触发；不负责整页布局或后端数据口径。"
+description: "用于报表/仪表盘/BI/数据大屏中的图表设计规范、ECharts图表规范和图表可读性评审。用户提到图表规范、图表设计、ECharts、HTML源码里的SVG图表、手写SVG/canvas图表转ECharts、柱状图、折线图、组合图、饼图、雷达图、仪表盘、散点图、地图、K线、箱线图、热力图、桑基图、漏斗图、树图、关系图、旭日图、矩形树图、图例、坐标轴、标签过密、tooltip、图形变形、canvas/SVG/ECharts比例失真时触发；不负责整页布局或后端数据口径。"
 ---
 
 # Report Chart Design Spec
@@ -21,19 +21,26 @@ Use `$report-component-style-design` when the task covers mixed component famili
 | Report chart/table format baseline | `$report-design-system-governance` `references/05-report-charts-tables-format-guidelines.md` |
 | Placement and dense acceptance | `$report-component-style-design` references: `12-internal-placement-algorithms.md`, `12-component-acceptance-gates.md` |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name chart family candidates, data/metric contracts, parent container, affected labels/legend/axis/tooltip surfaces, hard constraints, missing evidence, and start decision.
 2. Identify chart family, business question, grain, series count, category/time density, exact-value need, interaction, and container size.
-3. Load `references/01-chart-reference-map.md`, then load only the chart-family visual and placement files it names.
-4. Confirm chart type is fit for the task before styling labels or colors.
-5. Define chart anatomy: title, subtitle/definition, unit, metric strip, legend, axes, plot area, labels, tooltip, local filters, footer/source, and states.
-6. Verify ECharts ownership: standard ECharts charts should use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
-7. Run acceptance gates before marking dense or implementation-ready charts as ready.
+3. Before selecting or accepting a renderer, run the action reflection loop from `$quality-gate-validation` `references/preflight-understanding-gate.md`; confirm the renderer matches the chart family, source authority, data contract, and design reasonableness.
+4. If the source evidence is HTML with SVG/canvas/DOM chart marks, treat those marks as visual/config clues only. Extract labels, approximate layout, categories, series names, and colors when useful, then define an ECharts data-driven implementation for standard charts.
+5. Load `references/01-chart-reference-map.md`, then load only the chart-family visual and placement files it names.
+6. Confirm chart type is fit for the task before styling labels or colors.
+7. Define chart anatomy: title, subtitle/definition, unit, metric strip, legend, axes, plot area, labels, tooltip, local filters, footer/source, and states.
+8. Verify ECharts ownership: standard ECharts charts should use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
+9. Run acceptance gates before marking dense or implementation-ready charts as ready.
 
 ## Required Output
 
 - Preflight understanding result when the work is implementation/repair/acceptance, plus chart family and selected references.
+- Renderer/action reflection result, including any HTML/SVG source conversion decision.
 - Chart choice rationale and rejected alternatives when relevant.
 - Anatomy, placement, label/legend/tooltip, density, state, and responsive rules.
 - Data contract: fields, units, precision, grain, filters, and exact-value path.
@@ -43,6 +50,7 @@ Use `$report-component-style-design` when the task covers mixed component famili
 
 - Do not choose a decorative chart when a simpler chart answers the business question better.
 - Do not repair or accept chart visuals before the chart family, parent container, data grain, units, renderer ownership, and affected chart anatomy are known.
+- Do not copy hand-authored chart SVG/canvas/DOM from an HTML prototype into a standard report chart implementation. Use ECharts options/series/runtime behavior, or document an explicit data-driven custom-diagram exception before implementation.
 - Do not accept labels, legends, axis names, or tooltips that overlap, truncate critical evidence, or hide units/precision.
 - Do not distort geographic, radial, proportional, network, or flow geometry.
 - Do not mark chart work ready without state handling for loading, empty, error, no-permission, stale, and dense data.

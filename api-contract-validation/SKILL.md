@@ -20,6 +20,10 @@ It validates behavior and records differences. It does not design a new API inve
 - Numeric unit/precision/percentage/display consistency: `$metric-number-display-contract`
 - Cross-artifact conflicts or readiness gates: use `$quality-gate-validation`.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. List all contract evidence: API docs, OpenAPI, route code, frontend clients, mock data, provider samples, DB/upstream samples, runtime responses, env/auth notes, and test failures.

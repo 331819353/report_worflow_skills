@@ -88,6 +88,7 @@ Clarify or infer:
 - Which standard inputs are present: 需求文档, 指标清单, optional screenshot/image, optional HTML源码?
 - If screenshot/image input is present, is it a full page, first viewport, partial component, modal/drawer, mobile view, export page, or style reference?
 - If HTML源码 is present, is it a layout reference, full static page, partial component, or source of mock/chart configuration?
+- If HTML源码 contains chart-like SVG/canvas/DOM marks, which evidence is legitimate to extract: layout rhythm, labels, series/categories, colors, mock values, or config hints? Do not treat the sample SVG/canvas marks themselves as the implementation for standard charts.
 - Is the page a single-page top-bar report, standard enterprise sidebar dashboard, or sci-fi/big-screen cockpit?
 - Does the user need automatic deployment, automatic local startup, and a returned URL?
 
@@ -160,6 +161,7 @@ Brand assets:
 Sample fidelity:
 
 - In `sampleRestore`, the source page shell, module order, container hierarchy, main control count, layer structure, and card proportions are acceptance constraints.
+- In `sampleRestore`, source HTML/SVG chart marks are not renderer authority for standard report charts. Preserve sample layout intent and visual hierarchy, but rebuild standard charts with ECharts/data-driven options unless a custom-diagram exception is explicitly approved.
 - Any new filter, summary card, detail table, matrix, drawer, jump, or extra toolbar action is an enhancement. Label it as an enhancement and keep it from changing the sample's first viewport and main body layout unless the user asks for optimization or reconstruction.
 - Classify each visible sample/source module as `businessRequired`, `sampleStructure`, or `optionalEnhancement`. Source visibility alone is not enough to make a component `must-have`.
 - Added conclusions, insights, and status summaries must be embedded into an existing sample-equivalent region such as the header/control area, panorama header, section head, or summary card. Do not add a new standalone horizontal band unless the source has an equivalent band.

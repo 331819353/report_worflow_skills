@@ -1,6 +1,6 @@
 ---
 name: frontend-development-workflow
-description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、Vue3/TypeScript/ECharts/Element Plus/Axios/AntV S2、替换mock、接真实接口、API接入、响应适配、snapshotDate/dataVersion/loadBatch、筛选联动、指标单位/百分比显示、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
+description: "运行前端开发/前端联调阶段，把原型或前端源码接入真实数据并交付可运行页面。用户提到前端、页面开发、可视化开发、自开发前端、HTML原型转Vue、HTML/SVG/canvas图表转ECharts、行动前自省、Vue3/TypeScript/ECharts/Element Plus/Axios/AntV S2、替换mock、接真实接口、API接入、响应适配、snapshotDate/dataVersion/loadBatch、筛选联动、指标单位/百分比显示、代理/CORS、环境变量、登录态、Haier IAM、启动前端、修复编译/请求/展示错误时触发。"
 ---
 
 # Frontend Development Workflow
@@ -58,14 +58,18 @@ If the request is vague design improvement rather than implementation, route fir
 7. Validate provider/API contracts, then design response adapters if payloads differ from UI view models.
 8. Verify env/proxy/base path/auth/SSO behavior before wiring requests; use `$environment-profile-contract` when test/production profile separation or production readiness is in scope.
 9. Before each source edit, read or create the sidecar code ledger for the scoped file through `$code-change-ledger-management`.
-10. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
-11. Use component/layout/design-system skills when visual, metric, chart/table, filter, component placement, state, or design baseline behavior is touched; use the specific chart/table/filter/placement front-door skill when those surfaces are affected.
-12. Append code-ledger version entries after edits.
-13. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
+10. Run the anti-laziness execution gate from `$quality-gate-validation` for implementation, repair, HTML/source conversion, QA, and readiness. Keep `LAZY-*` findings visible until source evidence, owner routing, before/after proof, and regression checks close them.
+11. Before every non-trivial source edit, renderer choice, HTML/sample conversion, data-binding, or readiness decision, run the action reflection loop from `$quality-gate-validation` `references/preflight-understanding-gate.md`; revise or route when the action conflicts with constraints or design reasonableness.
+12. Replace or isolate mock data, wire provider calls, numeric format contracts, filters, pagination, sorting, exports, refresh, interactions, and state handling.
+13. Use component/layout/design-system skills when visual, metric, chart/table, filter, component placement, state, or design baseline behavior is touched; use the specific chart/table/filter/placement front-door skill when those surfaces are affected.
+14. Append code-ledger version entries after edits.
+15. Run build/start and `$frontend-runtime-qa-validation`; use `$visual-browser-regression-check` for screenshot regression evidence when required; then produce frontend function docs when handoff is needed.
 
 ## Required Output
 
 - Preflight understanding matrix, source/target decision, and stack decision.
+- Action reflection notes for non-trivial source edits, renderer choices, HTML/sample conversion, and readiness decisions.
+- Anti-laziness execution result: local evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for fixes, regression probe, and readiness impact.
 - Affected-surface to owning-skill routing when UI/design behavior is touched.
 - Provider mapping, adapter notes, env/auth/deployment notes.
 - Numeric display/precision proof: formatter ownership, value type, raw/display unit, scale, screen/tooltip/export precision, rounding, null/zero/denominator-zero, and `%` wording when relevant.
@@ -80,12 +84,15 @@ If the request is vague design improvement rather than implementation, route fir
 
 - Do not edit upstream prototype source unless it is the explicit frontend target.
 - Do not edit frontend source before a `ready-to-start` or bounded `partial-start` Preflight understanding decision identifies the writable target and affected contracts.
+- Do not continue from preflight into source edits on autopilot. Non-trivial edits, renderer choices, HTML/sample conversions, and readiness decisions require action reflection and must stop or reroute when they fail constraints or design reasonableness.
 - Do not implement or repair a Haier/enterprise report page while applying only report-specific design rules; Haier application tokens, typography, spacing, base controls, state, and brand rules must also be inherited or an explicit exception recorded.
 - Do not repair chart/table/filter/component-placement issues through generic component edits alone; load the specific front-door skill before implementation and QA.
 - Do not mark changed frontend code ready without sidecar code-ledger read/create evidence and a post-change version entry.
 - Do not leave production paths on unapproved mocks, fake timers, generated rows, or demo-only SDKs.
 - Do not claim filter integration until option data, business rows, required fields, default/non-default states, and resolver/API branches are proven or recorded as gaps.
 - Standard ECharts requirements need ECharts-owned options/series/runtime behavior, not hand-authored chart marks plus an import.
+- When an upstream HTML prototype contains SVG/canvas/DOM charts, treat them as source evidence only; do not port those hand-authored marks into frontend standard chart components. Rebuild them as ECharts data-driven charts or record an approved custom-diagram exception before editing.
 - Report interfaces must preserve metric口径, numeric display contracts, data story, filter/drilldown/export context, trust details, realistic data states, and `%` wording for Chinese rate/change labels unless explicitly overridden.
 - Do not mark frontend work ready when governed report metrics are formatted through scattered `toFixed`, `Math.round`, `parseInt`, string slicing, ad hoc `%` concatenation, or component-local decimal assumptions instead of `$metric-number-display-contract`.
+- Do not mark frontend work ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, only default states were checked, or implementation proof lacks before/after evidence and runtime/regression checks.
 - Load `frontend-implementation-gates.md` before changing frontend code or judging production/readiness.

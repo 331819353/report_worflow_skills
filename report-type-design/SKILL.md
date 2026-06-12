@@ -43,6 +43,10 @@ Load only the reference files for the selected primary type:
 
 For any output that will feed a report prototype, dashboard, BI page, business-analysis page, cockpit, or report designer, also apply `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` at the business-design level. Use it to prevent generic metric shells and to require metric口径, metric tree/driver path, data story, drilldown/action, trust details, and industry vocabulary.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify the user, decision scenario, managed object, time scope, and business question.

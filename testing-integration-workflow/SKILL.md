@@ -60,13 +60,14 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 2. Inventory test basis: API docs, frontend function description, permission matrix, data-quality rules, URLs, accounts, env, data, and versions.
 3. Classify the UI baseline for each test target: Haier/enterprise app, report/dashboard, or mixed. Load Haier application baseline for Haier/enterprise Web targets and report baseline for report targets.
 4. Run `$quality-gate-validation` when test basis, runtime URLs, data, env/auth notes, screenshots, baseline expectations, or source evidence conflict.
-5. Design the test matrix with `$integration-test-case-design`, including explicit cases for control semantics, filter-linked data variation, non-default perspective schema/wording changes, cross-perspective data-chain consistency, metric display text, component internal fit, fixed-height card/navigation height budget plus DOM overflow, backend `ApiError` pool-release behavior when database/upstream pools exist, and matching UI baseline acceptance when those surfaces exist.
-6. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
-7. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
-8. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$data-quality-validation`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, and `$permission-matrix-validation` as applicable. For filter defects, execute or cite data completeness checks before filter-linkage conclusions.
-9. Use `$frontend-runtime-qa-validation` for complete visual/layout/browser checks on runnable frontend URLs; use `$visual-browser-regression-check` for focused screenshot diff or visual regression evidence.
-10. Consolidate results with `$test-evidence-defect-reporting`.
-11. Route defects to owner workflow, define retest criteria, and use `$report-delivery-pipeline-governance` when results affect release or next-stage readiness.
+5. Run the anti-laziness execution gate from `$quality-gate-validation` before test design, execution, defect closure, or acceptance. Keep `LAZY-*` findings visible until missing evidence, owner routing, and retest proof are closed.
+6. Design the test matrix with `$integration-test-case-design`, including explicit cases for control semantics, filter-linked data variation, non-default perspective schema/wording changes, cross-perspective data-chain consistency, metric display text, component internal fit, fixed-height card/navigation height budget plus DOM overflow, backend `ApiError` pool-release behavior when database/upstream pools exist, and matching UI baseline acceptance when those surfaces exist.
+7. Generate automation with `$automated-test-generation` when requested or useful for repeatable regression. Prefer generated forbidden-text and value-change assertions for defects that can be expressed by selectors.
+8. If runtime inputs are missing, mark execution `not run` or `blocked` with exact missing inputs.
+9. If runtime is available, run `$runtime-url-smoke-test`, `$sso-auth-flow-test`, `$data-quality-validation`, `$frontend-backend-data-consistency-test`, `$filter-linkage-completeness-test`, and `$permission-matrix-validation` as applicable. For filter defects, execute or cite data completeness checks before filter-linkage conclusions.
+10. Use `$frontend-runtime-qa-validation` for complete visual/layout/browser checks on runnable frontend URLs; use `$visual-browser-regression-check` for focused screenshot diff or visual regression evidence.
+11. Consolidate results with `$test-evidence-defect-reporting`.
+12. Route defects to owner workflow, define retest criteria, and use `$report-delivery-pipeline-governance` when results affect release or next-stage readiness.
 
 ## Required Output
 
@@ -79,6 +80,7 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 - Evidence summary: screenshots, network/API samples, console logs, traces, or blocker notes.
 - Defect list with severity, owner, reproduction, expected/actual, and retest criteria.
 - Retest/production acceptance closure matrix when acceptance or defect repair is in scope.
+- Anti-laziness execution result: executed-vs-unexecuted coverage, source evidence inspected, `LAZY-*` findings or no-finding result, retest proof, and readiness impact.
 - Acceptance readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
@@ -94,3 +96,4 @@ Use this workflow for testing and integration validation. It can stop at test-ca
 - Every failure needs evidence and likely owner side.
 - Missing URL/account/data/env/permission is a blocker, not a pass.
 - Production acceptance cannot be `ready` while blocker/high defects are open or fixed without retest evidence.
+- Do not mark testing/acceptance ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, only default states were tested, or defects were marked fixed without before/after retest proof.

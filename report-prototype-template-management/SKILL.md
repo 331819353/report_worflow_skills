@@ -47,6 +47,10 @@ Copy templates with their full project structure, including package/config files
 | Report decision compatibility | `$report-design-system-governance` `references/09-report-decision-anti-ai-gate.md` |
 | Code-file ledger | `$code-change-ledger-management` |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Decide bundled template, existing project shell, or custom development; default to bundled template unless a hard exception exists.

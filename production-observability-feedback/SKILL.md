@@ -18,6 +18,10 @@ Read `references/01-observability-feedback-template.md` when producing a reusabl
 Use `$environment-profile-contract` when monitoring depends on test/production runtime profile separation, endpoint ownership, or release acceptance configuration.
 Use `$report-delivery-pipeline-governance` when production feedback must route back into defect retest, release readiness, or next delivery iteration.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Define monitored surfaces.

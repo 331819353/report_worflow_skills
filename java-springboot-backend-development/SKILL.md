@@ -18,6 +18,10 @@ It complements `$backend-development-workflow`: load this skill when the backend
 | Stack, directory structure, layering, response/exception/auth/SSO, profiles, Maven/Docker, naming, commands, readiness blockers | `references/01-java-springboot-backend-standard.md` |
 | Haier IAM/IAMA SSO endpoints and integration choices | `$haier-sso-integration` |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Confirm whether the task is a new Spring Boot project, an existing project repair, a migration into this architecture, API implementation, or a handoff/README update.

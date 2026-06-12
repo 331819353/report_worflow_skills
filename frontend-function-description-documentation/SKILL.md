@@ -30,6 +30,10 @@ This skill is not bound to 数据服务. If data-service APIs exist, document th
 - Prototype source or original mock contract, if relevant.
 - Runtime QA notes, build/startup result, screenshots, or known blockers.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify scope.

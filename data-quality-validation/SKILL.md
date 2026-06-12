@@ -16,6 +16,10 @@ Use this skill to design or execute data quality checks for report delivery and 
 
 Use `$delivery-artifact-template-management` when producing a reusable data-quality rule matrix.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Define quality scope.

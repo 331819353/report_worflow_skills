@@ -13,6 +13,10 @@ Use this skill to turn runtime testing into a handoff-ready report. Every failur
 
 - Use `$delivery-artifact-template-management` when the task needs a reusable evidence/defect template or standardized evidence structure.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Evidence Rules
 
 - Prefer direct runtime evidence: screenshot, browser console, network request/response, API response sample, visible UI value, storage snapshot, and exact URL.

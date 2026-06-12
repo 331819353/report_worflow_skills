@@ -22,6 +22,10 @@ Use `$filter-linkage-completeness-test` when the task is runtime testing; use th
 | Local-filter geometry | `$report-component-style-design` `references/12a-placement-foundation-controls.md` |
 | Report filter/states acceptance baseline | `$report-design-system-governance` `references/06-report-filters-states-engineering-acceptance.md` |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Run the Preflight understanding gate for implementation, repair, or acceptance work; name filter scope candidates, option/data authority, affected components, query/export/pagination impact, hard constraints, missing evidence, and start decision.

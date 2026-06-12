@@ -53,14 +53,15 @@ Production-bound solutions should decide business capability, system context, lo
 3. Normalize rough inputs and classify delivery type: demo/prototype, internal tool, production report, platform service, migration/replacement, or mixed.
 4. Classify UI/design baseline for page-bearing work: Haier/enterprise app, report/dashboard, or mixed. For Haier/enterprise report pages, attach both inherited Haier application baseline and report-specific baseline to downstream constraints.
 5. Run `$quality-gate-validation` when inputs conflict on source authority, metric口径, grain, field meaning, permission, UI baseline, architecture boundary, runtime assumption, or response shape.
-6. Build architecture views: business, system context, logical modules, data flow, integration/API, runtime/deployment, security, operations, and roadmap.
-7. Make technology-selection/ADR decisions with default stack and override reasons.
-8. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy or Java/Spring Boot baseline when applicable, SSO/auth flow, database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
-9. Define data architecture and source authority with `$data-model-source-mapping`.
-10. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract through `$metric-number-display-contract`, data-version/snapshot contract, and data-vs-presentation boundary.
-11. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, environment profile contracts, and gap ledger when in scope.
-12. Build API inventory and implementation roadmap.
-13. Align versioned handoffs through `$report-delivery-pipeline-governance` and `$delivery-version-management`; use `$artifact-readability-standard` when the solution becomes a handoff artifact; run readiness gates before marking consumable.
+6. Run the anti-laziness execution gate from `$quality-gate-validation` before architecture readiness, implementation roadmap, or downstream handoff. Keep `LAZY-*` findings visible until source evidence, owner skill routing, and proof obligations are closed.
+7. Build architecture views: business, system context, logical modules, data flow, integration/API, runtime/deployment, security, operations, and roadmap.
+8. Make technology-selection/ADR decisions with default stack and override reasons.
+9. Define data-service runtime model: sync/async boundary, Python/Flask/SQLAlchemy or Java/Spring Boot baseline when applicable, SSO/auth flow, database role map, pools, Redis/cache/precompute, invalidation, timeout/fallback, observability, and capacity assumptions.
+10. Define data architecture and source authority with `$data-model-source-mapping`.
+11. Define backend-friendly API boundaries, response compatibility, numeric precision/display contract through `$metric-number-display-contract`, data-version/snapshot contract, and data-vs-presentation boundary.
+12. Add metric dictionary/lineage, permission matrix, data quality rules, performance constraints, environment profile contracts, and gap ledger when in scope.
+13. Build API inventory and implementation roadmap.
+14. Align versioned handoffs through `$report-delivery-pipeline-governance` and `$delivery-version-management`; use `$artifact-readability-standard` when the solution becomes a handoff artifact; run readiness gates before marking consumable.
 
 ## Required Output
 
@@ -73,6 +74,7 @@ Production-bound solutions should decide business capability, system context, lo
 - Data architecture/source mapping and API/response compatibility plan.
 - Numeric precision/display plan for metric-bearing fields: value type, raw/display unit, scale, precision, tooltip/export precision, rounding, null/zero/denominator-zero, and formatter ownership.
 - Security/permission, data quality, performance, observability, test, release, rollback, and owner-action plan.
+- Anti-laziness execution result: source evidence inspected, owner skills loaded or explicitly not needed, `LAZY-*` findings or no-finding result, and handoff readiness impact.
 - API inventory, model/metric/permission/quality references, gaps, version links, and readiness status.
 
 ## Quality Gate
@@ -83,4 +85,5 @@ Production-bound solutions should decide business capability, system context, lo
 - Do not mark page-bearing work ready without a UI/design baseline decision; Haier/enterprise report pages must not be handed off with only report-specific design rules unless an explicit exception is recorded.
 - Do not mark metric-bearing work ready without a numeric precision/display contract that can be consumed by API, frontend, export, and QA.
 - Do not mark backend/data-service work ready without runtime, stack, SSO/auth, database ownership, performance, observability, error, and logging decisions.
+- Do not mark a solution ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, local evidence was not inspected, or decisions rely on convenient defaults without recorded alternatives.
 - Load `05-technical-solution-gates.md` before finalizing a production-bound technical solution.

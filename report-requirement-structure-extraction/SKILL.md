@@ -54,6 +54,10 @@ When information is missing:
 - Ask follow-up questions only when a missing answer changes the main scenario, user, data source, permission model, or delivery boundary.
 - Prefer explicit uncertainty over silent invention.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Universal Workflow
 
 Use this sequence for every requirement transformation:

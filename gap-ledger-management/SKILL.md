@@ -16,6 +16,10 @@ It creates a living ledger. It does not solve the missing information by inventi
 - Model/API/product gaps: `references/model-gap-taxonomy-and-severity.md`, `references/model-pending-list-template.md`, `references/model-lifecycle-and-consistency.md`
 - Backend/API/runtime gaps: `references/backend-gap-taxonomy.md`, `references/backend-document-template.md`, `references/backend-consistency-and-resolution.md`
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify gaps from current task evidence: missing facts, conflicting sources, weak assumptions, unverified runtime behavior, and partial test evidence.

@@ -18,6 +18,10 @@ It does not replace generic runtime SSO testing; use `$sso-auth-flow-test` when 
 - Backend entrypoint selection: `references/backend-integration-entrypoints.md`
 - IAMA API endpoints and response shape: `references/iama-sso-api.md`
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Determine target side: frontend, backend, or full chain.

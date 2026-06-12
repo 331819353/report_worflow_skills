@@ -45,7 +45,8 @@ Core intent:
 9. Use `$report-type-design` with `detail-query` as primary; add `reconciliation-traceability` only when matching differences or audit evidence is central.
 10. Use `$report-info-component-mapping` to bind row fields, filters, sorting, pagination, export, detail drawer, source links, permissions, and states.
 11. Route table, filter, and component-internal placement surfaces to `$report-table-design-spec`, `$report-filter-control-design-spec`, and `$report-component-placement-spec` before implementation-ready decisions.
-12. Verify query/filter linkage, row identity, export scope, permissions/masking, timeout/over-limit states, and runnable URL when requested.
+12. Run the anti-laziness execution gate from `$quality-gate-validation` before implementation-ready, repair, QA, or handoff conclusions. Keep `LAZY-*` findings visible until evidence closes them.
+13. Verify query/filter linkage, row identity, export scope, permissions/masking, timeout/over-limit states, and runnable URL when requested.
 
 ## Required Output
 
@@ -56,6 +57,7 @@ Core intent:
 - Table interaction plan: sorting, pagination, fixed/frozen behavior, column settings, detail drawer, source jumps, return-state preservation.
 - Export plan: scope, fields, limits, async behavior, watermark, audit, approval, masking, failure state.
 - Component/data/filter/control/interaction binding matrix.
+- Anti-laziness execution result: evidence inspected, `LAZY-*` findings or explicit no-finding result, before/after proof for repairs, regression probe, and readiness impact.
 - Template/custom shell decision, changed files if implemented, verification, URL or blocker, and readiness.
 
 ## Quality Gate
@@ -67,3 +69,4 @@ Core intent:
 - Do not miss export scope, row limit, permission, masking, or audit rules.
 - Do not claim readiness without row grain, primary key, default sort, pagination, and exact filter binding.
 - Do not ignore empty, timeout, no-permission, over-limit, and export-failure states.
+- Do not mark ready when the anti-laziness gate is missing, `LAZY-*` findings remain open, or table/filter/export claims lack field-level evidence and non-default-state checks.

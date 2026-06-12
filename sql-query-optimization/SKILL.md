@@ -15,6 +15,10 @@ Use `$performance-optimization` when the performance surface also includes API d
 
 - Read `references/sql-query-writing-optimization.md` before proposing or accepting SQL/query-shape optimizations.
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Identify database/dialect, query purpose, result grain, filters, sort, pagination, volume, and SLA.

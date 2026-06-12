@@ -17,6 +17,10 @@ It complements `$backend-development-workflow`: load this skill when the backend
 | --- | --- |
 | Stack, directory structure, SSO, database roles, engine/session rules, response/status, naming, tests, deployment, readiness blockers | `references/01-python-flask-sso-multidatabase-standard.md` |
 
+## Anti-Laziness Gate
+
+For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness-execution-gate.md` before final output, handoff, or readiness. Do not mark the result ready while `LAZY-*` findings remain open, when available local evidence was not inspected, when owning skills were skipped, or when proof is limited to generic statements such as "checked", "optimized", "looks good", or "implemented".
+
 ## Workflow
 
 1. Confirm whether the target is a new Python/Flask backend, an existing sample-like backend, a migration into this architecture, or a repair.
