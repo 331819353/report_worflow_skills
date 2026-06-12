@@ -77,3 +77,19 @@
 - Related files: src/components/DashboardShell.vue, src/styles/index.scss, src/widgets/types.ts, src/config/dashboard.config.ts, src/widgets/templates/WidgetTemplate.vue, src/types/actions.ts
 - File snapshot: 868 lines, sha256 `10f083d102a66b2bd71a7b5a0596778c8028111056f7f2884a29f9569a1388b3`
 - Follow-up: none
+
+### v20260612094603 - 2026-06-12T09:46:03Z
+
+- Change ID: filter-popover-overlay-layering
+- Actor: codex
+- Change type: fix
+- Summary: Raised the left-nav global filter popover and dismiss layer above block masks.
+- Modified functionality: filter popover stacking order, dismiss layer stacking order
+- Code ranges: `src/styles/index.scss:260-274`
+- Modified content: Increased `.panel-dismiss-layer` from z-index 45 to 80, and increased `.filter-popover` from z-index 60 to 90.
+- Affected contracts: left-nav global filter popover must sit above block masks and remain clickable.
+- Verification: `npm run build:preview` passed. Runtime overlay check passed on `http://localhost:5203/#/`: panel z-index 90, dismiss z-index 80, block mask z-index 30, and `elementFromPoint` hit inside `.filter-popover`.
+- Rollback note: Revert `.panel-dismiss-layer z-index` and `.filter-popover z-index` together.
+- Related files: src/styles/index.scss
+- File snapshot: 867 lines, sha256 `8d38e473c9511511b3b95c385c42365ac358c275694919b7fdeb3d3c6dbc120a`
+- Follow-up: none

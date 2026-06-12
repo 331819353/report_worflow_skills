@@ -117,6 +117,8 @@ button {
 }
 
 .dashboard-app {
+  --shell-left: max(0px, calc((100vw - var(--design-width)) / 2));
+
   position: relative;
   width: var(--design-width);
   height: var(--design-height);
@@ -170,7 +172,7 @@ button {
 .topbar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--shell-left);
   z-index: 20;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -341,7 +343,7 @@ button {
 .panel-dismiss-layer {
   position: fixed;
   inset: 0;
-  z-index: 15;
+  z-index: 80;
   padding: 0;
   border: 0;
   background: transparent;
@@ -351,8 +353,8 @@ button {
 .filter-panel {
   position: fixed;
   top: calc(var(--topbar-height) + 16px);
-  right: 24px;
-  z-index: 18;
+  right: calc(var(--shell-left) + 24px);
+  z-index: 90;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   width: 420px;
@@ -1054,6 +1056,7 @@ button {
   }
 
   .topbar {
+    left: 0;
     transform: none;
   }
 

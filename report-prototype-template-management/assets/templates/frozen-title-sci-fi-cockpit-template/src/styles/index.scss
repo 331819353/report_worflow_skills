@@ -370,7 +370,7 @@ button {
 .panel-dismiss-layer {
   position: fixed;
   inset: 0;
-  z-index: 15;
+  z-index: 80;
   padding: 0;
   border: 0;
   background: transparent;
@@ -380,7 +380,7 @@ button {
 .side-panel {
   position: fixed;
   top: calc(var(--title-current-height) + 24px);
-  z-index: 18;
+  z-index: 90;
   width: 400px;
   height: 600px;
   overflow-x: hidden;

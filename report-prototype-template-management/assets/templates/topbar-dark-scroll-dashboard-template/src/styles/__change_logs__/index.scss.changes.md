@@ -77,3 +77,35 @@
 - Related files: src/components/DashboardShell.vue, src/styles/index.scss, src/widgets/types.ts, src/config/dashboard.config.ts, src/widgets/templates/WidgetTemplate.vue, src/types/actions.ts
 - File snapshot: 1065 lines, sha256 `aa5434f5c433af2a71b76ed052579abaf3ed6ade231a8a0b160a7b1b85016680`
 - Follow-up: none
+
+### v20260612093911 - 2026-06-12T09:39:11Z
+
+- Change ID: topbar-shell-coordinate-alignment
+- Actor: codex
+- Change type: fix
+- Summary: Aligned the fixed topbar with the centered dashboard canvas in wide browser viewports.
+- Modified functionality: dashboard shell positioning, fixed topbar x-axis coordinate, print/export topbar reset
+- Code ranges: `.dashboard-app` shell variables, `.topbar` fixed positioning, `@media print .topbar`
+- Modified content: Added shared `--shell-left` based on `100vw` and `--design-width`, changed `.topbar` from browser-left `left: 0` to `left: var(--shell-left)`, and reset the print topbar left offset to `0`.
+- Affected contracts: topbar-dark fixed shell/content coordinate contract; horizontal scroll transform contract preserved
+- Verification: `npm run build:preview` passed, including `validate:dashboard`, `vue-tsc --noEmit`, and Vite preview build.
+- Rollback note: Revert `.dashboard-app --shell-left`, `.topbar left`, and print `.topbar left` changes together.
+- Related files: src/styles/index.scss, src/components/DashboardShell.vue
+- File snapshot: 1067 lines, sha256 `2064d0e352acaf7b409961dbc1eff04e97c8a59abb4d0266e6e0dbb82c19fe1a`
+- Follow-up: Runtime QA for copied projects should measure `abs(topbarRect.left - dashboardFrameRect.left) <= 1px` at wide and narrow viewports.
+
+### v20260612094603 - 2026-06-12T09:46:03Z
+
+- Change ID: filter-panel-overlay-layering
+- Actor: codex
+- Change type: fix
+- Summary: Raised the global filter drawer and dismiss layer above block masks, and aligned the drawer with the centered dashboard shell in wide viewports.
+- Modified functionality: filter drawer stacking order, dismiss layer stacking order, wide-viewport filter drawer x-axis position
+- Code ranges: `src/styles/index.scss:343-357`
+- Modified content: Increased `.panel-dismiss-layer` from z-index 15 to 80, increased `.filter-panel` from z-index 18 to 90, and changed `.filter-panel right` to `calc(var(--shell-left) + 24px)`.
+- Affected contracts: topbar-dark global filter drawer must sit above block masks and stay visually attached to the shell right edge.
+- Verification: `npm run build:preview` passed. Runtime overlay checks passed on `http://localhost:5202/#/`: at 1920px viewport panel z-index 90, dismiss z-index 80, block mask z-index 30, `elementFromPoint` hit inside `.filter-panel`; at 2560px viewport panel stayed 24px from the dashboard shell right edge.
+- Rollback note: Revert `.panel-dismiss-layer z-index`, `.filter-panel right`, and `.filter-panel z-index` together.
+- Related files: src/styles/index.scss
+- File snapshot: 1067 lines, sha256 `53db56637b9df8bc3dd50cde9bdf244aa896e853f4527de2edb6e359fe704ea4`
+- Follow-up: none

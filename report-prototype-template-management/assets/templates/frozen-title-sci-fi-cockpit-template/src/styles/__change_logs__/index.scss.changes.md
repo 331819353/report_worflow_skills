@@ -77,3 +77,19 @@
 - Related files: src/components/DashboardShell.vue, src/styles/index.scss, src/widgets/types.ts, src/config/dashboard.config.ts, src/widgets/templates/WidgetTemplate.vue, src/types/actions.ts
 - File snapshot: 1027 lines, sha256 `e6b46745de93b9a1b1e0eb587e426f80029a411b8ab8a579cb9a73defec87098`
 - Follow-up: none
+
+### v20260612095125 - 2026-06-12T09:51:25Z
+
+- Change ID: side-panel-overlay-layering
+- Actor: codex
+- Change type: fix
+- Summary: Raised frozen-title navigation and filter side panels above block masks.
+- Modified functionality: navigation side panel stacking order, filter side panel stacking order, dismiss layer stacking order
+- Code ranges: `src/styles/index.scss:370-383`
+- Modified content: Increased `.panel-dismiss-layer` from z-index 15 to 80, and increased `.side-panel` from z-index 18 to 90.
+- Affected contracts: frozen-title nav/filter side panels must sit above block masks and remain clickable.
+- Verification: `npm run build:preview` passed. Runtime overlay checks passed on `http://localhost:5204/#/`: nav and filter panels both had panel z-index 90, dismiss z-index 80, block mask z-index 30, and `elementFromPoint` hit inside the active side panel.
+- Rollback note: Revert `.panel-dismiss-layer z-index` and `.side-panel z-index` together.
+- Related files: src/styles/index.scss
+- File snapshot: 1026 lines, sha256 `712602dfd2321c5c623fb77dd01db368d8326181ae0c92159ee07736604cf944`
+- Follow-up: none
