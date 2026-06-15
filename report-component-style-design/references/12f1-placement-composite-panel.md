@@ -210,6 +210,33 @@ Responsive shrink order is `P4 -> P3 -> P2 -> P1`.
 
 If a child falls below its minimum, convert it to a metric summary, hide labels/legend, collapse it, or move it to a detail route. Do not render an unreadable miniature chart.
 
+### Chart Plus Table/List Split
+
+Use this gate when a Composite Panel places a trend/combo/bar chart above or beside a detail table, ranking, action list, or issue preview.
+
+The chart and table/list must both have a declared band budget:
+
+```text
+chartChildH = allocated chart child height
+chartPlotH = chartChildH - chartReservedTop - chartReservedBottom
+previewChildH = allocated table/list child height
+
+chartChildH >= 220px for standard axis charts with title/legend/axes
+chartPlotH >= max(140px, chartChildH * 0.48)
+previewChildH >= headerH + rowH * 3 for visible table/list preview
+chartChildH + previewChildH + componentGap <= contentH
+```
+
+If this fails:
+
+1. Keep the chart as P1 and move the table/list to drawer/detail/tab when the chart answers the main question.
+2. Keep only Top3 rows or one selected-object preview if the table/list is supporting evidence.
+3. Collapse secondary legends, local filters, metric strips, ordinary labels, and footers before shrinking the chart plot.
+4. Split the chart and table/list into separate page blocks when both are P1 evidence.
+5. Convert the chart to an intentional sparkline only when axes, legend, and exact comparison are not needed.
+
+Do not accept a Composite Panel where a full ECharts axis chart is squeezed into a thin band above a table/list. Record `VIS-CHART-TABLE-CROWDING` when the panel cannot satisfy both chart and preview floors.
+
 ### Layout Pattern A: Metric Strip + Main Visual
 
 Use for simple operating trends.

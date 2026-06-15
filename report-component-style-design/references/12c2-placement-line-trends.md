@@ -90,6 +90,17 @@ plotY = P + titleH + titleMetricGap + metricH + metricLegendGap + legendH + lege
 plotHeight = H - P - xAxisH - footerH - plotY
 ```
 
+Plot viability:
+
+```text
+chartBodyH = H - reservedExternalBands
+plotHeight >= max(120px, chartBodyH * 0.45)
+chartBodyH >= 180px for a normal line/area chart with axes and legend
+chartBodyH >= 220px when the chart shares a card with a table/list preview or uses dual axes, target labels, dense tabs, or a metric strip
+```
+
+If this fails, do not render a full axis chart as a thin stripe. Collapse optional metric strip, subtitle, footer, secondary legend detail, local filters, normal points, and ordinary labels first. If the chart still cannot meet the floor, enlarge the component, split the table/list into a detail area, or convert the line to an intentional sparkline with axes and legend hidden.
+
 For a single ECharts-owned chart surface, translate the budget into `grid`:
 
 ```text

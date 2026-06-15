@@ -77,7 +77,7 @@ If the request is vague design improvement rather than implementation, route fir
 - Vue3 sample-architecture alignment when applicable: directory placement, Axios/request pattern, env mode, route/store/component ownership, and build commands.
 - Changed files, code-ledger proof, and verification commands.
 - Data completeness and control semantics proof for filters/perspectives.
-- UI proof obligations for changed surfaces: KPI alignment/CSS cascade, template/component control ownership, fixed-height overflow, chart/table option evidence, contract-to-DOM/CSS/renderer mapping, screenshot/crop targets, and non-default state coverage.
+- UI proof obligations for changed surfaces: KPI alignment/CSS cascade, alignment-intent classification, template/component control ownership, fixed-height overflow, chart/table option evidence, ECharts resize lifecycle evidence, chart plot-height and anti-squeeze evidence, chart + table/list allocation proof, contract-to-DOM/CSS/renderer mapping, screenshot/crop targets, and non-default state coverage.
 - UI baseline inheritance applied: Haier company UI baseline and report-specific baseline when the target is a Haier/enterprise report surface, plus component/layout/design exceptions.
 - Runtime QA result, URL or exact blocker.
 - Readiness: `ready`, `partial`, or `blocked`.
@@ -93,6 +93,8 @@ If the request is vague design improvement rather than implementation, route fir
 - Do not leave production paths on unapproved mocks, fake timers, generated rows, or demo-only SDKs.
 - Do not claim filter integration until option data, business rows, required fields, default/non-default states, and resolver/API branches are proven or recorded as gaps.
 - Standard ECharts requirements need ECharts-owned options/series/runtime behavior, not hand-authored chart marks plus an import.
+- ECharts implementation readiness requires non-zero mount body, data-driven option/series, `setOption` update path, `ResizeObserver` or documented equivalent resize hooks, cleanup/dispose path, and a second-size browser proof. Do not call a fixed design-width page viewport-responsive when only chart container resize works.
+- Do not mark frontend work ready when a full line/bar/combo chart is squeezed into a thin band. Readiness requires measured chart body height, plot-height floor, axis-label overlap/gridline readability checks, and chart + table/list allocation proof when both share one card. If the chart cannot keep the plot floor and at least `3` visible preview rows, enlarge/split the block or move preview detail to Top3, drawer, tab, or detail route.
 - Do not implement component contracts as config-only fields. Contracts such as `compositePanelContract`, `analysisInsightContract`, KPI placement metadata, and chart/table contracts must have matching DOM/CSS/renderer behavior and runtime proof hooks; otherwise readiness is `partial` with `LAZY-CONTRACT-THEATER`.
 - Do not duplicate template-owned refresh, export/download, copy/share, global filters, period/date, or toolbar controls inside business components unless control ownership is explicitly moved and the template counterpart is disabled/hidden.
 - When an upstream HTML prototype contains SVG/canvas/DOM charts, treat them as source evidence only; do not port those hand-authored marks into frontend standard chart components. Rebuild them as ECharts data-driven charts or record an approved custom-diagram exception before editing.

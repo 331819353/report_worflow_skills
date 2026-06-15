@@ -17,6 +17,102 @@ This file was split from `05-echarts-charts.md`. Load it only for this focused r
 - Initialize and resize from the measured chart body viewport. Do not use CSS transforms or stretched parent boxes to scale a previously rendered chart.
 - Preserve geometry for charts whose shape carries meaning, including pie/donut/rose, radar, gauge, map, sunburst, graph, Sankey, funnel, custom paths, and pictorial/custom series.
 
+## ECharts Resize Lifecycle Contract
+
+Use this gate for every implementation-ready ECharts chart, including charts rendered through a project wrapper.
+
+Required lifecycle:
+
+- Mount target: the chart mounts into a dedicated body viewport such as `[data-chart-renderer="echarts"] .chart-stage` with `width > 0`, `height > 0`, `min-width: 0`, `min-height: 0`, and an explicit overflow policy before `echarts.init`.
+- Initialization timing: initialize only after the DOM body viewport is measurable, for example after `nextTick`, `requestAnimationFrame`, wrapper mount callback, or project-equivalent ready hook.
+- Option update: when props, filters, selected tab, data, theme, legend state, or route context changes, call `setOption` or the approved wrapper update path with the new data-driven option.
+- Resize trigger: prefer `ResizeObserver` on the chart body or wrapper viewport. If the project cannot use it, document an equivalent combination of window resize, tab activation, drawer/fullscreen open-close, route keep-alive activation, and parent-grid change hooks.
+- Cleanup: disconnect `ResizeObserver`, remove listeners, and call `chart.dispose()` or wrapper equivalent on unmount/deactivation when the instance will not be reused.
+- Nonblank recovery: after a hidden tab/drawer becomes visible, call resize after the element is visible and measurable; do not rely on the first hidden-size render.
+
+Runtime proof:
+
+```text
+chartBodyRect.width > 0
+chartBodyRect.height > 0
+echartsInstance exists or approved wrapper instance exists
+option.series.length > 0 for data states that should render marks
+after container/viewport resize:
+  chartBodyRectAfter.width/height reflect the new container
+  canvas/svg root width/height match the body within 2px
+  chart is nonblank and marks/legend/axis remain inside the chart body
+cleanup path exists for observer/listeners/instance
+```
+
+Acceptance labels:
+
+- `container-resize-safe`: chart redraws correctly when its parent body viewport changes, even if the page shell itself is fixed-width and scrolls.
+- `viewport-responsive`: the page or component also has breakpoints/reflow/container-query behavior that changes layout for different viewport sizes.
+
+Do not claim full responsive behavior when the implementation only supports `container-resize-safe` inside a fixed design-width shell. Fixed `height` props are acceptable only when the parent layout budget is explicit and browser checks prove no clipped chart title, legend, axis, tooltip trigger, or state message.
+
+Failures:
+
+- `VIS-CHART-ZERO-SIZE`: ECharts initializes into a zero-size or hidden body without a later visible resize.
+- `VIS-CHART-NO-RESIZE-PROOF`: no inspectable resize trigger, lifecycle code, or runtime evidence exists.
+- `VIS-CHART-RESIZE-BROKEN`: the chart becomes blank, stale, clipped, or geometrically distorted after a container/viewport change.
+- `VIS-CHART-LEAK`: observer/listener/instance cleanup is missing or repeated mount creates duplicate instances.
+
+## Plot Viability And Squeeze Prevention
+
+Use this gate when a chart appears as a thin band, y-axis ticks stack together, gridlines crowd into a stripe, or a chart shares one card with a table/list/detail preview.
+
+Minimum viable axis-chart body:
+
+```text
+chartBodyH = measured ECharts mount body height
+plotH = chartBodyH - grid.top - grid.bottom
+
+standard trend/bar/combo:
+  chartBodyH >= 180px
+  plotH >= max(120px, chartBodyH * 0.45)
+
+dense trend/combo, dual-axis, target/reference, or chart + table card:
+  chartBodyH >= 220px
+  plotH >= max(140px, chartBodyH * 0.48)
+
+compact sparkline exception:
+  chartBodyH may be 48-96px only when axes, legend, table, and dense labels are intentionally hidden and exact values are available through tooltip/detail.
+```
+
+Axis legibility:
+
+- Y-axis visible label boxes must not overlap each other. Minimum vertical gap between y-axis label boxes is `4px`; if labels are dense, reduce `splitNumber`, format shorter labels, hide minor ticks, or increase chart height.
+- Horizontal gridlines should not visually merge. For business report axis charts, adjacent visible gridlines normally need at least `14px` vertical distance; below `10px` is a squeezed plot unless the chart is a named sparkline without y-axis labels.
+- X-axis labels, legend, top tabs, title, unit, and table header must not consume the chart body until the plot collapses. If `grid.top + grid.bottom > chartBodyH * 0.55`, the reserved bands are too heavy for the available chart height.
+
+Chart plus table/list in one card:
+
+```text
+cardBodyH = card inner height after title/filter/header
+chartBandH = allocated chart component height
+tableBandH = allocated table/list preview height
+gapH = gap between chart and table/list
+
+chartBandH >= 220px for standard axis charts with legend/axes
+tableBandH >= tableHeaderH + rowH * 3
+chartBandH + tableBandH + gapH <= cardBodyH
+```
+
+If both the chart and table/list cannot fit:
+
+1. Move the table/list into a drawer, tab, popover, or detail route.
+2. Show only a `Top3` compact preview and move full rows to detail.
+3. Collapse the legend or local filters before reducing plot height.
+4. Enlarge the parent block or split chart and table into separate blocks.
+5. Use a KPI/sparkline summary instead of a full axis chart when the chart band is intentionally small.
+
+Failures:
+
+- `VIS-CHART-SQUEEZED`: the chart body or plot is below the minimum viable height, gridlines/ticks visually collapse, or an axis chart is rendered as a thin stripe.
+- `VIS-AXIS-LABEL-STACKED`: y-axis or x-axis labels overlap or stack because the plot height/band is too small.
+- `VIS-CHART-TABLE-CROWDING`: a chart and table/list share one card but no allocation can satisfy the chart plot floor and the visible-row/table floor.
+
 
 ## Chart Engine Fidelity
 
@@ -27,6 +123,7 @@ Pass:
 - The component calls `echarts.init` directly or uses the existing approved project wrapper around ECharts.
 - Data rows are transformed into ECharts `dataset`, `xAxis/yAxis`, `series`, `legend`, `tooltip`, `visualMap`, or equivalent option fields.
 - Updates call `setOption` or the wrapper's equivalent update path when props, filters, tabs, or container size change.
+- Resize lifecycle follows the contract above, with `ResizeObserver` or a documented equivalent and a cleanup path.
 - Runtime behavior includes ECharts-owned tooltip, hover emphasis, legend/dataZoom/visualMap behavior when those features are relevant.
 - ECharts `renderer: 'svg'` is acceptable because ECharts generates the SVG.
 
@@ -34,6 +131,8 @@ Fail:
 
 - The component imports `echarts` but renders the chart using `<svg>`, `<path>`, `<rect>`, absolutely positioned `<div>`, CSS gradients, or a raw `<canvas>` that manually encodes bars, lines, arcs, axes, legends, maps, or gauge needles.
 - Mock values are hard-coded inside handwritten SVG paths or HTML/CSS marks instead of flowing through ECharts option data.
+- The chart relies only on `window.resize` while living inside tabs, drawers, resizable cards, or grid blocks whose size can change without a window resize, unless additional visibility/container hooks are documented and tested.
+- The chart is initialized in a hidden or zero-height container and never receives a post-visibility resize.
 - A manually drawn SVG chart is used because it visually resembles ECharts, unless the component is explicitly documented as a custom diagram that ECharts cannot reasonably express.
 
 Allowed non-ECharts SVG/canvas use:

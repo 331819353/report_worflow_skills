@@ -6,6 +6,7 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 
 - Required zones: value, unit, status/trend, and optional baseline/target. A visible metric label/title is required only when the KPI card is standalone or when no surrounding block/container title already identifies the metric.
 - The value is the visual anchor. Status and trend support the value without competing with it.
+- Alignment intent is part of the KPI contract. Default KPI cards center the primary `value + unit` group inside the declared value anchor viewport. Wide split KPI cards may intentionally left-align or right-align a value only when the auxiliary comparison zone, reading direction, and measured center/edge anchors are declared; otherwise the default centered-value checks apply.
 - Title ownership has priority over KPI internal structure. When the card runs inside a titled report block/container and `normalized(blockTitle)` equals or is highly similar to `normalized(metric.label)`, hide the body metric label by default. Keep the metric name available through tooltip, definition/help, export metadata, or口径说明 instead of rendering the same text twice.
 - The core value zone must be visually centered in the card body and occupy at least 40% of the card's main visual height. Do not stack title, subtitle, notes, or helper copy at the top in a way that leaves a large empty middle/lower area.
 - Implementation-ready metric cards must also follow `12-internal-placement-algorithms.md`: declare `W`, `H`, `P`, `CW`, `CH`, the card content origin, the main visual center, and every slot's x/y, width, height, alignment, and responsive fallback.
@@ -14,6 +15,7 @@ Use for KPI cards, pyramid KPI cards, metric groups, comparison tiles, submetric
 - Centering must be proven with the actual rendered value group, not only with the allocated grid row. For default centered KPI cards, `abs(valueGroupRect.centerX - valueAnchorViewport.centerX) <= 8px` and `abs(valueGroupRect.centerY - valueAnchorViewport.centerY) <= 8px`; otherwise record `VIS-KPI-VALUE-OFFCENTER`. `valueAnchorViewport` is the card body after removing the reserved title/filter/footer bands, or the declared primary value zone for wide/split cards.
 - Implementation-ready KPI cards should expose stable semantic selectors such as `data-ui-role="kpi-card"`, `data-ui-role="kpi-value-anchor"`, `data-ui-role="kpi-value"`, and `data-ui-role="kpi-unit"`, or documented project equivalents. If only generic classes such as `.metric-number` exist, QA must inspect computed styles and cascade sources before passing alignment.
 - Template/global CSS cannot silently override the KPI value anchor. Rules such as `.metric-number { text-align: right; }`, `justify-content: flex-end`, `align-items: flex-end`, `margin-left: auto`, or absolute right anchoring fail centered KPI QA unless a component-local value-anchor rule overrides them and the measured X/Y center checks pass.
+- A card that only sets `.metric-number { display: block; font-size: ... }` without a value-anchor layout does not prove centering. Use a wrapper such as `[data-ui-role="kpi-value-anchor"] { display: grid; place-items: center; }` or an equivalent flex/grid contract, then measure the rendered `value + unit` union.
 - Distinguish the value slot from the value glyph. The value slot still owns at least 40% of the main visual height, and the rendered primary numeral glyph should normally occupy `22-28%` of the same body height for standard/enhanced primary KPIs. If the glyph is smaller while empty space remains, increase the value font before adding or enlarging auxiliary copy.
 - Do not use `align-items: baseline` as the vertical positioning strategy for the whole KPI value row or value slot. Use `display: grid; place-items: center`, flex with `align-items: center`, or an equivalent centered slot. Baseline alignment is allowed only inside the already-centered `value + unit` group to fine-tune the unit relative to the numeral.
 - Clickable KPI cards need hover, active, selected, loading, and disabled states when applicable.
@@ -27,6 +29,13 @@ Default metric cards use a centered-value layout:
 - The primary value plus unit is centered as one group, not as a number with a detached unit.
 - YoY/MoM, target text, progress, and sparkline align around the content center unless the card is explicitly split into a wide two-zone layout.
 - Summary and description are weaker than the value. Summary may center in standard cards; explanation and freshness metadata default to bottom-left or bottom-right based on content.
+
+Non-KPI alignment boundaries:
+
+- Tables, ranking rows, detail lists, and long explanatory paragraphs are not KPI value anchors. They may be top-left or row-aligned for scanning, with numeric columns right-aligned for comparison.
+- Chart components do not center every text element. They center the plot or shape-sensitive graphic only after reserving title, legend, axis, local-filter, footer, and tooltip trigger space.
+- Empty/loading/no-permission states center inside the component body by default, but they do not prove that the primary KPI value is centered in the loaded state.
+- If the user asks for "核心内容居中", translate it into concrete targets: KPI value group center, chart plot/shape center, empty-state center, and explicit exceptions for table/text/list scanning.
 
 Default coordinate variables:
 

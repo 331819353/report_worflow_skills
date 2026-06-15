@@ -10,7 +10,7 @@ Apply these rules to every report component:
 - Start from available size: before designing or implementing a component, obtain the component's usable width and height, then choose layout density, typography, chart orientation, legend position, table columns, and content hierarchy according to that size.
 - Use the same card base by default: `#FFFFFF` background in light enterprise pages, 8px radius, `box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)`, no hard default border, and 24px internal padding.
 - For explicitly dark or cockpit themes, use the same card geometry and hierarchy with an approved dark panel token; do not mix unrelated glass, gradient, border, or shadow styles inside one page.
-- Center by default: align the component's main content horizontally and vertically within its visual body unless the component type requires top-left scanning, such as tables and long text.
+- Center the main visual by component type, not by blanket polish: KPI primary `value + unit`, empty/loading states, and shape-sensitive chart bodies center inside their declared body/plot viewport; charts reserve title/legend/axis/control bands before centering the plot; tables, ranking rows, detail lists, and long text keep top-left or row-aligned scanning, with numeric cells right-aligned.
 - Fit the viewport: use the assigned block as the visible container. Do not let inner content overflow, clip, or depend on hard-coded size.
 - Preserve readability: labels, values, legends, axes, and text must remain legible and not overlap graphics.
 - Avoid truncation: truncate only low-priority metadata and provide tooltip/full text; never truncate core KPI values, key labels, warnings, or action text.
@@ -107,13 +107,13 @@ Every component should define:
 - Header area: optional title, subtitle, metric unit, or actions.
 - Footer area: optional notes, data source, pagination, or legend.
 
-Default alignment:
+Default alignment intent:
 
-- KPI cards: value and label vertically centered as a group, with status/trend aligned to the right or bottom.
-- Charts: plot area centered after reserving space for axes, labels, legends, and title.
+- KPI cards: primary value plus unit centered as one measured group inside the value anchor viewport, with status/trend aligned to the right or bottom. Labels may be top-left when the card has a title band.
+- Charts: plot area or shape-sensitive graphic centered after reserving space for axes, labels, legends, title, local filters, and footer.
 - Text summaries: vertically centered for short conclusions; top-aligned for multi-line narratives.
 - Filters: vertically centered controls, consistent height, aligned labels.
-- Tables: top-left content alignment, but cell text vertically centered.
+- Tables and rankings: top-left or row scanning alignment, but cell text vertically centered and numeric/percent columns right-aligned.
 - Empty/loading states: center icon/text/action in the component body.
 - Drawers/forms: top-aligned content with aligned fields and sticky action area.
 

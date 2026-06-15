@@ -24,6 +24,7 @@ Start with `references/00-component-reference-index.md`, then load the smallest 
 | Text summaries, conclusions, Analysis & Insight | `references/03-text-summary.md` |
 | KPI cards, metric groups, comparison tiles | `references/04-kpi-metric-cards.md` |
 | ECharts chart rules and chart-family fit | `references/05-echarts-charts.md` |
+| ECharts renderer ownership, resize lifecycle, and container-fit proof | `references/05a-echarts-foundation-bars-lines.md` |
 | Detail tables, Pivot/S2, complex/grouped headers | `references/06-analytical-tables.md` |
 | Cards, lists, task/status blocks | `references/07-cards-lists-tasks.md` |
 | Drawers, modals, evidence/detail panels | `references/08-drawers-detail-panels.md` |
@@ -59,8 +60,8 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 5. Define `Positioning And Alignment Rules`: container variables, slot rectangles, main visual center, local-filter geometry, display budget, overflow strategy, size tiers, fallback order, and state geometry.
 6. Apply inherited baseline tokens first, then component-specific typography, color semantics, borders, shadows, spacing, hover/focus, and responsive behavior.
 7. Run the component acceptance gates when the output is implementation-ready or when a visual defect may hide decision evidence.
-8. Convert component rules into proof obligations before acceptance: DOM semantic roles/selectors, CSS/computed-style checks, ECharts/S2 option fields, browser geometry assertions, screenshot/crop evidence, and source/config anchors for every claimed alignment, overflow, control, legend, renderer, or contract rule.
-9. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates.
+8. Convert component rules into proof obligations before acceptance: DOM semantic roles/selectors, CSS/computed-style checks, ECharts/S2 option fields, browser geometry assertions, screenshot/crop evidence, and source/config anchors for every claimed alignment, overflow, control, legend, renderer, resize behavior, or contract rule.
+9. Verify the component inside its real parent block after resize, filter changes, tab switches, drawer/fullscreen changes, loading/empty/error/no-permission states, and data updates. For chart components, distinguish `container-resize-safe` from full page responsiveness; fixed design-width pages may pass chart resize lifecycle but must not claim viewport-adaptive layout unless breakpoints/reflow are proven.
 
 ## Required Output
 
@@ -68,7 +69,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Business/data contract: purpose, grain, key fields, formulas/units, numeric display contract, source/freshness, filters, exact-value path, and owner/action path.
 - Placement rules: container variables, slots, alignment, size tiers, display budget, responsive degradation, and state geometry.
 - Visual and interaction rules: tokens, labels, legends, tooltips, hover/focus, overflow strategy, disclosure, and accessibility.
-- Proof obligations: KPI alignment, duplicate controls/title ownership, overflow/clipping, chart/table option evidence, contract-to-DOM/CSS/renderer mapping, non-default states, and screenshot/crop or DOM assertion result when code/URL exists.
+- Proof obligations: KPI alignment and alignment-intent classification, duplicate controls/title ownership, overflow/clipping, chart/table option evidence, ECharts resize lifecycle evidence, contract-to-DOM/CSS/renderer mapping, non-default states, and screenshot/crop or DOM assertion result when code/URL exists.
 - Acceptance result: `ready`, `partial`, or `blocked`, with `DESIGN-*`, `RPT-*`, `VIS-*`, or implementation gaps when relevant.
 
 ## Quality Gate
@@ -82,11 +83,14 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Report components must preserve decision evidence: metric口径, source/freshness, numeric display contract, baseline, exact values, drilldown/detail/export/action path, and realistic data states.
 - Metric-bearing components must declare value type, raw/display unit, display scale, screen precision, tooltip/export precision, rounding mode, null/zero/denominator-zero behavior, negative-zero handling, and formatter ownership; arbitrary decimals or component-local `toFixed` assumptions are not accepted.
 - KPI/metric cards must pass actual rendered value-anchor checks, not only slot allocation: the measured value+unit group is centered in the value anchor viewport, the numeral has sufficient visual scale for the card size, and auxiliary title/status/source/target content does not push the primary value off center.
+- Do not turn "core content should be centered" into a blanket rule. Implementation-ready specs must classify alignment intent by component family: KPI primary value/empty/loading states center by default; charts center the plot after reserved title/legend/axis bands; tables and long text use scan-friendly top-left content with numeric cells right-aligned; rankings/lists use row-aligned comparison. A centered-content claim fails if it lacks selectors, geometry targets, or an exception for table/text/list scanning.
 - KPI/metric card title ownership must be explicit. Do not visibly render both a block/card title and a body metric label when they normalize to the same or highly similar text; use `displayTitle` for the visible title and keep `metricName` for tooltip/export/口径 metadata unless `showBodyMetricLabel` is explicitly justified.
 - Declared component contracts are not acceptance proof by themselves. `compositePanelContract`, `analysisInsightContract`, KPI placement metadata, local-filter metadata, or chart/table contracts must map to inspectable DOM attributes/classes, CSS/computed styles, ECharts/S2 options, browser assertions, and screenshot/crop evidence when implementation or runtime is available. Otherwise record `LAZY-CONTRACT-THEATER` and keep readiness `partial`.
 - Component-local controls cannot duplicate template-owned refresh, download/export, copy/share, global filters, or topbar controls. If the template owns the shell controls, component specs must either remove the duplicate controls or cite an explicit `controlOwnership: "component"` decision with the template control disabled/hidden.
 - Standard ECharts charts must be implemented with ECharts-owned options/series/runtime behavior; do not hand-draw standard charts while importing ECharts.
+- Standard ECharts charts must pass the resize lifecycle gate when implementation or URL exists: the chart body has non-zero measured width/height before `echarts.init`; option changes call `setOption` or wrapper equivalent; container changes use `ResizeObserver` or a documented equivalent plus tab/drawer/fullscreen hooks; cleanup calls `dispose` and disconnects listeners; QA verifies at the design viewport and at least one different viewport/container size. Missing lifecycle proof is `VIS-CHART-NO-RESIZE-PROOF`; a blank or stale chart after resize is `VIS-CHART-RESIZE-BROKEN`.
 - ECharts Cartesian charts with legends, y-axis names, axis units, target labels, or local filters sharing an edge band must declare explicit slot budgets and collision checks. `grid.containLabel` alone is not sufficient evidence for legend/axis-name safety.
+- ECharts line/bar/combo charts must pass plot-viability checks, not only lifecycle checks. Standard axis charts require chart body `>=180px`; dense combo, dual-axis, target/reference, or chart + table/list cards require chart body `>=220px`; plot height must meet the owning chart floor, y-axis labels must not stack, and gridlines must not merge into a stripe. If chart and preview rows cannot both fit, split/enlarge or move the preview before styling.
 - SVG/canvas/ECharts/custom geometry must preserve aspect ratio and must not stretch, squeeze, or distort business shapes.
 - Do not use generic AI/SaaS polish, decorative gradients/glass/glow, oversized radius, vague copy, or ornamental motion when it competes with data reading.
 - Load `12-component-acceptance-gates.md` before accepting dense charts, tables, Composite Panels, Analysis & Insight, KPI cards, local filters, or shape-sensitive graphics for implementation.

@@ -22,6 +22,12 @@ The uploaded sample lists `src/components/ChartRenderer.vue` as the shared chart
 - Let route pages or feature components prepare business-specific chart options.
 - Preserve tooltip, legend, resize, loading, empty, and error states.
 - Route chart readability and fit decisions to `$report-component-style-design` when labels, legends, axes, or canvas/SVG geometry become dense.
+- The renderer must mount ECharts only after the chart body has measurable width and height. Prefer `ResizeObserver` on the chart body/container and call `chart.resize()` when the body changes size. Add equivalent hooks for hidden tabs, drawers, fullscreen, route keep-alive activation, or grid-span changes when those states exist.
+- Watch option/data/theme/filter props and call `setOption` or the wrapper's equivalent update path after DOM updates. Do not recreate the instance for ordinary data changes unless the project wrapper requires it.
+- Disconnect observers/listeners and call `dispose()` on unmount or final deactivation. Repeated navigation must not create duplicate chart instances.
+- A chart wrapper that only listens to `window.resize` is incomplete for cards, tabs, drawers, and grid layouts whose container can resize without a window resize. Document the exception or route the chart to `$report-chart-design-spec` for lifecycle repair.
+- The chart wrapper or owning page must expose enough DOM hooks for anti-squeeze QA: measured chart body, generated SVG/canvas bounds, legend/title/axis bands, and plot area. Full axis charts are not ready when resize works but the plot is compressed below the chart-family floor.
+- When a chart shares a card with table/list/detail preview, compute the split before rendering. Do not let the preview consume the chart body; if the chart plot floor and at least `3` preview rows cannot both fit, route the preview to Top3, drawer, tab, detail page, or split the block.
 
 ## API And View Model Boundary
 
@@ -48,3 +54,5 @@ Before handoff:
 - Verify `Access-Token` is present for authenticated API requests.
 - Verify 401 behavior clears token/user info and triggers login recovery.
 - Verify chart components resize and dispose correctly when route/page changes.
+- Verify chart resize at two sizes or states when a chart is implemented: the chart body has non-zero dimensions, the generated SVG/canvas follows the body within 2px, the chart is nonblank after resize, and no duplicate instances/listeners remain after unmount/navigation.
+- Verify full line/bar/combo charts are not visually squeezed: standard chart body `>=180px`, dense or chart + table/list body `>=220px`, plot-height floor is met, y-axis labels do not overlap, gridlines do not merge into a stripe, and shared chart/table cards keep at least `3` preview rows without compressing the chart.

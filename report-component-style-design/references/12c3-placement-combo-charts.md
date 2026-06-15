@@ -59,6 +59,7 @@ Recommended size:
 ### Vertical Budget
 
 ```text
+chartBodyH = measured chart component body height after external DOM title/filter/table bands are removed
 titleAreaH = 36-56px
 metricH = 0-48px
 legendH = 20-28px
@@ -68,6 +69,8 @@ xAxisH = 32-56px
 footerH = 0-24px
 plotH = CH - titleAreaH - metricH - legendH - topAxisNameReserve - xAxisH - footerH - gaps
 require plotH >= CH * 0.48
+require plotH >= 140px for standard Combo charts with axes/legend
+require chartBodyH >= 220px when the Combo shares a card with a table/list preview, top tabs, dual axes, target labels, or a metric strip
 ```
 
 If `plotH` fails:
@@ -79,6 +82,8 @@ If `plotH` fails:
 5. Hide ordinary data labels and line points.
 6. Sample x-axis labels or add dataZoom.
 7. Enlarge/split the component before accepting a smaller plot.
+
+Never accept a full Combo chart rendered as a narrow horizontal band. If y-axis tick labels stack, gridlines merge, bars become unreadable slivers, or the bar/line relationship cannot be distinguished without zooming, record `VIS-CHART-SQUEEZED` or `VIS-AXIS-LABEL-STACKED` and split/enlarge/collapse optional content before styling colors.
 
 ### Header And Component-Local Filter
 

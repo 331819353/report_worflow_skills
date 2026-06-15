@@ -34,7 +34,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 5. Load `references/01-chart-reference-map.md`, then load only the chart-family visual and placement files it names.
 6. Confirm chart type is fit for the task before styling labels or colors.
 7. Define chart anatomy: title, subtitle/definition, unit, metric strip, legend, axes, plot area, labels, tooltip, local filters, footer/source, and states.
-8. Verify ECharts ownership: standard ECharts charts must use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks.
+8. Verify ECharts ownership and lifecycle: standard ECharts charts must use ECharts series/options/runtime behavior rather than hand-drawn SVG/canvas marks, and must initialize, update, resize, and dispose from a measurable chart body viewport.
 9. Run acceptance gates before marking dense or implementation-ready charts as ready.
 
 ## Required Output
@@ -44,7 +44,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Chart choice rationale and rejected alternatives when relevant.
 - Anatomy, placement, label/legend/tooltip, density, state, and responsive rules.
 - Data contract: fields, units, precision, grain, filters, and exact-value path.
-- Option/runtime proof obligations when implementation or URL exists: renderer owner, `option`/series fields, legend/axis/grid/tooltip settings, DOM/SVG collision checks, screenshot/crop evidence, and non-default state coverage.
+- Option/runtime proof obligations when implementation or URL exists: renderer owner, `option`/series fields, legend/axis/grid/tooltip settings, chart body dimensions, plot-height floor, axis-label overlap checks, resize trigger/cleanup path, before/after resize geometry, DOM/SVG collision checks, screenshot/crop evidence, and non-default state coverage.
 - Readiness: `ready`, `partial`, or `blocked`.
 
 ## Quality Gate
@@ -55,5 +55,7 @@ For non-trivial work, apply `$quality-gate-validation` `references/anti-laziness
 - Do not accept labels, legends, axis names, or tooltips that overlap, truncate critical evidence, or hide units/precision.
 - Do not accept chart readiness by checking only that `legend`, `tooltip`, or `series` exists. Dense or implementation-ready ECharts charts must prove the relevant option details and rendered geometry. For a top-centered Combo legend, verify `legend.left: 'center'` or equivalent centering plus `grid.top` reserved space and measured/cropped legend position; a right-anchored legend fails unless the spec explicitly asks for it.
 - Do not leave chart-engine, data contract, axis/legend/grid/tooltip, exact-value access, state coverage, or renderer ownership as advisory language. These are `MUST/fail` constraints when the chart is implementation-ready or runtime-verifiable.
+- Do not accept ECharts responsiveness claims without naming the level. `container-resize-safe` requires non-zero mount size, `setOption` updates, `ResizeObserver` or equivalent container/visibility hooks, cleanup, and a browser resize check. `viewport-responsive` additionally requires page/component breakpoints or reflow proof. A fixed design-width shell with horizontal/vertical scrolling may be container-resize-safe but is not viewport-responsive by itself.
+- Do not accept a full line/bar/combo axis chart when it is visually squeezed. Standard axis charts need chart body `>=180px` and plot height `>= max(120px, chartBodyH * 0.45)` after title, legend, tabs, filters, metric strip, axes, x labels, footer, and any table/list preview are reserved. Dense combo, dual-axis, target/reference, or chart + table/list cards need chart body `>=220px` and plot height `>= max(140px, chartBodyH * 0.48)`. If y-axis labels stack, gridlines merge into a stripe, or the table/list preview leaves only a thin chart band, split/enlarge/collapse optional content before accepting.
 - Do not distort geographic, radial, proportional, network, or flow geometry.
 - Do not mark chart work ready without state handling for loading, empty, error, no-permission, stale, and dense data.
